@@ -454,14 +454,15 @@
 
         function showSchedule(turma) {
             const scheduleData = data[currentCourse].cronogramas[turma];
-            const folder = currentCourse === 'mapd1' ? 'mapd1' : 'mapd2';
+            const folder = currentCourse;
+            const baseURL = 'https://rodrigoniskier.github.io/portal-mapd/';
             
             let tableRows = scheduleData.map(aula => `
                 <tr>
                     <td class="font-medium text-gray-800">${aula.data}</td>
                     <td>
                         ${aula.link ? 
-                            `<a href="/${folder}/${aula.link}" target="_blank" class="schedule-link">${aula.conteudo} <i class="fas fa-external-link-alt text-xs ml-1"></i></a>` : 
+                            `<a href="${baseURL}${folder}/${aula.link}" target="_blank" class="schedule-link">${aula.conteudo} <i class="fas fa-external-link-alt text-xs ml-1"></i></a>` : 
                             aula.conteudo
                         }
                     </td>
