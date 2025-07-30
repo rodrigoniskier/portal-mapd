@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal MAPD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .btn {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        .content-section {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .back-btn {
+            background-color: #4A5568;
+            color: white;
+        }
+        .back-btn:hover {
+            background-color: #2D3748;
+        }
+        .accordion-button {
+            width: 100%;
+            text-align: left;
+            background-color: #EDF2F7;
+            border: none;
+            padding: 1rem;
+            font-weight: 600;
+            color: #2D3748;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .accordion-button:hover {
+            background-color: #E2E8F0;
+        }
+        .accordion-button .fa-chevron-down {
+            transition: transform 0.3s ease;
+        }
+        .accordion-button.active .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background-color: #FAFAFA;
+            border-radius: 0 0 8px 8px;
+            padding: 0 1.5rem;
+        }
+        .accordion-content-inner {
+            padding: 1.5rem 0;
+        }
+        .schedule-table th, .schedule-table td, .rubric-table th, .rubric-table td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid #E2E8F0;
+        }
+        .schedule-table th, .rubric-table th {
+            background-color: #EBF8FF;
+            color: #2C5282;
+            font-weight: 600;
+        }
+        .schedule-table tr:hover, .rubric-table tr:hover {
+            background-color: #F7FAFC;
+        }
+        .schedule-link {
+            color: #2B6CB0;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .schedule-link:hover {
+            color: #2C5282;
+            text-decoration: underline;
+        }
+        .professor-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div id="app" class="main-container">
+        <!-- Tela Inicial -->
+        <div id="home-screen" class="text-center">
+            <i class="fas fa-microscope text-5xl text-blue-600 mb-4"></i>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Mecanismos de Agressão, Patológicos e de Defesa</h1>
+            <p class="text-lg text-gray-500 mb-10">Portal Acadêmico do Curso de Medicina</p>
+            <div class="flex justify-center gap-6 mb-12">
+                <button onclick="showCourseMenu('mapd1')" class="btn bg-blue-600 text-white font-bold py-4 px-8 rounded-lg text-xl shadow-lg hover:bg-blue-700">
+                    <i class="fas fa-book-medical mr-2"></i> MAPD-1
+                </button>
+                <button onclick="showCourseMenu('mapd2')" class="btn bg-green-600 text-white font-bold py-4 px-8 rounded-lg text-xl shadow-lg hover:bg-green-700">
+                    <i class="fas fa-dna mr-2"></i> MAPD-2
+                </button>
+            </div>
+
+            <div class="card mt-12 text-left">
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" class="professor-img" onerror="this.onerror=null;this.src='https://placehold.co/120x120/E2E8F0/4A5568?text=Foto';">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-gray-800">Rodrigo Niskier Ferreira Barbosa</h3>
+                        <p class="text-blue-600 font-medium">rodrigo.niskier@unipe.edu.br</p>
+                        <p class="text-gray-600 mt-2">
+                            Biomédico (2003, UFPE), especialista em Biologia Molecular (2006, UPE), mestre em Genética e Biologia Molecular (2007, UFRN). Professor do ensino superior desde 2007, lecionando Mecanismos de Agressão, Patológicos e de Defesa no curso de Medicina (UNIPE). Pesquisador nas áreas de Imunologia, Genética e Neoplasias. Desenvolvedor de aplicações Web com ferramentas de AI-LLM desde 2024.
+                        </p>
+                        <p class="mt-3 text-gray-700">
+                            Conheça meu livro 'Autoimunidade: Conexões Essenciais': 
+                            <a href="https://www.amazon.com.br/Autoimunidade-Essenciais-neuroend%C3%B3crinas-imunol%C3%B3gicas-toler%C3%A2ncia-ebook/dp/B0F3VKH947?__mk_pt_BR=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=2XA12470AGXR&dib=eyJ2IjoiMSJ9.wXIErSumhKmTWEi6U2gacIMC3uYHQw82jKpbIUhpiMMrlnAopRymz_uaepe7Do4K6zCNHxnR1NpadlLWXIenvh1wsEbFS_tGxIs-Os7OxK8_FyaeD7gu3qu3l5Z_TJ50.6kfV04URBitCAaHhXzN0aIbrraqeAX40ogs7wkRNmqQ&dib_tag=se&keywords=autoimunidade+conex%C3%B5es&qid=1752164939&sprefix=autoimunidade+conex%C3%B5es,aps,199&sr=8-1&linkCode=sl1&tag=rodrigo20250b-20&linkId=cd2309aa5eba63f627b930ef6e54f4d6&language=pt_BR&ref_=as_li_ss_tl" target="_blank" class="schedule-link">Acesse o link <i class="fas fa-external-link-alt text-xs ml-1"></i></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela do Menu do Curso -->
+        <div id="course-menu-screen" class="hidden">
+            <button onclick="goBack('home-screen')" class="btn back-btn font-bold py-2 px-4 rounded-lg mb-8">
+                <i class="fas fa-arrow-left mr-2"></i> Voltar
+            </button>
+            <h2 id="course-title" class="text-3xl font-bold text-gray-800 mb-8 text-center"></h2>
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div onclick="showContent('plano-ensino')" class="card p-8 cursor-pointer hover:shadow-xl hover:scale-105">
+                    <i class="fas fa-file-alt text-4xl text-blue-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-700">Plano de Ensino</h3>
+                </div>
+                <div onclick="showContent('rubricas')" class="card p-8 cursor-pointer hover:shadow-xl hover:scale-105">
+                    <i class="fas fa-tasks text-4xl text-green-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-700">Rúbricas de Avaliação</h3>
+                </div>
+                <div onclick="showContent('cronogramas')" class="card p-8 cursor-pointer hover:shadow-xl hover:scale-105">
+                    <i class="fas fa-calendar-alt text-4xl text-purple-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-700">Cronogramas</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela de Conteúdo (Plano, Rúbricas, Cronogramas) -->
+        <div id="content-screen" class="hidden">
+            <button id="content-back-btn" class="btn back-btn font-bold py-2 px-4 rounded-lg mb-8">
+                <i class="fas fa-arrow-left mr-2"></i> Voltar
+            </button>
+            <div id="content-display" class="card content-section">
+                <!-- O conteúdo será injetado aqui pelo JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCourse = '';
+        let previousScreen = '';
+
+        const data = {
+            mapd1: {
+                title: 'MAPD-1: Turma Única',
+                planoEnsino: `
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Plano de Ensino - MAPD-1</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-bullseye mr-3 text-blue-500"></i>Ementa</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700">Estuda os mecanismos de defesa inata e adaptativo. Imunofisiologia. Mecanismos efetores da imunidade humoral e celular. Sistema complemento. Antígenos e imunoglobulinas. Morfologia, fisiologia, bioquímica, genética de microrganismos. Ação dos agentes físicos e químicos sobre os microrganismos. Quimioterapia antimicrobiana e mecanismos de resistência aos antibióticos. Microbiota normal e interações parasito hospedeiro. Fundamentos conceituais em patologia geral, com ênfase aos níveis moleculares, celulares e teciduais. Dano celular, adaptação e morte celular como fenômenos básicos dos processos patológicos. Pontos críticos da inflamação aguda, da inflamação crônica e dos processos de reparo.</div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-crosshairs mr-3 text-green-500"></i>Objetivos</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700"><strong>Cognitivos:</strong> Desenvolver a capacidade do aluno de mobilizar recursos visando abordar e resolver uma situação complexa; Estimular recursos cognitivos como saberes, habilidades e informações; Solucionar, com pertinência e eficácia, uma série de situações do cotidiano profissional.<br><br><strong>Habilidades:</strong> Demonstrar capacidade de mobilização, autonomia, iniciativa, visão estratégica, administrar recursos, e uma capacidade de articulação Estimular o senso de responsabilidade, capacidade de autoaprendizado, enfrentamento problemas, sociabilidade e capacidade de trabalho em equipe Capacidade de expressão oral e escrita, capacidade de avaliar seu próprio trabalho e o trabalho dos outros Aplicação de conhecimentos teóricos multidisciplinares a questões práticas, como resolução de problemas associados com a prática clínica.<br><br><strong>Atitudes:</strong> Assumir postura proativa na realização de tarefas individuais ou em grupos Realizar análises críticas do auto aprendizado e do processo formativo continuamente Aplicar os conhecimentos adquiridos ao longo do curso nas diversas temáticas de forma inter e multidisciplinar dentro da atuação do médico Colaborar com a construção do processo formativo Defender ideias e opiniões com olhar crítico-reflexivo dentro dos conhecimentos adquiridos da atuação do médico Posicionar-se eticamente frente aos assuntos discutidos em sala ou através de contato extra-classe.</div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-book-open mr-3 text-purple-500"></i>Conteúdo</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700"><ul class="list-disc list-inside space-y-1"><li><strong>Unidade I (30h):</strong> Lesões e Adaptações, Morte Celular: Necrose e Apoptose, Imunidade inata, Resposta de Células T, Resposta de Células B.</li><li><strong>Unidade II (30h):</strong> Padrões de Inflamações agudas e crônicas, Alterações patológicas (depósitos, calcificações, pigmentos), Introdução à microbiologia, Generalidades sobre infecções (fungos e vírus), Controle de infecções, Resistência aos antibióticos.</li></ul></div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-chalkboard-teacher mr-3 text-yellow-500"></i>Estratégia de Ensino</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700">As estratégias de ensino abordadas para desenvolvimento e aprendizagem dos conteúdos ministrados envolverão técnicas diversas de abordagem, como: Vídeos da internet, Debates, Estudo de casos, Problematização, Sala de aula invertida; Mapas conceituais, Mapas Mentais, Exposições, Problematização, Aprendizagem Baseada em Pares ou em Times, Investigação Científica, Seminários, Portfólios, Debates e Dramatizações. Dentre as Tecnologias de Informação e Comunicação (TICs) serão utilizados objetos digitais de aprendizagem, Plataforma Jaleko, ferramentas de comunicação com o e-mail e o AVA, mobile learning, e outros quando couber.</div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-check-double mr-3 text-red-500"></i>Avaliação</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700">A avaliação do discente será contínua e processual. Se dará mediante o somatório de diferentes atividades, que constituirão uma nota final para cada uma das duas principais verificações de aprendizagem (uma por UNIDADE) previstas pela Instituição. A média final será obtida a partir dos resultados de cada Unidade. Estão previstas avaliações formativas e somativas, dispostas da seguinte forma: Avaliações somativas sobre os conteúdos das duas Unidades (trabalhos, fichamentos, resumos, relatórios, portfólios, redação de textos e avaliações (escritas, orais, práticas) no final de cada Unidade (com questões objetivas e/ou subjetivas contextualizadas de forma problematizadora). Conforme prevê a Resolução sobre Avaliação, serão realizadas 02 (duas) avaliações de aprendizagem ao longo do semestre letivo: a primeira denominada Avaliação um (A1) e a segunda, Avaliação dois (A2), caso a soma da AV1 e AV2 resultar em menos de 6 pontos o aluno terá que fazer a Avaliação Final (AF), esta por sua vez substituirá a menor nota entre a AV1 e AV2. As notas referentes a cada avaliação serão expressas na escala numérica de 0,0 (zero) a 5,0 (cinco). Exemplo: A1 + A2 = Nota final<br><br><strong>A1:</strong> Será composta por uma Avaliação teórica formal valendo 3,0 pontos; outras atividades terão até 2,0 pontos.<br><strong>A2:</strong> Será composta por uma Avaliação teórica formal valendo 2,0 pontos; outras atividades terão até 3,0 pontos.</div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-book mr-3 text-indigo-500"></i>Bibliografia</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700"><strong>Básica:</strong><br>Kumar, Vinay, et al. Robbins & Cotran Patologia: Bases Patológicas das Doenças. (10th edição).<br>Abbas, Abul, K. et al. Imunologia Celular e Molecular. (10th edição).<br>Murray, Patrick, R. et al. Microbiologia Médica. (9th edição).<br><br><strong>Complementar:</strong><br>Abbas, Abul, K. et al. Imunologia Básica. (6th edição).<br>Filho, Geraldo B. Bogliolo - Patologia. (10th edição).<br>Riedel, Stefan, et al. Microbiologia Médica de Jawetz, Melnick & Adelberg. (28th edição).</div></div>
+                        </div>
+                    </div>
+                `,
+                rubricas: `
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Rúbricas de Avaliação - MAPD-1</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)">Bloco 1: Patologia Celular Fundamental<i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner overflow-x-auto"><table class="w-full rubric-table text-sm"><thead><tr><th>Domínio/Competência</th><th>Insuficiente (0-4.9)</th><th>Básico (5.0-6.9)</th><th>Proficiente (7.0-8.9)</th><th>Excepcional (9.0-10.0)</th></tr></thead><tbody><tr><td>Conhecimento dos Processos Patológicos</td><td>Não consegue Lembrar as definições de adaptações celulares, necrose ou apoptose.</td><td>Entende os conceitos de forma isolada, mas não os diferencia claramente. Lembra os tipos de necrose.</td><td>Aplica o conhecimento para explicar os achados em casos clínicos. Analisa imagens patológicas para identificar padrões.</td><td>Avalia o significado clínico de um padrão de lesão específico. Cria uma hipótese sobre a evolução de uma lesão.</td></tr><tr><td>Raciocínio Clínico-Patológico Inicial</td><td>Não participa das discussões de caso.</td><td>Aplica um conceito básico para explicar um aspecto do caso, sem aprofundamento.</td><td>Analisa um caso clínico para correlacionar o agente agressor com a lesão e as manifestações.</td><td>Avalia e critica diferentes hipóteses diagnósticas. Cria um resumo lógico do caso.</td></tr></tbody></table></div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)">Bloco 2: Fundamentos da Resposta Imunológica e Inflamação<i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner overflow-x-auto"><table class="w-full rubric-table text-sm"><thead><tr><th>Domínio/Competência</th><th>Insuficiente (0-4.9)</th><th>Básico (5.0-6.9)</th><th>Proficiente (7.0-8.9)</th><th>Excepcional (9.0-10.0)</th></tr></thead><tbody><tr><td>Compreensão dos Mecanismos Imunes</td><td>Confunde os papéis da imunidade inata, células T e células B.</td><td>Lembra os principais componentes e funções de cada parte do sistema imune.</td><td>Aplica o conhecimento para descrever a sequência de uma resposta imune. Analisa imagens imunopatológicas.</td><td>Avalia a importância relativa de diferentes componentes imunes. Cria um fluxograma detalhado da resposta imune.</td></tr><tr><td>Integração Imunologia-Inflamação</td><td>Não consegue explicar como a resposta imune causa a inflamação.</td><td>Entende que a inflamação é uma manifestação da resposta imune, mas não detalha os mecanismos.</td><td>Analisa como os eventos da resposta imune levam aos padrões de inflamação.</td><td>Avalia como uma falha em um componente imune impactaria o padrão inflamatório.</td></tr></tbody></table></div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)">Bloco 3: Introdução às Doenças Infecciosas<i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner overflow-x-auto"><table class="w-full rubric-table text-sm"><thead><tr><th>Domínio/Competência</th><th>Insuficiente (0-4.9)</th><th>Básico (5.0-6.9)</th><th>Proficiente (7.0-8.9)</th><th>Excepcional (9.0-10.0)</th></tr></thead><tbody><tr><td>Conhecimento Microbiológico</td><td>Não consegue Lembrar as características que distinguem bactérias, fungos e vírus.</td><td>Lembra e Entende as generalidades de cada classe de microrganismo.</td><td>Aplica o conhecimento para correlacionar um agente a uma síndrome clínica.</td><td>Analisa e compara os mecanismos de patogenicidade. Avalia a prevalência em cenários epidemiológicos.</td></tr><tr><td>Uso de Ferramentas Digitais</td><td>Incapaz de usar as plataformas digitais para pesquisar.</td><td>Aplica as plataformas para encontrar informações factuais.</td><td>Analisa as informações para formular hipóteses diagnósticas e participar da discussão.</td><td>Avalia criticamente a informação encontrada. Cria um roteiro de investigação.</td></tr></tbody></table></div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)">Bloco 4: Tópicos Aplicados em Controle e Resistência<i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner overflow-x-auto"><table class="w-full rubric-table text-sm"><thead><tr><th>Domínio/Competência</th><th>Insuficiente (0-4.9)</th><th>Básico (5.0-6.9)</th><th>Proficiente (7.0-8.9)</th><th>Excepcional (9.0-10.0)</th></tr></thead><tbody><tr><td>Resistência Antimicrobiana</td><td>Não consegue Lembrar o que é resistência.</td><td>Entende o conceito, mas com dificuldade de aplicá-lo.</td><td>Aplica o conhecimento para analisar um caso e explicar a falha de um tratamento.</td><td>Avalia o impacto da resistência na saúde pública. Cria uma campanha de conscientização.</td></tr><tr><td>Prevenção e Controle de Infecções</td><td>Não participa da atividade.</td><td>Aplica os princípios básicos para listar medidas de prevenção.</td><td>Analisa um cenário hospitalar e identifica pontos críticos para o controle.</td><td>Avalia a viabilidade e o impacto de estratégias. Cria um projeto de controle de infecções.</td></tr></tbody></table></div></div>
+                        </div>
+                    </div>
+                `,
+                cronogramas: {
+                    'unica': [
+                        { data: '08/08', conteudo: 'Apresentação do componente, Lesões e Adaptações', link: 'MAPD1-1.html', local: 'Sala de aula' },
+                        { data: '15/08', conteudo: 'Morte Celular: Necrose e Apoptose', link: 'MAPD1-2.html', local: 'Sala de aula' },
+                        { data: '22/08', conteudo: 'Aula teórico-prática: Discussão de casos clínicos', link: 'MAPD1-3.html', local: 'Sala de aula' },
+                        { data: '29/08', conteudo: 'Imunidade inata', link: 'MAPD1-4.html', local: 'Sala de aula' },
+                        { data: '05/09', conteudo: 'Resposta de Células T', link: 'MAPD1-5.html', local: 'Sala de aula' },
+                        { data: '12/09', conteudo: 'Resposta de Células B', link: 'MAPD1-6.html', local: 'Sala de aula' },
+                        { data: '19/09', conteudo: '1ª Avaliação de Aprendizagem (AV1)', link: 'MAPD1-AV1-Revisao.html', local: 'Laboratório de Informática' },
+                        { data: '26/09', conteudo: 'Aula teórico-prática: Análise de imagens Patológicas', link: 'MAPD1-7.html', local: 'Sala de aula' },
+                        { data: '03/10', conteudo: 'Padrões de Inflamações agudas e crônicas', link: 'MAPD1-8.html', local: 'Sala de aula' },
+                        { data: '10/10', conteudo: 'Aula teórico-prática: Análise de imagens imunopatológicas', link: 'MAPD1-9.html', local: 'Sala de aula' },
+                        { data: '17/10', conteudo: 'Introdução à microbiologia (Plataforma Jaleko)', link: 'MAPD1-10.html', local: 'Sala de aula' },
+                        { data: '24/10', conteudo: 'Discussão de casos clínicos de infecções (bactérias)', link: 'MAPD1-11.html', local: 'Sala de aula' },
+                        { data: '31/10', conteudo: 'Generalidades sobre infecções (fungos e vírus)', link: 'MAPD1-12.html', local: 'Sala de aula' },
+                        { data: '07/11', conteudo: 'Discussão de Casos Clínicos', link: 'MAPD1-13.html', local: 'Sala de aula' },
+                        { data: '14/11', conteudo: 'Projeto de Controle de infecções em serviços de saúde', link: 'MAPD1-14.html', local: 'Sala de aula' },
+                        { data: '21/11', conteudo: 'Resistência aos antibióticos', link: 'MAPD1-15.html', local: 'Sala de aula' },
+                        { data: '28/11', conteudo: 'Discussão de caso clínico', link: 'MAPD1-16.html', local: 'Sala de aula' },
+                        { data: '29/11 (sáb)', conteudo: 'Avaliação Integrada (A2)', link: 'MAPD1-AV2-Revisao.html', local: 'A definir' },
+                        { data: '05/12', conteudo: 'Reposição das avaliações', link: 'MAPD1-REPO-Revisao.html', local: 'Sala de aula' },
+                        { data: '12/12', conteudo: 'Avaliação Final', link: 'MAPD1-AF-Revisao.html', local: 'Sala de aula' },
+                    ]
+                }
+            },
+            mapd2: {
+                title: 'MAPD-2: 4º Período',
+                planoEnsino: `
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Plano de Ensino - MAPD-2</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-bullseye mr-3 text-blue-500"></i>Ementa</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700">Aprofunda o estudo dos agentes agressores e das respostas do hospedeiro, com foco em bacteriologia, virologia, micologia e parasitologia de interesse clínico. Aborda os mecanismos de resistência antimicrobiana e as bases para a interpretação de testes de sensibilidade. Explora as disfunções do sistema imune, incluindo reações de hipersensibilidade, autoimunidade e imunodeficiências. Estuda a imunologia de transplantes, a biologia do câncer, a imunidade antitumoral e as bases da imunoterapia, integrando os conhecimentos de patologia, microbiologia e imunologia na resolução de casos clínicos complexos.</div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-crosshairs mr-3 text-green-500"></i>Objetivos</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700"><strong>Cognitivos:</strong> Desenvolver o raciocínio clínico integrado para abordar e solucionar situações complexas envolvendo doenças infecciosas, imunopatologias e neoplasias. Estimular o uso de recursos cognitivos avançados, incluindo a aplicação de plataformas de inteligência artificial e bases de dados para pesquisa e diagnóstico.<br><br><strong>Habilidades:</strong> Capacitar o aluno a interpretar exames laboratoriais de microbiologia (coloração de Gram, culturas, antibiograma), parasitologia e imunologia. Desenvolver a habilidade de integrar conhecimentos de diferentes áreas para a compreensão da fisiopatologia das doenças. Fomentar a autonomia na busca por informação, o trabalho em equipe e a comunicação eficaz de achados clínicos e laboratoriais.<br><br><strong>Atitudes:</strong> Assumir uma postura proativa e ética na resolução de casos clínicos simulados e reais. Desenvolver uma análise crítica contínua do próprio aprendizado e do processo formativo. Colaborar ativamente na construção do conhecimento em grupo, defendendo ideias com base em evidências científicas e posicionando-se de forma crítico-reflexiva frente aos desafios da prática médica.</div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-book-open mr-3 text-purple-500"></i>Conteúdo</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700"><ul class="list-disc list-inside space-y-1"><li><strong>Unidade I (30h):</strong> Microbiologia e Resposta Imune: Resgate de conceitos de lesão e imunidade. Casos clínicos com foco em bactérias de interesse clínico. Habilidades laboratoriais em microbiologia: coloração de Gram e princípios de semeadura.</li><li><strong>Unidade II (30h):</strong> Imunopatologia, Parasitologia e Oncologia: Princípios e interpretação de antibiogramas. Casos clínicos com foco em vírus e fungos. Parasitas de interesse clínico e microscopia. Imunopatologias: hipersensibilidade, imunodeficiências e autoimunidade. Imunologia de transplantes. Biologia do câncer, imunidade antitumoral e imunoterapia. Integração dos temas em casos clínicos complexos.</li></ul></div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-chalkboard-teacher mr-3 text-yellow-500"></i>Estratégia de Ensino</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700">As estratégias de ensino serão diversificadas para promover a integração teórico-prática e o desenvolvimento do raciocínio clínico. Serão utilizadas aulas teórico-práticas com discussão de casos clínicos complexos, práticas orientadas em laboratórios de microbiologia e parasitologia, e oficinas de simulação. O processo de aprendizagem será enriquecido pelo uso de tecnologias de informação e comunicação (TICs), como a Plataforma Blackboard, a Plataforma Jaleko, e ferramentas de inteligência artificial para pesquisa, simulação de respostas imunes e resolução de desafios. A metodologia incluirá ainda a aprendizagem baseada em problemas e em times, seminários e a resolução guiada de mega-desafios clínicos.</div></div>
+                        </div>
+                         <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-check-double mr-3 text-red-500"></i>Avaliação</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700">Avaliação contínua e processual. 2 avaliações (A1 e A2). Média final >= 6.0 para aprovação.<br><br><strong>A1:</strong> Será composta por uma Avaliação teórica formal valendo 3,0 pontos; outras atividades terão até 2,0 pontos.<br><strong>A2:</strong> Será composta por uma Avaliação teórica formal valendo 2,0 pontos; outras atividades terão até 3,0 pontos.</div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)"><span><i class="fas fa-book mr-3 text-indigo-500"></i>Bibliografia</span><i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner text-gray-700"><strong>Básica:</strong><br>Kumar, Vinay, et al. Robbins & Cotran Patologia: Bases Patológicas das Doenças. (10th edição).<br>Abul, K. et al. Imunologia Celular e Molecular. (10th edição).<br>Murray, Patrick, R. et al. Microbiologia Médica. (9th edição).<br>Fereira, Marcelo U. Parasitologia Contemporânea. (2nd edição).<br><br><strong>Complementar:</strong><br>Bogliolo - Patologia. (10th edição).<br>Riedel, Stefan, et al. Microbiologia Médica de Jawetz, Melnick & Adelberg. (28th edição).<br>Levinson, Warren, et al. Microbiologia Médica e Imunologia. (15th edição).</div></div>
+                        </div>
+                    </div>
+                `,
+                rubricas: `
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Rúbricas de Avaliação - MAPD-2</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)">Bloco 1: Fundamentos de Microbiologia e Resposta Imune<i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner overflow-x-auto"><table class="w-full rubric-table text-sm"><thead><tr><th>Domínio/Competência</th><th>Insuficiente (0-4.9)</th><th>Básico (5.0-6.9)</th><th>Proficiente (7.0-8.9)</th><th>Excepcional (9.0-10.0)</th></tr></thead><tbody><tr><td>Conhecimento Conceitual</td><td>Não consegue Lembrar as definições de lesão, morte celular e imunidade inata.</td><td>Lembra e Entende os conceitos, mas com dificuldade em conectá-los a exemplos clínicos.</td><td>Aplica o conhecimento para explicar os mecanismos em casos simples. Analisa a relação bactéria-patogenicidade.</td><td>Avalia criticamente a resposta imune. Cria mapas conceituais que integram agressão e defesa.</td></tr><tr><td>Habilidade Laboratorial</td><td>Não executa a técnica de coloração de Gram ou semeadura.</td><td>Aplica a técnica com supervisão, mas com erros.</td><td>Aplica a técnica de forma correta e autônoma. Analisa o resultado e o correlaciona com a clínica.</td><td>Avalia a qualidade da lâmina/semeadura. Cria um protocolo de diagnóstico laboratorial.</td></tr><tr><td>Raciocínio Clínico e Uso de IA</td><td>Não utiliza a plataforma de IA ou a utiliza de forma passiva.</td><td>Aplica a IA para buscar informações básicas. Acompanha a discussão com pouca contribuição.</td><td>Analisa os dados da IA para formular hipóteses diagnósticas. Participa ativamente da discussão.</td><td>Avalia as informações da IA, identificando vieses. Cria novas perguntas para aprofundar a investigação.</td></tr></tbody></table></div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)">Bloco 2: Diagnóstico e Terapêutica de Doenças Infecciosas<i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner overflow-x-auto"><table class="w-full rubric-table text-sm"><thead><tr><th>Domínio/Competência</th><th>Insuficiente (0-4.9)</th><th>Básico (5.0-6.9)</th><th>Proficiente (7.0-8.9)</th><th>Excepcional (9.0-10.0)</th></tr></thead><tbody><tr><td>Interpretação de Exames</td><td>Não consegue Lembrar o que significa sensibilidade/resistência.</td><td>Entende os princípios do antibiograma e microscopia. Interpreta resultados diretos.</td><td>Analisa um antibiograma para determinar o perfil de resistência. Analisa achados microscópicos.</td><td>Avalia resultados de antibiogramas em cenários de multirresistência. Cria um laudo descritivo.</td></tr><tr><td>Conhecimento Clínico Aplicado</td><td>Confunde as características e doenças dos agentes.</td><td>Lembra os principais agentes e as doenças que causam.</td><td>Aplica o conhecimento para diferenciar síndromes clínicas. Analisa a resposta imune específica.</td><td>Avalia e compara estratégias de evasão imune. Cria um fluxograma para diagnóstico diferencial.</td></tr><tr><td>Uso de Plataformas Digitais</td><td>Não acessa ou não consegue extrair informações relevantes.</td><td>Aplica as plataformas para buscar informações factuais de forma guiada.</td><td>Analisa criticamente as informações para justificar decisões terapêuticas.</td><td>Avalia a qualidade das simulações. Cria um roteiro de estudo pessoal.</td></tr></tbody></table></div></div>
+                        </div>
+                        <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)">Bloco 3: Imunopatologia, Autoimunidade e Transplantes<i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner overflow-x-auto"><table class="w-full rubric-table text-sm"><thead><tr><th>Domínio/Competência</th><th>Insuficiente (0-4.9)</th><th>Básico (5.0-6.9)</th><th>Proficiente (7.0-8.9)</th><th>Excepcional (9.0-10.0)</th></tr></thead><tbody><tr><td>Compreensão de Mecanismos Imunopatológicos</td><td>Não consegue Lembrar os tipos de hipersensibilidade ou a definição de autoimunidade.</td><td>Entende os mecanismos básicos de cada imunopatologia de forma isolada.</td><td>Analisa casos para identificar e diferenciar os mecanismos. Aplica o conhecimento para prever complicações.</td><td>Avalia a base imunológica de terapias. Cria um mapa conceitual conectando gatilho a doença autoimune.</td></tr><tr><td>Raciocínio Clínico em Imunologia</td><td>Não relaciona sintomas com disfunção imune.</td><td>Aplica o conhecimento para suspeitar de uma doença autoimune ou imunodeficiência.</td><td>Analisa dados de casos complexos para formular diagnósticos diferenciais.</td><td>Avalia a complexidade de um caso de imunodeficiência secundária. Cria um plano de investigação.</td></tr></tbody></table></div></div>
+                        </div>
+                         <div>
+                            <button class="accordion-button" onclick="toggleAccordion(this)">Bloco 4: Biologia do Câncer e Imunoterapia<i class="fas fa-chevron-down"></i></button>
+                            <div class="accordion-content"><div class="accordion-content-inner overflow-x-auto"><table class="w-full rubric-table text-sm"><thead><tr><th>Domínio/Competência</th><th>Insuficiente (0-4.9)</th><th>Básico (5.0-6.9)</th><th>Proficiente (7.0-8.9)</th><th>Excepcional (9.0-10.0)</th></tr></thead><tbody><tr><td>Conhecimento Integrado em Oncologia</td><td>Não consegue Lembrar os conceitos básicos de oncogênese ou imunidade antitumoral.</td><td>Entende os processos de forma geral, mas não os integra.</td><td>Analisa a interação tumor-sistema imune. Explica o mecanismo de ação de imunoterapias.</td><td>Avalia por que uma imunoterapia pode ser eficaz para um tipo de câncer e não para outro. Cria uma apresentação clara.</td></tr><tr><td>Análise de Terapias Modernas</td><td>Não demonstra compreensão durante a discussão de casos.</td><td>Aplica seu conhecimento para identificar o tipo de terapia usada no caso.</td><td>Analisa os mecanismos de ação, efeitos esperados e adversos em casos simulados.</td><td>Avalia criticamente a indicação e limitações das novas abordagens. Cria uma justificativa para a escolha de uma terapia.</td></tr></tbody></table></div></div>
+                        </div>
+                    </div>
+                `,
+                cronogramas: {
+                    'a': [
+                        { data: '11/08', conteudo: 'Apresentação do Componente; Resgate de conteúdos', link: 'MAPD2-1.html', local: 'Sala de Aula' },
+                        { data: '18/08', conteudo: 'Casos Clínicos - Foco em Bactérias', link: 'MAPD2-2.html', local: 'Laboratório de Informática' },
+                        { data: '25/08', conteudo: 'Habilidades Laboratoriais de Microbiologia (Grupos 1 e 2)', link: 'MAPD2-3.html', local: 'Laboratório de Microbiologia (Bloco G)' },
+                        { data: '01/09', conteudo: 'Habilidades Laboratoriais de Microbiologia (Grupos 3 e 4)', link: 'MAPD2-3.html', local: 'Laboratório de Microbiologia (Bloco G)' },
+                        { data: '08/09', conteudo: '1ª Avaliação de Aprendizagem (AV1)', link: 'MAPD2-AV1-Revisao.html', local: 'Laboratório de Informática' },
+                        { data: '15/09', conteudo: 'Princípio e Interpretação de Antibiograma', link: 'MAPD2-4.html', local: 'Laboratório de Informática' },
+                        { data: '22/09', conteudo: 'Casos Clínicos - Foco em Vírus e Fungos', link: 'MAPD2-5.html', local: 'Laboratório de Informática' },
+                        { data: '29/09', conteudo: 'Parasitas de Interesse Clínico', link: 'MAPD2-6.html', local: 'Sala de Aula' },
+                        { data: '06/10', conteudo: 'Microscopia de Parasitas e Interpretação de Achados', link: 'MAPD2-7.html', local: 'Laboratório / Sala de Microscopia (Bloco G)' },
+                        { data: '13/10', conteudo: 'Casos - Foco em Hipersensibilidade e Imunodeficiências', link: 'MAPD2-8.html', local: 'Laboratório de Informática' },
+                        { data: '20/10', conteudo: 'Autoimunidade', link: 'MAPD2-9.html', local: 'Sala de Aula' },
+                        { data: '27/10', conteudo: 'Imunologia de Transplantes', link: 'MAPD2-10.html', local: 'Laboratório de Informática' },
+                        { data: '03/11', conteudo: 'Biologia do Câncer', link: 'MAPD2-11.html', local: 'Sala de Aula' },
+                        { data: '10/11', conteudo: 'Imunidade Antitumoral', link: 'MAPD2-12.html', local: 'Sala de Aula' },
+                        { data: '17/11', conteudo: 'Casos - Foco em Imunoterapia e Novas Abordagens em Câncer', link: 'MAPD2-13.html', local: 'Laboratório de Informática' },
+                        { data: '24/11', conteudo: 'Oficina Prática: Integração de Casos Clínicos', link: 'MAPD2-14.html', local: 'Laboratório de Informática' },
+                        { data: '29/11', conteudo: 'Avaliação Integrada (A2)', link: 'MAPD2-AV2-Revisao.html', local: 'A definir' },
+                        { data: '01/12', conteudo: 'Reposições', link: 'MAPD2-REPO-Revisao.html', local: 'Laboratório de Informática' },
+                        { data: '09/12', conteudo: 'Avaliação Final', link: 'MAPD2-AF-Revisao.html', local: 'Laboratório de Informática' },
+                    ],
+                    'b': [
+                        { data: '12/08', conteudo: 'Apresentação do Componente; Resgate de conteúdos', link: 'MAPD2-1.html', local: 'Sala de Aula' },
+                        { data: '19/08', conteudo: 'Casos Clínicos - Foco em Bactérias', link: 'MAPD2-2.html', local: 'Laboratório de Informática' },
+                        { data: '26/08', conteudo: 'Habilidades Laboratoriais de Microbiologia (Grupos 1 e 2)', link: 'MAPD2-3.html', local: 'Laboratório de Microbiologia (Bloco G)' },
+                        { data: '02/09', conteudo: 'Habilidades Laboratoriais de Microbiologia (Grupos 3 e 4)', link: 'MAPD2-3.html', local: 'Laboratório de Microbiologia (Bloco G)' },
+                        { data: '09/09', conteudo: '1ª Avaliação de Aprendizagem (AV1)', link: 'MAPD2-AV1-Revisao.html', local: 'Laboratório de Informática' },
+                        { data: '16/09', conteudo: 'Princípio e Interpretação de Antibiograma', link: 'MAPD2-4.html', local: 'Laboratório de Informática' },
+                        { data: '23/09', conteudo: 'Casos Clínicos - Foco em Vírus e Fungos', link: 'MAPD2-5.html', local: 'Laboratório de Informática' },
+                        { data: '30/09', conteudo: 'Parasitas de Interesse Clínico', link: 'MAPD2-6.html', local: 'Sala de Aula' },
+                        { data: '07/10', conteudo: 'Microscopia de Parasitas e Interpretação de Achados', link: 'MAPD2-7.html', local: 'Laboratório / Sala de Microscopia (Bloco G)' },
+                        { data: '14/10', conteudo: 'Casos - Foco em Hipersensibilidade e Imunodeficiências', link: 'MAPD2-8.html', local: 'Laboratório de Informática' },
+                        { data: '21/10', conteudo: 'Autoimunidade', link: 'MAPD2-9.html', local: 'Sala de Aula' },
+                        { data: '28/10', conteudo: 'Imunologia de Transplantes', link: 'MAPD2-10.html', local: 'Laboratório de Informática' },
+                        { data: '04/11', conteudo: 'Biologia do Câncer', link: 'MAPD2-11.html', local: 'Sala de Aula' },
+                        { data: '11/11', conteudo: 'Imunidade Antitumoral', link: 'MAPD2-12.html', local: 'Sala de Aula' },
+                        { data: '18/11', conteudo: 'Casos - Foco em Imunoterapia e Novas Abordagens em Câncer', link: 'MAPD2-13.html', local: 'Laboratório de Informática' },
+                        { data: '25/11', conteudo: 'Oficina Prática: Integração de Casos Clínicos', link: 'MAPD2-14.html', local: 'Laboratório de Informática' },
+                        { data: '29/11', conteudo: 'Avaliação Integrada (A2)', link: 'MAPD2-AV2-Revisao.html', local: 'A definir' },
+                        { data: '02/12', conteudo: 'Reposições', link: 'MAPD2-REPO-Revisao.html', local: 'Laboratório de Informática' },
+                        { data: '09/12', conteudo: 'Avaliação Final', link: 'MAPD2-AF-Revisao.html', local: 'Laboratório de Informática' },
+                    ],
+                    'c': [
+                        { data: '07/08', conteudo: 'Apresentação do Componente; Resgate de conteúdos', link: 'MAPD2-1.html', local: 'Sala de Aula' },
+                        { data: '14/08', conteudo: 'Casos Clínicos - Foco em Bactérias', link: 'MAPD2-2.html', local: 'Laboratório de Informática' },
+                        { data: '21/08', conteudo: 'Habilidades Laboratoriais de Microbiologia (Grupos 1 e 2)', link: 'MAPD2-3.html', local: 'Laboratório de Microbiologia (Bloco G)' },
+                        { data: '28/08', conteudo: 'Habilidades Laboratoriais de Microbiologia (Grupos 3 e 4)', link: 'MAPD2-3.html', local: 'Laboratório de Microbiologia (Bloco G)' },
+                        { data: '04/09', conteudo: '1ª Avaliação de Aprendizagem (AV1)', link: 'MAPD2-AV1-Revisao.html', local: 'Laboratório de Informática' },
+                        { data: '11/09', conteudo: 'Princípio e Interpretação de Antibiograma', link: 'MAPD2-4.html', local: 'Laboratório de Informática' },
+                        { data: '18/09', conteudo: 'Casos Clínicos - Foco em Vírus e Fungos', link: 'MAPD2-5.html', local: 'Laboratório de Informática' },
+                        { data: '25/09', conteudo: 'Parasitas de Interesse Clínico', link: 'MAPD2-6.html', local: 'Sala de Aula' },
+                        { data: '02/10', conteudo: 'Microscopia de Parasitas e Interpretação de Achados', link: 'MAPD2-7.html', local: 'Laboratório / Sala de Microscopia (Bloco G)' },
+                        { data: '09/10', conteudo: 'Casos - Foco em Hipersensibilidade e Imunodeficiências', link: 'MAPD2-8.html', local: 'Laboratório de Informática' },
+                        { data: '16/10', conteudo: 'Autoimunidade', link: 'MAPD2-9.html', local: 'Sala de Aula' },
+                        { data: '23/10', conteudo: 'Imunologia de Transplantes', link: 'MAPD2-10.html', local: 'Laboratório de Informática' },
+                        { data: '30/10', conteudo: 'Biologia do Câncer', link: 'MAPD2-11.html', local: 'Sala de Aula' },
+                        { data: '06/11', conteudo: 'Imunidade Antitumoral', link: 'MAPD2-12.html', local: 'Sala de Aula' },
+                        { data: '13/11', conteudo: 'Casos - Foco em Imunoterapia e Novas Abordagens em Câncer', link: 'MAPD2-13.html', local: 'Laboratório de Informática' },
+                        { data: '27/11', conteudo: 'Oficina Prática: Integração de Casos Clínicos', link: 'MAPD2-14.html', local: 'Laboratório de Informática' },
+                        { data: '29/11', conteudo: 'Avaliação Integrada (A2)', link: 'MAPD2-AV2-Revisao.html', local: 'A definir' },
+                        { data: '04/12', conteudo: 'Reposições', link: 'MAPD2-REPO-Revisao.html', local: 'Laboratório de Informática' },
+                        { data: '11/12', conteudo: 'Avaliação Final', link: 'MAPD2-AF-Revisao.html', local: 'Laboratório de Informática' },
+                    ],
+                    'd': [
+                        { data: '06/08', conteudo: 'Apresentação do Componente; Resgate de conteúdos', link: 'MAPD2-1.html', local: 'Sala de Aula' },
+                        { data: '13/08', conteudo: 'Casos Clínicos - Foco em Bactérias', link: 'MAPD2-2.html', local: 'Laboratório de Informática' },
+                        { data: '20/08', conteudo: 'Habilidades Laboratoriais de Microbiologia (Grupos 1 e 2)', link: 'MAPD2-3.html', local: 'Laboratório de Microbiologia (Bloco G)' },
+                        { data: '27/08', conteudo: 'Habilidades Laboratoriais de Microbiologia (Grupos 3 e 4)', link: 'MAPD2-3.html', local: 'Laboratório de Microbiologia (Bloco G)' },
+                        { data: '03/09', conteudo: '1ª Avaliação de Aprendizagem (AV1)', link: 'MAPD2-AV1-Revisao.html', local: 'Laboratório de Informática' },
+                        { data: '10/09', conteudo: 'Princípio e Interpretação de Antibiograma', link: 'MAPD2-4.html', local: 'Laboratório de Informática' },
+                        { data: '17/09', conteudo: 'Casos Clínicos - Foco em Vírus e Fungos', link: 'MAPD2-5.html', local: 'Laboratório de Informática' },
+                        { data: '24/09', conteudo: 'Parasitas de Interesse Clínico', link: 'MAPD2-6.html', local: 'Sala de Aula' },
+                        { data: '01/10', conteudo: 'Microscopia de Parasitas e Interpretação de Achados', link: 'MAPD2-7.html', local: 'Laboratório / Sala de Microscopia (Bloco G)' },
+                        { data: '08/10', conteudo: 'Casos - Foco em Hipersensibilidade e Imunodeficiências', link: 'MAPD2-8.html', local: 'Laboratório de Informática' },
+                        { data: '25/10 (sáb)', conteudo: 'Autoimunidade', link: 'MAPD2-9.html', local: 'Sala de Aula' },
+                        { data: '29/10', conteudo: 'Imunologia de Transplantes', link: 'MAPD2-10.html', local: 'Laboratório de Informática' },
+                        { data: '05/11', conteudo: 'Biologia do Câncer', link: 'MAPD2-11.html', local: 'Sala de Aula' },
+                        { data: '08/11 (sáb)', conteudo: 'Imunidade Antitumoral', link: 'MAPD2-12.html', local: 'Sala de Aula' },
+                        { data: '12/11', conteudo: 'Casos - Foco em Imunoterapia e Novas Abordagens em Câncer', link: 'MAPD2-13.html', local: 'Laboratório de Informática' },
+                        { data: '26/11', conteudo: 'Oficina Prática: Integração de Casos Clínicos', link: 'MAPD2-14.html', local: 'Laboratório de Informática' },
+                        { data: '29/11', conteudo: 'Avaliação Integrada (A2)', link: 'MAPD2-AV2-Revisao.html', local: 'A definir' },
+                        { data: '03/12', conteudo: 'Reposições', link: 'MAPD2-REPO-Revisao.html', local: 'Laboratório de Informática' },
+                        { data: '10/12', conteudo: 'Avaliação Final', link: 'MAPD2-AF-Revisao.html', local: 'Laboratório de Informática' },
+                    ]
+                }
+            }
+        };
+
+        function switchScreen(screenId) {
+            document.getElementById('home-screen').classList.add('hidden');
+            document.getElementById('course-menu-screen').classList.add('hidden');
+            document.getElementById('content-screen').classList.add('hidden');
+            
+            if (document.getElementById(screenId)) {
+                document.getElementById(screenId).classList.remove('hidden');
+            }
+        }
+
+        function showCourseMenu(course) {
+            currentCourse = course;
+            previousScreen = 'home-screen';
+            document.getElementById('course-title').innerText = data[course].title;
+            switchScreen('course-menu-screen');
+        }
+
+        function showContent(contentType) {
+            const contentDisplay = document.getElementById('content-display');
+            previousScreen = 'course-menu-screen';
+            
+            if (contentType === 'plano-ensino') {
+                contentDisplay.innerHTML = data[currentCourse].planoEnsino;
+            } else if (contentType === 'rubricas') {
+                contentDisplay.innerHTML = data[currentCourse].rubricas;
+            } else if (contentType === 'cronogramas') {
+                if (currentCourse === 'mapd1') {
+                    showSchedule('unica');
+                    return; 
+                } else {
+                    contentDisplay.innerHTML = `
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Selecione a Turma</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button onclick="showSchedule('a')" class="btn bg-blue-500 text-white font-bold py-3 px-6 rounded-lg">Turma A</button>
+                            <button onclick="showSchedule('b')" class="btn bg-green-500 text-white font-bold py-3 px-6 rounded-lg">Turma B</button>
+                            <button onclick="showSchedule('c')" class="btn bg-yellow-500 text-white font-bold py-3 px-6 rounded-lg">Turma C</button>
+                            <button onclick="showSchedule('d')" class="btn bg-red-500 text-white font-bold py-3 px-6 rounded-lg">Turma D</button>
+                        </div>
+                    `;
+                }
+            }
+            
+            document.getElementById('content-back-btn').onclick = () => goBack('course-menu-screen');
+            switchScreen('content-screen');
+        }
+
+        function showSchedule(turma) {
+            const scheduleData = data[currentCourse].cronogramas[turma];
+            const folder = currentCourse === 'mapd1' ? 'mapd1' : 'mapd2';
+            
+            let tableRows = scheduleData.map(aula => `
+                <tr>
+                    <td class="font-medium text-gray-800">${aula.data}</td>
+                    <td>
+                        ${aula.link ? 
+                            `<a href="/${folder}/${aula.link}" target="_blank" class="schedule-link">${aula.conteudo} <i class="fas fa-external-link-alt text-xs ml-1"></i></a>` : 
+                            aula.conteudo
+                        }
+                    </td>
+                    <td class="text-gray-600">${aula.local}</td>
+                </tr>
+            `).join('');
+
+            const scheduleHTML = `
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Cronograma - ${currentCourse.toUpperCase()} ${turma !== 'unica' ? `- Turma ${turma.toUpperCase()}` : ''}</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full schedule-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Conteúdo da Aula</th>
+                                <th>Local</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            document.getElementById('content-display').innerHTML = scheduleHTML;
+            
+            if (currentCourse === 'mapd1') {
+                 document.getElementById('content-back-btn').onclick = () => goBack('course-menu-screen');
+            } else {
+                 document.getElementById('content-back-btn').onclick = () => showContent('cronogramas');
+            }
+
+            switchScreen('content-screen');
+        }
+
+        function goBack(targetScreen) {
+            switchScreen(targetScreen);
+        }
+
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            button.classList.toggle('active');
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            } 
+        }
+
+    </script>
+</body>
+</html>
