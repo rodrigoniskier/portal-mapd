@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-2 | Aula 9: Imunopatologia: Hipersensibilidade e Imunodeficiências</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-fundo-ia: #e7f5ff;
+            --cor-borda-ia: #b3d7f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+        
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+        
+        /* Momento IA */
+        .momento-ia {
+            background-color: var(--cor-fundo-ia);
+            border: 1px solid var(--cor-borda-ia);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        .momento-ia h4 {
+            color: var(--cor-azul);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .momento-ia .prompt-ia {
+            background-color: #fff;
+            border: 1px dashed var(--cor-azul);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            margin: 15px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            transition: box-shadow 0.3s ease;
+            max-width: 600px;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>⚠️ MAPD-2</h1>
+            <p>Aula 9: Imunopatologia</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#objetivos" class="active"><span class="icon">🎯</span> Objetivos da Aula</a></li>
+                <li><a href="#hipersensibilidade"><span class="icon">💥</span> Reações de Hipersensibilidade</a></li>
+                <li><a href="#imunodeficiencias"><span class="icon">🛡️</span> Imunodeficiências</a></li>
+                <li><a href="#casos"><span class="icon">🔍</span> Casos Clínicos e IA</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>⚠️ Aula 9: Imunopatologia: Hipersensibilidade e Imunodeficiências</h1>
+            <p class="subtitulo">Quando a resposta imune causa a doença.</p>
+        </header>
+
+        <section id="objetivos" class="content-section active">
+            <h2>🎯 1. Objetivos da Aula</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Lado Sombrio da Imunidade</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A imunopatologia é o estudo das doenças causadas por uma resposta imune inadequada ou excessiva. Nesta aula, vamos explorar dois grandes grupos de disfunções imunes: as reações de hipersensibilidade (respostas exageradas) e as imunodeficiências (respostas deficientes).</p>
+                        <h4>Ao final desta sessão, você será capaz de:</h4>
+                        <ul>
+                            <li><strong>Classificar</strong> e <strong>descrever</strong> os mecanismos moleculares e celulares dos quatro tipos de reações de hipersensibilidade.</li>
+                            <li><strong>Diferenciar</strong> imunodeficiências primárias (congênitas) de secundárias (adquiridas).</li>
+                            <li><strong>Analisar</strong> casos clínicos de alergia e AIDS, correlacionando os achados com a imunopatologia subjacente.</li>
+                            <li><strong>Utilizar</strong> a IA para aprofundar o entendimento dos mecanismos imunopatológicos.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="hipersensibilidade" class="content-section">
+            <h2>💥 2. Reações de Hipersensibilidade</h2>
+            <p>São respostas imunes exageradas ou inapropriadas a antígenos que, na maioria das pessoas, não causariam problemas. São classificadas em quatro tipos (I a IV) com base no mecanismo imunológico envolvido.</p>
+            <div class="acordeao"><div class="acordeao-titulo">Tipo I: Imediata (Alérgica)</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p><strong>Mecanismo Molecular:</strong> Mediada por anticorpos <strong>IgE</strong>. A sensibilização envolve uma resposta <strong>Th2</strong> que produz <strong>IL-4</strong> e <strong>IL-13</strong>, induzindo os linfócitos B a trocarem de classe para IgE. A IgE se liga a receptores de alta afinidade (<strong>FcεRI</strong>) em mastócitos e basófilos. Na reexposição, o alérgeno faz a <strong>ligação cruzada</strong> de duas moléculas de IgE, ativando uma cascata de sinalização via tirosina quinases (Lyn, Syk) que culmina no influxo de Ca²⁺. Este é o gatilho para a <strong>degranulação</strong>, liberando mediadores pré-formados (<strong>histamina, triptase</strong>) e ativando a Fosfolipase A2 para a síntese de novo de <strong>leucotrienos e prostaglandinas</strong>.</p><p><strong>Manifestações Clínicas:</strong> Anafilaxia, rinite alérgica, asma, urticária.</p><div class="imagem-container" data-src="imagem31.jpg" data-legenda="Mecanismo da Hipersensibilidade Tipo I: sensibilização com produção de IgE e degranulação de mastócitos na reexposição."><img src="imagem31.jpg" alt="Hipersensibilidade Tipo I" onerror="this.onerror=null;this.src='https://placehold.co/800x500/FFD700/212529?text=Hipersensibilidade+Tipo+I';"><p>Clique para ampliar: Mecanismo da Alergia.</p></div></div></div></div>
+            <div class="acordeao"><div class="acordeao-titulo">Tipo II: Mediada por Anticorpos (Citotóxica)</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p><strong>Mecanismo Molecular:</strong> Mediada por <strong>IgG ou IgM</strong> contra antígenos de superfície celular ou matriz. A lesão ocorre por: 1) <strong>Opsonização:</strong> A porção Fc do anticorpo é reconhecida por receptores FcγR em fagócitos, levando à fagocitose. 2) <strong>Inflamação:</strong> O complexo antígeno-anticorpo ativa a via clássica do complemento, gerando <strong>C3a e C5a</strong> (anafilatoxinas que recrutam neutrófilos) e o <strong>Complexo de Ataque à Membrana (MAC, C5b-9)</strong>, que lisa a célula. 3) <strong>Disfunção Celular:</strong> Anticorpos podem atuar como agonistas de receptores (Doença de Graves, mimetizando o TSH) ou antagonistas (Miastenia Gravis, bloqueando o receptor de acetilcolina).</p><p><strong>Exemplos Clínicos:</strong> Anemia hemolítica autoimune, reações transfusionais, febre reumática.</p><div class="imagem-container" data-src="imagem32.jpg" data-legenda="Mecanismos da Hipersensibilidade Tipo II: opsonização, inflamação mediada pelo complemento e disfunção celular."><img src="imagem32.jpg" alt="Hipersensibilidade Tipo II" onerror="this.onerror=null;this.src='https://placehold.co/800x500/FFD700/212529?text=Hipersensibilidade+Tipo+II';"><p>Clique para ampliar: Mecanismos da Citotoxicidade.</p></div></div></div></div>
+            <div class="acordeao"><div class="acordeao-titulo">Tipo III: Mediada por Imunocomplexos</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p><strong>Mecanismo Molecular:</strong> Causada pela deposição de complexos <strong>antígeno-anticorpo (imunocomplexos)</strong> solúveis. Quando há um excesso de antígeno, formam-se imunocomplexos pequenos que não são eficientemente removidos pelos fagócitos e se depositam em locais de alta pressão e filtração (glomérulos renais, articulações, pequenos vasos). A porção Fc dos anticorpos no complexo ativa a via clássica do complemento, gerando <strong>C5a</strong>, um potente quimioatraente para <strong>neutrófilos</strong>. Os neutrófilos tentam fagocitar os complexos depositados ("fagocitose frustrada"), liberando enzimas lisossômicas e espécies reativas de oxigênio que causam <strong>vasculite</strong> e dano tecidual.</p><p><strong>Exemplos Clínicos:</strong> Lúpus Eritematoso Sistêmico (LES), glomerulonefrite pós-estreptocócica.</p><div class="imagem-container" data-src="imagem33.jpg" data-legenda="Mecanismo da Hipersensibilidade Tipo III: formação e deposição de imunocomplexos, ativação do complemento e inflamação (vasculite)."><img src="imagem33.jpg" alt="Hipersensibilidade Tipo III" onerror="this.onerror=null;this.src='https://placehold.co/800x500/FFD700/212529?text=Hipersensibilidade+Tipo+III';"><p>Clique para ampliar: Doença por Imunocomplexos.</p></div></div></div></div>
+            <div class="acordeao"><div class="acordeao-titulo">Tipo IV: Mediada por Células T (Tardia)</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p><strong>Mecanismo Molecular:</strong> Mediada por <strong>Linfócitos T</strong>, com uma reação que se desenvolve em 24-48 horas. 1) <strong>Hipersensibilidade do Tipo Tardia (DTH):</strong> <strong>Linfócitos T CD4+</strong> (principalmente Th1), previamente sensibilizados, são reativados por um antígeno apresentado por APCs. Eles secretam citocinas, principalmente <strong>IFN-γ</strong>, que superativa os macrófagos, e <strong>TNF</strong>, que promove a inflamação. Essa ativação crônica de macrófagos leva à formação de granulomas. 2) <strong>Citotoxicidade Celular Direta:</strong> <strong>Linfócitos T CD8+ (CTLs)</strong> reconhecem antígenos (virais ou próprios) apresentados em MHC Classe I e matam as células-alvo diretamente, liberando <strong>perforina e granzimas</strong> que induzem a apoptose.</p><p><strong>Exemplos Clínicos:</strong> Dermatite de contato, teste PPD, formação de granulomas na tuberculose, diabetes mellitus tipo 1.</p><div class="imagem-container" data-src="imagem34.jpg" data-legenda="Mecanismos da Hipersensibilidade Tipo IV: inflamação mediada por T CD4+ e citotoxicidade mediada por T CD8+."><img src="imagem34.jpg" alt="Hipersensibilidade Tipo IV" onerror="this.onerror=null;this.src='https://placehold.co/800x500/FFD700/212529?text=Hipersensibilidade+Tipo+IV';"><p>Clique para ampliar: Imunidade Celular Tardia.</p></div></div></div></div>
+        </section>
+
+        <section id="imunodeficiencias" class="content-section">
+            <h2>🛡️ 3. Imunodeficiências</h2>
+            <p>São distúrbios nos quais o sistema imune está deficiente, tornando o indivíduo mais suscetível a infecções.</p>
+            <div class="acordeao"><div class="acordeao-titulo">Imunodeficiências Primárias (Congênitas)</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>São doenças genéticas raras resultantes de mutações em genes envolvidos na maturação ou função do sistema imune. Elas podem afetar a imunidade humoral, celular ou inata.</p><ul><li><strong>Defeitos na Imunidade Humoral:</strong> A <strong>Agamaglobulinemia Ligada ao X (Doença de Bruton)</strong> é causada por mutações no gene da <strong>Tirosina Quinase de Bruton (BTK)</strong>, essencial para a sinalização do pré-BCR. Isso causa uma parada na maturação dos linfócitos B, resultando em ausência de anticorpos e infecções recorrentes por bactérias encapsuladas.</li><li><strong>Defeitos na Imunidade Celular:</strong> A <strong>Síndrome de DiGeorge</strong> é causada por uma deleção no cromossomo 22q11.2, que afeta o desenvolvimento do timo. A aplasia ou hipoplasia tímica leva a uma deficiência profunda de linfócitos T, tornando os pacientes suscetíveis a infecções virais e fúngicas.</li><li><strong>Imunodeficiências Combinadas Graves (SCID):</strong> Um grupo heterogêneo de doenças que afetam tanto as células T quanto as B. A forma mais comum é a ligada ao X, causada por mutação no gene da <strong>cadeia gama comum (γc)</strong> de receptores de citocinas (para IL-2, IL-4, IL-7, etc.), essencial para a proliferação e sobrevivência dos linfócitos.</li></ul></div></div></div>
+            <div class="acordeao"><div class="acordeao-titulo">Imunodeficiências Secundárias (Adquiridas)</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>São muito mais comuns e ocorrem como resultado de outras condições (desnutrição, câncer, drogas imunossupressoras). A causa mais importante em todo o mundo é a <strong>Síndrome da Imunodeficiência Acquirida (AIDS)</strong>.</p><p><strong>Patogênese Molecular do HIV:</strong> O HIV é um retrovírus que infecta preferencialmente <strong>Linfócitos T CD4+</strong>. A glicoproteína de envelope <strong>gp120</strong> liga-se ao receptor CD4 e a um co-receptor de quimiocina (CCR5 ou CXCR4). Isso expõe a glicoproteína <strong>gp41</strong>, que medeia a fusão do envelope viral com a membrana da célula. Uma vez no citoplasma, a enzima <strong>transcriptase reversa</strong> converte o RNA viral em DNA, que é integrado ao genoma da célula hospedeira pela enzima <strong>integrase</strong>. A replicação viral contínua e a ativação imune crônica levam à depleção progressiva das células T CD4+ por múltiplos mecanismos, incluindo efeitos citopáticos diretos e indução de apoptose.</p></div></div></div>
+        </section>
+
+        <section id="casos" class="content-section">
+            <h2>🔍 4. Casos Clínicos e Interação com IA</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso Clínico 1: Reação Alérgica Grave</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Apresentação do Caso:</h4>
+                        <p>Um homem de 35 anos, após ser picado por uma abelha, desenvolve rapidamente urticária generalizada, inchaço dos lábios e pálpebras (angioedema), dificuldade para respirar (broncoespasmo) e hipotensão.</p>
+                        <div class="momento-ia">
+                            <h4>🤖 Momento de Interação com IA (15 min)</h4>
+                            <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                            <div class="prompt-ia">"Descreva a cascata molecular que ocorre na degranulação de um mastócito durante uma reação anafilática (hipersensibilidade tipo I). Explique como a ligação cruzada de anticorpos IgE pelo alérgeno ativa as vias de sinalização intracelular, levando à liberação imediata de mediadores pré-formados (histamina, triptase) e à síntese de novo de mediadores lipídicos (prostaglandinas, leucotrienos)."</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Feedback da Interação com IA (Caso 1)</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Resposta Esperada e Pontos de Discussão:</h4>
+                        <p>A IA deve explicar que a ligação do alérgeno a duas ou mais moléculas de IgE na superfície do mastócito (ligação cruzada) aproxima os receptores FcεRI. Isso ativa tirosina quinases (como Lyn e Syk), que fosforilam proteínas adaptadoras, desencadeando uma cascata de sinalização que culmina em um aumento maciço do cálcio intracelular. O cálcio é o gatilho para a fusão dos grânulos com a membrana plasmática e a liberação de <strong>histamina</strong> (que causa vasodilatação, aumento da permeabilidade e broncoconstrição). Simultaneamente, a mesma cascata ativa a enzima Fosfolipase A2, que inicia a produção de <strong>leucotrienos e prostaglandinas</strong> a partir do ácido araquidônico, mediadores que sustentam e amplificam a resposta inflamatória.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso Clínico 2: Imunodeficiência Adquirida</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Apresentação do Caso:</h4>
+                        <p>Paciente de 38 anos, diagnosticado com HIV há 10 anos, com má adesão ao tratamento antirretroviral. É internado com febre, tosse seca e dispneia. A contagem de linfócitos T CD4+ é de 80 células/mm³. A radiografia de tórax sugere pneumonia por *Pneumocystis jirovecii*.</p>
+                         <div class="momento-ia">
+                            <h4>🤖 Momento de Interação com IA (15 min)</h4>
+                            <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                            <div class="prompt-ia">"Atuando como um professor de imunologia, crie uma tabela que correlacione diferentes níveis de contagem de linfócitos T CD4+ (ex: >500, 200-500, <200, <50) com o risco de desenvolvimento de infecções oportunistas específicas em pacientes com HIV/AIDS. Inclua exemplos como tuberculose, pneumonia por Pneumocystis, toxoplasmose cerebral e infecções por MAC."</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Feedback da Interação com IA (Caso 2)</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Resposta Esperada e Pontos de Discussão:</h4>
+                        <p>A IA deve gerar uma tabela estratificando o risco. O ponto de corte mais crítico é <strong><200 células/mm³</strong>, que define a AIDS e marca o início do risco para as infecções oportunistas mais clássicas, como a <strong>pneumonia por *Pneumocystis jirovecii* (PCP)</strong> e a reativação da toxoplasmose. Com contagens <strong><50 células/mm³</strong>, o risco de infecções graves por citomegalovírus (CMV) e pelo complexo *Mycobacterium avium* (MAC) aumenta drasticamente. A tabela deve ilustrar claramente como a depleção progressiva dos linfócitos T CD4+, os "maestros" da imunidade, leva a uma perda gradual e previsível da capacidade de controlar diferentes tipos de patógenos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 2</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+        });
+    </script>
+</body>
+</html>

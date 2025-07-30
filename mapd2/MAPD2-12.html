@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-2 | Aula 12: Biologia do Câncer</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-fundo-ia: #e7f5ff;
+            --cor-borda-ia: #b3d7f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+        
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+        
+        /* Momento IA */
+        .momento-ia {
+            background-color: var(--cor-fundo-ia);
+            border: 1px solid var(--cor-borda-ia);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        .momento-ia h4 {
+            color: var(--cor-azul);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .momento-ia .prompt-ia {
+            background-color: #fff;
+            border: 1px dashed var(--cor-azul);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            margin: 15px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            transition: box-shadow 0.3s ease;
+            max-width: 600px;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>🧬 MAPD-2</h1>
+            <p>Aula 12: Biologia do Câncer</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#objetivos" class="active"><span class="icon">🎯</span> Objetivos da Aula</a></li>
+                <li><a href="#hallmarks"><span class="icon">🔖</span> Os Hallmarks do Câncer</a></li>
+                <li><a href="#mecanismos"><span class="icon">⚙️</span> Mecanismos Moleculares</a></li>
+                <li><a href="#imunovigilancia"><span class="icon">🛡️</span> Imunovigilância e Evasão</a></li>
+                <li><a href="#casos"><span class="icon">🔍</span> Cenário Clínico e IA</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>🧬 Aula 12: Biologia do Câncer</h1>
+            <p class="subtitulo">Os princípios moleculares da transformação maligna.</p>
+        </header>
+
+        <section id="objetivos" class="content-section active">
+            <h2>🎯 1. Objetivos da Aula</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Decifrando a Oncogênese</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>O câncer é uma doença genética, resultante do acúmulo de mutações em genes que regulam o crescimento e a diferenciação celular. Esta aula explora os princípios fundamentais que governam a transformação de uma célula normal em uma célula maligna.</p>
+                        <h4>Ao final desta sessão, você será capaz de:</h4>
+                        <ul>
+                            <li><strong>Definir</strong> e <strong>descrever</strong> os "Hallmarks of Cancer" (Marcas do Câncer).</li>
+                            <li><strong>Diferenciar</strong> proto-oncogenes de genes supressores de tumor, exemplificando os principais.</li>
+                            <li><strong>Explicar</strong> os mecanismos moleculares de evasão da apoptose, angiogênese sustentada e invasão metastática.</li>
+                            <li><strong>Compreender</strong> o conceito de imunovigilância e as estratégias de evasão imune dos tumores.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="hallmarks" class="content-section">
+            <h2>🔖 2. Os Hallmarks do Câncer</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">As Capacidades Adquiridas das Células Cancerosas</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>O câncer não surge de uma única alteração, mas do acúmulo de mutações que conferem à célula um conjunto de capacidades funcionais. Essas capacidades, propostas por Hanahan e Weinberg, são conhecidas como os "Hallmarks of Cancer" e fornecem um arcabouço lógico para entender a doença.</p>
+                        <h4>Os principais hallmarks incluem:</h4>
+                        <ul>
+                            <li>Autossuficiência em sinais de crescimento.</li>
+                            <li>Insensibilidade a sinais de parada de crescimento.</li>
+                            <li>Evasão da apoptose (morte celular programada).</li>
+                            <li>Potencial de replicação ilimitado (imortalidade).</li>
+                            <li>Angiogênese sustentada (formação de novos vasos).</li>
+                            <li>Invasão tecidual e metástase.</li>
+                        </ul>
+                        <div class="imagem-container" data-src="imagem41.jpg" data-legenda="Diagrama dos Hallmarks of Cancer, ilustrando as capacidades que uma célula normal deve adquirir para se tornar maligna.">
+                            <img src="imagem41.jpg" alt="Hallmarks of Cancer" onerror="this.onerror=null;this.src='https://placehold.co/800x500/0057B8/FFFFFF?text=Hallmarks+of+Cancer';">
+                            <p>Clique para ampliar: Os Hallmarks do Câncer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mecanismos" class="content-section">
+            <h2>⚙️ 3. Mecanismos Moleculares da Oncogênese</h2>
+            <div class="acordeao"><div class="acordeao-titulo">Oncogenes e Genes Supressores de Tumor</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>A base genética do câncer reside em mutações em duas classes principais de genes:</p><ul><li><strong>Proto-oncogenes:</strong> São genes normais que promovem o crescimento e a divisão celular. Mutações que os ativam de forma constitutiva (independente de sinal) os convertem em <strong>oncogenes</strong>. Eles agem como um "acelerador preso". Ex: <strong>RAS</strong>, MYC, HER2.</li><li><strong>Genes Supressores de Tumor:</strong> São genes que inibem o crescimento celular, reparam o DNA ou induzem a apoptose. Mutações que inativam esses genes removem os "freios" da proliferação celular. Geralmente, ambas as cópias do gene (alelos) precisam ser inativadas. Ex: <strong>TP53</strong> (o "guardião do genoma"), <strong>RB</strong> (controla o ciclo celular), BRCA1/2.</li></ul><div class="imagem-container" data-src="imagem42.jpg" data-legenda="Analogia do "acelerador e freio" para oncogenes (acelerador preso) e genes supressores de tumor (freios defeituosos)."><img src="imagem42.jpg" alt="Oncogenes e Supressores" onerror="this.onerror=null;this.src='https://placehold.co/800x500/28A745/FFFFFF?text=Oncogenes+e+Supressores';"><p>Clique para ampliar: Aceleradores e Freios do Câncer.</p></div></div></div></div>
+            <div class="acordeao"><div class="acordeao-titulo">Evasão da Apoptose</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>Células normais com dano irreparável ao DNA são eliminadas por apoptose, um processo controlado pelo gene supressor de tumor <strong>TP53</strong>. Células cancerosas desenvolvem mecanismos para evadir essa morte.</p><p><strong>Mecanismo Molecular:</strong> O mecanismo mais comum é a <strong>mutação inativadora do TP53</strong>. Outra estratégia é a superexpressão de proteínas anti-apoptóticas da família <strong>BCL-2</strong>, que bloqueiam a liberação de citocromo c pela mitocôndria, impedindo a ativação da cascata de caspases.</p></div></div></div>
+            <div class="acordeao"><div class="acordeao-titulo">Angiogênese Sustentada</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>Para crescer além de 1-2 mm, um tumor precisa de seu próprio suprimento sanguíneo. As células tumorais adquirem a capacidade de induzir a formação de novos vasos sanguíneos, um processo chamado <strong>angiogênese</strong>.</p><p><strong>Mecanismo Molecular:</strong> Tumores secretam fatores pró-angiogênicos, sendo o principal o <strong>Fator de Crescimento Endotelial Vascular (VEGF)</strong>. O VEGF se liga a receptores nas células endoteliais dos vasos próximos, estimulando sua proliferação e migração para formar novos capilares que irrigarão o tumor.</p><div class="imagem-container" data-src="imagem43.jpg" data-legenda="Diagrama mostrando um tumor secretando VEGF para induzir a formação de novos vasos sanguíneos a partir de um vaso preexistente."><img src="imagem43.jpg" alt="Angiogênese Tumoral" onerror="this.onerror=null;this.src='https://placehold.co/800x500/FFD700/212529?text=Angiogênese+Tumoral';"><p>Clique para ampliar: Angiogênese Tumoral.</p></div></div></div></div>
+            <div class="acordeao"><div class="acordeao-titulo">Invasão e Metástase</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>A metástase é a disseminação do câncer para locais distantes e é a principal causa de morte por câncer. É um processo multifásico e ineficiente.</p><p><strong>Cascata Molecular da Invasão:</strong> 1) <strong>Perda da adesão célula-célula:</strong> Inativação da <strong>E-caderina</strong>, uma molécula de adesão que mantém as células epiteliais unidas. 2) <strong>Degradação da Matriz Extracelular (MEC):</strong> Células tumorais secretam proteases, como as <strong>metaloproteinases de matriz (MMPs)</strong>, que digerem a membrana basal e outros componentes da MEC. 3) <strong>Migração e Invasão:</strong> Alterações no citoesqueleto permitem que a célula se mova através da MEC degradada para invadir vasos sanguíneos ou linfáticos (intravasamento), viajar pela circulação, e então sair em um novo tecido (extravasamento) para formar uma micrometástase.</p><div class="imagem-container" data-src="imagem44.jpg" data-legenda="Esquema da cascata metastática: invasão local, intravasamento, transporte, extravasamento e colonização."><img src="imagem44.jpg" alt="Cascata Metastática" onerror="this.onerror=null;this.src='https://placehold.co/800x500/dc3545/FFFFFF?text=Cascata+Metastática';"><p>Clique para ampliar: Passos da Metástase.</p></div></div></div></div>
+        </section>
+
+        <section id="imunovigilancia" class="content-section">
+            <h2>🛡️ 4. Imunovigilância e Evasão Imune</h2>
+            <div class="acordeao"><div class="acordeao-titulo">Como o Sistema Imune Combate o Câncer?</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>O conceito de <strong>imunovigilância</strong> propõe que o sistema imune patrulha o corpo e elimina células transformadas antes que elas formem tumores clinicamente aparentes. A principal célula efetora nesta resposta é o <strong>Linfócito T CD8+ citotóxico (CTL)</strong>, que reconhece antígenos tumorais (proteínas mutadas ou superexpressas) apresentados em moléculas de <strong>MHC Classe I</strong> e mata as células tumorais.</p></div></div></div>
+             <div class="acordeao"><div class="acordeao-titulo">Mecanismos de Evasão Imune pelo Tumor</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>Tumores que conseguem progredir são aqueles que desenvolveram mecanismos para escapar da destruição imune.</p><ul><li><strong>Perda da Apresentação de Antígeno:</strong> Mutações que levam à perda ou diminuição da expressão de moléculas de MHC Classe I, tornando a célula tumoral "invisível" para os CTLs.</li><li><strong>Produção de Citocinas Imunossupressoras:</strong> Tumores podem secretar citocinas como <strong>TGF-β</strong> e <strong>IL-10</strong>, que inibem a função das células T.</li><li><strong>Expressão de Inibidores de Checkpoint Imunológico:</strong> Células tumorais podem expressar ligantes como o <strong>PD-L1</strong>, que se liga ao receptor inibitório <strong>PD-1</strong> nos linfócitos T ativados, "desligando" a resposta antitumoral. Este é o principal alvo das modernas imunoterapias.</li></ul></div></div></div>
+        </section>
+
+        <section id="casos" class="content-section">
+            <h2>🔍 5. Cenário Clínico e Interação com IA</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso Clínico: Câncer de Pulmão</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Apresentação do Caso:</h4>
+                        <p>Paciente de 65 anos, tabagista de longa data, é diagnosticado com adenocarcinoma de pulmão metastático. A biópsia molecular do tumor revela uma <strong>mutação ativadora no gene KRAS</strong>.</p>
+                        <div class="momento-ia">
+                            <h4>🤖 Momento de Interação com IA (15 min)</h4>
+                            <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                            <div class="prompt-ia">"Atuando como um oncologista molecular, explique o papel do gene KRAS como um proto-oncogene. Descreva a via de sinalização MAPK (RAS-RAF-MEK-ERK) que ele controla, e como uma mutação ativadora no KRAS leva à proliferação celular descontrolada, tornando-o um 'acelerador preso'. Por que as mutações no KRAS foram historicamente consideradas 'não-drogáveis' (undruggable)?"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Feedback da Interação com IA</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Resposta Esperada e Pontos de Discussão:</h4>
+                        <p>A IA deve explicar que <strong>KRAS</strong> é uma pequena proteína G que funciona como um interruptor molecular. Quando ativada por um fator de crescimento, ela liga GTP e ativa a cascata de quinases <strong>MAPK (RAS-RAF-MEK-ERK)</strong>, que por sua vez ativa fatores de transcrição que promovem a proliferação celular. Normalmente, a KRAS hidrolisa o GTP a GDP, desligando-se. Mutações oncogênicas (como G12C) "travam" a KRAS no estado ligado a GTP, mantendo a via de sinalização permanentemente ativa, mesmo na ausência de fatores de crescimento.</p>
+                        <p>Historicamente, foi difícil desenvolver inibidores para KRAS devido à sua superfície lisa e à altíssima afinidade pelo GTP, tornando o bloqueio competitivo quase impossível. Apenas recentemente foram desenvolvidos inibidores que se ligam de forma covalente a formas mutantes específicas de KRAS, representando um grande avanço na terapia-alvo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 2</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+        });
+    </script>
+</body>
+</html>

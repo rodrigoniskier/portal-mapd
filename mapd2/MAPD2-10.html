@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-2 | Aula 10: Autoimunidade</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-fundo-ia: #e7f5ff;
+            --cor-borda-ia: #b3d7f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+        
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+        
+        /* Tabela Resumo */
+        .tabela-resumo-container {
+            overflow-x: auto;
+        }
+        .tabela-resumo {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px var(--cor-sombra);
+            min-width: 800px;
+        }
+        .tabela-resumo th, .tabela-resumo td {
+            border: 1px solid var(--cor-borda);
+            padding: 12px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .tabela-resumo th {
+            background-color: var(--cor-azul);
+            color: white;
+            font-size: 1rem;
+        }
+        .tabela-resumo tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .tabela-resumo td:first-child {
+            font-weight: bold;
+        }
+
+        /* Momento IA */
+        .momento-ia {
+            background-color: var(--cor-fundo-ia);
+            border: 1px solid var(--cor-borda-ia);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        .momento-ia h4 {
+            color: var(--cor-azul);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .momento-ia .prompt-ia {
+            background-color: #fff;
+            border: 1px dashed var(--cor-azul);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            margin: 15px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            transition: box-shadow 0.3s ease;
+            max-width: 600px;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>🧩 MAPD-2</h1>
+            <p>Aula 10: Autoimunidade</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#objetivos" class="active"><span class="icon">🎯</span> Objetivos da Aula</a></li>
+                <li><a href="#tolerancia"><span class="icon">⚖️</span> Tolerância Imunológica</a></li>
+                <li><a href="#mecanismos"><span class="icon">⚙️</span> Mecanismos da Autoimunidade</a></li>
+                <li><a href="#doencas"><span class="icon">🧬</span> Doenças Autoimunes Protótipo</a></li>
+                <li><a href="#tabela-resumo"><span class="icon">📊</span> Tabela Resumo</a></li>
+                <li><a href="#casos"><span class="icon">🔍</span> Casos Clínicos e IA</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>🧩 Aula 10: Autoimunidade</h1>
+            <p class="subtitulo">Quando o sistema imune ataca o próprio corpo.</p>
+        </header>
+
+        <section id="objetivos" class="content-section active">
+            <h2>🎯 1. Objetivos da Aula</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Compreendendo a Quebra da Autotolerância</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A autoimunidade é uma falha nos mecanismos de <strong>autotolerância</strong>, que leva o sistema imune a reconhecer e atacar componentes do próprio corpo (autoantígenos). Esta aula explora os fundamentos moleculares e celulares que levam a essa quebra de tolerância e as manifestações clínicas resultantes.</p>
+                        <h4>Ao final desta sessão, você será capaz de:</h4>
+                        <ul>
+                            <li><strong>Diferenciar</strong> tolerância central de tolerância periférica.</li>
+                            <li><strong>Explicar</strong> os principais fatores genéticos (ex: HLA) e ambientais (ex: infecções) que predispõem à autoimunidade.</li>
+                            <li><strong>Analisar</strong> os mecanismos efetores (reações de hipersensibilidade II, III e IV) que causam dano tecidual nas doenças autoimunes.</li>
+                            <li><strong>Correlacionar</strong> a fisiopatologia de doenças como Lúpus e Diabetes Tipo 1 com seus achados clínicos e laboratoriais.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="tolerancia" class="content-section">
+            <h2>⚖️ 2. Tolerância Imunológica: O Equilíbrio Essencial</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Tolerância Central: Educação nos Órgãos Linfoides Primários</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>É o principal mecanismo para eliminar linfócitos autorreativos. Ocorre durante a maturação dos linfócitos nos órgãos linfoides primários.</p>
+                        <ul>
+                            <li><strong>Linfócitos T (no Timo):</strong> A <strong>seleção negativa</strong> elimina por apoptose os timócitos que reconhecem com alta afinidade os autoantígenos apresentados por células no timo. O gene <strong>AIRE (Autoimmune Regulator)</strong> é crucial, pois promove a expressão de antígenos de tecidos periféricos no timo, permitindo a deleção de clones de células T específicas para esses antígenos.</li>
+                            <li><strong>Linfócitos B (na Medula Óssea):</strong> Células B que reconhecem fortemente autoantígenos são eliminadas por apoptose ou sofrem <strong>edição de receptor</strong>, um processo que altera seu BCR para que não seja mais autorreativo.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Tolerância Periférica: Controle na Periferia</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Alguns linfócitos autorreativos escapam da seleção central. A tolerância periférica os mantém sob controle nos tecidos periféricos.</p>
+                        <ul>
+                            <li><strong>Anergia:</strong> Inativação funcional de linfócitos que reconhecem seu antígeno sem a co-estimulação adequada (Sinal 2).</li>
+                            <li><strong>Supressão por Linfócitos T Reguladores (Tregs):</strong> Células T CD4+ especializadas (expressam o fator de transcrição <strong>FoxP3</strong>) que suprimem ativamente a ativação e proliferação de outros linfócitos autorreativos, secretando citocinas imunossupressoras como <strong>IL-10</strong> e <strong>TGF-β</strong>.</li>
+                            <li><strong>Deleção por Apoptose:</strong> Linfócitos T que são repetidamente estimulados podem expressar o receptor de morte <strong>Fas</strong>, tornando-se sensíveis à morte induzida por ativação via Fas-ligante (FasL).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mecanismos" class="content-section">
+            <h2>⚙️ 3. Mecanismos da Autoimunidade</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Fatores Genéticos: A Suscetibilidade Hereditária</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A autoimunidade tem um forte componente genético. Os genes mais fortemente associados são os do <strong>Complexo Principal de Histocompatibilidade (MHC)</strong>, também conhecido como Antígeno Leucocitário Humano (HLA) em humanos.</p>
+                        <p>Certas variantes de alelos HLA (ex: <strong>HLA-DR3, HLA-DR4</strong>) são mais eficientes em apresentar autoantígenos específicos aos linfócitos T, ou são menos eficientes em apresentar antígenos para a seleção negativa no timo, aumentando o risco de autoimunidade. Mutações em genes como <strong>AIRE</strong> e <strong>FoxP3</strong> também causam síndromes autoimunes monogênicas raras.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Fatores Ambientais: Os Gatilhos</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Fatores ambientais, principalmente infecções, são considerados os principais gatilhos que iniciam a autoimunidade em indivíduos geneticamente suscetíveis.</p>
+                        <ul>
+                            <li><strong>Mimetismo Molecular:</strong> Um peptídeo de um microrganismo é estruturalmente semelhante a um autoantígeno. A resposta imune contra o micróbio pode, então, "reagir de forma cruzada" e atacar o tecido próprio. Ex: Febre reumática, onde anticorpos contra a proteína M do *Streptococcus pyogenes* reagem com proteínas do miocárdio.</li>
+                            <li><strong>Ativação de Espectadores (Bystander Activation):</strong> A inflamação intensa durante uma infecção pode levar à ativação de APCs, que passam a expressar moléculas co-estimulatórias (Sinal 2). Essas APCs podem então ativar linfócitos T autorreativos anérgicos que estavam presentes no tecido.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="doencas" class="content-section">
+            <h2>🧬 4. Doenças Autoimunes Protótipo</h2>
+            <div class="acordeao"><div class="acordeao-titulo">Lúpus Eritematoso Sistêmico (LES)</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p><strong>Mecanismo:</strong> É o protótipo da doença autoimune sistêmica, caracterizada pela produção de uma vasta gama de <strong>autoanticorpos</strong>, especialmente os <strong>anticorpos antinucleares (FAN)</strong>. Acredita-se que a patogênese central envolva a apresentação de autoantígenos nucleares (DNA, histonas) liberados por células apoptóticas que não foram eficientemente removidas. A lesão tecidual é causada principalmente por reações de <strong>hipersensibilidade tipo III</strong> (deposição de imunocomplexos nos rins, pele, articulações) e <strong>tipo II</strong> (anticorpos contra hemácias, plaquetas).</p><div class="imagem-container" data-src="imagem35.jpg" data-legenda="Imunofluorescência indireta mostrando um padrão de FAN (Fator Antinuclear) homogêneo, típico do LES."><img src="imagem35.jpg" alt="FAN no LES" onerror="this.onerror=null;this.src='https://placehold.co/800x500/0057B8/FFFFFF?text=FAN+no+LES';"><p>Clique para ampliar: Teste de FAN.</p></div></div></div></div>
+            <div class="acordeao"><div class="acordeao-titulo">Diabetes Mellitus Tipo 1</div><div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p><strong>Mecanismo:</strong> É uma doença autoimune órgão-específica, caracterizada pela destruição das <strong>células beta produtoras de insulina</strong> nas ilhotas de Langerhans do pâncreas. A lesão é mediada por uma reação de <strong>hipersensibilidade tipo IV</strong>. <strong>Linfócitos T CD8+ citotóxicos</strong> autorreativos infiltram as ilhotas (insulite) e matam as células beta, enquanto <strong>Linfócitos T CD4+ Th1</strong> produzem citocinas que ativam macrófagos e amplificam a inflamação local.</p><div class="imagem-container" data-src="imagem36.jpg" data-legenda="Microscopia de uma ilhota de Langerhans com insulite, mostrando um denso infiltrado de linfócitos destruindo as células beta."><img src="imagem36.jpg" alt="Insulite no DM1" onerror="this.onerror=null;this.src='https://placehold.co/800x500/28A745/FFFFFF?text=Insulite+no+DM1';"><p>Clique para ampliar: Insulite no Diabetes Tipo 1.</p></div></div></div></div>
+        </section>
+
+        <section id="tabela-resumo" class="content-section">
+            <h2>📊 5. Tabela Resumo das Principais Doenças Autoimunes</h2>
+            <div class="tabela-resumo-container">
+                <table class="tabela-resumo">
+                    <thead>
+                        <tr>
+                            <th>Doença</th>
+                            <th>Autoantígeno Alvo</th>
+                            <th>Mecanismo Imunopatológico</th>
+                            <th>Manifestações Clínicas Chave</th>
+                            <th>Diagnóstico Laboratorial</th>
+                            <th>Associação Genética (HLA)</th>
+                            <th>Epidemiologia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Lúpus Eritematoso Sistêmico (LES)</td>
+                            <td>Antígenos nucleares (dsDNA, Sm, Ro, La)</td>
+                            <td>Tipo III (imunocomplexos) e Tipo II (citotoxicidade)</td>
+                            <td>Eritema malar, fotossensibilidade, artrite, nefrite, serosite</td>
+                            <td>FAN+, Anti-dsDNA+, Anti-Sm+, consumo de complemento</td>
+                            <td>HLA-DR2, HLA-DR3</td>
+                            <td>Mulheres jovens (9:1)</td>
+                        </tr>
+                        <tr>
+                            <td>Artrite Reumatoide (AR)</td>
+                            <td>Peptídeos citrulinados, porção Fc da IgG (Fator Reumatoide)</td>
+                            <td>Tipo IV (Th1, Th17) e Tipo III</td>
+                            <td>Poliartrite simétrica de pequenas articulações, erosões ósseas</td>
+                            <td>Fator Reumatoide (FR)+, Anti-CCP+</td>
+                            <td>HLA-DR4, HLA-DR1</td>
+                            <td>Mulheres (3:1), pico aos 40-50 anos</td>
+                        </tr>
+                        <tr>
+                            <td>Diabetes Mellitus Tipo 1</td>
+                            <td>Antígenos das células beta pancreáticas (insulina, GAD65)</td>
+                            <td>Tipo IV (destruição de células beta por T CD8+ e Th1)</td>
+                            <td>Hiperglicemia, poliúria, polidipsia, polifagia, cetoacidose</td>
+                            <td>Autoanticorpos (anti-GAD, anti-ilhota), peptídeo C baixo</td>
+                            <td>HLA-DR3, HLA-DR4</td>
+                            <td>Início na infância/adolescência</td>
+                        </tr>
+                        <tr>
+                            <td>Esclerose Múltipla (EM)</td>
+                            <td>Proteínas da bainha de mielina (ex: MBP) no SNC</td>
+                            <td>Tipo IV (desmielinização mediada por Th1 e Th17)</td>
+                            <td>Surtos neurológicos recorrentes (fraqueza, neurite óptica, ataxia)</td>
+                            <td>Lesões desmielinizantes na ressonância magnética, bandas oligoclonais no LCR</td>
+                            <td>HLA-DR2 (DRB1*1501)</td>
+                            <td>Mulheres jovens (2-3:1), mais comum em latitudes mais altas</td>
+                        </tr>
+                        <tr>
+                            <td>Doença de Graves</td>
+                            <td>Receptor de TSH (TSH-R) na tireoide</td>
+                            <td>Tipo II (anticorpo estimulador, agonista do TSH-R)</td>
+                            <td>Hipertireoidismo (taquicardia, perda de peso, intolerância ao calor), bócio difuso, oftalmopatia</td>
+                            <td>TSH suprimido, T4 livre elevado, anticorpo anti-TSH-R (TRAb)+</td>
+                            <td>HLA-DR3</td>
+                            <td>Mulheres (7:1), pico aos 20-40 anos</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="casos" class="content-section">
+            <h2>🔍 6. Casos Clínicos e Interação com IA</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso Clínico 1: Doença Sistêmica em Mulher Jovem</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Apresentação do Caso:</h4>
+                        <p>Paciente feminina de 22 anos apresenta-se com febre, dor articular, eritema malar (em "asa de borboleta") que piora com o sol, e exames laboratoriais mostrando anemia, plaquetopenia e proteinúria. A investigação sorológica revela um FAN positivo com título de 1:640 e anti-dsDNA positivo.</p>
+                        <div class="momento-ia">
+                            <h4>🤖 Momento de Interação com IA (15 min)</h4>
+                            <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                            <div class="prompt-ia">"Atuando como um imunologista, explique a patogênese molecular da nefrite lúpica (lesão renal no LES). Detalhe como os autoanticorpos (anti-dsDNA) formam imunocomplexos, se depositam no glomérulo renal, ativam a via clássica do complemento e desencadeiam uma resposta inflamatória mediada por neutrófilos, resultando em glomerulonefrite."</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Feedback da Interação com IA (Caso 1)</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Resposta Esperada e Pontos de Discussão:</h4>
+                        <p>A IA deve descrever um exemplo clássico de <strong>hipersensibilidade tipo III</strong>. Os imunocomplexos contendo DNA e anticorpos anti-dsDNA circulam e se depositam na membrana basal glomerular. Isso ativa a cascata do complemento, gerando C3a e C5a, que aumentam a permeabilidade vascular e são potentes quimioatraentes para <strong>neutrófilos</strong>. Os neutrófilos recrutados liberam enzimas proteolíticas e radicais livres, causando dano direto ao glomérulo (glomerulonefrite), o que explica a proteinúria e a perda da função renal observadas na paciente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 2</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+        });
+    </script>
+</body>
+</html>

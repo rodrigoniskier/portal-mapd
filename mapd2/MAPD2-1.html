@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-2 | Aula 1: Apresentação e Resgate de Conteúdos</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-fundo-ia: #e7f5ff;
+            --cor-borda-ia: #b3d7f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+        
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+
+        /* Momento IA */
+        .momento-ia {
+            background-color: var(--cor-fundo-ia);
+            border: 1px solid var(--cor-borda-ia);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        .momento-ia h4 {
+            color: var(--cor-azul);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .momento-ia .prompt-ia {
+            background-color: #fff;
+            border: 1px dashed var(--cor-azul);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            margin: 15px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            transition: box-shadow 0.3s ease;
+            max-width: 600px;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>🚀 MAPD-2</h1>
+            <p>Aula 1: Apresentação e Resgate</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#apresentacao" class="active"><span class="icon">🎯</span> Apresentação do Componente</a></li>
+                <li><a href="#resgate-patologia"><span class="icon">🔬</span> Resgate: Patologia Celular</a></li>
+                <li><a href="#resgate-imunologia"><span class="icon">🛡️</span> Resgate: Imunologia</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>🚀 Aula 1: Apresentação e Resgate de Conteúdos</h1>
+            <p class="subtitulo">Construindo sobre a base de MAPD-1 para avançar no estudo dos mecanismos de defesa e doença.</p>
+        </header>
+
+        <section id="apresentacao" class="content-section active">
+            <h2>🎯 1. Apresentação do Componente: MAPD-2</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O que Vamos Explorar?</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Bem-vindos ao MAPD-2! Neste componente, vamos aprofundar nosso estudo sobre a complexa interação entre agentes agressores e o hospedeiro. Enquanto o MAPD-1 construiu a base da patologia celular e da resposta imune, o MAPD-2 aplicará esses conceitos a cenários clínicos mais complexos e específicos.</p>
+                        <h4>Grandes Temas de MAPD-2:</h4>
+                        <ul>
+                            <li><strong>Microbiologia Clínica Aplicada:</strong> Foco em bactérias, vírus, fungos e parasitas de maior relevância médica, com ênfase no diagnóstico e mecanismos de resistência.</li>
+                            <li><strong>Imunopatologia:</strong> Estudo das disfunções do sistema imune, como hipersensibilidades, doenças autoimunes e imunodeficiências.</li>
+                            <li><strong>Imunologia de Transplantes e Oncologia:</strong> Compreensão da resposta imune a tecidos transplantados e a tumores, e as bases das modernas imunoterapias.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Usando a IA como Ferramenta de Aprendizagem</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Conforme o plano de ensino, uma das competências que desenvolveremos é o uso de plataformas de Inteligência Artificial (IA) como ferramenta para aprofundar o conhecimento e auxiliar no raciocínio clínico. Ao longo das aulas, teremos "Momentos de Interação com IA".</p>
+                        <p><strong>O objetivo não é obter uma resposta pronta, mas sim usar a IA para:</strong></p>
+                        <ul>
+                            <li>Explorar mecanismos moleculares em maior detalhe.</li>
+                            <li>Gerar hipóteses e diagnósticos diferenciais.</li>
+                            <li>Simular cenários e respostas fisiopatológicas.</li>
+                        </ul>
+                        <p>Sua capacidade de formular as perguntas corretas (prompts) e de analisar criticamente as respostas da IA será uma habilidade fundamental avaliada neste componente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="resgate-patologia" class="content-section">
+            <h2>🔬 2. Resgate: Mecanismos Básicos de Agressão e Defesa</h2>
+            <p>Para avançar, precisamos garantir que os conceitos fundamentais de MAPD-1 estão sólidos. Vamos revisar os pilares da resposta celular à agressão.</p>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Adaptações Celulares</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>As células respondem ao estresse persistente alterando seu tamanho, número ou fenótipo. Lembre-se dos quatro tipos principais de adaptação reversível:</p>
+                        <ul>
+                            <li><strong>Hipertrofia:</strong> Aumento do tamanho da célula (ex: músculo cardíaco na hipertensão).</li>
+                            <li><strong>Hiperplasia:</strong> Aumento do número de células (ex: endométrio sob estímulo estrogênico).</li>
+                            <li><strong>Atrofia:</strong> Diminuição do tamanho e número de células (ex: músculo em desuso).</li>
+                            <li><strong>Metaplasia:</strong> Substituição de um tipo celular maduro por outro (ex: epitélio escamoso no brônquio de um fumante).</li>
+                        </ul>
+                        <div class="imagem-container" data-src="imagem1.jpg" data-legenda="Esquema ilustrando os quatro tipos de adaptação celular: hipertrofia, hiperplasia, atrofia e metaplasia.">
+                            <img src="imagem1.jpg" alt="Adaptações Celulares" onerror="this.onerror=null;this.src='https://placehold.co/800x500/0057B8/FFFFFF?text=Adaptações+Celulares';">
+                            <p>Clique para ampliar: Adaptações Celulares.</p>
+                        </div>
+                        <div class="momento-ia">
+                            <h4>🤖 Momento de Interação com IA 1 (10 min)</h4>
+                            <p><strong>Cenário:</strong> Hipertrofia cardíaca patológica.</p>
+                            <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                            <div class="prompt-ia">"Explique em nível molecular como a sobrecarga de pressão crônica na hipertensão arterial leva à hipertrofia dos cardiomiócitos, detalhando as vias de sinalização envolvidas (como a via PI3K/Akt e vias mediadas por GPCRs) e diferencie da hipertrofia fisiológica do atleta."</div>
+                            <p><strong>Feedback e Discussão:</strong> Após obter a resposta, reflita: Quais são os principais gatilhos mecânicos e neuro-hormonais? A resposta da IA deve destacar vias como PI3K/Akt e a sinalização via receptores acoplados à proteína G (GPCRs). Note que, na hipertrofia patológica, há frequentemente um aumento da fibrose e uma reexpressão de genes fetais, o que não ocorre na hipertrofia fisiológica do atleta. Essa diferença é crucial para o prognóstico.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Morte Celular: Necrose vs. Apoptose</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Quando a lesão é irreversível, a célula morre. É crucial diferenciar as duas principais vias:</p>
+                        <ul>
+                            <li><strong>Necrose:</strong> Morte "acidental" e patológica. Caracteriza-se por edema celular, ruptura da membrana e <strong>inflamação</strong>. Apresenta diferentes padrões (coagulação, liquefativa, etc.).</li>
+                            <li><strong>Apoptose:</strong> Morte "programada" e controlada. A célula encolhe, a membrana permanece intacta e o conteúdo é empacotado em corpos apoptóticos, que são fagocitados <strong>sem gerar inflamação</strong>. Ocorre em processos fisiológicos e patológicos.</li>
+                        </ul>
+                         <div class="imagem-container" data-src="imagem2.jpg" data-legenda="Diagrama comparativo mostrando as principais diferenças morfológicas entre necrose (inchaço e ruptura) e apoptose (encolhimento e fragmentação).">
+                            <img src="imagem2.jpg" alt="Necrose vs. Apoptose" onerror="this.onerror=null;this.src='https://placehold.co/800x500/dc3545/FFFFFF?text=Necrose+vs.+Apoptose';">
+                            <p>Clique para ampliar: Necrose vs. Apoptose.</p>
+                        </div>
+                        <div class="momento-ia">
+                            <h4>🤖 Momento de Interação com IA 2 (10 min)</h4>
+                            <p><strong>Cenário:</strong> Lesão de isquemia-reperfusão no miocárdio.</p>
+                            <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                            <div class="prompt-ia">"Descreva o paradoxo da lesão de isquemia-reperfusão. Quais mecanismos moleculares, incluindo a produção de espécies reativas de oxigênio (EROs), a sobrecarga de cálcio e a abertura do poro de transição de permeabilidade mitocondrial, contribuem para a morte celular (necrose e apoptose) após o restabelecimento do fluxo sanguíneo?"</div>
+                            <p><strong>Feedback e Discussão:</strong> A resposta da IA deve explicar que, embora a reperfusão seja essencial, ela introduz oxigênio que, em um ambiente de mitocôndrias danificadas, gera uma explosão de radicais livres (EROs). Isso causa mais dano às membranas e ao DNA. A disfunção das bombas iônicas leva a uma sobrecarga de cálcio, que ativa enzimas degradativas e abre o poro de transição mitocondrial, um ponto de não retorno para a morte celular.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="resgate-imunologia" class="content-section">
+            <h2>🛡️ 3. Resgate: Fundamentos da Resposta Imune</h2>
+            <p>A resposta a todos os agentes infecciosos e tumores depende da orquestração da imunidade inata e adaptativa.</p>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Imunidade Inata: A Primeira Linha</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>É a resposta rápida, não específica e sem memória. Seus principais componentes são:</p>
+                        <ul>
+                            <li><strong>Barreiras:</strong> Pele e mucosas.</li>
+                            <li><strong>Células:</strong> Neutrófilos, macrófagos, células NK, células dendríticas.</li>
+                            <li><strong>Proteínas:</strong> Sistema complemento e citocinas.</li>
+                        </ul>
+                        <p>O reconhecimento se dá por meio de <strong>PRRs</strong> (ex: TLRs) que identificam <strong>PAMPs</strong> (ex: LPS) e <strong>DAMPs</strong>, desencadeando a <strong>inflamação aguda</strong>.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Imunidade Adaptativa: Especificidade e Memória</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>É a resposta mais lenta, porém altamente específica e que gera memória duradoura.</p>
+                        <ul>
+                            <li><strong>Imunidade Celular (Linfócitos T):</strong>
+                                <ul>
+                                    <li><strong>T CD4+ (Auxiliares):</strong> Os "maestros". Ativam outras células (macrófagos, linfócitos B) e se diferenciam em subtipos (Th1, Th2, Th17).</li>
+                                    <li><strong>T CD8+ (Citotóxicos):</strong> Matam células infectadas por vírus e células tumorais.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Imunidade Humoral (Linfócitos B):</strong>
+                                <ul>
+                                    <li>Diferenciam-se em <strong>plasmócitos</strong> para produzir <strong>anticorpos</strong> (IgM, IgG, IgA, etc.).</li>
+                                    <li>Os anticorpos neutralizam e opsonizam patógenos <strong>extracelulares</strong>.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="imagem-container" data-src="imagem3.jpg" data-legenda="Esquema simplificado da interação entre imunidade inata e adaptativa, com a célula dendrítica atuando como ponte ao apresentar antígenos para os linfócitos T.">
+                            <img src="imagem3.jpg" alt="Interação Inata-Adaptativa" onerror="this.onerror=null;this.src='https://placehold.co/800x500/28A745/FFFFFF?text=Inata+e+Adaptativa';">
+                            <p>Clique para ampliar: Interação Inata-Adaptativa.</p>
+                        </div>
+                        <div class="momento-ia">
+                            <h4>🤖 Momento de Interação com IA 3 (10 min)</h4>
+                            <p><strong>Cenário:</strong> A importância do Sinal 2 na ativação de linfócitos T.</p>
+                            <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                            <div class="prompt-ia">"Simule um cenário: o que acontece com um linfócito T virgem que reconhece seu antígeno específico (Sinal 1) em uma célula que não expressa moléculas co-estimulatórias B7 (ausência do Sinal 2)? Qual é o nome desse estado de não responsividade e qual sua importância para a autotolerância?"</div>
+                            <p><strong>Feedback e Discussão:</strong> A IA deve descrever o estado de <strong>anergia clonal</strong>. Este é um mecanismo de tolerância periférica fundamental. Ele garante que linfócitos T não sejam ativados por antígenos próprios apresentados por células normais (que não expressam B7). A ativação só ocorre quando uma APC profissional detecta um perigo (via PAMPs), passa a expressar B7 e fornece ambos os sinais, prevenindo assim a autoimunidade.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 2</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+        });
+    </script>
+</body>
+</html>

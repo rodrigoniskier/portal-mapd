@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-2 | Aulas 3-4: Habilidades Laboratoriais em Microbiologia</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-fundo-ia: #e7f5ff;
+            --cor-borda-ia: #b3d7f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+        
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+        
+        /* Momento IA */
+        .momento-ia {
+            background-color: var(--cor-fundo-ia);
+            border: 1px solid var(--cor-borda-ia);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        .momento-ia h4 {
+            color: var(--cor-azul);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .momento-ia .prompt-ia {
+            background-color: #fff;
+            border: 1px dashed var(--cor-azul);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            margin: 15px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            transition: box-shadow 0.3s ease;
+            max-width: 600px;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>🔬 MAPD-2</h1>
+            <p>Aulas 3-4: Habilidades Laboratoriais</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#objetivos" class="active"><span class="icon">🎯</span> Objetivos da Aula</a></li>
+                <li><a href="#gram"><span class="icon">🎨</span> Coloração de Gram</a></li>
+                <li><a href="#cultura"><span class="icon">🧫</span> Semeadura e Cultura</a></li>
+                <li><a href="#atividade"><span class="icon">🧑‍🔬</span> Atividade Prática Guiada</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>🔬 Aulas 3 e 4: Habilidades Laboratoriais de Microbiologia</h1>
+            <p class="subtitulo">Da bancada ao leito: a importância do diagnóstico microbiológico.</p>
+        </header>
+
+        <section id="objetivos" class="content-section active">
+            <h2>🎯 1. Objetivos da Aula</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Desenvolvendo a Mão e o Olho Clínico</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Esta aula prática é focada no desenvolvimento de duas competências essenciais para o diagnóstico de doenças infecciosas. A capacidade de realizar e interpretar corretamente uma coloração de Gram e de entender os princípios de cultura bacteriana é fundamental para a tomada de decisão clínica inicial.</p>
+                        <h4>Ao final desta sessão, você será capaz de:</h4>
+                        <ul>
+                            <li><strong>Executar</strong> os passos da técnica de coloração de Gram.</li>
+                            <li><strong>Analisar</strong> uma lâmina corada pelo Gram, identificando a morfologia (cocos, bacilos) e a afinidade tintorial (Gram-positivo, Gram-negativo).</li>
+                            <li><strong>Entender</strong> os princípios dos meios de cultura e da técnica de semeadura por esgotamento para isolamento de colônias.</li>
+                            <li><strong>Correlacionar</strong> os achados laboratoriais com uma suspeita clínica.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="gram" class="content-section">
+            <h2>🎨 2. Princípios da Coloração de Gram</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Fundamento Molecular</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A coloração de Gram, desenvolvida por Hans Christian Gram, é uma técnica de coloração diferencial que explora as diferenças na estrutura da <strong>parede celular bacteriana</strong>.</p>
+                        <ul>
+                            <li><strong>Bactérias Gram-positivas:</strong> Possuem uma parede celular com uma <strong>espessa camada de peptidoglicano</strong>. Durante a coloração, o complexo formado pelo cristal violeta e o lugol (iodo) fica aprisionado nesta malha espessa, resistindo à descoloração pelo álcool-acetona e mantendo a cor <strong>roxa</strong>.</li>
+                            <li><strong>Bactérias Gram-negativas:</strong> Possuem uma parede com uma <strong>fina camada de peptidoglicano</strong>, circundada por uma membrana externa. O álcool-acetona dissolve a membrana externa e remove facilmente o complexo cristal violeta-iodo da fina camada de peptidoglicano. A célula, agora descorada, é então contracorada pela fucsina (ou safranina), adquirindo a cor <strong>rosa/vermelha</strong>.</li>
+                        </ul>
+                        <div class="imagem-container" data-src="imagem6.jpg" data-legenda="Diagrama do procedimento da coloração de Gram e a estrutura da parede celular correspondente em cada passo.">
+                            <img src="imagem6.jpg" alt="Procedimento de Gram" onerror="this.onerror=null;this.src='https://placehold.co/800x500/0057B8/FFFFFF?text=Procedimento+de+Gram';">
+                            <p>Clique para ampliar: Técnica de Coloração de Gram.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cultura" class="content-section">
+            <h2>🧫 3. Princípios de Semeadura e Cultura</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Meios de Cultura</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Meios de cultura são preparações que fornecem os nutrientes necessários para o crescimento de microrganismos em laboratório. Eles podem ser classificados como:</p>
+                        <ul>
+                            <li><strong>Nutritivos ou Não Seletivos:</strong> Permitem o crescimento da maioria dos microrganismos (ex: Ágar Sangue).</li>
+                            <li><strong>Seletivos:</strong> Contêm substâncias que inibem o crescimento de certos microrganismos, favorecendo o crescimento de outros (ex: Ágar MacConkey, que inibe Gram-positivos).</li>
+                            <li><strong>Diferenciais:</strong> Contêm indicadores (como corantes) que permitem diferenciar visualmente as colônias de diferentes bactérias com base em suas propriedades bioquímicas (ex: Ágar MacConkey, que diferencia fermentadores de lactose [colônias rosas] de não fermentadores [colônias incolores]).</li>
+                        </ul>
+                        <div class="imagem-container" data-src="imagem7.jpg" data-legenda="Placa de Ágar MacConkey mostrando o crescimento de colônias rosas (fermentadoras de lactose, como E. coli) e incolores (não fermentadoras).">
+                            <img src="imagem7.jpg" alt="Ágar MacConkey" onerror="this.onerror=null;this.src='https://placehold.co/800x500/dc3545/FFFFFF?text=Ágar+MacConkey';">
+                            <p>Clique para ampliar: Meio Diferencial MacConkey.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Técnica de Semeadura por Esgotamento</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>É a técnica mais comum para obter <strong>colônias isoladas</strong> a partir de uma amostra clínica. O objetivo é diluir mecanicamente o inóculo na superfície do ágar, de modo que, em alguma área, as células bacterianas fiquem suficientemente separadas para crescer e formar colônias individuais. Cada colônia isolada representa, teoricamente, a progênie de uma única célula bacteriana.</p>
+                        <div class="imagem-container" data-src="imagem8.jpg" data-legenda="Placa de Petri demonstrando o resultado de uma semeadura por esgotamento em estrias, com colônias bacterianas isoladas no final do trajeto.">
+                            <img src="imagem8.jpg" alt="Semeadura por Esgotamento" onerror="this.onerror=null;this.src='https://placehold.co/800x500/28A745/FFFFFF?text=Semeadura+por+Esgotamento';">
+                            <p>Clique para ampliar: Técnica de Esgotamento em Estrias.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="atividade" class="content-section">
+            <h2>🧑‍🔬 4. Atividade Prática Guiada</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Cenário e Procedimento</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Cenário:</h4>
+                        <p>Você recebe uma amostra de urina de um paciente com suspeita de ITU (o mesmo do Caso Clínico 1 da Aula 2). Sua tarefa é realizar uma coloração de Gram do sedimento urinário e semear a urina em meios de cultura apropriados.</p>
+                        <h4>Procedimento no Laboratório:</h4>
+                        <ol>
+                            <li><strong>Coloração de Gram:</strong> Siga os passos demonstrados para preparar um esfregaço da urina, corá-lo pelo método de Gram e examiná-lo ao microscópio com a objetiva de imersão.</li>
+                            <li><strong>Semeadura:</strong> Utilizando uma alça calibrada, semeie a amostra de urina em uma placa de Ágar CLED (um meio diferencial para uropatógenos) usando a técnica de estria única.</li>
+                        </ol>
+                        <p>Após a execução, anote seus achados: morfologia e coloração no Gram, e características das colônias após incubação.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="momento-ia">
+                <h4>🤖 Momento de Interação com IA (15 min)</h4>
+                <p><strong>Cenário:</strong> Você observou no Gram bacilos Gram-negativos e, após 24h, a cultura em Ágar CLED mostrou colônias amarelas, indicando fermentação da lactose.</p>
+                <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                <div class="prompt-ia">"Com base nos achados laboratoriais de uma urocultura (bacilos Gram-negativos e colônias lactose-positivas em meio CLED), gere uma lista de diagnósticos diferenciais microbiológicos em ordem de probabilidade. Para o agente mais provável, *Escherichia coli*, descreva brevemente como um laboratório de microbiologia confirmaria a identificação e realizaria o teste de sensibilidade aos antimicrobianos (antibiograma)."</div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Feedback da Interação com IA</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Resposta Esperada e Pontos de Discussão:</h4>
+                        <p>A IA deve listar *E. coli* como a principal hipótese, seguida por outras enterobactérias fermentadoras de lactose como *Klebsiella* e *Enterobacter*. A resposta deve explicar que a confirmação é feita por <strong>testes bioquímicos</strong> (manuais ou automatizados) que avaliam o perfil metabólico da bactéria. Para o antibiograma, a IA deve descrever o método de <strong>disco-difusão (Kirby-Bauer)</strong>, onde discos impregnados com antibióticos são colocados sobre um "tapete" de bactérias, e a sensibilidade é determinada pelo tamanho do halo de inibição do crescimento ao redor de cada disco.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 2</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+        });
+    </script>
+</body>
+</html>
