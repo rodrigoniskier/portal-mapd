@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-1 | Aula 15: Resistência aos Antibióticos</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-vermelho: #dc3545;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-sucesso: #d4edda;
+            --cor-erro: #f8d7da;
+            --cor-texto-sucesso: #155724;
+            --cor-texto-erro: #721c24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            color: #495057;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            transition: box-shadow 0.3s ease;
+            max-width: 600px;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Quiz */
+        .quiz-container {
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #fdfdff;
+        }
+        
+        .questao {
+            margin-bottom: 25px;
+        }
+        
+        .questao p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alternativas label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .alternativas label:hover {
+            background-color: #f1f3f5;
+        }
+
+        .alternativas input {
+            margin-right: 10px;
+        }
+        
+        .btn-quiz {
+            display: inline-block;
+            background-color: var(--cor-verde);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-quiz:hover {
+            background-color: #218838;
+        }
+        
+        #resultado-quiz {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>💊 MAPD-1</h1>
+            <p>Aula 15: Resistência aos Antibióticos</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#introducao" class="active"><span class="icon">📖</span> A Crise da Resistência</a></li>
+                <li><a href="#mecanismos"><span class="icon">⚙️</span> Mecanismos Moleculares</a></li>
+                <li><a href="#disseminacao"><span class="icon">🌍</span> Aquisição e Disseminação</a></li>
+                <li><a href="#estrategias"><span class="icon">🛡️</span> Estratégias de Combate</a></li>
+                <li><a href="#casos-clinicos"><span class="icon">🩺</span> Cenário Clínico (JP)</a></li>
+                <li><a href="#quiz"><span class="icon">✅</span> Quiz de Aplicação</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>💊 Aula 15: Resistência aos Antibióticos</h1>
+            <p class="subtitulo">Compreendendo um dos maiores desafios da saúde global.</p>
+        </header>
+
+        <section id="introducao" class="content-section active">
+            <h2>📖 1. A Crise da Resistência Antimicrobiana</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Fim da Era dos Antibióticos?</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A descoberta dos antibióticos no século XX revolucionou a medicina, transformando infecções antes fatais em doenças tratáveis. No entanto, o uso generalizado e, muitas vezes, inadequado desses medicamentos criou uma enorme pressão seletiva, favorecendo o surgimento e a disseminação de bactérias resistentes.</p>
+                        <p>A <strong>resistência antimicrobiana (AMR)</strong> ocorre quando microrganismos (como bactérias) evoluem mecanismos que os protegem dos efeitos dos medicamentos projetados para matá-los. Hoje, a AMR é uma das maiores ameaças à saúde global, podendo nos levar a uma "era pós-antibiótico", onde infecções comuns e cirurgias de rotina podem se tornar fatais.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/dc3545/FFFFFF?text=Bactérias+Multirresistentes" data-legenda="Placa de cultura mostrando o crescimento de uma bactéria multirresistente na presença de vários discos de antibióticos.">
+                            <img src="https://placehold.co/800x500/dc3545/FFFFFF?text=Bactérias+Multirresistentes" alt="Bactérias Multirresistentes">
+                            <p>Clique para ampliar: Antibiograma de Bactéria Multirresistente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="mecanismos" class="content-section">
+            <h2>⚙️ 2. Mecanismos Moleculares de Resistência</h2>
+            <p>As bactérias desenvolveram estratégias bioquímicas engenhosas para resistir aos antibióticos. Os principais mecanismos são:</p>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Inativação Enzimática do Fármaco</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Este é um dos mecanismos mais comuns. A bactéria produz uma enzima que modifica quimicamente ou destrói o antibiótico, tornando-o inativo.</p>
+                        <p><strong>Exemplo Clássico:</strong> A produção de <strong>β-lactamases</strong> por bactérias como <em>Staphylococcus aureus</em> e muitas Gram-negativas. Essas enzimas clivam o anel β-lactâmico, que é o núcleo ativo de antibióticos como penicilinas e cefalosporinas.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Modificação do Alvo do Fármaco</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>O antibiótico não consegue mais se ligar ao seu alvo na célula bacteriana porque o alvo foi alterado por mutação.</p>
+                        <p><strong>Exemplo Clássico:</strong> A resistência do <em>S. aureus</em> à meticilina (MRSA). Uma mutação no gene <em>mecA</em> leva à produção de uma nova Proteína Ligadora de Penicilina (PBP2a), que tem baixa afinidade por todos os antibióticos β-lactâmicos, tornando a bactéria resistente a eles.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Redução da Permeabilidade ou Efluxo Ativo</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A bactéria impede que o antibiótico atinja seu alvo intracelular.</p>
+                        <ul>
+                            <li><strong>Redução da Permeabilidade:</strong> Mutações podem diminuir a expressão ou alterar a estrutura das <strong>porinas</strong> (canais na membrana externa das Gram-negativas), dificultando a entrada do antibiótico.</li>
+                            <li><strong>Bombas de Efluxo:</strong> A bactéria expressa proteínas de membrana que funcionam como bombas, expulsando ativamente o antibiótico para fora da célula antes que ele possa agir.</li>
+                        </ul>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/0057B8/FFFFFF?text=Mecanismos+de+Resistência" data-legenda="Diagrama ilustrando os quatro principais mecanismos de resistência bacteriana: inativação enzimática, modificação do alvo, redução da permeabilidade e efluxo ativo.">
+                            <img src="https://placehold.co/800x500/0057B8/FFFFFF?text=Mecanismos+de+Resistência" alt="Mecanismos de Resistência">
+                            <p>Clique para ampliar: Mecanismos de Resistência Bacteriana.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="disseminacao" class="content-section">
+            <h2>🌍 3. Aquisição e Disseminação da Resistência</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Origem Genética da Resistência</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A resistência pode surgir de duas maneiras:</p>
+                        <ul>
+                            <li><strong>Resistência Intrínseca:</strong> Algumas bactérias são naturalmente resistentes a certos antibióticos devido a características inerentes (ex: ausência do alvo do fármaco).</li>
+                            <li><strong>Resistência Adquirida:</strong> Ocorre quando uma bactéria previamente suscetível se torna resistente. Isso pode acontecer por <strong>mutação espontânea</strong> em seu próprio DNA ou, mais comumente, pela <strong>aquisição de novos genes</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Transferência Horizontal de Genes</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>As bactérias são extremamente eficientes em compartilhar genes de resistência entre si, mesmo entre espécies diferentes. Este processo, chamado de transferência horizontal de genes, é o principal motor da disseminação rápida da resistência.</p>
+                        <ul>
+                            <li><strong>Plasmídeos:</strong> Pequenas moléculas de DNA circular que podem carregar múltiplos genes de resistência e ser transferidas de uma bactéria para outra através de um processo chamado <strong>conjugação</strong>.</li>
+                            <li><strong>Transposons:</strong> "Genes saltadores" que podem se mover de um local para outro no genoma ou entre o cromossomo e os plasmídeos.</li>
+                            <li><strong>Bacteriófagos:</strong> Vírus que infectam bactérias e podem transferir genes de uma bactéria para outra (<strong>transdução</strong>).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="estrategias" class="content-section">
+            <h2>🛡️ 4. Estratégias de Combate à Resistência (Stewardship)</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Papel do Médico no Uso Racional de Antibióticos</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Combater a resistência antimicrobiana é uma responsabilidade de todos. O conceito de <strong>"Antimicrobial Stewardship"</strong> refere-se a um conjunto de ações coordenadas para promover o uso apropriado de antimicrobianos. Como futuros médicos, vocês terão um papel crucial:</p>
+                        <ul>
+                            <li><strong>Diagnóstico Correto:</strong> Evitar o uso de antibióticos para infecções virais, onde eles não têm efeito.</li>
+                            <li><strong>Escolha Criteriosa:</strong> Prescrever o antibiótico de espectro mais estreito possível que seja eficaz contra o patógeno suspeito ou confirmado.</li>
+                            <li><strong>Dose e Duração Adequadas:</strong> Usar a dose correta pelo menor tempo necessário para tratar a infecção, evitando tratamentos prolongados desnecessários.</li>
+                            <li><strong>Prevenção de Infecções:</strong> A melhor forma de evitar a resistência é evitar a infecção em primeiro lugar (higienização das mãos, vacinação, controle de infecções hospitalares).</li>
+                            <li><strong>Educação do Paciente:</strong> Orientar os pacientes a não se automedicarem e a completarem o tratamento prescrito.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="casos-clinicos" class="content-section">
+            <h2>🩺 5. Cenário Clínico (João Pessoa)</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Desafio: Infecção Hospitalar por Bactéria Multirresistente</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Paciente de 65 anos, internado na UTI de um hospital em João Pessoa há 15 dias por pneumonia, evolui com piora do quadro respiratório, febre e instabilidade hemodinâmica. A cultura de secreção traqueal identifica uma <em>Klebsiella pneumoniae</em> resistente a múltiplos antibióticos, incluindo carbapenêmicos (KPC - <em>Klebsiella pneumoniae</em> carbapenemase-produtora).</p>
+                    <h3>Discussão Microbiológica e Patogênica:</h3>
+                    <p>A <em>Klebsiella pneumoniae</em> é um bacilo <strong>Gram-negativo</strong>. A produção de <strong>carbapenemases</strong> é um mecanismo de <strong>inativação enzimática</strong> que confere resistência a quase todos os antibióticos β-lactâmicos, incluindo os carbapenêmicos, que são fármacos de último recurso. Esse gene de resistência (ex: <em>bla</em>KPC) é frequentemente carregado em <strong>plasmídeos</strong>, o que facilita sua disseminação para outras bactérias no ambiente hospitalar. O uso prévio de antibióticos de amplo espectro e a longa permanência na UTI são os principais fatores de risco para a aquisição de microrganismos multirresistentes.</p>
+                </div></div>
+            </div>
+        </section>
+
+        <section id="quiz" class="content-section">
+            <h2>✅ 6. Quiz de Aplicação</h2>
+            <p>Teste seus conhecimentos sobre resistência aos antibióticos.</p>
+            <div class="quiz-container">
+                <form id="quiz-form">
+                    <div class="questao"><p>1. A produção de enzimas β-lactamases é um exemplo de qual mecanismo de resistência?</p><div class="alternativas"><label><input type="radio" name="q1" value="a">a) Modificação do alvo do fármaco</label><label><input type="radio" name="q1" value="b">b) Inativação enzimática do fármaco</label><label><input type="radio" name="q1" value="c">c) Efluxo ativo do fármaco</label><label><input type="radio" name="q1" value="d">d) Redução da permeabilidade</label><label><input type="radio" name="q1" value="e">e) Resistência intrínseca</label></div></div>
+                    <div class="questao"><p>2. O principal motor da rápida disseminação de genes de resistência entre diferentes espécies de bactérias é:</p><div class="alternativas"><label><input type="radio" name="q2" value="a">a) Mutação espontânea</label><label><input type="radio" name="q2" value="b">b) Transferência horizontal de genes via plasmídeos</label><label><input type="radio" name="q2" value="c">c) Seleção natural em ambientes sem antibióticos</label><label><input type="radio" name="q2" value="d">d) Divisão celular lenta</label><label><input type="radio" name="q2" value="e">e) Resistência intrínseca</label></div></div>
+                    <div class="questao"><p>3. MRSA (*Staphylococcus aureus* resistente à meticilina) é resistente porque adquiriu um gene que:</p><div class="alternativas"><label><input type="radio" name="q3" value="a">a) Produz uma bomba de efluxo</label><label><input type="radio" name="q3" value="b">b) Destrói a meticilina</label><label><input type="radio" name="q3" value="c">c) Modifica o alvo do antibiótico (a PBP)</label><label><input type="radio" name="q3" value="d">d) Impede a entrada do antibiótico na célula</label><label><input type="radio" name="q3" value="e">e) Altera o ribossomo</label></div></div>
+                    <div class="questao"><p>4. Qual das seguintes práticas faz parte do "Antimicrobial Stewardship"?</p><div class="alternativas"><label><input type="radio" name="q4" value="a">a) Usar sempre o antibiótico mais potente e de mais amplo espectro</label><label><input type="radio" name="q4" value="b">b) Prescrever antibióticos para resfriados comuns</label><label><input type="radio" name="q4" value="c">c) Escolher o antibiótico de espectro mais estreito possível</label><label><input type="radio" name="q4" value="d">d) Interromper o tratamento assim que o paciente se sentir melhor</label><label><input type="radio" name="q4" value="e">e) Usar antibióticos como profilaxia em todos os pacientes hospitalizados</label></div></div>
+                    <div class="questao"><p>5. A transferência de genes de resistência através de vírus que infectam bactérias é chamada de:</p><div class="alternativas"><label><input type="radio" name="q5" value="a">a) Conjugação</label><label><input type="radio" name="q5" value="b">b) Transformação</label><label><input type="radio" name="q5" value="c">c) Transdução</label><label><input type="radio" name="q5" value="d">d) Transposição</label><label><input type="radio" name="q5" value="e">e) Mutação</label></div></div>
+                    <div class="questao"><p>6. O uso inadequado de antibióticos cria uma ________ que favorece a sobrevivência e proliferação de bactérias resistentes.</p><div class="alternativas"><label><input type="radio" name="q6" value="a">a) Pressão seletiva</label><label><input type="radio" name="q6" value="b">b) Mutação dirigida</label><label><input type="radio" name="q6" value="c">c) Imunossupressão</label><label><input type="radio" name="q6" value="d">d) Resposta imune</label><label><input type="radio" name="q6" value="e">e) Simbiose</label></div></div>
+                    <div class="questao"><p>7. A resistência de bactérias Gram-negativas a muitos antibióticos pode ser facilitada pela alteração de qual estrutura?</p><div class="alternativas"><label><input type="radio" name="q7" value="a">a) Flagelos</label><label><input type="radio" name="q7" value="b">b) Ribossomos</label><label><input type="radio" name="q7" value="c">c) Porinas na membrana externa</label><label><input type="radio" name="q7" value="d">d) DNA cromossômico</label><label><input type="radio" name="q7" value="e">e) Cápsula</label></div></div>
+                    <div class="questao"><p>8. Qual é a principal razão pela qual os antibióticos são ineficazes contra infecções virais?</p><div class="alternativas"><label><input type="radio" name="q8" value="a">a) Os vírus são muito pequenos</label><label><input type="radio" name="q8" value="b">b) Os vírus não possuem as estruturas celulares (ex: parede celular, ribossomos) que são alvo dos antibióticos</label><label><input type="radio" name="q8" value="c">c) Os vírus têm um envelope lipídico</label><label><input type="radio" name="q8" value="d">d) Os vírus se replicam muito rapidamente</label><label><input type="radio" name="q8" value="e">e) Os vírus causam latência</label></div></div>
+                    <div class="questao"><p>9. A sigla KPC refere-se a uma enzima que confere resistência a qual classe de antibióticos?</p><div class="alternativas"><label><input type="radio" name="q9" value="a">a) Macrolídeos</label><label><input type="radio" name="q9" value="b">b) Aminoglicosídeos</label><label><input type="radio" name="q9" value="c">c) Carbapenêmicos</label><label><input type="radio" name="q9" value="d">d) Glicopeptídeos</label><label><input type="radio" name="q9" value="e">e) Quinolonas</label></div></div>
+                    <div class="questao"><p>10. Elementos genéticos móveis que carregam genes de resistência e são facilmente transferidos entre bactérias são os:</p><div class="alternativas"><label><input type="radio" name="q10" value="a">a) Ribossomos</label><label><input type="radio" name="q10" value="b">b) Plasmídeos</label><label><input type="radio" name="q10" value="c">c) Cromossomos</label><label><input type="radio" name="q10" value="d">d) Fatores de transcrição</label><label><input type="radio" name="q10" value="e">e) Endósporos</label></div></div>
+                    <div class="questao"><p>11. Qual das seguintes estratégias NÃO contribui para o combate à resistência antimicrobiana?</p><div class="alternativas"><label><input type="radio" name="q11" value="a">a) Melhorar a higienização das mãos nos hospitais</label><label><input type="radio" name="q11" value="b">b) Desenvolver novas classes de antibióticos</label><label><input type="radio" name="q11" value="c">c) Usar antibióticos para tratar qualquer tipo de febre</label><label><input type="radio" name="q11" value="d">d) Implementar programas de vacinação</label><label><input type="radio" name="q11" value="e">e) Utilizar testes diagnósticos rápidos para identificar o patógeno</label></div></div>
+                    <div class="questao"><p>12. A resistência adquirida difere da intrínseca porque a adquirida:</p><div class="alternativas"><label><input type="radio" name="q12" value="a">a) Está presente em todas as cepas de uma espécie</label><label><input type="radio" name="q12" value="b">b) É resultado de mutação ou aquisição de novos genes</label><label><input type="radio" name="q12" value="c">c) Não pode ser transferida para outras bactérias</label><label><input type="radio" name="q12" value="d">d) É sempre menos eficaz</label><label><input type="radio" name="q12" value="e">e) Não é clinicamente relevante</label></div></div>
+                    <div class="questao"><p>13. O uso de antibióticos na agropecuária é uma preocupação porque:</p><div class="alternativas"><label><input type="radio" name="q13" value="a">a) Torna a carne menos saborosa</label><label><input type="radio" name="q13" value="b">b) Pode selecionar bactérias resistentes que podem ser transmitidas a humanos</label><label><input type="radio" name="q13" value="c">c) É muito caro para os produtores</label><label><input type="radio" name="q13" value="d">d) Os animais não respondem aos medicamentos</label><label><input type="radio" name="q13" value="e">e) Causa doenças autoimunes nos animais</label></div></div>
+                    <div class="questao"><p>14. Uma bomba de efluxo é um mecanismo de resistência que atua:</p><div class="alternativas"><label><input type="radio" name="q14" value="a">a) Destruindo o antibiótico</label><label><input type="radio" name="q14" value="b">b) Alterando o alvo do antibiótico</label><label><input type="radio" name="q14" value="c">c) Expulsando o antibiótico para fora da célula</label><label><input type="radio" name="q14" value="d">d) Impedindo a entrada do antibiótico</label><label><input type="radio" name="q14" value="e">e) Sequestrando o antibiótico no citoplasma</label></div></div>
+                    <div class="questao"><p>15. A principal razão para um médico orientar o paciente a completar todo o ciclo de antibióticos prescrito é:</p><div class="alternativas"><label><input type="radio" name="q15" value="a">a) Aumentar o lucro da indústria farmacêutica</label><label><input type="radio" name="q15" value="b">b) Garantir a erradicação completa da infecção e prevenir a seleção de subpopulações resistentes</label><label><input type="radio" name="q15" value="c">c) Evitar os efeitos colaterais do medicamento</label><label><input type="radio" name="q15" value="d">d) Porque os antibióticos só funcionam no último dia</label><label><input type="radio" name="q15" value="e">e) Para que o paciente desenvolva imunidade</label></div></div>
+                    <div class="questao"><p>16. A resistência a múltiplos fármacos (MDR) é frequentemente mediada por:</p><div class="alternativas"><label><input type="radio" name="q16" value="a">a) Uma única mutação cromossômica</label><label><input type="radio" name="q16" value="b">b) Plasmídeos que carregam múltiplos genes de resistência</label><label><input type="radio" name="q16" value="c">c) Apenas por resistência intrínseca</label><label><input type="radio" name="q16" value="d">d) A idade do paciente</label><label><input type="radio" name="q16" value="e">e) A dose do antibiótico</label></div></div>
+                    <div class="questao"><p>17. Qual ambiente é um "caldo de cultura" para a seleção e disseminação de bactérias multirresistentes?</p><div class="alternativas"><label><input type="radio" name="q17" value="a">a) Escolas</label><label><input type="radio" name="q17" value="b">b) Parques públicos</label><label><input type="radio" name="q17" value="c">c) Hospitais e unidades de saúde</label><label><input type="radio" name="q17" value="d">d) Supermercados</label><label><input type="radio" name="q17" value="e">e) Residências</label></div></div>
+                    <div class="questao"><p>18. A resistência do *S. pneumoniae* à penicilina envolve a alteração de qual alvo?</p><div class="alternativas"><label><input type="radio" name="q18" value="a">a) Ribossomos</label><label><input type="radio" name="q18" value="b">b) DNA girase</label><label><input type="radio" name="q18" value="c">c) Proteínas ligadoras de penicilina (PBPs)</label><label><input type="radio" name="q18" value="d">d) Porinas</label><label><input type="radio" name="q18" value="e">e) RNA polimerase</label></div></div>
+                    <div class="questao"><p>19. A conjugação bacteriana é um processo que envolve a transferência de material genético através de:</p><div class="alternativas"><label><input type="radio" name="q19" value="a">a) Um vírus</label><label><input type="radio" name="q19" value="b">b) A absorção de DNA livre do ambiente</label><label><input type="radio" name="q19" value="c">c) Um pilus sexual</label><label><input type="radio" name="q19" value="d">d) Divisão celular</label><label><input type="radio" name="q19" value="e">e) Endocitose</label></div></div>
+                    <div class="questao"><p>20. No caso clínico da KPC, o principal fator de risco para o paciente ter desenvolvido essa infecção foi:</p><div class="alternativas"><label><input type="radio" name="q20" value="a">a) Sua idade</label><label><input type="radio" name="q20" value="b">b) Ser do sexo masculino</label><label><input type="radio" name="q20" value="c">c) A internação prolongada em UTI e o uso prévio de antibióticos</label><label><input type="radio" name="q20" value="d">d) Sua doença de base (pneumonia)</label><label><input type="radio" name="q20" value="e">e) A localização geográfica de João Pessoa</label></div></div>
+
+                    <button type="button" class="btn-quiz" id="btnVerificarQuiz">🚀 Finalizar e Corrigir Prova</button>
+                </form>
+                <div id="resultado-quiz"></div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 1</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+            
+            const btnVerificarQuiz = document.getElementById('btnVerificarQuiz');
+            const quizForm = document.getElementById('quiz-form');
+            const resultadoQuiz = document.getElementById('resultado-quiz');
+
+            const gabarito = {
+                q1: 'b', q2: 'b', q3: 'c', q4: 'c', q5: 'c', q6: 'a', q7: 'c', q8: 'b', q9: 'c', q10: 'b',
+                q11: 'c', q12: 'b', q13: 'b', q14: 'c', q15: 'b', q16: 'b', q17: 'c', q18: 'c', q19: 'c', q20: 'c'
+            };
+
+            btnVerificarQuiz.addEventListener('click', () => {
+                let acertos = 0;
+                const totalQuestoes = Object.keys(gabarito).length;
+                
+                for (let i = 1; i <= totalQuestoes; i++) {
+                    const questao = 'q' + i;
+                    const respostaSelecionada = quizForm.querySelector(`input[name="${questao}"]:checked`);
+                    const labels = quizForm.querySelectorAll(`input[name="${questao}"]`);
+                    
+                    labels.forEach(labelInput => {
+                        const parent = labelInput.parentElement;
+                        parent.style.backgroundColor = '';
+                        parent.style.color = '';
+                        parent.style.border = '1px solid var(--cor-borda)';
+                    });
+
+                    if (respostaSelecionada) {
+                        const labelSelecionada = respostaSelecionada.parentElement;
+                        const respostaCorretaInput = quizForm.querySelector(`input[name="${questao}"][value="${gabarito[questao]}"]`);
+                        
+                        if (respostaSelecionada.value === gabarito[questao]) {
+                            acertos++;
+                            labelSelecionada.style.backgroundColor = 'var(--cor-sucesso)';
+                            labelSelecionada.style.color = 'var(--cor-texto-sucesso)';
+                            labelSelecionada.style.border = '1px solid var(--cor-verde)';
+                        } else {
+                            labelSelecionada.style.backgroundColor = 'var(--cor-erro)';
+                            labelSelecionada.style.color = 'var(--cor-texto-erro)';
+                            labelSelecionada.style.border = '1px solid var(--cor-erro)';
+                            if(respostaCorretaInput) {
+                                const labelCorreta = respostaCorretaInput.parentElement;
+                                labelCorreta.style.backgroundColor = 'var(--cor-sucesso)';
+                                labelCorreta.style.border = '1px solid var(--cor-verde)';
+                            }
+                        }
+                    }
+                }
+                
+                resultadoQuiz.textContent = `Seu resultado: ${acertos} de ${totalQuestoes} questões corretas.`;
+                resultadoQuiz.style.color = acertos > (totalQuestoes / 2) ? 'var(--cor-verde)' : 'var(--cor-texto-erro)';
+            });
+        });
+    </script>
+</body>
+</html>

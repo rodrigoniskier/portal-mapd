@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-1 | Aula 7: 1ª Avaliação de Aprendizagem</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-sucesso: #d4edda;
+            --cor-erro: #f8d7da;
+            --cor-texto-sucesso: #155724;
+            --cor-texto-erro: #721c24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+        
+        /* Quiz */
+        .quiz-container {
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #fdfdff;
+        }
+        
+        .questao {
+            margin-bottom: 25px;
+        }
+        
+        .questao p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alternativas label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .alternativas label:hover {
+            background-color: #f1f3f5;
+        }
+
+        .alternativas input {
+            margin-right: 10px;
+        }
+        
+        .btn-quiz {
+            display: inline-block;
+            background-color: var(--cor-verde);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-quiz:hover {
+            background-color: #218838;
+        }
+        
+        #resultado-quiz {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>📝 MAPD-1</h1>
+            <p>Aula 7: Avaliação</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#instrucoes" class="active"><span class="icon">📜</span> Instruções</a></li>
+                <li><a href="#prova"><span class="icon">✅</span> Prova Teórica</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>📝 Aula 7: 1ª Avaliação de Aprendizagem</h1>
+            <p class="subtitulo">Verificação do conhecimento sobre Patologia Celular e Fundamentos de Imunologia.</p>
+        </header>
+
+        <section id="instrucoes" class="content-section active">
+            <h2>📜 1. Instruções</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Sobre esta Avaliação</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Esta é a primeira avaliação formal do componente curricular "Mecanismos de Agressão, Patológicos e de Defesa 1". O objetivo é avaliar sua compreensão e capacidade de aplicar os conceitos abordados nas aulas anteriores.</p>
+                        <h4>Tópicos Incluídos:</h4>
+                        <ul>
+                            <li><strong>Aula 1:</strong> Lesões e Adaptações Celulares</li>
+                            <li><strong>Aula 2:</strong> Morte Celular: Necrose e Apoptose</li>
+                            <li><strong>Aula 4:</strong> Imunidade Inata</li>
+                            <li><strong>Aula 5:</strong> Resposta de Células T</li>
+                            <li><strong>Aula 6:</strong> Resposta de Células B</li>
+                        </ul>
+                        <p>A avaliação consiste em 20 questões de múltipla escolha. Leia cada questão com atenção e selecione a melhor resposta. Ao final, clique em "Verificar Respostas" para ver seu desempenho. Boa prova!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="prova" class="content-section">
+            <h2>✅ 2. Prova Teórica</h2>
+            <div class="quiz-container">
+                <form id="quiz-form">
+                    <div class="questao"><p>1. A hipertrofia patológica do ventrículo esquerdo, comum em pacientes com hipertensão arterial crônica, é resultado de:</p><div class="alternativas"><label><input type="radio" name="q1" value="a">a) Aumento do número de cardiomiócitos</label><label><input type="radio" name="q1" value="b">b) Aumento do tamanho dos cardiomiócitos</label><label><input type="radio" name="q1" value="c">c) Substituição de cardiomiócitos por tecido fibroso</label><label><input type="radio" name="q1" value="d">d) Morte programada de cardiomiócitos</label><label><input type="radio" name="q1" value="e">e) Infiltração de células inflamatórias</label></div></div>
+                    <div class="questao"><p>2. A metaplasia escamosa no epitélio brônquico de um fumante, embora seja uma adaptação, é clinicamente importante porque:</p><div class="alternativas"><label><input type="radio" name="q2" value="a">a) Melhora a função de depuração mucociliar</label><label><input type="radio" name="q2" value="b">b) É um processo irreversível</label><label><input type="radio" name="q2" value="c">c) Aumenta o risco de desenvolvimento de carcinoma</label><label><input type="radio" name="q2" value="d">d) Causa necrose liquefativa</label><label><input type="radio" name="q2" value="e">e) Leva à atrofia do pulmão</label></div></div>
+                    <div class="questao"><p>3. Um paciente sofre um infarto agudo do miocárdio. A morte celular resultante no tecido cardíaco ocorre predominantemente por qual mecanismo e padrão?</p><div class="alternativas"><label><input type="radio" name="q3" value="a">a) Apoptose, sem inflamação</label><label><input type="radio" name="q3" value="b">b) Necrose liquefativa, com formação de pus</label><label><input type="radio" name="q3" value="c">c) Necrose de coagulação, com preservação da arquitetura</label><label><input type="radio" name="q3" value="d">d) Necrose caseosa, com aspecto de queijo</label><label><input type="radio" name="q3" value="e">e) Atrofia, por falta de estímulo</label></div></div>
+                    <div class="questao"><p>4. A eliminação de linfócitos T autorreativos durante sua maturação no timo é um exemplo fundamental de:</p><div class="alternativas"><label><input type="radio" name="q4" value="a">a) Necrose por isquemia</label><label><input type="radio" name="q4" value="b">b) Apoptose fisiológica</label><label><input type="radio" name="q4" value="c">c) Resposta imune inata</label><label><input type="radio" name="q4" value="d">d) Apoptose patológica</label><label><input type="radio" name="q4" value="e">e) Seleção positiva</label></div></div>
+                    <div class="questao"><p>5. Qual célula é a "primeira a responder" em uma infecção bacteriana aguda, sendo recrutada em massa para o local e formando o pus?</p><div class="alternativas"><label><input type="radio" name="q5" value="a">a) Macrófago</label><label><input type="radio" name="q5" value="b">b) Linfócito T</label><label><input type="radio" name="q5" value="c">c) Célula dendrítica</label><label><input type="radio" name="q5" value="d">d) Neutrófilo</label><label><input type="radio" name="q5" value="e">e) Célula B</label></div></div>
+                    <div class="questao"><p>6. O reconhecimento de Padrões Moleculares Associados a Patógenos (PAMPs), como o LPS, por Receptores do tipo Toll (TLRs) é um evento chave da:</p><div class="alternativas"><label><input type="radio" name="q6" value="a">a) Imunidade adaptativa humoral</label><label><input type="radio" name="q6" value="b">b) Memória imunológica</label><label><input type="radio" name="q6" value="c">c) Imunidade inata</label><label><input type="radio" name="q6" value="d">d) Tolerância central</label><label><input type="radio" name="q6" value="e">e) Imunidade adaptativa celular</label></div></div>
+                    <div class="questao"><p>7. Uma célula epitelial infectada por um vírus irá apresentar peptídeos virais em sua superfície para os linfócitos T CD8+ através de qual molécula?</p><div class="alternativas"><label><input type="radio" name="q7" value="a">a) MHC de Classe II</label><label><input type="radio" name="q7" value="b">b) MHC de Classe I</label><label><input type="radio" name="q7" value="c">c) Receptor de Célula B (BCR)</label><label><input type="radio" name="q7" value="d">d) Receptor do tipo Toll (TLR)</label><label><input type="radio" name="q7" value="e">e) CD28</label></div></div>
+                    <div class="questao"><p>8. A ativação de macrófagos para que eles se tornem mais eficientes na destruição de patógenos intracelulares (como a Leishmania) é uma função primordial de qual subpopulação de células T?</p><div class="alternativas"><label><input type="radio" name="q8" value="a">a) Linfócitos T CD8+ citotóxicos</label><label><input type="radio" name="q8" value="b">b) Linfócitos T auxiliares Th2</label><label><input type="radio" name="q8" value="c">c) Linfócitos T auxiliares Th17</label><label><input type="radio" name="q8" value="d">d) Linfócitos T auxiliares Th1</label><label><input type="radio" name="q8" value="e">e) Linfócitos T reguladores</label></div></div>
+                    <div class="questao"><p>9. Em uma primeira infecção por um novo patógeno, qual classe de anticorpo é a primeira a aparecer em níveis detectáveis no soro?</p><div class="alternativas"><label><input type="radio" name="q9" value="a">a) IgG</label><label><input type="radio" name="q9" value="b">b) IgA</label><label><input type="radio" name="q9" value="c">c) IgE</label><label><input type="radio" name="q9" value="d">d) IgM</label><label><input type="radio" name="q9" value="e">e) IgD</label></div></div>
+                    <div class="questao"><p>10. A eficácia das vacinas em conferir proteção a longo prazo baseia-se na capacidade da imunidade adaptativa de gerar:</p><div class="alternativas"><label><input type="radio" name="q10" value="a">a) Uma resposta inflamatória aguda</label><label><input type="radio" name="q10" value="b">b) Células de memória</label><label><input type="radio" name="q10" value="c">c) Uma resposta inata mais forte</label><label><input type="radio" name="q10" value="d">d) Tolerância ao patógeno</label><label><input type="radio" name="q10" value="e">e) Produção contínua de IgM</label></div></div>
+                    <div class="questao"><p>11. A dosagem de enzimas cardíacas no sangue de um paciente com infarto é possível devido a qual evento celular?</p><div class="alternativas"><label><input type="radio" name="q11" value="a">a) Hipertrofia dos cardiomiócitos</label><label><input type="radio" name="q11" value="b">b) Perda da integridade da membrana plasmática durante a necrose</label><label><input type="radio" name="q11" value="c">c) Formação de corpos apoptóticos</label><label><input type="radio" name="q11" value="d">d) Ativação da via intrínseca da apoptose</label><label><input type="radio" name="q11" value="e">e) Adaptação celular ao estresse isquêmico</label></div></div>
+                    <div class="questao"><p>12. Qual célula funciona como a principal ponte entre a imunidade inata e a adaptativa, capturando antígenos na periferia e apresentando-os aos linfócitos T nos linfonodos?</p><div class="alternativas"><label><input type="radio" name="q12" value="a">a) Neutrófilo</label><label><input type="radio" name="q12" value="b">b) Macrófago</label><label><input type="radio" name="q12" value="c">c) Célula NK</label><label><input type="radio" name="q12" value="d">d) Célula dendrítica</label><label><input type="radio" name="q12" value="e">e) Mastócito</label></div></div>
+                    <div class="questao"><p>13. A produção de anticorpos de alta afinidade e a troca de classe (ex: de IgM para IgG) em uma resposta a um antígeno proteico dependem crucialmente da interação entre linfócitos B e:</p><div class="alternativas"><label><input type="radio" name="q13" value="a">a) Linfócitos T CD8+</label><label><input type="radio" name="q13" value="b">b) Células da imunidade inata</label><label><input type="radio" name="q13" value="c">c) Linfócitos T CD4+ auxiliares</label><label><input type="radio" name="q13" value="d">d) O sistema complemento</label><label><input type="radio" name="q13" value="e">e) Células NK</label></div></div>
+                    <div class="questao"><p>14. Um abscesso cerebral é um exemplo clássico de qual padrão de necrose?</p><div class="alternativas"><label><input type="radio" name="q14" value="a">a) De coagulação</label><label><input type="radio" name="q14" value="b">b) Caseosa</label><label><input type="radio" name="q14" value="c">c) Gordurosa</label><label><input type="radio" name="q14" value="d">d) Liquefativa</label><label><input type="radio" name="q14" value="e">e) Fibrinoide</label></div></div>
+                    <div class="questao"><p>15. Opsonização, quimiotaxia e formação de um complexo de ataque à membrana são funções efetoras de qual componente humoral da imunidade inata?</p><div class="alternativas"><label><input type="radio" name="q15" value="a">a) Anticorpos IgE</label><label><input type="radio" name="q15" value="b">b) Sistema Complemento</label><label><input type="radio" name="q15" value="c">c) Interferons</label><label><input type="radio" name="q15" value="d">d) Lisozima</label><label><input type="radio" name="q15" value="e">e) Citocinas como TNF e IL-1</label></div></div>
+                    <div class="questao"><p>16. A interação entre a molécula B7 em uma APC e a molécula CD28 em um linfócito T virgem fornece o:</p><div class="alternativas"><label><input type="radio" name="q16" value="a">a) Sinal 1 (de especificidade)</label><label><input type="radio" name="q16" value="b">b) Sinal 2 (de co-estímulo)</label><label><input type="radio" name="q16" value="c">c) Sinal 3 (de diferenciação)</label><label><input type="radio" name="q16" value="d">d) Sinal para induzir anergia</label><label><input type="radio" name="q16" value="e">e) Sinal para induzir apoptose</label></div></div>
+                    <div class="questao"><p>17. Qual classe de imunoglobulina é a principal responsável pela defesa em superfícies mucosas, como o intestino e o trato respiratório?</p><div class="alternativas"><label><input type="radio" name="q17" value="a">a) IgM</label><label><input type="radio" name="q17" value="b">b) IgG</label><label><input type="radio" name="q17" value="c">c) IgD</label><label><input type="radio" name="q17" value="d">d) IgE</label><label><input type="radio" name="q17" value="e">e) IgA</label></div></div>
+                    <div class="questao"><p>18. A diminuição do tamanho de um músculo em um membro imobilizado por gesso é um exemplo de:</p><div class="alternativas"><label><input type="radio" name="q18" value="a">a) Hipoplasia</label><label><input type="radio" name="q18" value="b">b) Atrofia</label><label><input type="radio" name="q18" value="c">c) Aplasia</label><label><input type="radio" name="q18" value="d">d) Necrose</label><label><input type="radio" name="q18" value="e">e) Metaplasia</label></div></div>
+                    <div class="questao"><p>19. Linfócitos T citotóxicos (CTLs) eliminam células-alvo (infectadas ou tumorais) através da liberação de perforina e granzimas, que induzem:</p><div class="alternativas"><label><input type="radio" name="q19" value="a">a) Necrose</label><label><input type="radio" name="q19" value="b">b) Apoptose</label><label><input type="radio" name="q19" value="c">c) Uma resposta inflamatória intensa</label><label><input type="radio" name="q19" value="d">d) Fagocitose</label><label><input type="radio" name="q19" value="e">e) Anergia</label></div></div>
+                    <div class="questao"><p>20. Uma resposta imune secundária (anamnéstica) a um antígeno é caracterizada por:</p><div class="alternativas"><label><input type="radio" name="q20" value="a">a) Um pico de produção de IgM</label><label><input type="radio" name="q20" value="b">b) Uma fase de latência mais longa que a resposta primária</label><label><input type="radio" name="q20" value="c">c) Uma resposta mais rápida, mais forte e com predomínio de IgG</label><label><input type="radio" name="q20" value="d">d) A ativação apenas da imunidade inata</label><label><input type="radio" name="q20" value="e">e) A necessidade de doses maiores do antígeno para ser iniciada</label></div></div>
+
+                    <button type="button" class="btn-quiz" id="btnVerificarQuiz">🚀 Finalizar e Corrigir Prova</button>
+                </form>
+                <div id="resultado-quiz"></div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 1</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+            
+            const btnVerificarQuiz = document.getElementById('btnVerificarQuiz');
+            const quizForm = document.getElementById('quiz-form');
+            const resultadoQuiz = document.getElementById('resultado-quiz');
+
+            const gabarito = {
+                q1: 'b', q2: 'c', q3: 'c', q4: 'b', q5: 'd', q6: 'c', q7: 'b', q8: 'd', q9: 'd', q10: 'b',
+                q11: 'b', q12: 'd', q13: 'c', q14: 'd', q15: 'b', q16: 'b', q17: 'e', q18: 'b', q19: 'b', q20: 'c'
+            };
+
+            btnVerificarQuiz.addEventListener('click', () => {
+                let acertos = 0;
+                const totalQuestoes = Object.keys(gabarito).length;
+                
+                for (let i = 1; i <= totalQuestoes; i++) {
+                    const questao = 'q' + i;
+                    const respostaSelecionada = quizForm.querySelector(`input[name="${questao}"]:checked`);
+                    const labels = quizForm.querySelectorAll(`input[name="${questao}"]`);
+                    
+                    labels.forEach(labelInput => {
+                        const parent = labelInput.parentElement;
+                        parent.style.backgroundColor = '';
+                        parent.style.color = '';
+                        parent.style.border = '1px solid var(--cor-borda)';
+                    });
+
+                    if (respostaSelecionada) {
+                        const labelSelecionada = respostaSelecionada.parentElement;
+                        const respostaCorretaInput = quizForm.querySelector(`input[name="${questao}"][value="${gabarito[questao]}"]`);
+                        
+                        if (respostaSelecionada.value === gabarito[questao]) {
+                            acertos++;
+                            labelSelecionada.style.backgroundColor = 'var(--cor-sucesso)';
+                            labelSelecionada.style.color = 'var(--cor-texto-sucesso)';
+                            labelSelecionada.style.border = '1px solid var(--cor-verde)';
+                        } else {
+                            labelSelecionada.style.backgroundColor = 'var(--cor-erro)';
+                            labelSelecionada.style.color = 'var(--cor-texto-erro)';
+                            labelSelecionada.style.border = '1px solid var(--cor-erro)';
+                            if(respostaCorretaInput) {
+                                const labelCorreta = respostaCorretaInput.parentElement;
+                                labelCorreta.style.backgroundColor = 'var(--cor-sucesso)';
+                                labelCorreta.style.border = '1px solid var(--cor-verde)';
+                            }
+                        }
+                    }
+                }
+                
+                resultadoQuiz.textContent = `Seu resultado: ${acertos} de ${totalQuestoes} questões corretas.`;
+                resultadoQuiz.style.color = acertos > (totalQuestoes / 2) ? 'var(--cor-verde)' : 'var(--cor-texto-erro)';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-1 | Aula 16: Discussão de Caso Clínico</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-vermelho: #dc3545;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-sucesso: #d4edda;
+            --cor-erro: #f8d7da;
+            --cor-texto-sucesso: #155724;
+            --cor-texto-erro: #721c24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            color: #495057;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            transition: box-shadow 0.3s ease;
+            max-width: 600px;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Quiz */
+        .quiz-container {
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #fdfdff;
+        }
+        
+        .questao {
+            margin-bottom: 25px;
+        }
+        
+        .questao p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alternativas label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .alternativas label:hover {
+            background-color: #f1f3f5;
+        }
+
+        .alternativas input {
+            margin-right: 10px;
+        }
+        
+        .btn-quiz {
+            display: inline-block;
+            background-color: var(--cor-verde);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-quiz:hover {
+            background-color: #218838;
+        }
+        
+        #resultado-quiz {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>🧠 MAPD-1</h1>
+            <p>Aula 16: Caso Clínico Integrado</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#objetivos" class="active"><span class="icon">🎯</span> Objetivos da Aula</a></li>
+                <li><a href="#caso1"><span class="icon">🔥</span> Caso Clínico: Sepse</a></li>
+                <li><a href="#sintese"><span class="icon">💡</span> Síntese e Pontos-Chave</a></li>
+                <li><a href="#quiz"><span class="icon">✅</span> Quiz de Aplicação</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>🧠 Aula 16: Discussão de Caso Clínico Integrado</h1>
+            <p class="subtitulo">Integrando patologia, imunologia e microbiologia para resolver um desafio clínico.</p>
+        </header>
+
+        <section id="objetivos" class="content-section active">
+            <h2>🎯 1. Objetivos da Aula</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Consolidando o Raciocínio Clínico-Patológico</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Esta aula final de discussão de casos tem como objetivo integrar todo o conhecimento adquirido ao longo do componente curricular. Vamos analisar um caso complexo que envolve conceitos de lesão celular, inflamação, resposta imune, microbiologia, controle de infecções e resistência antimicrobiana.</p>
+                        <h4>Ao final desta sessão, você será capaz de:</h4>
+                        <ul>
+                            <li><strong>Analisar</strong> um caso clínico complexo, identificando os principais problemas do paciente.</li>
+                            <li><strong>Correlacionar</strong> a evolução clínica com os mecanismos fisiopatológicos subjacentes.</li>
+                            <li><strong>Justificar</strong> a escolha de exames diagnósticos e abordagens terapêuticas com base nos princípios da microbiologia e imunologia.</li>
+                            <li><strong>Avaliar</strong> o impacto da resistência antimicrobiana e das falhas no controle de infecções no desfecho do paciente.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="caso1" class="content-section">
+            <h2>🔥 2. Caso Clínico: Sepse de Origem Hospitalar</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Apresentação do Caso</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Identificação:</h4>
+                        <p>J.C.M., 68 anos, masculino, internado há 20 dias na UTI de um hospital em João Pessoa para tratamento de um AVC isquêmico extenso. Em ventilação mecânica invasiva e com cateter venoso central (CVC) em veia subclávia.</p>
+                        <h4>Evolução:</h4>
+                        <p>Nas últimas 24 horas, o paciente evoluiu com febre (39.5°C), taquicardia (130 bpm), hipotensão (PA 80/40 mmHg) e piora da troca gasosa, necessitando de aumento dos parâmetros do ventilador e início de droga vasoativa (noradrenalina). Os exames laboratoriais mostram leucocitose (22.000 células/mm³) com desvio à esquerda, aumento da Proteína C Reativa (PCR) e lactato arterial elevado.</p>
+                        <h4>Exames Microbiológicos:</h4>
+                        <p>Foram coletadas hemoculturas e cultura de secreção traqueal.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/dc3545/FFFFFF?text=Raio-X+com+SARA" data-legenda="Radiografia de tórax mostrando infiltrados pulmonares difusos e bilaterais, compatível com Síndrome do Desconforto Respiratório Agudo (SARA).">
+                            <img src="https://placehold.co/800x500/dc3545/FFFFFF?text=Raio-X+com+SARA" alt="Raio-X com SARA">
+                            <p>Clique para ampliar: SARA na Sepse.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Questão 1: Qual a principal hipótese diagnóstica e por quê?</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <p><strong>Hipótese:</strong> <strong>Choque Séptico</strong> de provável foco pulmonar (Pneumonia Associada à Ventilação Mecânica - PAVM) ou de corrente sanguínea (Infecção Primária da Corrente Sanguínea - IPCS).</p>
+                    <p><strong>Justificativa:</strong> O paciente apresenta critérios de <strong>sepse</strong> (disfunção orgânica com risco de vida causada por uma resposta desregulada do hospedeiro à infecção) e <strong>choque séptico</strong> (sepse com hipotensão persistente necessitando de vasopressores e com lactato elevado). Os fatores de risco são a longa internação em UTI, o uso de dispositivos invasivos (tubo orotraqueal, CVC) e a condição de base (AVC).</p>
+                </div></div>
+            </div>
+             <div class="acordeao">
+                <div class="acordeao-titulo">Questão 2: Descreva a fisiopatologia da sepse em nível molecular e celular.</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <p>Na sepse, a resposta inflamatória do hospedeiro, que deveria ser protetora, torna-se generalizada e descontrolada. PAMPs bacterianos (como o LPS de bacilos Gram-negativos) e DAMPs (liberados pelo dano tecidual inicial) ativam maciçamente a imunidade inata.</p>
+                    <p>Isso leva a uma <strong>"tempestade de citocinas"</strong>, com liberação sistêmica de mediadores pró-inflamatórios (TNF, IL-1, IL-6). Essas citocinas causam:</p>
+                    <ul>
+                        <li><strong>Vasodilatação generalizada e aumento da permeabilidade vascular:</strong> Levando à hipotensão e ao extravasamento de fluido para os tecidos (edema).</li>
+                        <li><strong>Ativação da cascata de coagulação:</strong> Formação de microtrombos na circulação, consumindo fatores de coagulação e plaquetas (coagulação intravascular disseminada - CIVD).</li>
+                        <li><strong>Lesão endotelial:</strong> O endotélio ativado expressa moléculas de adesão, promovendo o acúmulo de neutrófilos e mais dano tecidual.</li>
+                    </ul>
+                    <p>A combinação de hipotensão, microtrombose e lesão endotelial resulta em <strong>hipoperfusão tecidual</strong>, levando à disfunção e falência de múltiplos órgãos.</p>
+                </div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Questão 3: Qual o agente etiológico provável e qual mecanismo de resistência devemos temer?</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <p><strong>Agentes Prováveis:</strong> Em uma infecção hospitalar de UTI, os principais suspeitos são bacilos <strong>Gram-negativos multirresistentes</strong> (como <em>Klebsiella pneumoniae</em>, <em>Pseudomonas aeruginosa</em>, <em>Acinetobacter baumannii</em>) ou cocos <strong>Gram-positivos</strong> como o MRSA.</p>
+                    <p><strong>Mecanismo de Resistência:</strong> Dada a gravidade e o ambiente, a principal preocupação é a resistência aos carbapenêmicos mediada pela produção de <strong>carbapenemases (como a KPC)</strong>. Esse mecanismo de inativação enzimática, frequentemente carregado em plasmídeos, limita drasticamente as opções terapêuticas.</p>
+                </div></div>
+            </div>
+             <div class="acordeao">
+                <div class="acordeao-titulo">Questão 4: Que medidas de controle de infecção poderiam ter prevenido este quadro?</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <p>A prevenção é a chave. A aplicação rigorosa de <strong>"bundles"</strong> de prevenção é fundamental:</p>
+                    <ul>
+                        <li><strong>Bundle de Prevenção de PAVM:</strong> Manter a cabeceira elevada, realizar higiene oral com clorexidina, avaliar diariamente a possibilidade de extubação ("despertar diário").</li>
+                        <li><strong>Bundle de Prevenção de IPCSL:</strong> Higienização rigorosa das mãos, precauções máximas de barreira na inserção, antissepsia com clorexidina, e avaliação diária da necessidade do cateter para remoção precoce.</li>
+                        <li><strong>Precauções de Contato:</strong> Para pacientes colonizados ou infectados por bactérias multirresistentes, para evitar a disseminação no ambiente da UTI.</li>
+                    </ul>
+                </div></div>
+            </div>
+        </section>
+
+        <section id="sintese" class="content-section">
+            <h2>💡 3. Síntese e Pontos-Chave</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Integrando os Conceitos do MAPD-1</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Este caso clínico ilustra a interconexão de todos os tópicos abordados no semestre:</p>
+                        <ul>
+                            <li><strong>Lesão Celular:</strong> A hipoperfusão na sepse causa lesão celular hipóxica em múltiplos órgãos.</li>
+                            <li><strong>Inflamação:</strong> A sepse é a manifestação máxima de uma resposta inflamatória sistêmica e desregulada.</li>
+                            <li><strong>Imunidade Inata:</strong> É a principal desencadeadora da tempestade de citocinas através do reconhecimento de PAMPs.</li>
+                            <li><strong>Microbiologia:</strong> A identificação do agente e seu perfil de sensibilidade são cruciais para o tratamento.</li>
+                            <li><strong>Resistência:</strong> A presença de bactérias multirresistentes (como KPC) define o prognóstico e o desafio terapêutico.</li>
+                            <li><strong>Controle de Infecção:</strong> A prevenção através de medidas baseadas em evidências é a estratégia mais eficaz.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz" class="content-section">
+            <h2>✅ 4. Quiz de Aplicação</h2>
+            <p>Teste sua capacidade de integrar os conhecimentos neste cenário clínico complexo.</p>
+            <div class="quiz-container">
+                <form id="quiz-form">
+                    <div class="questao"><p>1. A disfunção orgânica na sepse é causada principalmente por:</p><div class="alternativas"><label><input type="radio" name="q1" value="a">a) Ação direta de toxinas bacterianas nos órgãos</label><label><input type="radio" name="q1" value="b">b) Uma resposta inflamatória desregulada do hospedeiro, levando à hipoperfusão tecidual</label><label><input type="radio" name="q1" value="c">c) Uma falha da imunidade adaptativa em produzir anticorpos</label><label><input type="radio" name="q1" value="d">d) A replicação viral dentro das células</label><label><input type="radio" name="q1" value="e">e) Uma resposta autoimune</label></div></div>
+                    <div class="questao"><p>2. O lactato arterial elevado no paciente com choque séptico é um marcador de:</p><div class="alternativas"><label><input type="radio" name="q2" value="a">a) Boa perfusão tecidual</label><label><input type="radio" name="q2" value="b">b) Metabolismo aeróbico normal</label><label><input type="radio" name="q2" value="c">c) Hipoperfusão tecidual e metabolismo anaeróbico</label><label><input type="radio" name="q2" value="d">d) Função hepática normal</label><label><input type="radio" name="q2" value="e">e) Infecção fúngica</label></div></div>
+                    <div class="questao"><p>3. A produção de carbapenemases (KPC) é um mecanismo de resistência do tipo:</p><div class="alternativas"><label><input type="radio" name="q3" value="a">a) Modificação do alvo</label><label><input type="radio" name="q3" value="b">b) Bomba de efluxo</label><label><input type="radio" name="q3" value="c">c) Inativação enzimática</label><label><input type="radio" name="q3" value="d">d) Alteração de porinas</label><label><input type="radio" name="q3" value="e">e) Resistência intrínseca</label></div></div>
+                    <div class="questao"><p>4. A Síndrome do Desconforto Respiratório Agudo (SARA) na sepse é causada por:</p><div class="alternativas"><label><input type="radio" name="q4" value="a">a) Embolia pulmonar</label><label><input type="radio" name="q4" value="b">b) Infiltração de linfócitos nos alvéolos</label><label><input type="radio" name="q4" value="c">c) Aumento da permeabilidade dos capilares alveolares com extravasamento de fluido rico em proteínas</label><label><input type="radio" name="q4" value="d">d) Replicação direta do vírus no pulmão</label><label><input type="radio" name="q4" value="e">e) Formação de granulomas</label></div></div>
+                    <div class="questao"><p>5. Qual das seguintes medidas faz parte do bundle de prevenção de Pneumonia Associada à Ventilação Mecânica (PAVM)?</p><div class="alternativas"><label><input type="radio" name="q5" value="a">a) Manter o paciente em posição supina (deitado reto)</label><label><input type="radio" name="q5" value="b">b) Realizar higiene oral com clorexidina</label><label><input type="radio" name="q5" value="c">c) Trocar o circuito do ventilador diariamente</label><label><input type="radio" name="q5" value="d">d) Administrar antibióticos profiláticos</label><label><input type="radio" name="q5" value="e">e) Manter o paciente sedado profundamente</label></div></div>
+                    <div class="questao"><p>6. A "tempestade de citocinas" na sepse é iniciada pelo reconhecimento de PAMPs, como o LPS, por qual receptor da imunidade inata?</p><div class="alternativas"><label><input type="radio" name="q6" value="a">a) TCR</label><label><input type="radio" name="q6" value="b">b) BCR</label><label><input type="radio" name="q6" value="c">c) MHC Classe I</label><label><input type="radio" name="q6" value="d">d) TLR4</label><label><input type="radio" name="q6" value="e">e) CD28</label></div></div>
+                    <div class="questao"><p>7. A leucocitose com "desvio à esquerda" indica:</p><div class="alternativas"><label><input type="radio" name="q7" value="a">a) Uma infecção crônica</label><label><input type="radio" name="q7" value="b">b) Uma resposta alérgica</label><label><input type="radio" name="q7" value="c">c) Uma infecção viral</label><label><input type="radio" name="q7" value="d">d) Uma infecção bacteriana aguda com liberação de neutrófilos jovens da medula óssea</label><label><input type="radio" name="q7" value="e">e) Uma diminuição no número total de leucócitos</label></div></div>
+                    <div class="questao"><p>8. A hipotensão no choque séptico é causada primariamente por:</p><div class="alternativas"><label><input type="radio" name="q8" value="a">a) Perda de sangue</label><label><input type="radio" name="q8" value="b">b) Vasodilatação sistêmica</label><label><input type="radio" name="q8" value="c">c) Falha da bomba cardíaca</label><label><input type="radio" name="q8" value="d">d) Obstrução vascular</label><label><input type="radio" name="q8" value="e">e) Dor intensa</label></div></div>
+                    <div class="questao"><p>9. A transferência do gene *bla*KPC entre bactérias no ambiente hospitalar ocorre mais eficientemente através de:</p><div class="alternativas"><label><input type="radio" name="q9" value="a">a) Divisão celular vertical</label><label><input type="radio" name="q9" value="b">b) Mutação espontânea</label><label><input type="radio" name="q9" value="c">c) Plasmídeos conjugativos</label><label><input type="radio" name="q9" value="d">d) Transdução viral</label><label><input type="radio" name="q9" value="e">e) Transformação com DNA livre</label></div></div>
+                    <div class="questao"><p>10. Qual é a medida mais eficaz e simples para prevenir a transmissão de microrganismos em serviços de saúde?</p><div class="alternativas"><label><input type="radio" name="q10" value="a">a) Uso de luvas em todos os procedimentos</label><label><input type="radio" name="q10" value="b">b) Higienização das mãos</label><label><input type="radio" name="q10" value="c">c) Uso de máscaras N95</label><label><input type="radio" name="q10" value="d">d) Antibioticoprofilaxia universal</label><label><input type="radio" name="q10" value="e">e) Limpeza do ambiente</label></div></div>
+                    <div class="questao"><p>11. A coagulação intravascular disseminada (CIVD) na sepse é uma consequência da:</p><div class="alternativas"><label><input type="radio" name="q11" value="a">a) Ativação sistêmica da cascata de coagulação pela inflamação</label><label><input type="radio" name="q11" value="b">b) Falta de plaquetas</label><label><input type="radio" name="q11" value="c">c) Ação direta de toxinas bacterianas</label><label><input type="radio" name="q11" value="d">d) Resposta de anticorpos</label><label><input type="radio" name="q11" value="e">e) Lesão hepática</label></div></div>
+                    <div class="questao"><p>12. A avaliação diária da necessidade do CVC é importante porque:</p><div class="alternativas"><label><input type="radio" name="q12" value="a">a) O cateter é caro</label><label><input type="radio" name="q12" value="b">b) O risco de infecção aumenta a cada dia que o cateter permanece</label><label><input type="radio" name="q12" value="c">c) O paciente pode desenvolver alergia ao material</label><label><input type="radio" name="q12" value="d">d) O cateter pode obstruir</label><label><input type="radio" name="q12" value="e">e) O procedimento de remoção é complexo</label></div></div>
+                    <div class="questao"><p>13. A principal citocina envolvida na indução da febre é a:</p><div class="alternativas"><label><input type="radio" name="q13" value="a">a) IL-10</label><label><input type="radio" name="q13" value="b">b) IFN-γ</label><label><input type="radio" name="q13" value="c">c) IL-4</label><label><input type="radio" name="q13" value="d">d) IL-1</label><label><input type="radio" name="q13" value="e">e) IL-2</label></div></div>
+                    <div class="questao"><p>14. O uso de droga vasoativa (noradrenalina) no choque séptico visa combater a:</p><div class="alternativas"><label><input type="radio" name="q14" value="a">a) Febre</label><label><input type="radio" name="q14" value="b">b) Vasodilatação periférica</label><label><input type="radio" name="q14" value="c">c) Infecção bacteriana</label><label><input type="radio" name="q14" value="d">d) Resposta inflamatória</label><label><input type="radio" name="q14" value="e">e) Formação de trombos</label></div></div>
+                    <div class="questao"><p>15. Qual dos seguintes NÃO é um fator de risco para desenvolver uma IRAS por bactéria multirresistente?</p><div class="alternativas"><label><input type="radio" name="q15" value="a">a) Internação prolongada em UTI</label><label><input type="radio" name="q15" value="b">b) Uso prévio de antibióticos de amplo espectro</label><label><input type="radio" name="q15" value="c">c) Uso de dispositivos invasivos (CVC, ventilação mecânica)</label><label><input type="radio" name="q15" value="d">d) Ser jovem e previamente hígido</label><label><input type="radio" name="q15" value="e">e) Proximidade com outros pacientes colonizados</label></div></div>
+                    <div class="questao"><p>16. A lesão celular que ocorre nos órgãos durante a sepse é primariamente do tipo:</p><div class="alternativas"><label><input type="radio" name="q16" value="a">a) Necrose caseosa</label><label><input type="radio" name="q16" value="b">b) Apoptose</label><label><input type="radio" name="q16" value="c">c) Lesão hipóxica/isquêmica</label><label><input type="radio" name="q16" value="d">d) Metaplasia</label><label><input type="radio" name="q16" value="e">e) Atrofia</label></div></div>
+                    <div class="questao"><p>17. Um paciente com suspeita de sepse deve ter hemoculturas coletadas:</p><div class="alternativas"><label><input type="radio" name="q17" value="a">a) Apenas se a febre persistir por 48 horas</label><label><input type="radio" name="q17" value="b">b) Após o início do antibiótico</label><label><input type="radio" name="q17" value="c">c) O mais rápido possível, antes de iniciar o antibiótico</label><label><input type="radio" name="q17" value="d">d) Apenas do cateter venoso central</label><label><input type="radio" name="q17" value="e">e) Não há necessidade de coletar hemoculturas</label></div></div>
+                    <div class="questao"><p>18. A principal célula responsável pela produção massiva de TNF e IL-1 no início da sepse é o:</p><div class="alternativas"><label><input type="radio" name="q18" value="a">a) Linfócito B</label><label><input type="radio" name="q18" value="b">b) Neutrófilo</label><label><input type="radio" name="q18" value="c">c) Macrófago</label><label><input type="radio" name="q18" value="d">d) Plasmócito</label><label><input type="radio" name="q18" value="e">e) Mastócito</label></div></div>
+                    <div class="questao"><p>19. O termo "choque" em medicina refere-se a um estado de:</p><div class="alternativas"><label><input type="radio" name="q19" value="a">a) Confusão mental</label><label><input type="radio" name="q19" value="b">b) Hipoperfusão tecidual sistêmica</label><label><input type="radio" name="q19" value="c">c) Pressão arterial elevada</label><label><input type="radio" name="q19" value="d">d) Resposta emocional intensa</label><label><input type="radio" name="q19" value="e">e) Temperatura corporal baixa</label></div></div>
+                    <div class="questao"><p>20. A melhor abordagem para o paciente do caso clínico, após a coleta de culturas, seria:</p><div class="alternativas"><label><input type="radio" name="q20" value="a">a) Aguardar o resultado da cultura para iniciar o tratamento</label><label><input type="radio" name="q20" value="b">b) Iniciar imediatamente um antibiótico de amplo espectro com cobertura para bactérias hospitalares multirresistentes</label><label><input type="radio" name="q20" value="c">c) Iniciar apenas um antibiótico para Gram-positivos</label><label><input type="radio" name="q20" value="d">d) Manter apenas o suporte com vasopressores</label><label><input type="radio" name="q20" value="e">e) Realizar uma nova radiografia de tórax</label></div></div>
+
+                    <button type="button" class="btn-quiz" id="btnVerificarQuiz">🚀 Finalizar e Corrigir Prova</button>
+                </form>
+                <div id="resultado-quiz"></div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 1</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+            
+            const btnVerificarQuiz = document.getElementById('btnVerificarQuiz');
+            const quizForm = document.getElementById('quiz-form');
+            const resultadoQuiz = document.getElementById('resultado-quiz');
+
+            const gabarito = {
+                q1: 'b', q2: 'c', q3: 'c', q4: 'a', q5: 'b', q6: 'd', q7: 'd', q8: 'b', q9: 'c', q10: 'b',
+                q11: 'a', q12: 'b', q13: 'd', q14: 'b', q15: 'd', q16: 'c', q17: 'c', q18: 'c', q19: 'b', q20: 'b'
+            };
+
+            btnVerificarQuiz.addEventListener('click', () => {
+                let acertos = 0;
+                const totalQuestoes = Object.keys(gabarito).length;
+                
+                for (let i = 1; i <= totalQuestoes; i++) {
+                    const questao = 'q' + i;
+                    const respostaSelecionada = quizForm.querySelector(`input[name="${questao}"]:checked`);
+                    const labels = quizForm.querySelectorAll(`input[name="${questao}"]`);
+                    
+                    labels.forEach(labelInput => {
+                        const parent = labelInput.parentElement;
+                        parent.style.backgroundColor = '';
+                        parent.style.color = '';
+                        parent.style.border = '1px solid var(--cor-borda)';
+                    });
+
+                    if (respostaSelecionada) {
+                        const labelSelecionada = respostaSelecionada.parentElement;
+                        const respostaCorretaInput = quizForm.querySelector(`input[name="${questao}"][value="${gabarito[questao]}"]`);
+                        
+                        if (respostaSelecionada.value === gabarito[questao]) {
+                            acertos++;
+                            labelSelecionada.style.backgroundColor = 'var(--cor-sucesso)';
+                            labelSelecionada.style.color = 'var(--cor-texto-sucesso)';
+                            labelSelecionada.style.border = '1px solid var(--cor-verde)';
+                        } else {
+                            labelSelecionada.style.backgroundColor = 'var(--cor-erro)';
+                            labelSelecionada.style.color = 'var(--cor-texto-erro)';
+                            labelSelecionada.style.border = '1px solid var(--cor-erro)';
+                            if(respostaCorretaInput) {
+                                const labelCorreta = respostaCorretaInput.parentElement;
+                                labelCorreta.style.backgroundColor = 'var(--cor-sucesso)';
+                                labelCorreta.style.border = '1px solid var(--cor-verde)';
+                            }
+                        }
+                    }
+                }
+                
+                resultadoQuiz.textContent = `Seu resultado: ${acertos} de ${totalQuestoes} questões corretas.`;
+                resultadoQuiz.style.color = acertos > (totalQuestoes / 2) ? 'var(--cor-verde)' : 'var(--cor-texto-erro)';
+            });
+        });
+    </script>
+</body>
+</html>

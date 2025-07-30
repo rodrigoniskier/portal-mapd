@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-1 | Aula 5: Resposta de Células T</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-sucesso: #d4edda;
+            --cor-erro: #f8d7da;
+            --cor-texto-sucesso: #155724;
+            --cor-texto-erro: #721c24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Quiz */
+        .quiz-container {
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #fdfdff;
+        }
+        
+        .questao {
+            margin-bottom: 25px;
+        }
+        
+        .questao p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alternativas label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .alternativas label:hover {
+            background-color: #f1f3f5;
+        }
+
+        .alternativas input {
+            margin-right: 10px;
+        }
+        
+        .btn-quiz {
+            display: inline-block;
+            background-color: var(--cor-verde);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-quiz:hover {
+            background-color: #218838;
+        }
+        
+        #resultado-quiz {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>🎯 MAPD-1</h1>
+            <p>Aula 5: Resposta de Células T</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#introducao" class="active"><span class="icon">📖</span> Introdução</a></li>
+                <li><a href="#maturacao"><span class="icon">🧬</span> Maturação e TCR</a></li>
+                <li><a href="#apresentacao"><span class="icon">🤝</span> Apresentação de Antígenos</a></li>
+                <li><a href="#ativacao"><span class="icon">⚡</span> Ativação e Diferenciação</a></li>
+                <li><a href="#efetoras"><span class="icon">💥</span> Funções Efetoras</a></li>
+                <li><a href="#casos-clinicos"><span class="icon">🩺</span> Casos Clínicos (JP)</a></li>
+                <li><a href="#quiz"><span class="icon">✅</span> Quiz e Prova</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>🎯 Aula 5: Resposta de Células T</h1>
+            <p class="subtitulo">Os maestros da resposta imune adaptativa.</p>
+        </header>
+
+        <section id="introducao" class="content-section active">
+            <h2>📖 1. Introdução à Imunidade Celular</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Papel Central dos Linfócitos T</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Enquanto a imunidade inata oferece uma defesa rápida e geral, a imunidade adaptativa proporciona uma resposta altamente específica e duradoura. O principal ator da imunidade adaptativa celular é o <strong>Linfócito T</strong>.</p>
+                        <p>Os linfócitos T são responsáveis por orquestrar a resposta imune e por eliminar diretamente células infectadas por patógenos intracelulares (como vírus) e células tumorais. Eles não reconhecem patógenos inteiros, mas sim pequenos fragmentos de antígenos apresentados na superfície de outras células.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="maturacao" class="content-section">
+            <h2>🧬 2. Maturação no Timo e o Receptor de Célula T (TCR)</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">A Escola do Timo: Seleção Positiva e Negativa</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Os linfócitos T se originam na medula óssea, mas amadurecem no <strong>timo</strong>. Neste órgão, eles passam por um rigoroso processo de seleção para garantir que sejam funcionais e seguros:</p>
+                        <ul>
+                            <li><strong>Seleção Positiva:</strong> Apenas os linfócitos T que conseguem reconhecer fracamente as moléculas do Complexo Principal de Histocompatibilidade (MHC) do próprio corpo sobrevivem. Isso garante que eles serão capazes de interagir com outras células.</li>
+                            <li><strong>Seleção Negativa:</strong> Os linfócitos T que reconhecem <strong>fortemente</strong> antígenos próprios apresentados pelo MHC são eliminados por apoptose. Isso é crucial para prevenir a autoimunidade (tolerância central).</li>
+                        </ul>
+                        <p>Ao final, apenas uma pequena fração de linfócitos T maduros e "educados" deixa o timo e entra na circulação.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Receptor de Célula T (TCR)</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Cada linfócito T expressa em sua superfície um receptor único, o <strong>Receptor de Célula T (TCR)</strong>. O TCR é responsável por reconhecer um complexo específico formado por um peptídeo (fragmento de antígeno) e uma molécula de MHC na superfície de uma célula apresentadora de antígeno (APC).</p>
+                        <p>A enorme diversidade de TCRs no corpo é gerada por um processo de recombinação genética durante a maturação no timo, permitindo que o sistema imune reconheça um vasto universo de antígenos.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/28A745/FFFFFF?text=Estrutura+do+TCR" data-legenda="Diagrama da estrutura do Receptor de Célula T (TCR) associado ao complexo CD3, que transmite o sinal de ativação para o interior da célula.">
+                            <img src="https://placehold.co/800x500/28A745/FFFFFF?text=Estrutura+do+TCR" alt="Estrutura do TCR">
+                            <p>Clique para ampliar: Estrutura do TCR.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="apresentacao" class="content-section">
+            <h2>🤝 3. Apresentação de Antígenos e o MHC</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">MHC Classe I: Vigiando o Interior da Célula</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>As moléculas de <strong>MHC de classe I</strong> são expressas por <strong>todas as células nucleadas</strong> do corpo. Elas apresentam peptídeos derivados de proteínas que estão dentro da célula (endógenas).</p>
+                        <p>Se uma célula está infectada por um vírus, proteínas virais são processadas e seus peptídeos são carregados em moléculas de MHC I e exibidos na superfície. Este complexo é um sinal de "me mate" para os <strong>Linfócitos T CD8+</strong> (citotóxicos).</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">MHC Classe II: Apresentando o Perigo Externo</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>As moléculas de <strong>MHC de classe II</strong> são expressas apenas por <strong>Células Apresentadoras de Antígenos (APCs)</strong> profissionais, como células dendríticas, macrófagos e linfócitos B.</p>
+                        <p>Essas células fagocitam patógenos extracelulares, os degradam em peptídeos e os apresentam em moléculas de MHC II. Este complexo é um sinal de "ajude a orquestrar uma resposta" para os <strong>Linfócitos T CD4+</strong> (auxiliares).</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/FFD700/212529?text=MHC+I+vs+MHC+II" data-legenda="Diagrama comparando a via de apresentação do MHC Classe I (antígenos endógenos para CD8+) e MHC Classe II (antígenos exógenos para CD4+).">
+                            <img src="https://placehold.co/800x500/FFD700/212529?text=MHC+I+vs+MHC+II" alt="MHC I vs MHC II">
+                            <p>Clique para ampliar: Vias de Apresentação de Antígeno.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ativacao" class="content-section">
+            <h2>⚡ 4. Ativação e Diferenciação de Linfócitos T</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Modelo dos Dois Sinais</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Para que um linfócito T virgem (naive) seja ativado, ele precisa receber dois sinais de uma APC (geralmente uma célula dendrítica):</p>
+                        <ul>
+                            <li><strong>Sinal 1 (Especificidade):</strong> A ligação do TCR ao complexo peptídeo-MHC.</li>
+                            <li><strong>Sinal 2 (Co-estímulo):</strong> A interação entre moléculas co-estimulatórias, como a B7 na APC e a <strong>CD28</strong> no linfócito T. A expressão de B7 na APC é induzida pela detecção de PAMPs, garantindo que a ativação só ocorra no contexto de uma infecção.</li>
+                        </ul>
+                        <p>A ausência do sinal 2 leva à anergia (inativação) do linfócito T, um mecanismo de tolerância periférica.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/0057B8/FFFFFF?text=Ativação+de+Linfócito+T" data-legenda="Ilustração da sinapse imunológica, mostrando o Sinal 1 (TCR-MHC) e o Sinal 2 (CD28-B7) entre um linfócito T e uma APC.">
+                            <img src="https://placehold.co/800x500/0057B8/FFFFFF?text=Ativação+de+Linfócito+T" alt="Ativação de Linfócito T">
+                            <p>Clique para ampliar: Modelo dos Dois Sinais.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Diferenciação em Subpopulações</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Após a ativação, os linfócitos T proliferam e se diferenciam em células efetoras. O tipo de célula efetora depende das citocinas presentes no ambiente (Sinal 3).</p>
+                        <ul>
+                            <li><strong>Linfócitos T CD8+</strong> se diferenciam em <strong>Linfócitos T Citotóxicos (CTLs)</strong>, cuja função é matar células infectadas.</li>
+                            <li><strong>Linfócitos T CD4+</strong> podem se diferenciar em vários subtipos de células <strong>auxiliares (Helper)</strong>:
+                                <ul>
+                                    <li><strong>Th1:</strong> Produzem IFN-γ, ativam macrófagos para matar patógenos intracelulares (ex: <em>Leishmania</em>).</li>
+                                    <li><strong>Th2:</strong> Produzem IL-4, IL-5 e IL-13, importantes na defesa contra helmintos e em reações alérgicas.</li>
+                                    <li><strong>Th17:</strong> Produzem IL-17, recrutam neutrófilos e são importantes na defesa contra bactérias extracelulares e fungos.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="efetoras" class="content-section">
+            <h2>💥 5. Funções Efetoras das Células T</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Linfócitos T CD4+ Auxiliares: Os Maestros</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>As células T auxiliares não eliminam patógenos diretamente. Elas "ajudam" outras células a fazerem seu trabalho através da secreção de citocinas. Por exemplo, uma célula Th1 secreta IFN-γ que superativa um macrófago, tornando-o muito mais eficiente em matar as bactérias que fagocitou. Elas também são essenciais para a ativação de linfócitos B e a produção de anticorpos.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Linfócitos T CD8+ Citotóxicos: Os Assassinos</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Os CTLs patrulham o corpo e reconhecem o complexo peptídeo-MHC I em células infectadas ou tumorais. Ao reconhecer seu alvo, o CTL libera o conteúdo de seus grânulos citotóxicos:</p>
+                        <ul>
+                            <li><strong>Perforina:</strong> Cria poros na membrana da célula-alvo.</li>
+                            <li><strong>Granzimas:</strong> Entram na célula-alvo através dos poros e ativam as caspases, induzindo a <strong>apoptose</strong> da célula-alvo.</li>
+                        </ul>
+                        <p>Este mecanismo de morte é extremamente preciso e eficiente, eliminando o "santuário" do patógeno sem causar muita inflamação.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/dc3545/FFFFFF?text=CTL+matando+célula-alvo" data-legenda="Ilustração de um CTL liberando perforina e granzimas em uma célula infectada, induzindo sua apoptose.">
+                            <img src="https://placehold.co/800x500/dc3545/FFFFFF?text=CTL+matando+célula-alvo" alt="CTL matando célula-alvo">
+                            <p>Clique para ampliar: Ação do Linfócito T Citotóxico.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="casos-clinicos" class="content-section">
+            <h2>🩺 6. Casos Clínicos Contextualizados (João Pessoa, PB)</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso 1: Imunopatologia na Dengue</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Adolescente de 14 anos, que teve Dengue há 3 anos, é admitido na emergência com febre alta, dor abdominal e sangramentos. Exames mostram plaquetopenia severa e hemoconcentração, compatível com Dengue grave (choque).</p>
+                    <h3>Discussão Imunológica:</h3>
+                    <p>Na segunda infecção por um sorotipo diferente do vírus da Dengue, a resposta de células T de memória pode ser prejudicial. Linfócitos T CD4+ e CD8+ gerados na primeira infecção são reativados, mas não conseguem eliminar o novo sorotipo eficientemente. Em vez disso, eles produzem uma "tempestade de citocinas" (TNF, IFN-γ), que aumenta a permeabilidade vascular, levando ao extravasamento de plasma, choque e hemorragias. Neste caso, a <strong>resposta de células T</strong> é a principal causa da patologia grave, um fenômeno de imunopatologia.</p>
+                </div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso 2: Resposta Th1/Th2 na Leishmaniose</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Dois pacientes de áreas rurais são diagnosticados com Leishmaniose Tegumentar. O Paciente A desenvolve uma pequena úlcera que cicatriza espontaneamente. O Paciente B desenvolve múltiplas lesões nodulares e disseminadas (forma anérgica).</p>
+                    <h3>Discussão Imunológica:</h3>
+                    <p>O desfecho da Leishmaniose depende criticamente do padrão de diferenciação dos <strong>linfócitos T CD4+</strong>. O Paciente A provavelmente montou uma forte resposta <strong>Th1</strong>, com produção de IFN-γ que ativou os macrófagos para matar a <em>Leishmania</em>. O Paciente B provavelmente desenvolveu uma resposta <strong>Th2</strong> dominante, cujas citocinas (IL-4, IL-10) inibem a ativação de macrófagos, permitindo a proliferação descontrolada do parasita. Este é um exemplo clássico de como a diferenciação das células T auxiliares determina o resultado de uma doença infecciosa.</p>
+                </div></div>
+            </div>
+        </section>
+
+        <section id="quiz" class="content-section">
+            <h2>✅ 7. Quiz e Prova</h2>
+            <p>Teste seus conhecimentos sobre a resposta de células T.</p>
+            <div class="quiz-container">
+                <form id="quiz-form">
+                    <div class="questao"><p>1. Onde ocorre a maturação e seleção dos linfócitos T?</p><div class="alternativas"><label><input type="radio" name="q1" value="a">a) Medula óssea</label><label><input type="radio" name="q1" value="b">b) Baço</label><label><input type="radio" name="q1" value="c">c) Linfonodos</label><label><input type="radio" name="q1" value="d">d) Timo</label><label><input type="radio" name="q1" value="e">e) Fígado</label></div></div>
+                    <div class="questao"><p>2. Moléculas de MHC de Classe II apresentam peptídeos para qual tipo de célula?</p><div class="alternativas"><label><input type="radio" name="q2" value="a">a) Linfócitos T CD8+</label><label><input type="radio" name="q2" value="b">b) Linfócitos T CD4+</label><label><input type="radio" name="q2" value="c">c) Células NK</label><label><input type="radio" name="q2" value="d">d) Neutrófilos</label><label><input type="radio" name="q2" value="e">e) Todas as células nucleadas</label></div></div>
+                    <div class="questao"><p>3. A eliminação de linfócitos T que reconhecem fortemente antígenos próprios no timo é chamada de:</p><div class="alternativas"><label><input type="radio" name="q3" value="a">a) Seleção positiva</label><label><input type="radio" name="q3" value="b">b) Seleção negativa</label><label><input type="radio" name="q3" value="c">c) Anergia</label><label><input type="radio" name="q3" value="d">d) Ativação</label><label><input type="radio" name="q3" value="e">e) Diferenciação</label></div></div>
+                    <div class="questao"><p>4. Qual é o "Sinal 2" necessário para a ativação completa de um linfócito T virgem?</p><div class="alternativas"><label><input type="radio" name="q4" value="a">a) Ligação do TCR ao MHC-peptídeo</label><label><input type="radio" name="q4" value="b">b) Secreção de citocinas pela APC</label><label><input type="radio" name="q4" value="c">c) Interação entre B7 (APC) e CD28 (Linfócito T)</label><label><input type="radio" name="q4" value="d">d) Ligação de anticorpos</label><label><input type="radio" name="q4" value="e">e) Ativação do sistema complemento</label></div></div>
+                    <div class="questao"><p>5. A principal função dos Linfócitos T Citotóxicos (CTLs) é:</p><div class="alternativas"><label><input type="radio" name="q5" value="a">a) Produzir anticorpos</label><label><input type="radio" name="q5" value="b">b) Ativar macrófagos</label><label><input type="radio" name="q5" value="c">c) Matar células infectadas por vírus através da indução de apoptose</label><label><input type="radio" name="q5" value="d">d) Fagocitar bactérias</label><label><input type="radio" name="q5" value="e">e) Ajudar os linfócitos B</label></div></div>
+                    <div class="questao"><p>6. Qual subpopulação de linfócitos T CD4+ é crucial para ativar macrófagos e combater patógenos intracelulares como a Leishmania?</p><div class="alternativas"><label><input type="radio" name="q6" value="a">a) Th2</label><label><input type="radio" name="q6" value="b">b) Th17</label><label><input type="radio" name="q6" value="c">c) Treg</label><label><input type="radio" name="q6" value="d">d) Th1</label><label><input type="radio" name="q6" value="e">e) Linfócito T folicular auxiliar</label></div></div>
+                    <div class="questao"><p>7. Moléculas de MHC de Classe I são expressas por:</p><div class="alternativas"><label><input type="radio" name="q7" value="a">a) Apenas células apresentadoras de antígenos</label><label><input type="radio" name="q7" value="b">b) Apenas linfócitos</label><label><input type="radio" name="q7" value="c">c) Todas as células nucleadas</label><label><input type="radio" name="q7" value="d">d) Apenas células infectadas por vírus</label><label><input type="radio" name="q7" value="e">e) Apenas hemácias</label></div></div>
+                    <div class="questao"><p>8. Perforina e granzimas são moléculas utilizadas por qual célula para matar seus alvos?</p><div class="alternativas"><label><input type="radio" name="q8" value="a">a) Linfócito T CD4+</label><label><input type="radio" name="q8" value="b">b) Macrófago</label><label><input type="radio" name="q8" value="c">c) Linfócito T CD8+</label><label><input type="radio" name="q8" value="d">d) Célula dendrítica</label><label><input type="radio" name="q8" value="e">e) Linfócito B</label></div></div>
+                    <div class="questao"><p>9. A imunopatologia na Dengue grave está associada a:</p><div class="alternativas"><label><input type="radio" name="q9" value="a">a) Uma falha na produção de células T de memória</label><label><input type="radio" name="q9" value="b">b) Uma resposta imune inata deficiente</label><label><input type="radio" name="q9" value="c">c) Uma reativação exacerbada de células T de memória que causa uma "tempestade de citocinas"</label><label><input type="radio" name="q9" value="d">d) Uma resposta de anticorpos fraca</label><label><input type="radio" name="q9" value="e">e) Uma resposta Th2 dominante</label></div></div>
+                    <div class="questao"><p>10. Qual molécula na superfície do linfócito T reconhece o complexo peptídeo-MHC?</p><div class="alternativas"><label><input type="radio" name="q10" value="a">a) CD28</label><label><input type="radio" name="q10" value="b">b) CD4</label><label><input type="radio" name="q10" value="c">c) CD8</label><label><input type="radio" name="q10" value="d">d) TCR (Receptor de Célula T)</label><label><input type="radio" name="q10" value="e">e) MHC Classe II</label></div></div>
+                    <div class="questao"><p>11. A principal citocina produzida por células Th1 é:</p><div class="alternativas"><label><input type="radio" name="q11" value="a">a) Interleucina-4 (IL-4)</label><label><input type="radio" name="q11" value="b">b) Interleucina-17 (IL-17)</label><label><input type="radio" name="q11" value="c">c) Interferon-gama (IFN-γ)</label><label><input type="radio" name="q11" value="d">d) Interleucina-10 (IL-10)</label><label><input type="radio" name="q11" value="e">e) Fator de Necrose Tumoral (TNF)</label></div></div>
+                    <div class="questao"><p>12. Células T auxiliares (CD4+) são essenciais para a ativação de qual outra célula do sistema imune adaptativo?</p><div class="alternativas"><label><input type="radio" name="q12" value="a">a) Neutrófilos</label><label><input type="radio" name="q12" value="b">b) Mastócitos</label><label><input type="radio" name="q12" value="c">c) Células NK</label><label><input type="radio" name="q12" value="d">d) Linfócitos B</label><label><input type="radio" name="q12" value="e">e) Macrófagos da imunidade inata apenas</label></div></div>
+                    <div class="questao"><p>13. Uma célula apresentadora de antígeno profissional fagocitou uma bactéria extracelular. Ela irá processar e apresentar os peptídeos bacterianos primariamente via:</p><div class="alternativas"><label><input type="radio" name="q13" value="a">a) MHC de Classe I para linfócitos T CD8+</label><label><input type="radio" name="q13" value="b">b) MHC de Classe II para linfócitos T CD4+</label><label><input type="radio" name="q13" value="c">c) MHC de Classe I para linfócitos T CD4+</label><label><input type="radio" name="q13" value="d">d) MHC de Classe II para linfócitos T CD8+</label><label><input type="radio" name="q13" value="e">e) Receptores do tipo Toll (TLRs) diretamente para linfócitos T</label></div></div>
+                    <div class="questao"><p>14. O que é tolerância central?</p><div class="alternativas"><label><input type="radio" name="q14" value="a">a) A inativação de linfócitos T na periferia</label><label><input type="radio" name="q14" value="b">b) A eliminação de linfócitos T autorreativos no timo</label><label><input type="radio" name="q14" value="c">c) A memória gerada após uma infecção</label><label><input type="radio" name="q14" value="d">d) A ativação de linfócitos T por células dendríticas</label><label><input type="radio" name="q14" value="e">e) A resposta primária a um antígeno</label></div></div>
+                    <div class="questao"><p>15. A diversidade do repertório de TCRs é gerada por:</p><div class="alternativas"><label><input type="radio" name="q15" value="a">a) Herança genética de todos os TCRs possíveis</label><label><input type="radio" name="q15" value="b">b) Mutações aleatórias após a ativação</label><label><input type="radio" name="q15" value="c">c) Recombinação somática dos segmentos gênicos do TCR</label><label><input type="radio" name="q15" value="d">d) Importação de TCRs da dieta</label><label><input type="radio" name="q15" value="e">e) Ação de citocinas</label></div></div>
+                    <div class="questao"><p>16. Uma resposta imune dominada por células Th2 seria mais eficaz contra:</p><div class="alternativas"><label><input type="radio" name="q16" value="a">a) Vírus</label><label><input type="radio" name="q16" value="b">b) Bactérias intracelulares</label><label><input type="radio" name="q16" value="c">c) Células tumorais</label><label><input type="radio" name="q16" value="d">d) Helmintos</label><label><input type="radio" name="q16" value="e">e) Bactérias extracelulares</label></div></div>
+                    <div class="questao"><p>17. Qual é a principal consequência da interação CD28-B7?</p><div class="alternativas"><label><input type="radio" name="q17" value="a">a) Indução de apoptose no linfócito T</label><label><input type="radio" name="q17" value="b">b) Fornecimento do sinal co-estimulatório para ativação</label><label><input type="radio" name="q17" value="c">c) Adesão celular entre o linfócito T e a APC</label><label><input type="radio" name="q17" value="d">d) Inibição da resposta do linfócito T</label><label><input type="radio" name="q17" value="e">e) Reconhecimento do antígeno</label></div></div>
+                    <div class="questao"><p>18. Um linfócito T CD8+ reconhece um peptídeo viral apresentado por uma célula epitelial infectada. Qual será o resultado?</p><div class="alternativas"><label><input type="radio" name="q18" value="a">a) O linfócito T CD8+ se tornará anérgico</label><label><input type="radio" name="q18" value="b">b) O linfócito T CD8+ ativará a célula epitelial para produzir anticorpos</label><label><input type="radio" name="q18" value="c">c) O linfócito T CD8+ irá induzir a apoptose da célula epitelial</label><label><input type="radio" name="q18" value="d">d) O linfócito T CD8+ irá se diferenciar em uma célula Th1</label><label><input type="radio" name="q18" value="e">e) O linfócito T CD8+ irá fagocitar a célula epitelial</label></div></div>
+                    <div class="questao"><p>19. A molécula CD4 é um co-receptor que se liga a qual molécula?</p><div class="alternativas"><label><input type="radio" name="q19" value="a">a) MHC de Classe I</label><label><input type="radio" name="q19" value="b">b) MHC de Classe II</label><label><input type="radio" name="q19" value="c">c) CD28</label><label><input type="radio" name="q19" value="d">d) B7</label><label><input type="radio" name="q19" value="e">e) TCR</label></div></div>
+                    <div class="questao"><p>20. A memória imunológica é uma característica da imunidade adaptativa. No contexto das células T, isso significa que:</p><div class="alternativas"><label><input type="radio" name="q20" value="a">a) Todos os linfócitos T vivem para sempre</label><label><input type="radio" name="q20" value="b">b) Uma segunda exposição ao mesmo antígeno resulta em uma resposta mais rápida e forte</label><label><input type="radio" name="q20" value="c">c) A resposta inata se torna mais específica com o tempo</label><label><input type="radio" name="q20" value="d">d) Os linfócitos T param de precisar de co-estímulo</label><label><input type="radio" name="q20" value="e">e) O timo continua produzindo os mesmos clones de linfócitos T</label></div></div>
+                    <button type="button" class="btn-quiz" id="btnVerificarQuiz">🚀 Verificar Respostas</button>
+                </form>
+                <div id="resultado-quiz"></div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 1</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+            
+            const btnVerificarQuiz = document.getElementById('btnVerificarQuiz');
+            const quizForm = document.getElementById('quiz-form');
+            const resultadoQuiz = document.getElementById('resultado-quiz');
+
+            const gabarito = {
+                q1: 'd', q2: 'b', q3: 'b', q4: 'c', q5: 'c', q6: 'd', q7: 'c', q8: 'c', q9: 'c', q10: 'd',
+                q11: 'c', q12: 'd', q13: 'b', q14: 'b', q15: 'c', q16: 'd', q17: 'b', q18: 'c', q19: 'b', q20: 'b'
+            };
+
+            btnVerificarQuiz.addEventListener('click', () => {
+                let acertos = 0;
+                const totalQuestoes = Object.keys(gabarito).length;
+                
+                for (let i = 1; i <= totalQuestoes; i++) {
+                    const questao = 'q' + i;
+                    const respostaSelecionada = quizForm.querySelector(`input[name="${questao}"]:checked`);
+                    const labels = quizForm.querySelectorAll(`input[name="${questao}"]`);
+                    
+                    labels.forEach(labelInput => {
+                        const parent = labelInput.parentElement;
+                        parent.style.backgroundColor = '';
+                        parent.style.color = '';
+                        parent.style.border = '1px solid var(--cor-borda)';
+                    });
+
+                    if (respostaSelecionada) {
+                        const labelSelecionada = respostaSelecionada.parentElement;
+                        const respostaCorretaInput = quizForm.querySelector(`input[name="${questao}"][value="${gabarito[questao]}"]`);
+                        
+                        if (respostaSelecionada.value === gabarito[questao]) {
+                            acertos++;
+                            labelSelecionada.style.backgroundColor = 'var(--cor-sucesso)';
+                            labelSelecionada.style.color = 'var(--cor-texto-sucesso)';
+                            labelSelecionada.style.border = '1px solid var(--cor-verde)';
+                        } else {
+                            labelSelecionada.style.backgroundColor = 'var(--cor-erro)';
+                            labelSelecionada.style.color = 'var(--cor-texto-erro)';
+                            labelSelecionada.style.border = '1px solid var(--cor-erro)';
+                            if(respostaCorretaInput) {
+                                const labelCorreta = respostaCorretaInput.parentElement;
+                                labelCorreta.style.backgroundColor = 'var(--cor-sucesso)';
+                                labelCorreta.style.border = '1px solid var(--cor-verde)';
+                            }
+                        }
+                    }
+                }
+                
+                resultadoQuiz.textContent = `Você acertou ${acertos} de ${totalQuestoes} questões.`;
+                resultadoQuiz.style.color = acertos > (totalQuestoes / 2) ? 'var(--cor-verde)' : 'var(--cor-texto-erro)';
+            });
+        });
+    </script>
+</body>
+</html>

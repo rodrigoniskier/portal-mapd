@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-1 | Aula 14: Projeto de Controle de Infecções</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-sucesso: #d4edda;
+            --cor-erro: #f8d7da;
+            --cor-texto-sucesso: #155724;
+            --cor-texto-erro: #721c24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            color: #495057;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            transition: box-shadow 0.3s ease;
+            max-width: 600px;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Quiz */
+        .quiz-container {
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #fdfdff;
+        }
+        
+        .questao {
+            margin-bottom: 25px;
+        }
+        
+        .questao p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alternativas label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .alternativas label:hover {
+            background-color: #f1f3f5;
+        }
+
+        .alternativas input {
+            margin-right: 10px;
+        }
+        
+        .btn-quiz {
+            display: inline-block;
+            background-color: var(--cor-verde);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-quiz:hover {
+            background-color: #218838;
+        }
+        
+        #resultado-quiz {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>🛡️ MAPD-1</h1>
+            <p>Aula 14: Controle de Infecções</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#objetivos" class="active"><span class="icon">🎯</span> Objetivos da Aula</a></li>
+                <li><a href="#estrutura"><span class="icon">🏗️</span> Estrutura do Projeto</a></li>
+                <li><a href="#cenario"><span class="icon">🏥</span> Cenário Prático (JP)</a></li>
+                <li><a href="#quiz"><span class="icon">✅</span> Quiz de Aplicação</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>🛡️ Aula 14: Projeto de Controle de Infecções em Serviços de Saúde</h1>
+            <p class="subtitulo">Planejando intervenções para a segurança do paciente.</p>
+        </header>
+
+        <section id="objetivos" class="content-section active">
+            <h2>🎯 1. Objetivos da Aula</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Da Teoria à Ação</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>O controle de Infecções Relacionadas à Assistência à Saúde (IRAS) é um pilar da segurança do paciente e da qualidade dos serviços de saúde. Esta aula prática tem como objetivo capacitar você a estruturar um projeto básico de intervenção para o controle de infecções, uma competência essencial para a prática médica.</p>
+                        <h4>Ao final desta sessão, você será capaz de:</h4>
+                        <ul>
+                            <li><strong>Identificar</strong> um problema prioritário de IRAS em um cenário de saúde.</li>
+                            <li><strong>Estruturar</strong> os componentes essenciais de um projeto de controle de infecções (justificativa, objetivos, metodologia, avaliação).</li>
+                            <li><strong>Propor</strong> intervenções baseadas em evidências para a prevenção de infecções.</li>
+                            <li><strong>Definir</strong> indicadores para monitorar o sucesso do projeto.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="estrutura" class="content-section">
+            <h2>🏗️ 2. Estrutura de um Projeto de Controle de Infecções</h2>
+            <p>Um projeto de intervenção eficaz segue uma estrutura lógica para garantir que o problema seja bem definido, as ações sejam claras e os resultados possam ser medidos.</p>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Passo 1: Justificativa e Definição do Problema</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Esta é a base do seu projeto. Você deve responder: <strong>Por que este projeto é importante?</strong></p>
+                        <ul>
+                            <li><strong>Magnitude do Problema:</strong> Apresente dados (reais ou hipotéticos) sobre a incidência ou prevalência da IRAS que você quer combater. Ex: "A taxa de infecção de corrente sanguínea associada a cateter venoso central (IPCSL) na nossa UTI é de 5.2 por 1000 cateteres-dia, acima da média nacional."</li>
+                            <li><strong>Relevância:</strong> Explique o impacto da IRAS no paciente (aumento da morbidade, mortalidade, tempo de internação) e no sistema de saúde (custos).</li>
+                            <li><strong>Contextualização:</strong> Descreva o cenário específico (hospital, enfermaria, UTI) e a população afetada.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Passo 2: Objetivos</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Os objetivos definem o que você espera alcançar. Devem ser claros e mensuráveis.</p>
+                        <ul>
+                            <li><strong>Objetivo Geral:</strong> A meta ampla do projeto. Ex: "Reduzir a incidência de IPCSL na UTI."</li>
+                            <li><strong>Objetivos Específicos:</strong> As metas menores e concretas que levarão ao objetivo geral. Ex: "Aumentar a adesão à higienização das mãos em 50% em 3 meses"; "Melhorar a técnica de inserção de cateteres venosos centrais"; "Implementar um checklist de manutenção diária dos cateteres."</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Passo 3: Metodologia e Intervenções</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Aqui você descreve <strong>como</strong> vai atingir seus objetivos. As intervenções devem ser baseadas em evidências. Um conjunto de intervenções é chamado de <strong>"bundle"</strong>.</p>
+                        <h4>Exemplo de Bundle para Prevenção de IPCSL:</h4>
+                        <ul>
+                            <li><strong>Educação e Treinamento:</strong> Treinar a equipe sobre as melhores práticas para inserção e manutenção de cateteres.</li>
+                            <li><strong>Checklist de Inserção:</strong> Usar um checklist para garantir que todos os passos (higienização das mãos, antissepsia da pele com clorexidina, precauções máximas de barreira) sejam seguidos.</li>
+                            <li><strong>Manutenção do Cateter:</strong> Protocolo para avaliação diária da necessidade do cateter e cuidados com o sítio de inserção.</li>
+                            <li><strong>Campanha de Higienização das Mãos:</strong> Foco nos 5 momentos da higienização das mãos (OMS).</li>
+                        </ul>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/28A745/FFFFFF?text=Bundle+de+Prevenção" data-legenda="Fluxograma de um 'bundle' de prevenção, mostrando um conjunto de intervenções baseadas em evidências aplicadas em conjunto para melhorar os resultados.">
+                            <img src="https://placehold.co/800x500/28A745/FFFFFF?text=Bundle+de+Prevenção" alt="Bundle de Prevenção">
+                            <p>Clique para ampliar: Exemplo de Bundle.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Passo 4: Indicadores e Avaliação</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Como você saberá se o projeto funcionou? É crucial definir indicadores para monitorar o progresso.</p>
+                        <ul>
+                            <li><strong>Indicadores de Processo:</strong> Medem a conformidade com as intervenções. Ex: "Taxa de adesão à higienização das mãos (%)"; "Percentual de inserções de cateter com uso de checklist".</li>
+                            <li><strong>Indicadores de Resultado:</strong> Medem o impacto direto na IRAS. Ex: "Taxa de incidência de IPCSL (por 1000 cateteres-dia)".</li>
+                        </ul>
+                        <p>A avaliação deve comparar os indicadores antes e depois da implementação do projeto.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cenario" class="content-section">
+            <h2>🏥 3. Cenário Prático (João Pessoa)</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Desafio: Prevenção de Infecção de Sítio Cirúrgico (ISC)</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <h4>Situação-Problema:</h4>
+                        <p>Um hospital universitário em João Pessoa observa um aumento nas taxas de infecção de sítio cirúrgico em cirurgias colorretais. A taxa atual é de 15%, enquanto a meta institucional é < 10%. A análise inicial sugere falhas na antibioticoprofilaxia cirúrgica e na preparação da pele do paciente.</p>
+                        <h4>Sua Missão:</h4>
+                        <p>Esboce os principais componentes de um projeto de intervenção para reduzir a taxa de ISC nesta população.</p>
+                        <ol>
+                            <li><strong>Justificativa:</strong> Por que é crucial abordar esse problema?</li>
+                            <li><strong>Objetivo Geral:</strong> Qual a meta principal?</li>
+                            <li><strong>Objetivos Específicos (pelo menos 2):</strong> Quais metas menores ajudarão a atingir o objetivo geral?</li>
+                            <li><strong>Intervenções (pelo menos 3):</strong> Que ações práticas você implementaria?</li>
+                            <li><strong>Indicadores (1 de processo e 1 de resultado):</strong> Como você mediria o sucesso?</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz" class="content-section">
+            <h2>✅ 4. Quiz de Aplicação</h2>
+            <p>Teste seus conhecimentos sobre a estruturação de projetos de controle de infecções.</p>
+            <div class="quiz-container">
+                <form id="quiz-form">
+                    <div class="questao"><p>1. A taxa de infecção de corrente sanguínea por 1000 cateteres-dia é um exemplo de qual tipo de indicador?</p><div class="alternativas"><label><input type="radio" name="q1" value="a">a) Indicador de processo</label><label><input type="radio" name="q1" value="b">b) Indicador de estrutura</label><label><input type="radio" name="q1" value="c">c) Indicador de resultado</label><label><input type="radio" name="q1" value="d">d) Indicador de satisfação</label><label><input type="radio" name="q1" value="e">e) Indicador financeiro</label></div></div>
+                    <div class="questao"><p>2. Na estrutura de um projeto, a seção que explica a importância e a magnitude do problema é a:</p><div class="alternativas"><label><input type="radio" name="q2" value="a">a) Metodologia</label><label><input type="radio" name="q2" value="b">b) Objetivos</label><label><input type="radio" name="q2" value="c">c) Justificativa</label><label><input type="radio" name="q2" value="d">d) Avaliação</label><label><input type="radio" name="q2" value="e">e) Cronograma</label></div></div>
+                    <div class="questao"><p>3. Um "bundle" em controle de infecções é:</p><div class="alternativas"><label><input type="radio" name="q3" value="a">a) Um único antibiótico de amplo espectro</label><label><input type="radio" name="q3" value="b">b) Um conjunto de intervenções baseadas em evidências aplicadas em conjunto</label><label><input type="radio" name="q3" value="c">c) O relatório final do projeto</label><label><input type="radio" name="q3" value="d">d) Um tipo específico de infecção hospitalar</label><label><input type="radio" name="q3" value="e">e) A equipe responsável pelo controle de infecção</label></div></div>
+                    <div class="questao"><p>4. "Aumentar a adesão à higienização das mãos em 50% em 3 meses" é um exemplo de:</p><div class="alternativas"><label><input type="radio" name="q4" value="a">a) Objetivo geral</label><label><input type="radio" name="q4" value="b">b) Objetivo específico</label><label><input type="radio" name="q4" value="c">c) Justificativa</label><label><input type="radio" name="q4" value="d">d) Indicador de resultado</label><label><input type="radio" name="q4" value="e">e) Intervenção</label></div></div>
+                    <div class="questao"><p>5. A medida isolada mais importante para a prevenção de IRAS é:</p><div class="alternativas"><label><input type="radio" name="q5" value="a">a) Uso de antibióticos profiláticos</label><label><input type="radio" name="q5" value="b">b) Isolamento de todos os pacientes</label><label><input type="radio" name="q5" value="c">c) Higienização das mãos</label><label><input type="radio" name="q5" value="d">d) Limpeza terminal do ambiente</label><label><input type="radio" name="q5" value="e">e) Uso de máscaras por todos os profissionais</label></div></div>
+                    <div class="questao"><p>6. Medir o "percentual de cirurgias com antibioticoprofilaxia administrada no tempo correto" é um indicador de:</p><div class="alternativas"><label><input type="radio" name="q6" value="a">a) Resultado</label><label><input type="radio" name="q6" value="b">b) Processo</label><label><input type="radio" name="q6" value="c">c) Estrutura</label><label><input type="radio" name="q6" value="d">d) Impacto</label><label><input type="radio" name="q6" value="e">e) Risco</label></div></div>
+                    <div class="questao"><p>7. Qual das seguintes intervenções NÃO faz parte do bundle clássico de prevenção de infecção de corrente sanguínea associada a cateter?</p><div class="alternativas"><label><input type="radio" name="q7" value="a">a) Higienização das mãos</label><label><input type="radio" name="q7" value="b">b) Precauções máximas de barreira durante a inserção</label><label><input type="radio" name="q7" value="c">c) Antissepsia da pele com clorexidina</label><label><input type="radio" name="q7" value="d">d) Avaliação diária da necessidade do cateter</label><label><input type="radio" name="q7" value="e">e) Administração de antibiótico sistêmico diário</label></div></div>
+                    <div class="questao"><p>8. O primeiro passo para desenvolver um projeto de controle de infecções é:</p><div class="alternativas"><label><input type="radio" name="q8" value="a">a) Comprar novos equipamentos</label><label><input type="radio" name="q8" value="b">b) Treinar a equipe</label><label><input type="radio" name="q8" value="c">c) Definir os indicadores de avaliação</label><label><input type="radio" name="q8" value="d">d) Identificar e definir o problema com dados</label><label><input type="radio" name="q8" value="e">e) Escrever o relatório final</label></div></div>
+                    <div class="questao"><p>9. A sigla IRAS significa:</p><div class="alternativas"><label><input type="radio" name="q9" value="a">a) Infecções Respiratórias Agudas e Sazonais</label><label><input type="radio" name="q9" value="b">b) Intervenções Rápidas em Ambientes de Saúde</label><label><input type="radio" name="q9" value="c">c) Infecções Relacionadas à Assistência à Saúde</label><label><input type="radio" name="q9" value="d">d) Indicadores de Risco em Ambientes Sérios</label><label><input type="radio" name="q9" value="e">e) Infecções Raras e Altamente Suscetíveis</label></div></div>
+                    <div class="questao"><p>10. Um objetivo bem formulado deve ser SMART. A letra 'M' em SMART significa:</p><div class="alternativas"><label><input type="radio" name="q10" value="a">a) Maior</label><label><input type="radio" name="q10" value="b">b) Metodológico</label><label><input type="radio" name="q10" value="c">c) Mensurável</label><label><input type="radio" name="q10" value="d">d) Mínimo</label><label><input type="radio" name="q10" value="e">e) Motivacional</label></div></div>
+                    <div class="questao"><p>11. Qual das seguintes opções é um exemplo de objetivo geral?</p><div class="alternativas"><label><input type="radio" name="q11" value="a">a) Treinar 100% da equipe de enfermagem na técnica de sondagem vesical</label><label><input type="radio" name="q11" value="b">b) Reduzir a incidência de infecção do trato urinário associada a cateter</label><label><input type="radio" name="q11" value="c">c) Implementar um sistema de indicação para inserção de sonda vesical</label><label><input type="radio" name="q11" value="d">d) Aumentar a adesão à manutenção do sistema de drenagem fechado</label><label><input type="radio" name="q11" value="e">e) Realizar auditorias semanais</label></div></div>
+                    <div class="questao"><p>12. A vigilância epidemiológica das IRAS é fundamental para qual etapa do projeto?</p><div class="alternativas"><label><input type="radio" name="q12" value="a">a) Apenas para a avaliação final</label><label><input type="radio" name="q12" value="b">b) Apenas para a escolha da equipe</label><label><input type="radio" name="q12" value="c">c) Para a definição do problema e para a avaliação do impacto</label><label><input type="radio" name="q12" value="d">d) Apenas para a justificativa</label><label><input type="radio" name="q12" value="e">e) Não é uma etapa relevante</label></div></div>
+                    <div class="questao"><p>13. As "Precauções Padrão" devem ser aplicadas:</p><div class="alternativas"><label><input type="radio" name="q13" value="a">a) Apenas em pacientes com infecções confirmadas</label><label><input type="radio" name="q13" value="b">b) Apenas em pacientes em isolamento</label><label><input type="radio" name="q13" value="c">c) No cuidado de todos os pacientes, independentemente do seu diagnóstico</label><label><input type="radio" name="q13" value="d">d) Apenas em unidades de terapia intensiva</label><label><input type="radio" name="q13" value="e">e) Apenas durante procedimentos invasivos</label></div></div>
+                    <div class="questao"><p>14. No cenário prático sobre ISC, qual seria um bom indicador de processo?</p><div class="alternativas"><label><input type="radio" name="q14" value="a">a) Taxa de mortalidade geral do hospital</label><label><input type="radio" name="q14" value="b">b) Custo total das cirurgias</label><label><input type="radio" name="q14" value="c">c) Taxa de ISC em cirurgias colorretais</label><label><input type="radio" name="q14" value="d">d) Percentual de pacientes que receberam antibioticoprofilaxia corretamente</label><label><input type="radio" name="q14" value="e">e) Número de cirurgiões no hospital</label></div></div>
+                    <div class="questao"><p>15. O órgão responsável por planejar e executar as ações de controle de infecção em um hospital é:</p><div class="alternativas"><label><input type="radio" name="q15" value="a">a) A diretoria clínica</label><label><input type="radio" name="q15" value="b">b) O serviço de enfermagem</label><label><input type="radio" name="q15" value="c">c) A Comissão de Controle de Infecção Hospitalar (CCIH)</label><label><input type="radio" name="q15" value="d">d) O serviço de farmácia</label><label><input type="radio" name="q15" value="e">e) O serviço de hotelaria</label></div></div>
+                    <div class="questao"><p>16. Qual das seguintes opções NÃO é um dos 5 momentos da higienização das mãos da OMS?</p><div class="alternativas"><label><input type="radio" name="q16" value="a">a) Antes de tocar o paciente</label><label><input type="radio" name="q16" value="b">b) Antes de realizar procedimento limpo/asséptico</label><label><input type="radio" name="q16" value="c">c) Após risco de exposição a fluidos corporais</label><label><input type="radio" name="q16" value="d">d) Após tocar o paciente</label><label><input type="radio" name="q16" value="e">e) Apenas ao chegar e sair do hospital</label></div></div>
+                    <div class="questao"><p>17. A etapa de "Metodologia" de um projeto deve descrever:</p><div class="alternativas"><label><input type="radio" name="q17" value="a">a) O porquê do projeto</label><label><input type="radio" name="q17" value="b">b) O que se espera alcançar</label><label><input type="radio" name="q17" value="c">c) Como as ações serão implementadas</label><label><input type="radio" name="q17" value="d">d) Os resultados obtidos</label><label><input type="radio" name="q17" value="e">e) O orçamento do projeto</label></div></div>
+                    <div class="questao"><p>18. Um projeto de controle de infecção é um exemplo de:</p><div class="alternativas"><label><input type="radio" name="q18" value="a">a) Pesquisa básica</label><label><input type="radio" name="q18" value="b">b) Melhoria da qualidade e segurança do paciente</label><label><input type="radio" name="q18" value="c">c) Ação de marketing hospitalar</label><label><input type="radio" name="q18" value="d">d) Protocolo de tratamento de doenças</label><label><input type="radio" name="q18" value="e">e) Treinamento de habilidades cirúrgicas</label></div></div>
+                    <div class="questao"><p>19. A principal razão para avaliar diariamente a necessidade de um cateter venoso central é que:</p><div class="alternativas"><label><input type="radio" name="q19" value="a">a) O cateter é caro</label><label><input type="radio" name="q19" value="b">b) O risco de infecção aumenta com a duração da permanência do cateter</label><label><input type="radio" name="q19" value="c">c) O paciente fica desconfortável</label><label><input type="radio" name="q19" value="d">d) O cateter pode se deslocar</label><label><input type="radio" name="q19" value="e">e) O procedimento de inserção é demorado</label></div></div>
+                    <div class="questao"><p>20. No cenário de ISC, uma intervenção focada na "preparação da pele do paciente" envolveria principalmente:</p><div class="alternativas"><label><input type="radio" name="q20" value="a">a) Banho com água e sabão comum no dia da cirurgia</label><label><input type="radio" name="q20" value="b">b) Tricotomia (raspagem dos pelos) com lâmina na noite anterior</label><label><input type="radio" name="q20" value="c">c) Antissepsia adequada da pele no local da incisão com clorexidina alcoólica</label><label><input type="radio" name="q20" value="d">d) Manter o paciente aquecido</label><label><input type="radio" name="q20" value="e">e) Administrar o antibiótico 4 horas antes da cirurgia</label></div></div>
+
+                    <button type="button" class="btn-quiz" id="btnVerificarQuiz">🚀 Finalizar e Corrigir Prova</button>
+                </form>
+                <div id="resultado-quiz"></div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 1</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+            
+            const btnVerificarQuiz = document.getElementById('btnVerificarQuiz');
+            const quizForm = document.getElementById('quiz-form');
+            const resultadoQuiz = document.getElementById('resultado-quiz');
+
+            const gabarito = {
+                q1: 'c', q2: 'c', q3: 'b', q4: 'b', q5: 'c', q6: 'b', q7: 'e', q8: 'd', q9: 'c', q10: 'c',
+                q11: 'b', q12: 'c', q13: 'c', q14: 'd', q15: 'c', q16: 'e', q17: 'c', q18: 'b', q19: 'b', q20: 'c'
+            };
+
+            btnVerificarQuiz.addEventListener('click', () => {
+                let acertos = 0;
+                const totalQuestoes = Object.keys(gabarito).length;
+                
+                for (let i = 1; i <= totalQuestoes; i++) {
+                    const questao = 'q' + i;
+                    const respostaSelecionada = quizForm.querySelector(`input[name="${questao}"]:checked`);
+                    const labels = quizForm.querySelectorAll(`input[name="${questao}"]`);
+                    
+                    labels.forEach(labelInput => {
+                        const parent = labelInput.parentElement;
+                        parent.style.backgroundColor = '';
+                        parent.style.color = '';
+                        parent.style.border = '1px solid var(--cor-borda)';
+                    });
+
+                    if (respostaSelecionada) {
+                        const labelSelecionada = respostaSelecionada.parentElement;
+                        const respostaCorretaInput = quizForm.querySelector(`input[name="${questao}"][value="${gabarito[questao]}"]`);
+                        
+                        if (respostaSelecionada.value === gabarito[questao]) {
+                            acertos++;
+                            labelSelecionada.style.backgroundColor = 'var(--cor-sucesso)';
+                            labelSelecionada.style.color = 'var(--cor-texto-sucesso)';
+                            labelSelecionada.style.border = '1px solid var(--cor-verde)';
+                        } else {
+                            labelSelecionada.style.backgroundColor = 'var(--cor-erro)';
+                            labelSelecionada.style.color = 'var(--cor-texto-erro)';
+                            labelSelecionada.style.border = '1px solid var(--cor-erro)';
+                            if(respostaCorretaInput) {
+                                const labelCorreta = respostaCorretaInput.parentElement;
+                                labelCorreta.style.backgroundColor = 'var(--cor-sucesso)';
+                                labelCorreta.style.border = '1px solid var(--cor-verde)';
+                            }
+                        }
+                    }
+                }
+                
+                resultadoQuiz.textContent = `Seu resultado: ${acertos} de ${totalQuestoes} questões corretas.`;
+                resultadoQuiz.style.color = acertos > (totalQuestoes / 2) ? 'var(--cor-verde)' : 'var(--cor-texto-erro)';
+            });
+        });
+    </script>
+</body>
+</html>

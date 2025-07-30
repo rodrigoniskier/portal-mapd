@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-1 | Aula 4: Imunidade Inata</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-sucesso: #d4edda;
+            --cor-erro: #f8d7da;
+            --cor-texto-sucesso: #155724;
+            --cor-texto-erro: #721c24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Quiz */
+        .quiz-container {
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #fdfdff;
+        }
+        
+        .questao {
+            margin-bottom: 25px;
+        }
+        
+        .questao p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alternativas label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .alternativas label:hover {
+            background-color: #f1f3f5;
+        }
+
+        .alternativas input {
+            margin-right: 10px;
+        }
+        
+        .btn-quiz {
+            display: inline-block;
+            background-color: var(--cor-verde);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-quiz:hover {
+            background-color: #218838;
+        }
+        
+        #resultado-quiz {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>🛡️ MAPD-1</h1>
+            <p>Aula 4: Imunidade Inata</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#introducao" class="active"><span class="icon">📖</span> Introdução</a></li>
+                <li><a href="#componentes"><span class="icon">🧱</span> Componentes</a></li>
+                <li><a href="#reconhecimento"><span class="icon">🔍</span> Reconhecimento</a></li>
+                <li><a href="#casos-clinicos"><span class="icon">🩺</span> Casos Clínicos (JP)</a></li>
+                <li><a href="#quiz"><span class="icon">✅</span> Quiz e Prova</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>🛡️ Aula 4: Imunidade Inata</h1>
+            <p class="subtitulo">A primeira e mais rápida linha de defesa do organismo.</p>
+        </header>
+
+        <section id="introducao" class="content-section active">
+            <h2>📖 1. Introdução à Imunidade Inata</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Sistema Imune: Visão Geral</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>O sistema imunológico é uma rede complexa de células, tecidos e moléculas que trabalham em conjunto para defender o corpo contra patógenos, como bactérias, vírus e fungos. Ele é classicamente dividido em dois braços interconectados: a imunidade <strong>inata</strong> e a <strong>adaptativa</strong>.</p>
+                        <p>A <strong>imunidade inata</strong> (ou natural) é a primeira linha de defesa. Ela é evolutivamente mais antiga, está sempre presente e pronta para agir, fornecendo respostas rápidas e não específicas contra os invasores.</p>
+                        <p>A <strong>imunidade adaptativa</strong> (ou adquirida), que será vista nas próximas aulas, é mais lenta para se desenvolver, mas é altamente específica e gera memória imunológica, conferindo proteção duradoura.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/0057B8/FFFFFF?text=Inata+vs.+Adaptativa" data-legenda="Diagrama comparando as características da imunidade inata (rápida, não específica) e adaptativa (lenta, específica, com memória).">
+                            <img src="https://placehold.co/800x500/0057B8/FFFFFF?text=Inata+vs.+Adaptativa" alt="Inata vs. Adaptativa">
+                            <p>Clique para ampliar: Imunidade Inata vs. Adaptativa.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="componentes" class="content-section">
+            <h2>🧱 2. Componentes da Imunidade Inata</h2>
+            <p>A imunidade inata é composta por barreiras físicas, células especializadas e proteínas solúveis.</p>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Barreiras Físicas e Químicas</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>São a primeira barreira contra a entrada de microrganismos.</p>
+                        <ul>
+                            <li><strong>Pele:</strong> A camada de queratina intacta é uma barreira mecânica impermeável.</li>
+                            <li><strong>Mucosas:</strong> Revestem os tratos respiratório, gastrointestinal e geniturinário. Produzem muco que aprisiona os micróbios, que são então eliminados por mecanismos como o movimento ciliar.</li>
+                            <li><strong>Secreções:</strong> Lágrimas, saliva e secreções nasais contêm enzimas como a lisozima, que degrada a parede celular bacteriana. O ácido gástrico cria um ambiente de pH baixo que mata muitos patógenos ingeridos.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Células da Imunidade Inata</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <ul>
+                            <li><strong>Fagócitos:</strong> São células que ingerem e destroem micróbios.
+                                <ul>
+                                    <li><strong>Neutrófilos:</strong> Os leucócitos mais abundantes, são os primeiros a chegar ao local da infecção, realizando fagocitose e liberando substâncias antimicrobianas.</li>
+                                    <li><strong>Macrófagos:</strong> Derivados dos monócitos do sangue, residem nos tecidos e atuam como sentinelas. Além da fagocitose, secretam citocinas que orquestram a resposta inflamatória e apresentam antígenos para a imunidade adaptativa.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Células Dendríticas:</strong> Atuam como a principal ponte entre a imunidade inata e a adaptativa. Capturam antígenos nos tecidos, migram para os linfonodos e os apresentam aos linfócitos T.</li>
+                            <li><strong>Células Natural Killer (NK):</strong> Reconhecem e matam células do hospedeiro que foram infectadas por vírus ou que se tornaram tumorais.</li>
+                            <li><strong>Mastócitos:</strong> Presentes na pele e mucosas, liberam grânulos contendo mediadores como a histamina, que promovem a inflamação.</li>
+                        </ul>
+                         <div class="imagem-container" data-src="https://placehold.co/800x500/28A745/FFFFFF?text=Células+da+Imunidade+Inata" data-legenda="Ilustração das principais células da imunidade inata: neutrófilo, macrófago, célula NK e célula dendrítica.">
+                            <img src="https://placehold.co/800x500/28A745/FFFFFF?text=Células+da+Imunidade+Inata" alt="Células da Imunidade Inata">
+                            <p>Clique para ampliar: Principais Células Inatas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Proteínas Sanguíneas</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <ul>
+                            <li><strong>Sistema Complemento:</strong> Um conjunto de proteínas plasmáticas que, quando ativadas, promovem a opsonização (marcação) de micróbios para fagocitose, recrutam leucócitos (quimiotaxia) e podem lisar diretamente alguns patógenos.</li>
+                            <li><strong>Citocinas:</strong> Proteínas de sinalização que medeiam a comunicação entre as células imunes. Exemplos importantes na resposta inata incluem o Fator de Necrose Tumoral (TNF), a Interleucina-1 (IL-1) e os Interferons (IFNs), que têm potente atividade antiviral.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reconhecimento" class="content-section">
+            <h2>🔍 3. Reconhecimento de Patógenos</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">PAMPs e DAMPs</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Como o sistema imune inato reconhece os micróbios? Ele não reconhece antígenos específicos como a imunidade adaptativa. Em vez disso, ele reconhece estruturas moleculares que são comuns a grupos de patógenos, mas não são encontradas nas células humanas. Essas estruturas são chamadas de <strong>Padrões Moleculares Associados a Patógenos (PAMPs)</strong>.</p>
+                        <ul>
+                            <li>Exemplos de PAMPs incluem o <strong>lipopolissacarídeo (LPS)</strong> de bactérias Gram-negativas, o <strong>ácido lipoteicoico</strong> de bactérias Gram-positivas e o <strong>RNA de fita dupla</strong> de vírus.</li>
+                        </ul>
+                        <p>O sistema inato também reconhece moléculas liberadas por células danificadas ou necróticas do próprio hospedeiro, chamadas de <strong>Padrões Moleculares Associados ao Dano (DAMPs)</strong>.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Receptores de Reconhecimento de Padrão (PRRs)</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>As células da imunidade inata (como macrófagos e células dendríticas) expressam receptores projetados para reconhecer PAMPs e DAMPs. Estes são os <strong>Receptores de Reconhecimento de Padrão (PRRs)</strong>.</p>
+                        <p>A família mais conhecida de PRRs são os <strong>Receptores do tipo Toll (Toll-like receptors - TLRs)</strong>. A ligação de um PAMP (como o LPS) a um TLR na superfície de um macrófago desencadeia vias de sinalização intracelular que resultam na produção de citocinas inflamatórias e na ativação da resposta imune.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/FFD700/212529?text=Ativação+via+TLR" data-legenda="Diagrama mostrando um TLR na membrana de um macrófago reconhecendo um PAMP, ativando vias de sinalização e resultando na produção de citocinas.">
+                            <img src="https://placehold.co/800x500/FFD700/212529?text=Ativação+via+TLR" alt="Ativação via TLR">
+                            <p>Clique para ampliar: Sinalização via TLR.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="casos-clinicos" class="content-section">
+            <h2>🩺 4. Casos Clínicos Contextualizados (João Pessoa, PB)</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso 1: Resposta Inicial à Dengue</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Paciente de 25 anos, previamente hígido, apresenta febre alta, cefaleia e mialgia há 2 dias. Reside em uma área de João Pessoa com alta incidência de Dengue.</p>
+                    <h3>Discussão Imunológica:</h3>
+                    <p>Nos primeiros dias de uma infecção viral como a Dengue, a imunidade inata é a principal responsável pelo controle inicial da replicação do vírus. O RNA viral (um PAMP) é reconhecido por PRRs intracelulares, como os TLRs 3, 7 e 8. Isso leva à produção de <strong>Interferons do tipo I (IFN-α/β)</strong>, citocinas cruciais que induzem um "estado antiviral" nas células vizinhas, inibindo a replicação viral. Além disso, os interferons ativam as <strong>células NK</strong>, que reconhecem e destroem as células infectadas pelo vírus, limitando a disseminação da infecção antes que a resposta adaptativa (linfócitos T) seja montada.</p>
+                </div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso 2: Celulite após Ferimento</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Um pescador de 50 anos sofre um corte na perna com um anzol. Três dias depois, a área ao redor do ferimento está vermelha, quente, inchada e dolorosa.</p>
+                    <h3>Discussão Imunológica:</h3>
+                    <p>A lesão rompeu a barreira física da pele, permitindo a entrada de bactérias (ex: <em>Staphylococcus aureus</em>). Os PAMPs bacterianos (como ácido lipoteicoico) são reconhecidos por PRRs em <strong>macrófagos e mastócitos</strong> residentes. Essas células liberam citocinas (TNF, IL-1) e mediadores (histamina), que causam vasodilatação (vermelhidão, calor) e aumento da permeabilidade vascular (inchaço). Essas citocinas também promovem o recrutamento maciço de <strong>neutrófilos</strong> do sangue para o local, que fagocitam e destroem as bactérias, formando pus. Este processo é a inflamação aguda, a principal manifestação da resposta imune inata.</p>
+                </div></div>
+            </div>
+        </section>
+
+        <section id="quiz" class="content-section">
+            <h2>✅ 5. Quiz e Prova</h2>
+            <p>Teste seus conhecimentos sobre os conceitos de imunidade inata.</p>
+            <div class="quiz-container">
+                <form id="quiz-form">
+                    <div class="questao"><p>1. Qual das seguintes opções é uma característica da imunidade inata?</p><div class="alternativas"><label><input type="radio" name="q1" value="a">a) Geração de memória</label><label><input type="radio" name="q1" value="b">b) Alta especificidade para antígenos</label><label><input type="radio" name="q1" value="c">c) Resposta lenta (dias)</label><label><input type="radio" name="q1" value="d">d) Resposta rápida e imediata</label><label><input type="radio" name="q1" value="e">e) Envolvimento de linfócitos B e T</label></div></div>
+                    <div class="questao"><p>2. O lipopolissacarídeo (LPS) presente na parede de bactérias Gram-negativas é um exemplo de:</p><div class="alternativas"><label><input type="radio" name="q2" value="a">a) Antígeno específico</label><label><input type="radio" name="q2" value="b">b) Padrão Molecular Associado a Patógeno (PAMP)</label><label><input type="radio" name="q2" value="c">c) Padrão Molecular Associado ao Dano (DAMP)</label><label><input type="radio" name="q2" value="d">d) Citocina</label><label><input type="radio" name="q2" value="e">e) Anticorpo</label></div></div>
+                    <div class="questao"><p>3. Qual célula é considerada o principal fagócito e a primeira a chegar em grande número ao local de uma infecção bacteriana aguda?</p><div class="alternativas"><label><input type="radio" name="q3" value="a">a) Linfócito T</label><label><input type="radio" name="q3" value="b">b) Célula NK</label><label><input type="radio" name="q3" value="c">c) Neutrófilo</label><label><input type="radio" name="q3" value="d">d) Mastócito</label><label><input type="radio" name="q3" value="e">e) Célula dendrítica</label></div></div>
+                    <div class="questao"><p>4. Os Receptores do tipo Toll (TLRs) são um exemplo de:</p><div class="alternativas"><label><input type="radio" name="q4" value="a">a) Receptores de Reconhecimento de Padrão (PRRs)</label><label><input type="radio" name="q4" value="b">b) Citocinas</label><label><input type="radio" name="q4" value="c">c) Proteínas do complemento</label><label><input type="radio" name="q4" value="d">d) Receptores de células T</label><label><input type="radio" name="q4" value="e">e) Anticorpos de superfície</label></div></div>
+                    <div class="questao"><p>5. A principal função das Células Natural Killer (NK) na imunidade inata é:</p><div class="alternativas"><label><input type="radio" name="q5" value="a">a) Fagocitar bactérias</label><label><input type="radio" name="q5" value="b">b) Apresentar antígenos aos linfócitos T</label><label><input type="radio" name="q5" value="c">c) Produzir anticorpos</label><label><input type="radio" name="q5" value="d">d) Matar células infectadas por vírus e células tumorais</label><label><input type="radio" name="q5" value="e">e) Liberar histamina</label></div></div>
+                    <div class="questao"><p>6. Qual componente da imunidade inata atua como a principal ponte para a ativação da imunidade adaptativa?</p><div class="alternativas"><label><input type="radio" name="q6" value="a">a) Neutrófilos</label><label><input type="radio" name="q6" value="b">b) Sistema Complemento</label><label><input type="radio" name="q6" value="c">c) Células Dendríticas</label><label><input type="radio" name="q6" value="d">d) Pele</label><label><input type="radio" name="q6" value="e">e) Células NK</label></div></div>
+                    <div class="questao"><p>7. A produção de Interferons do tipo I (IFN-α/β) é uma resposta inata crucial contra qual tipo de patógeno?</p><div class="alternativas"><label><input type="radio" name="q7" value="a">a) Bactérias Gram-positivas</label><label><input type="radio" name="q7" value="b">b) Fungos</label><label><input type="radio" name="q7" value="c">c) Vírus</label><label><input type="radio" name="q7" value="d">d) Helmintos</label><label><input type="radio" name="q7" value="e">e) Protozoários</label></div></div>
+                    <div class="questao"><p>8. Todas as opções a seguir são barreiras físicas ou químicas da imunidade inata, EXCETO:</p><div class="alternativas"><label><input type="radio" name="q8" value="a">a) Pele intacta</label><label><input type="radio" name="q8" value="b">b) Muco nas vias aéreas</label><label><input type="radio" name="q8" value="c">c) Lisozima na saliva</label><label><input type="radio" name="q8" value="d">d) Ácido gástrico</label><label><input type="radio" name="q8" value="e">e) Linfócitos T de memória</label></div></div>
+                    <div class="questao"><p>9. A opsonização, quimiotaxia e lise de patógenos são funções de qual sistema de proteínas?</p><div class="alternativas"><label><input type="radio" name="q9" value="a">a) Sistema de coagulação</label><label><input type="radio" name="q9" value="b">b) Sistema complemento</label><label><input type="radio" name="q9" value="c">c) Sistema de cininas</label><label><input type="radio" name="q9" value="d">d) Anticorpos</label><label><input type="radio" name="q9" value="e">e) Interferons</label></div></div>
+                    <div class="questao"><p>10. Qual célula é residente nos tecidos e atua como sentinela, realizando fagocitose e secretando citocinas?</p><div class="alternativas"><label><input type="radio" name="q10" value="a">a) Neutrófilo</label><label><input type="radio" name="q10" value="b">b) Macrófago</label><label><input type="radio" name="q10" value="c">c) Linfócito B</label><label><input type="radio" name="q10" value="d">d) Plaqueta</label><label><input type="radio" name="q10" value="e">e) Hemácia</label></div></div>
+                    <div class="questao"><p>11. A principal função dos mastócitos na resposta inflamatória aguda é:</p><div class="alternativas"><label><input type="radio" name="q11" value="a">a) Fagocitar bactérias</label><label><input type="radio" name="q11" value="b">b) Liberar histamina e outros mediadores vasoativos</label><label><input type="radio" name="q11" value="c">c) Apresentar antígenos</label><label><input type="radio" name="q11" value="d">d) Produzir interferons</label><label><input type="radio" name="q11" value="e">e) Matar células infectadas</label></div></div>
+                    <div class="questao"><p>12. O reconhecimento de PAMPs por PRRs em um macrófago leva primariamente à:</p><div class="alternativas"><label><input type="radio" name="q12" value="a">a) Produção de anticorpos</label><label><input type="radio" name="q12" value="b">b) Proliferação de linfócitos de memória</label><label><input type="radio" name="q12" value="c">c) Produção e secreção de citocinas inflamatórias</label><label><input type="radio" name="q12" value="d">d) Morte celular por apoptose</label><label><input type="radio" name="q12" value="e">e) Atrofia celular</label></div></div>
+                    <div class="questao"><p>13. Qual das seguintes moléculas NÃO é um PAMP?</p><div class="alternativas"><label><input type="radio" name="q13" value="a">a) LPS</label><label><input type="radio" name="q13" value="b">b) RNA de fita dupla</label><label><input type="radio" name="q13" value="c">c) Flagelina</label><label><input type="radio" name="q13" value="d">d) Ácido úrico liberado por células necróticas</label><label><input type="radio" name="q13" value="e">e) Peptidoglicano</label></div></div>
+                    <div class="questao"><p>14. Os sinais cardinais da inflamação (calor, rubor, tumor, dor) são causados principalmente pela ação de:</p><div class="alternativas"><label><input type="radio" name="q14" value="a">a) Linfócitos T citotóxicos</label><label><input type="radio" name="q14" value="b">b) Anticorpos</label><label><input type="radio" name="q14" value="c">c) Mediadores liberados por células inatas (histamina, citocinas)</label><label><input type="radio" name="q14" value="d">d) Células NK</label><label><input type="radio" name="q14" value="e">e) Proteínas do complemento apenas</label></div></div>
+                    <div class="questao"><p>15. A imunidade inata difere da adaptativa por:</p><div class="alternativas"><label><input type="radio" name="q15" value="a">a) Ser mais potente na segunda exposição ao mesmo patógeno</label><label><input type="radio" name="q15" value="b">b) Reconhecer estruturas comuns a grupos de micróbios</label><label><input type="radio" name="q15" value="c">c) Utilizar receptores de antígenos gerados por recombinação somática</label><label><input type="radio" name="q15" value="d">d) Ser a principal defesa em infecções tardias</label><label><input type="radio" name="q15" value="e">e) Ser exclusiva de vertebrados</label></div></div>
+                    <div class="questao"><p>16. Qual citocina é fundamental para induzir um "estado antiviral" nas células?</p><div class="alternativas"><label><input type="radio" name="q16" value="a">a) Interleucina-1 (IL-1)</label><label><input type="radio" name="q16" value="b">b) Fator de Necrose Tumoral (TNF)</label><label><input type="radio" name="q16" value="c">c) Interleucina-10 (IL-10)</label><label><input type="radio" name="q16" value="d">d) Interferon do tipo I (IFN-α/β)</label><label><input type="radio" name="q16" value="e">e) Interleucina-4 (IL-4)</label></div></div>
+                    <div class="questao"><p>17. Moléculas endógenas liberadas por células danificadas que ativam a imunidade inata são chamadas de:</p><div class="alternativas"><label><input type="radio" name="q17" value="a">a) PAMPs</label><label><input type="radio" name="q17" value="b">b) DAMPs</label><label><input type="radio" name="q17" value="c">c) PRRs</label><label><input type="radio" name="q17" value="d">d) TLRs</label><label><input type="radio" name="q17" value="e">e) Antígenos</label></div></div>
+                    <div class="questao"><p>18. A fagocitose é um processo central para qual das seguintes células?</p><div class="alternativas"><label><input type="radio" name="q18" value="a">a) Linfócito T</label><label><input type="radio" name="q18" value="b">b) Mastócito</label><label><input type="radio" name="q18" value="c">c) Macrófago</label><label><input type="radio" name="q18" value="d">d) Plasmócito</label><label><input type="radio" name="q18" value="e">e) Célula NK</label></div></div>
+                    <div class="questao"><p>19. O movimento ciliar no trato respiratório é um exemplo de qual tipo de defesa inata?</p><div class="alternativas"><label><input type="radio" name="q19" value="a">a) Barreira celular</label><label><input type="radio" name="q19" value="b">b) Barreira humoral</label><label><input type="radio" name="q19" value="c">c) Barreira mecânica/física</label><label><input type="radio" name="q19" value="d">d) Imunidade adaptativa</label><label><input type="radio" name="q19" value="e">e) Barreira química</label></div></div>
+                    <div class="questao"><p>20. No caso clínico da celulite, a vermelhidão e o calor no local da infecção são causados por:</p><div class="alternativas"><label><input type="radio" name="q20" value="a">a) Vasoconstrição induzida por bactérias</label><label><input type="radio" name="q20" value="b">b) Destruição de nervos locais</label><label><input type="radio" name="q20" value="c">c) Vasodilatação e aumento do fluxo sanguíneo</label><label><input type="radio" name="q20" value="d">d) Acúmulo de líquido linfático</label><label><input type="radio" name="q20" value="e">e) Produção de anticorpos no local</label></div></div>
+                    <button type="button" class="btn-quiz" id="btnVerificarQuiz">🚀 Verificar Respostas</button>
+                </form>
+                <div id="resultado-quiz"></div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.png" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 1</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+            
+            const btnVerificarQuiz = document.getElementById('btnVerificarQuiz');
+            const quizForm = document.getElementById('quiz-form');
+            const resultadoQuiz = document.getElementById('resultado-quiz');
+
+            const gabarito = {
+                q1: 'd', q2: 'b', q3: 'c', q4: 'a', q5: 'd', q6: 'c', q7: 'c', q8: 'e', q9: 'b', q10: 'b',
+                q11: 'b', q12: 'c', q13: 'd', q14: 'c', q15: 'b', q16: 'd', q17: 'b', q18: 'c', q19: 'c', q20: 'c'
+            };
+
+            btnVerificarQuiz.addEventListener('click', () => {
+                let acertos = 0;
+                const totalQuestoes = Object.keys(gabarito).length;
+                
+                for (let i = 1; i <= totalQuestoes; i++) {
+                    const questao = 'q' + i;
+                    const respostaSelecionada = quizForm.querySelector(`input[name="${questao}"]:checked`);
+                    const labels = quizForm.querySelectorAll(`input[name="${questao}"]`);
+                    
+                    labels.forEach(labelInput => {
+                        const parent = labelInput.parentElement;
+                        parent.style.backgroundColor = '';
+                        parent.style.color = '';
+                        parent.style.border = '1px solid var(--cor-borda)';
+                    });
+
+                    if (respostaSelecionada) {
+                        const labelSelecionada = respostaSelecionada.parentElement;
+                        const respostaCorretaInput = quizForm.querySelector(`input[name="${questao}"][value="${gabarito[questao]}"]`);
+                        
+                        if (respostaSelecionada.value === gabarito[questao]) {
+                            acertos++;
+                            labelSelecionada.style.backgroundColor = 'var(--cor-sucesso)';
+                            labelSelecionada.style.color = 'var(--cor-texto-sucesso)';
+                            labelSelecionada.style.border = '1px solid var(--cor-verde)';
+                        } else {
+                            labelSelecionada.style.backgroundColor = 'var(--cor-erro)';
+                            labelSelecionada.style.color = 'var(--cor-texto-erro)';
+                            labelSelecionada.style.border = '1px solid var(--cor-erro)';
+                            if(respostaCorretaInput) {
+                                const labelCorreta = respostaCorretaInput.parentElement;
+                                labelCorreta.style.backgroundColor = 'var(--cor-sucesso)';
+                                labelCorreta.style.border = '1px solid var(--cor-verde)';
+                            }
+                        }
+                    }
+                }
+                
+                resultadoQuiz.textContent = `Você acertou ${acertos} de ${totalQuestoes} questões.`;
+                resultadoQuiz.style.color = acertos > (totalQuestoes / 2) ? 'var(--cor-verde)' : 'var(--cor-texto-erro)';
+            });
+        });
+    </script>
+</body>
+</html>

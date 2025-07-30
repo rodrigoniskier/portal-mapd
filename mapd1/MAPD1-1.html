@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-1 | Aula 1: Lesões e Adaptações Celulares</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-sucesso: #d4edda;
+            --cor-erro: #f8d7da;
+            --cor-texto-sucesso: #155724;
+            --cor-texto-erro: #721c24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .flashcard {
+            width: 300px;
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px 0 var(--cor-sombra);
+            border-radius: 10px;
+        }
+
+        .flashcard.virado .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-frente, .flashcard-verso {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--cor-borda);
+        }
+
+        .flashcard-frente {
+            background-color: var(--cor-amarelo);
+            color: var(--cor-texto);
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .flashcard-verso {
+            background-color: var(--cor-azul);
+            color: white;
+            transform: rotateY(180deg);
+            font-size: 1rem;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Quiz */
+        .quiz-container {
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #fdfdff;
+        }
+        
+        .questao {
+            margin-bottom: 25px;
+        }
+        
+        .questao p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alternativas label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .alternativas label:hover {
+            background-color: #f1f3f5;
+        }
+
+        .alternativas input {
+            margin-right: 10px;
+        }
+        
+        .btn-quiz {
+            display: inline-block;
+            background-color: var(--cor-verde);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-quiz:hover {
+            background-color: #218838;
+        }
+        
+        #resultado-quiz {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>🔬 MAPD-1</h1>
+            <p>Aula 1: Lesões e Adaptações</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#introducao" class="active"><span class="icon">🎓</span> Introdução</a></li>
+                <li><a href="#homeostase"><span class="icon">⚖️</span> Homeostase e Agressão</a></li>
+                <li><a href="#adaptacoes"><span class="icon">🔄</span> Adaptações Celulares</a></li>
+                <li><a href="#lesao"><span class="icon">💥</span> Lesão Celular</a></li>
+                <li><a href="#casos-clinicos"><span class="icon">🩺</span> Casos Clínicos (JP)</a></li>
+                <li><a href="#flashcards"><span class="icon">🗂️</span> Flashcards</a></li>
+                <li><a href="#quiz"><span class="icon">✅</span> Quiz e Prova</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>🔬 Aula 1: Lesões e Adaptações Celulares</h1>
+            <p class="subtitulo">Compreendendo como as células respondem ao estresse e à agressão.</p>
+        </header>
+
+        <section id="introducao" class="content-section active">
+            <h2>🎓 1. Introdução à Patologia Celular</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O que é Patologia Celular?</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A patologia é o estudo das doenças, focando nas alterações estruturais e funcionais que ocorrem em células, tecidos e órgãos. Para compreender a doença, é essencial começar pelo nível celular. As células são as unidades fundamentais da vida e estão constantemente se ajustando a mudanças em seu ambiente. Esta aula explora as respostas celulares ao estresse e aos estímulos nocivos, que vão desde adaptações bem-sucedidas até a lesão e, finalmente, a morte celular.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Conceito de Homeostase</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                         <p>O corpo humano busca incessantemente um estado de equilíbrio dinâmico conhecido como <strong>homeostase</strong>. Quando confrontadas com estresses fisiológicos ou estímulos patológicos, as células tentam preservar sua viabilidade e função, mantendo a homeostase. Esta capacidade de resposta é central para a saúde e a doença.</p>
+                         <div class="imagem-container" data-src="https://placehold.co/600x400/e9ecef/212529?text=Diagrama+Homeostase" data-legenda="Diagrama ilustrando o conceito de homeostase, onde o corpo mantém um ambiente interno estável.">
+                            <img src="https://placehold.co/600x400/e9ecef/212529?text=Diagrama+Homeostase" alt="Diagrama de Homeostase">
+                            <p>Clique para ampliar: Conceito de Homeostase.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="homeostase" class="content-section">
+            <h2>⚖️ 2. Homeostase e as Causas de Agressão Celular</h2>
+            <p>A homeostase é a manutenção de um ambiente interno estável. No entanto, diversos agentes e condições podem perturbar esse equilíbrio. Clique nos itens abaixo para explorar as principais causas de lesão celular:</p>
+            <div class="acordeao">
+                <div class="acordeao-titulo">📉 Hipóxia e Isquemia</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>A hipóxia é a deficiência de oxigênio, uma causa extremamente comum e importante de lesão celular. A isquemia, a perda de suprimento sanguíneo, é a causa mais comum de hipóxia. Sem oxigênio, a respiração aeróbica cessa, levando à depleção de ATP e falha de múltiplas funções celulares.</p></div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">🔥 Agentes Físicos</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>Trauma mecânico, temperaturas extremas (queimaduras, congelamento), mudanças súbitas na pressão atmosférica, radiação e choque elétrico.</p></div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">🧪 Agentes Químicos e Drogas</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>Substâncias como glicose ou sal em concentrações hipertônicas, venenos (arsênico, cianeto), poluentes, álcool, narcóticos e drogas terapêuticas em doses tóxicas.</p></div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">🦠 Agentes Infecciosos</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>Vírus, bactérias, fungos e parasitas causam lesão por diversos mecanismos.</p></div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">🛡️ Reações Imunológicas</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>Embora o sistema imune seja defensivo, suas reações podem causar lesão, como em doenças autoimunes ou reações alérgicas.</p></div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">🍔 Desequilíbrios Nutricionais</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno"><p>Deficiências de proteínas e vitaminas, bem como excessos nutricionais, como a obesidade, que aumenta o risco de diabetes tipo 2 e aterosclerose.</p></div></div>
+            </div>
+        </section>
+
+        <section id="adaptacoes" class="content-section">
+            <h2>🔄 3. Adaptações Celulares ao Estresse</h2>
+            <p>Quando as células são submetidas a um estresse persistente, mas não letal, elas podem sofrer adaptações. Estas são alterações <strong>reversíveis</strong> no tamanho, número, fenótipo, atividade metabólica ou funções celulares. As principais adaptações são:</p>
+
+            <div class="acordeao">
+                <div class="acordeao-titulo">💪 Hipertrofia</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p><strong>Definição:</strong> Aumento no tamanho das células, resultando em um aumento no tamanho do órgão. Não há novas células, apenas células maiores.</p>
+                        <p><strong>Mecanismo:</strong> Ocorre em células com capacidade de divisão limitada, como as células musculares esqueléticas e cardíacas. É resultado do aumento da produção de proteínas celulares.</p>
+                        <p><strong>Exemplo Fisiológico:</strong> O aumento da musculatura esquelética em atletas de levantamento de peso.</p>
+                        <p><strong>Exemplo Patológico:</strong> A hipertrofia do músculo cardíaco (ventrículo esquerdo) em resposta à hipertensão arterial crônica ou estenose aórtica.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/600x400/e9ecef/212529?text=Hipertrofia+Cardíaca" data-legenda="Micrografia mostrando cardiomiócitos aumentados em um caso de hipertrofia ventricular esquerda.">
+                            <img src="https://placehold.co/600x400/e9ecef/212529?text=Hipertrofia+Cardíaca" alt="Hipertrofia Cardíaca">
+                            <p>Clique para ampliar: Micrografia de hipertrofia cardíaca.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acordeao">
+                <div class="acordeao-titulo">➕ Hiperplasia</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p><strong>Definição:</strong> Aumento no número de células em um órgão ou tecido, geralmente resultando em aumento da massa do órgão ou tecido.</p>
+                        <p><strong>Mecanismo:</strong> Ocorre em populações de células capazes de se dividir. Pode ser causada por estimulação hormonal ou por fatores de crescimento.</p>
+                        <p><strong>Exemplo Fisiológico:</strong> A proliferação do epitélio glandular da mama feminina na puberdade e durante a gravidez (hiperplasia hormonal) ou a regeneração do fígado após uma hepatectomia parcial (hiperplasia compensatória).</p>
+                        <p><strong>Exemplo Patológico:</strong> A hiperplasia endometrial causada por estimulação estrogênica excessiva, que pode levar a sangramento uterino anormal e aumentar o risco de carcinoma endometrial.</p>
+                         <div class="imagem-container" data-src="https://placehold.co/600x400/e9ecef/212529?text=Hiperplasia+Endometrial" data-legenda="Micrografia de hiperplasia endometrial, mostrando um aumento no número de glândulas.">
+                            <img src="https://placehold.co/600x400/e9ecef/212529?text=Hiperplasia+Endometrial" alt="Hiperplasia Endometrial">
+                            <p>Clique para ampliar: Micrografia de hiperplasia endometrial.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acordeao">
+                <div class="acordeao-titulo">➖ Atrofia</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p><strong>Definição:</strong> Redução no tamanho de um órgão ou tecido como resultado de uma diminuição no tamanho e número de células.</p>
+                        <p><strong>Mecanismo:</strong> Resulta da diminuição da síntese de proteínas e do aumento da degradação de proteínas nas células. A via da ubiquitina-proteassoma é crucial para a degradação acelerada de proteínas.</p>
+                        <p><strong>Causas Comuns:</strong> Desuso (atrofia de um membro imobilizado), denervação (perda de inervação nervosa), diminuição do suprimento sanguíneo (isquemia), nutrição inadequada, perda de estimulação endócrina e envelhecimento.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/600x400/e9ecef/212529?text=Atrofia+Cerebral" data-legenda="Tomografia mostrando vários estágios de atrofia cerebral em paciente com Alzheimer">
+                            <img src="https://placehold.co/600x400/e9ecef/212529?text=Atrofia+Cerebral" alt="Atrofia Muscular">
+                            <p>Clique para ampliar: Micrografia de atrofia muscular.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acordeao">
+                <div class="acordeao-titulo">↔️ Metaplasia</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p><strong>Definição:</strong> Uma alteração reversível na qual um tipo de célula adulta (epitelial ou mesenquimal) é substituído por outro tipo de célula adulta.</p>
+                        <p><strong>Mecanismo:</strong> É uma reprogramação de células-tronco que existem nos tecidos normais. O novo tipo celular é mais resistente ao estresse que induziu a mudança.</p>
+                        <p><strong>Exemplo Comum:</strong> A substituição do epitélio colunar ciliado normal do trato respiratório por epitélio escamoso estratificado em fumantes crônicos. Embora o epitélio escamoso seja mais resistente, ele perde funções protetoras importantes, como a secreção de muco e a depuração ciliar.</p>
+                        <p><strong>Importância Clínica:</strong> Se as influências que induzem a metaplasia persistirem, elas podem predispor à transformação maligna do epitélio.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/600x400/e9ecef/212529?text=Metaplasia+Brônquica" data-legenda="Micrografia mostrando a transição de epitélio colunar para escamoso no brônquio.">
+                            <img src="https://placehold.co/600x400/e9ecef/212529?text=Metaplasia+Brônquica" alt="Metaplasia Brônquica">
+                            <p>Clique para ampliar: Metaplasia escamosa brônquica.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lesao" class="content-section">
+            <h2>💥 4. Lesão Celular: Reversível e Irreversível</h2>
+            <p>Se os limites da resposta adaptativa são excedidos ou se as células são expostas a um agente agressor direto, ocorre a lesão celular. Clique para ver os detalhes de cada tipo de lesão.</p>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Lesão Reversível</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <p>Caracterizada por alterações funcionais e morfológicas que são reversíveis se o estímulo nocivo for removido. As duas principais características morfológicas são o <strong>edema celular</strong> (acúmulo de água devido à falha das bombas iônicas) e a <strong>degeneração gordurosa</strong> (acúmulo de vacúolos lipídicos no citoplasma).</p>
+                </div></div>
+            </div>
+             <div class="acordeao">
+                <div class="acordeao-titulo">Lesão Irreversível (Morte Celular)</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <p>Quando a lesão se torna irreversível, a célula não pode se recuperar e morre. A morte celular é um processo central na patologia e ocorre por duas vias principais: <strong>necrose</strong> e <strong>apoptose</strong>, que serão detalhadas na próxima aula. Os marcos da irreversibilidade incluem dano mitocondrial severo e ruptura das membranas plasmática e lisossômica.</p>
+                </div></div>
+            </div>
+        </section>
+
+        <section id="casos-clinicos" class="content-section">
+            <h2>🩺 5. Casos Clínicos Contextualizados (João Pessoa, PB)</h2>
+            <p>A aplicação dos conceitos de patologia à realidade local é fundamental. Em João Pessoa, as arboviroses (Dengue, Zika, Chikungunya) e a Leishmaniose são desafios de saúde pública que envolvem mecanismos de lesão celular. (Dados epidemiológicos baseados em relatórios da Secretaria de Saúde de João Pessoa e do Estado da Paraíba, consultados em Julho de 2025).</p>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso 1: Lesão Hepática por Dengue</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Um paciente de 35 anos, residente no bairro de Mangabeira, procura a UPA com febre alta, dor de cabeça, dor retro-orbital e mialgia intensa há 4 dias. Exames laboratoriais revelam plaquetopenia e um aumento significativo das transaminases hepáticas (TGP/ALT e TGO/AST).</p>
+                    <h3>Discussão Patológica:</h3>
+                    <p>O vírus da Dengue pode causar lesão direta aos hepatócitos (células do fígado), levando a uma <strong>lesão celular reversível</strong> (edema celular) e, em casos mais graves, <strong>lesão irreversível</strong> com morte celular por apoptose. A resposta imune do hospedeiro contra as células infectadas também contribui para a lesão hepática. O aumento das enzimas hepáticas no sangue é um marcador de que as membranas dos hepatócitos foram danificadas, liberando seu conteúdo intracelular.</p>
+                </div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso 2: Adaptação Celular no Esôfago</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Uma paciente de 52 anos, obesa e com queixa crônica de azia e regurgitação, realiza uma endoscopia digestiva alta. A biópsia do esôfago distal revela a substituição do epitélio escamoso normal por um epitélio colunar com células caliciformes.</p>
+                    <h3>Discussão Patológica:</h3>
+                    <p>Este é um exemplo clássico de <strong>metaplasia</strong>, conhecido como Esôfago de Barrett. O epitélio escamoso normal do esôfago não é resistente à exposição crônica ao ácido gástrico. Como uma adaptação, as células-tronco locais se diferenciam em um epitélio colunar, semelhante ao do intestino, que é mais resistente ao ácido. Embora seja uma adaptação protetora, essa metaplasia é uma condição pré-maligna, aumentando significativamente o risco de adenocarcinoma de esôfago.</p>
+                </div></div>
+            </div>
+        </section>
+
+        <section id="flashcards" class="content-section">
+            <h2>🗂️ 6. Flashcards: Termos-Chave</h2>
+            <p>Clique nos cartões para revelar as definições.</p>
+            <div class="flashcard-container">
+                <div class="flashcard">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-frente">Homeostase</div>
+                        <div class="flashcard-verso">Estado de equilíbrio dinâmico do ambiente interno do corpo, mantido apesar das mudanças no ambiente externo.</div>
+                    </div>
+                </div>
+                <div class="flashcard">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-frente">Hipertrofia</div>
+                        <div class="flashcard-verso">Aumento no tamanho das células, resultando em aumento do tamanho do órgão.</div>
+                    </div>
+                </div>
+                <div class="flashcard">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-frente">Hiperplasia</div>
+                        <div class="flashcard-verso">Aumento no número de células em um tecido ou órgão.</div>
+                    </div>
+                </div>
+                <div class="flashcard">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-frente">Atrofia</div>
+                        <div class="flashcard-verso">Diminuição do tamanho e número de células, resultando na redução de um tecido ou órgão.</div>
+                    </div>
+                </div>
+                <div class="flashcard">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-frente">Metaplasia</div>
+                        <div class="flashcard-verso">Alteração reversível na qual um tipo de célula adulta é substituído por outro.</div>
+                    </div>
+                </div>
+                 <div class="flashcard">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-frente">Hipóxia</div>
+                        <div class="flashcard-verso">Deficiência de oxigênio nos tecidos, uma das principais causas de lesão celular.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="quiz" class="content-section">
+            <h2>✅ 7. Quiz e Prova</h2>
+            <p>Teste seus conhecimentos sobre os conceitos apresentados nesta aula. Selecione a alternativa que você considera correta para cada questão e depois clique em "Verificar Respostas".</p>
+            <div class="quiz-container">
+                <form id="quiz-form">
+                    <div class="questao"><p>1. O aumento da musculatura esquelética em um indivíduo que pratica levantamento de peso é um exemplo clássico de qual processo de adaptação celular?</p><div class="alternativas"><label><input type="radio" name="q1" value="a"> a) Hiperplasia</label><label><input type="radio" name="q1" value="b"> b) Metaplasia</label><label><input type="radio" name="q1" value="c"> c) Hipertrofia</label><label><input type="radio" name="q1" value="d"> d) Atrofia</label><label><input type="radio" name="q1" value="e"> e) Displasia</label></div></div>
+                    <div class="questao"><p>2. Um fumante crônico desenvolve uma alteração no epitélio brônquico, onde o epitélio colunar ciliado pseudoestratificado é substituído por epitélio escamoso estratificado. Como se chama essa adaptação?</p><div class="alternativas"><label><input type="radio" name="q2" value="a"> a) Hiperplasia</label><label><input type="radio" name="q2" value="b"> b) Metaplasia</label><label><input type="radio" name="q2" value="c"> c) Hipertrofia</label><label><input type="radio" name="q2" value="d"> d) Anaplasia</label><label><input type="radio" name="q2" value="e"> e) Atrofia</label></div></div>
+                    <div class="questao"><p>3. Qual das seguintes opções é a causa mais comum de hipóxia e lesão celular?</p><div class="alternativas"><label><input type="radio" name="q3" value="a"> a) Reações imunológicas</label><label><input type="radio" name="q3" value="b"> b) Agentes infecciosos</label><label><input type="radio" name="q3" value="c"> c) Trauma físico</label><label><input type="radio" name="q3" value="d"> d) Isquemia</label><label><input type="radio" name="q3" value="e"> e) Desequilíbrio nutricional</label></div></div>
+                    <div class="questao"><p>4. A imobilização de um membro fraturado com gesso leva à diminuição da massa muscular nesse membro. Este fenômeno é denominado:</p><div class="alternativas"><label><input type="radio" name="q4" value="a"> a) Atrofia por desuso</label><label><input type="radio" name="q4" value="b"> b) Hipoplasia</label><label><input type="radio" name="q4" value="c"> c) Necrose</label><label><input type="radio" name="q4" value="d"> d) Hipertrofia compensatória</label><label><input type="radio" name="q4" value="e"> e) Metaplasia por desuso</label></div></div>
+                    <div class="questao"><p>5. O crescimento do útero durante a gravidez é um exemplo de:</p><div class="alternativas"><label><input type="radio" name="q5" value="a"> a) Apenas hipertrofia</label><label><input type="radio" name="q5" value="b"> b) Apenas hiperplasia</label><label><input type="radio" name="q5" value="c"> c) Hipertrofia e hiperplasia</label><label><input type="radio" name="q5" value="d"> d) Metaplasia e displasia</label><label><input type="radio" name="q5" value="e"> e) Apenas atrofia</label></div></div>
+                    <div class="questao"><p>6. Qual das seguintes alterações é considerada um marco de lesão celular irreversível?</p><div class="alternativas"><label><input type="radio" name="q6" value="a"> a) Edema celular</label><label><input type="radio" name="q6" value="b"> b) Degeneração gordurosa</label><label><input type="radio" name="q6" value="c"> c) Dano mitocondrial severo e ruptura de membranas</label><label><input type="radio" name="q6" value="d"> d) Diminuição do pH intracelular</label><label><input type="radio" name="q6" value="e"> e) Desprendimento de ribossomos do retículo endoplasmático</label></div></div>
+                    <div class="questao"><p>7. A hiperplasia patológica, como a hiperplasia endometrial, aumenta o risco de desenvolvimento de:</p><div class="alternativas"><label><input type="radio" name="q7" value="a"> a) Infecção</label><label><input type="radio" name="q7" value="b"> b) Câncer</label><label><input type="radio" name="q7" value="c"> c) Atrofia</label><label><input type="radio" name="q7" value="d"> d) Isquemia</label><label><input type="radio" name="q7" value="e"> e) Resposta autoimune</label></div></div>
+                    <div class="questao"><p>8. O Esôfago de Barrett é um exemplo de metaplasia que ocorre em resposta a qual estímulo crônico?</p><div class="alternativas"><label><input type="radio" name="q8" value="a"> a) Infecção por H. pylori</label><label><input type="radio" name="q8" value="b"> b) Fumaça de cigarro</label><label><input type="radio" name="q8" value="c"> c) Radiação ultravioleta</label><label><input type="radio" name="q8" value="d"> d) Refluxo de ácido gástrico</label><label><input type="radio" name="q8" value="e"> e) Deficiência de vitamina A</label></div></div>
+                    <div class="questao"><p>9. A via da ubiquitina-proteassoma é um mecanismo fundamental em qual processo adaptativo?</p><div class="alternativas"><label><input type="radio" name="q9" value="a"> a) Hipertrofia</label><label><input type="radio" name="q9" value="b"> b) Hiperplasia</label><label><input type="radio" name="q9" value="c"> c) Metaplasia</label><label><input type="radio" name="q9" value="d"> d) Atrofia</label><label><input type="radio" name="q9" value="e"> e) Acúmulo de lipídios</label></div></div>
+                    <div class="questao"><p>10. Qual das seguintes opções NÃO é considerada uma causa de agressão celular?</p><div class="alternativas"><label><input type="radio" name="q10" value="a"> a) Agentes infecciosos</label><label><input type="radio" name="q10" value="b"> b) Homeostase controlada</label><label><input type="radio" name="q10" value="c"> c) Agentes químicos</label><label><input type="radio" name="q10" value="d"> d) Hipóxia</label><label><input type="radio" name="q10" value="e"> e) Reações imunológicas</label></div></div>
+                    <div class="questao"><p>11. A hipertrofia cardíaca em resposta à hipertensão arterial crônica é um exemplo de adaptação:</p><div class="alternativas"><label><input type="radio" name="q11" value="a"> a) Fisiológica</label><label><input type="radio" name="q11" value="b"> b) Patológica</label><label><input type="radio" name="q11" value="c"> c) Metaplásica</label><label><input type="radio" name="q11" value="d"> d) Transitória e sem consequências</label><label><input type="radio" name="q11" value="e"> e) Neoplásica</label></div></div>
+                    <div class="questao"><p>12. A regeneração do fígado após a remoção de parte dele é um exemplo de:</p><div class="alternativas"><label><input type="radio" name="q12" value="a"> a) Hiperplasia compensatória</label><label><input type="radio" name="q12" value="b"> b) Hipertrofia compensatória</label><label><input type="radio" name="q12" value="c"> c) Metaplasia hepática</label><label><input type="radio" name="q12" value="d"> d) Atrofia hepática</label><label><input type="radio" name="q12" value="e"> e) Neoplasia hepática</label></div></div>
+                    <div class="questao"><p>13. Todas as adaptações celulares a seguir são, em princípio, reversíveis. Qual delas, se persistir o estímulo, confere um risco aumentado para transformação maligna?</p><div class="alternativas"><label><input type="radio" name="q13" value="a"> a) Atrofia</label><label><input type="radio" name="q13" value="b"> b) Hipertrofia</label><label><input type="radio" name="q13" value="c"> c) Metaplasia</label><label><input type="radio" name="q13" value="d"> d) Atrofia senil</label><label><input type="radio" name="q13" value="e"> e) Hipertrofia muscular</label></div></div>
+                    <div class="questao"><p>14. O edema celular, uma das primeiras manifestações de lesão celular reversível, é causado principalmente por:</p><div class="alternativas"><label><input type="radio" name="q14" value="a"> a) Aumento da síntese de proteínas</label><label><input type="radio" name="q14" value="b"> b) Falha das bombas iônicas dependentes de ATP</label><label><input type="radio" name="q14" value="c"> c) Ruptura da membrana lisossômica</label><label><input type="radio" name="q14" value="d"> d) Dano ao DNA nuclear</label><label><input type="radio" name="q14" value="e"> e) Ativação da via da apoptose</label></div></div>
+                    <div class="questao"><p>15. Qual das seguintes células tem a maior capacidade de sofrer hiperplasia?</p><div class="alternativas"><label><input type="radio" name="q15" value="a"> a) Neurônios</label><label><input type="radio" name="q15" value="b"> b) Células musculares cardíacas</label><label><input type="radio" name="q15" value="c"> c) Células musculares esqueléticas</label><label><input type="radio" name="q15" value="d"> d) Hepatócitos</label><label><input type="radio" name="q15" value="e"> e) Células do cristalino</label></div></div>
+                    <div class="questao"><p>16. A atrofia cerebral observada em idosos é um exemplo de atrofia:</p><div class="alternativas"><label><input type="radio" name="q16" value="a"> a) Por desuso</label><label><input type="radio" name="q16" value="b"> b) Por denervação</label><label><input type="radio" name="q16" value="c"> c) Fisiológica (senil)</label><label><input type="radio" name="q16" value="d"> d) Isquêmica</label><label><input type="radio" name="q16" value="e"> e) Por pressão</label></div></div>
+                    <div class="questao"><p>17. A principal diferença entre hipertrofia e hiperplasia é:</p><div class="alternativas"><label><input type="radio" name="q17" value="a"> a) Hipertrofia é patológica, hiperplasia é fisiológica.</label><label><input type="radio" name="q17" value="b"> b) Hipertrofia é aumento do tamanho celular, hiperplasia é aumento do número de células.</label><label><input type="radio" name="q17" value="c"> c) Hipertrofia ocorre em células lábeis, hiperplasia em células permanentes.</label><label><input type="radio" name="q17" value="d"> d) Hipertrofia é irreversível, hiperplasia é reversível.</label><label><input type="radio" name="q17" value="e"> e) Hipertrofia envolve síntese de DNA, hiperplasia não.</label></div></div>
+                    <div class="questao"><p>18. Em um contexto de lesão hepática por Dengue, o aumento de transaminases no sangue indica:</p><div class="alternativas"><label><input type="radio" name="q18" value="a"> a) Adaptação hepática bem-sucedida</slabel><label><input type="radio" name="q18" value="b"> b) Hiperplasia dos hepatócitos</label><label><input type="radio" name="q18" value="c"> c) Perda da integridade da membrana dos hepatócitos</label><label><input type="radio" name="q18" value="d"> d) Atrofia do fígado</label><label><input type="radio" name="q18" value="e"> e) Metaplasia intestinal no fígado</label></div></div>
+                    <div class="questao"><p>19. Todas as opções a seguir são adaptações celulares, EXCETO:</p><div class="alternativas"><label><input type="radio" name="q19" value="a"> a) Hiperplasia</label><label><input type="radio" name="q19" value="b"> b) Hipertrofia</label><label><input type="radio" name="q19" value="c"> c) Atrofia</label><label><input type="radio" name="q19" value="d"> d) Metaplasia</label><label><input type="radio" name="q19" value="e"> e) Necrose</label></div></div>
+                    <div class="questao"><p>20. A reprogramação de células-tronco para gerar um novo fenótipo celular é o mecanismo subjacente a qual processo?</p><div class="alternativas"><label><input type="radio" name="q20" value="a"> a) Atrofia</label><label><input type="radio" name="q20" value="b"> b) Hipertrofia</label><label><input type="radio" name="q20" value="c"> c) Metaplasia</label><label><input type="radio" name="q20" value="d"> d) Lesão reversível</label><label><input type="radio" name="q20" value="e"> e) Degeneração gordurosa</label></div></div>
+                    <button type="button" class="btn-quiz" id="btnVerificarQuiz">🚀 Verificar Respostas</button>
+                </form>
+                <div id="resultado-quiz"></div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="https://placehold.co/100x100/0057B8/FFFFFF?text=RN" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 1</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Lógica do Menu Hambúrguer
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            // Lógica de Navegação do Menu e Seções de Conteúdo
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                    window.scrollTo(0, 0); // Rola para o topo ao mudar de seção
+                });
+            });
+
+            // Lógica do Acordeão
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+            
+            // Lógica do Modal de Imagem
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.querySelector('img').src; // Usa o src da imagem real
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+            
+            // *** CORREÇÃO: Lógica dos Flashcards ***
+            const flashcards = document.querySelectorAll('.flashcard');
+            flashcards.forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('virado');
+                });
+            });
+
+            // Lógica do Quiz
+            const btnVerificarQuiz = document.getElementById('btnVerificarQuiz');
+            const quizForm = document.getElementById('quiz-form');
+            const resultadoQuiz = document.getElementById('resultado-quiz');
+            const gabarito = {
+                q1: 'c', q2: 'b', q3: 'd', q4: 'a', q5: 'c', q6: 'c', q7: 'b', q8: 'd', q9: 'd', q10: 'b',
+                q11: 'b', q12: 'a', q13: 'c', q14: 'b', q15: 'd', q16: 'c', q17: 'b', q18: 'c', q19: 'e', q20: 'c'
+            };
+            btnVerificarQuiz.addEventListener('click', () => {
+                let acertos = 0;
+                const totalQuestoes = Object.keys(gabarito).length;
+                
+                for (let i = 1; i <= totalQuestoes; i++) {
+                    const questao = 'q' + i;
+                    const respostaSelecionada = quizForm.querySelector(`input[name="${questao}"]:checked`);
+                    const alternativas = quizForm.querySelectorAll(`input[name="${questao}"]`);
+                    
+                    // Reseta o estilo de todas as alternativas para a questão atual
+                    alternativas.forEach(input => {
+                        const parentLabel = input.parentElement;
+                        parentLabel.style.backgroundColor = '';
+                        parentLabel.style.color = '';
+                        parentLabel.style.border = '1px solid var(--cor-borda)';
+                    });
+
+                    if (respostaSelecionada) {
+                        const labelSelecionada = respostaSelecionada.parentElement;
+                        const respostaCorretaInput = quizForm.querySelector(`input[name="${questao}"][value="${gabarito[questao]}"]`);
+                        
+                        if (respostaSelecionada.value === gabarito[questao]) {
+                            acertos++;
+                            labelSelecionada.style.backgroundColor = 'var(--cor-sucesso)';
+                            labelSelecionada.style.color = 'var(--cor-texto-sucesso)';
+                            labelSelecionada.style.border = '1px solid var(--cor-verde)';
+                        } else {
+                            labelSelecionada.style.backgroundColor = 'var(--cor-erro)';
+                            labelSelecionada.style.color = 'var(--cor-texto-erro)';
+                            labelSelecionada.style.border = '1px solid var(--cor-texto-erro)';
+                            if(respostaCorretaInput) {
+                                const labelCorreta = respostaCorretaInput.parentElement;
+                                labelCorreta.style.backgroundColor = 'var(--cor-sucesso)';
+                                labelCorreta.style.border = '1px solid var(--cor-verde)';
+                            }
+                        }
+                    }
+                }
+                
+                resultadoQuiz.textContent = `Você acertou ${acertos} de ${totalQuestoes} questões.`;
+                resultadoQuiz.style.color = acertos > (totalQuestoes / 2) ? 'var(--cor-verde)' : 'var(--cor-texto-erro)';
+            });
+        });
+    </script>
+</body>
+</html>

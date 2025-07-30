@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-1 | Aula 9: Inflamação Aguda e Crônica</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-sucesso: #d4edda;
+            --cor-erro: #f8d7da;
+            --cor-texto-sucesso: #155724;
+            --cor-texto-erro: #721c24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+        
+        h4 {
+            font-size: 1.2rem;
+            color: #495057;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px auto;
+            transition: box-shadow 0.3s ease;
+            max-width: 600px;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Quiz */
+        .quiz-container {
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #fdfdff;
+        }
+        
+        .questao {
+            margin-bottom: 25px;
+        }
+        
+        .questao p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alternativas label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .alternativas label:hover {
+            background-color: #f1f3f5;
+        }
+
+        .alternativas input {
+            margin-right: 10px;
+        }
+        
+        .btn-quiz {
+            display: inline-block;
+            background-color: var(--cor-verde);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-quiz:hover {
+            background-color: #218838;
+        }
+        
+        #resultado-quiz {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1>🔥 MAPD-1</h1>
+            <p>Aula 9: Inflamação</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#introducao" class="active"><span class="icon">📖</span> Introdução</a></li>
+                <li><a href="#aguda"><span class="icon">⚡</span> Inflamação Aguda</a></li>
+                <li><a href="#cronica"><span class="icon">⏳</span> Inflamação Crônica</a></li>
+                <li><a href="#casos-clinicos"><span class="icon">🩺</span> Casos Clínicos (JP)</a></li>
+                <li><a href="#quiz"><span class="icon">✅</span> Quiz e Prova</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1>🔥 Aula 9: Padrões de Inflamações Agudas e Crônicas</h1>
+            <p class="subtitulo">A resposta protetora do organismo a agentes agressores.</p>
+        </header>
+
+        <section id="introducao" class="content-section active">
+            <h2>📖 1. Introdução à Inflamação</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O que é Inflamação?</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A <strong>inflamação</strong> é uma resposta fundamental e protetora dos tecidos vascularizados a uma agressão, como infecções ou dano tecidual. Seu principal objetivo é eliminar a causa da lesão, remover as células e tecidos danificados e iniciar o processo de reparo.</p>
+                        <p>Embora seja um mecanismo de defesa, a própria resposta inflamatória pode, em certas circunstâncias, se tornar prejudicial e causar doenças.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Os Sinais Cardinais</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A inflamação foi descrita há milênios por cinco sinais clássicos, conhecidos como sinais cardinais:</p>
+                        <ul>
+                            <li><strong>Calor:</strong> Devido ao aumento do fluxo sanguíneo para a área.</li>
+                            <li><strong>Rubor (Vermelhidão):</strong> Também pelo aumento do fluxo sanguíneo (hiperemia).</li>
+                            <li><strong>Tumor (Inchaço):</strong> Causado pelo extravasamento de fluido (edema) e células para o tecido.</li>
+                            <li><strong>Dor:</strong> Resultante da liberação de mediadores químicos que estimulam as terminações nervosas.</li>
+                            <li><strong>Perda de Função (Functio Laesa):</strong> Uma consequência da dor e do dano tecidual.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="aguda" class="content-section">
+            <h2>⚡ 2. Inflamação Aguda</h2>
+            <p>A inflamação aguda é a resposta inicial, rápida e de curta duração (minutos a dias) a um agente agressor. É caracterizada pelo extravasamento de fluido e proteínas plasmáticas (edema) e pela migração de leucócitos, predominantemente <strong>neutrófilos</strong>.</p>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Eventos Vasculares e Mediadores</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p><strong>Vasodilatação:</strong> Induzida por mediadores como <strong>histamina</strong> (liberada por mastócitos) e <strong>óxido nítrico</strong>. Causa aumento do fluxo sanguíneo (calor e rubor).</p>
+                        <p><strong>Aumento da Permeabilidade Vascular:</strong> Mediado por histamina, bradicinina e leucotrienos, que causam a contração das células endoteliais, abrindo espaços intercelulares. Permite a saída de um exsudato rico em proteínas para o tecido (edema).</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Eventos Celulares: A Cascata de Recrutamento</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A migração dos neutrófilos é um processo molecularmente orquestrado:</p>
+                        <ul>
+                            <li><strong>Marginação e Rolamento:</strong> O fluxo sanguíneo lento permite que os leucócitos se aproximem do endotélio. Moléculas de adesão chamadas <strong>selectinas</strong> (E-selectina e P-selectina no endotélio), induzidas por citocinas como TNF e IL-1, medeiam uma adesão fraca e intermitente, fazendo o leucócito "rolar".</li>
+                            <li><strong>Adesão Firme:</strong> As mesmas citocinas (TNF, IL-1) induzem a expressão de ligantes de alta afinidade no endotélio, as <strong>integrinas</strong> (como ICAM-1 e VCAM-1). Isso ativa as integrinas nos leucócitos, que se ligam firmemente ao endotélio.</li>
+                            <li><strong>Transmigração (Diapedese):</strong> O leucócito atravessa a parede do vaso, passando entre as células endoteliais.</li>
+                            <li><strong>Quimiotaxia:</strong> No tecido, o leucócito segue um gradiente de substâncias quimiotáticas, como produtos bacterianos, componentes do complemento (<strong>C5a</strong>), metabólitos do ácido araquidônico (<strong>Leucotrieno B4</strong>) e quimiocinas (<strong>IL-8</strong>).</li>
+                        </ul>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/0057B8/FFFFFF?text=Recrutamento+de+Leucócitos" data-legenda="Diagrama mostrando os passos do recrutamento de leucócitos: marginação, rolamento (selectinas), adesão (integrinas) e transmigração.">
+                            <img src="https://placehold.co/800x500/0057B8/FFFFFF?text=Recrutamento+de+Leucócitos" alt="Recrutamento de Leucócitos">
+                            <p>Clique para ampliar: Recrutamento de Leucócitos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div class="acordeao">
+                <div class="acordeao-titulo">Padrões Morfológicos da Inflamação Aguda</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <ul>
+                            <li><strong>Inflamação Serosa:</strong> Extravasamento de um fluido aquoso, pobre em proteínas (ex: bolha de queimadura).</li>
+                            <li><strong>Inflamação Fibrinosa:</strong> Extravasamento de grandes quantidades de fibrinogênio, que se deposita como fibrina no espaço extracelular (ex: pericardite fibrinosa).</li>
+                            <li><strong>Inflamação Purulenta (Supurativa):</strong> Produção de pus, um exsudato rico em neutrófilos, detritos celulares e micróbios (ex: apendicite aguda, abscessos).</li>
+                            <li><strong>Úlcera:</strong> Um defeito ou escavação local na superfície de um órgão ou tecido, produzido pela descamação de tecido inflamatório necrótico.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cronica" class="content-section">
+            <h2>⏳ 3. Inflamação Crônica</h2>
+            <p>A inflamação crônica é uma resposta de duração prolongada (semanas a anos) na qual a inflamação, a destruição tecidual e as tentativas de reparo ocorrem simultaneamente. É caracterizada pela infiltração de <strong>macrófagos, linfócitos e plasmócitos</strong>.</p>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Causas da Inflamação Crônica</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <ul>
+                            <li><strong>Infecções Persistentes:</strong> Por microrganismos difíceis de erradicar, como o <em>Mycobacterium tuberculosis</em>.</li>
+                            <li><strong>Doenças de Hipersensibilidade:</strong> Respostas imunes inadequadas contra os próprios tecidos (doenças autoimunes) ou contra substâncias ambientais (alergias).</li>
+                            <li><strong>Exposição Prolongada a Agentes Tóxicos:</strong> Ex: silicose, uma doença pulmonar causada pela inalação de partículas de sílica.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Papel Central do Macrófago e o Loop com Linfócitos T</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>O macrófago é a célula dominante e orquestradora da inflamação crônica. Ele é ativado por duas vias principais:</p>
+                        <ul>
+                            <li><strong>Ativação Clássica (M1):</strong> Induzida por PAMPs e pela citocina <strong>IFN-γ</strong> (produzida por células Th1). Macrófagos M1 são microbicidas e pró-inflamatórios.</li>
+                            <li><strong>Ativação Alternativa (M2):</strong> Induzida por outras citocinas (IL-4, IL-13). Macrófagos M2 estão mais envolvidos no reparo tecidual e na fibrose.</li>
+                        </ul>
+                        <p>Na inflamação crônica, estabelece-se um ciclo vicioso: <strong>macrófagos</strong> apresentam antígenos aos <strong>linfócitos T</strong> e produzem citocinas (como IL-12) que estimulam a resposta T. Por sua vez, os <strong>linfócitos T ativados</strong> (especialmente Th1) produzem IFN-γ, que superativa os macrófagos, perpetuando a resposta.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/28A745/FFFFFF?text=Loop+Macrófago-Linfócito" data-legenda="Diagrama mostrando o ciclo de ativação mútua entre macrófagos e linfócitos T, um mecanismo central na perpetuação da inflamação crônica.">
+                            <img src="https://placehold.co/800x500/28A745/FFFFFF?text=Loop+Macrófago-Linfócito" alt="Loop Macrófago-Linfócito">
+                            <p>Clique para ampliar: Interação Macrófago-Linfócito T.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Inflamação Granulomatosa</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>É um padrão distinto de inflamação crônica caracterizado pela formação de <strong>granulomas</strong>. Um granuloma é uma tentativa do corpo de conter um agente agressor que é difícil de erradicar.</p>
+                        <p>É caracterizado por um acúmulo de <strong>macrófagos ativados (células epitelioides)</strong>, frequentemente com um colar de linfócitos. Pode haver necrose central (tipicamente <strong>necrose caseosa</strong> na tuberculose).</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/FFD700/212529?text=Granuloma" data-legenda="Microscopia de um granuloma, mostrando um agregado de macrófagos epitelioides, linfócitos e uma célula gigante multinucleada.">
+                            <img src="https://placehold.co/800x500/FFD700/212529?text=Granuloma" alt="Granuloma">
+                            <p>Clique para ampliar: Granuloma Caseoso.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="casos-clinicos" class="content-section">
+            <h2>🩺 4. Casos Clínicos Contextualizados (João Pessoa, PB)</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso 1: Apendicite Aguda</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Jovem de 18 anos chega à emergência com dor abdominal que começou periumbilical e migrou para a fossa ilíaca direita, associada a febre e náuseas. O exame físico revela dor à descompressão brusca no ponto de McBurney. O hemograma mostra leucocitose com desvio à esquerda (aumento de neutrófilos).</p>
+                    <h3>Discussão Patológica:</h3>
+                    <p>Este é o quadro clássico de apendicite aguda. A obstrução do lúmen do apêndice leva à proliferação bacteriana e a uma intensa resposta inflamatória. O padrão morfológico é de <strong>inflamação purulenta (supurativa)</strong>, com a parede do apêndice infiltrada por milhões de <strong>neutrófilos</strong>, levando à necrose e formação de um abscesso. A leucocitose com neutrofilia no sangue reflete o recrutamento maciço dessas células da medula óssea.</p>
+                </div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso 2: Tuberculose Pulmonar</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Paciente de 45 anos, vivendo em uma comunidade com alta prevalência de tuberculose em João Pessoa, apresenta tosse crônica produtiva, febre vespertina, sudorese noturna e perda de peso há 2 meses. A radiografia de tórax mostra uma cavidade no ápice do pulmão direito.</p>
+                    <h3>Discussão Patológica:</h3>
+                    <p>A tuberculose é o protótipo da <strong>inflamação granulomatosa</strong>. O <em>Mycobacterium tuberculosis</em> é um patógeno intracelular que os macrófagos não conseguem destruir facilmente. A resposta imune mediada por células T (principalmente <strong>Th1</strong>) ativa os macrófagos, que se agregam para formar <strong>granulomas</strong>, na tentativa de "murar" a infecção. A biópsia do tecido pulmonar revelaria granulomas com <strong>necrose caseosa</strong> central, um achado altamente sugestivo de tuberculose.</p>
+                </div></div>
+            </div>
+        </section>
+
+        <section id="quiz" class="content-section">
+            <h2>✅ 5. Quiz e Prova</h2>
+            <p>Teste seus conhecimentos sobre inflamação aguda e crônica.</p>
+            <div class="quiz-container">
+                <form id="quiz-form">
+                    <div class="questao"><p>1. Qual dos seguintes é um sinal cardinal da inflamação causado primariamente pelo aumento do fluxo sanguíneo?</p><div class="alternativas"><label><input type="radio" name="q1" value="a">a) Dor</label><label><input type="radio" name="q1" value="b">b) Tumor (inchaço)</label><label><input type="radio" name="q1" value="c">c) Rubor (vermelhidão)</label><label><input type="radio" name="q1" value="d">d) Perda de função</label><label><input type="radio" name="q1" value="e">e) Pus</label></div></div>
+                    <div class="questao"><p>2. A célula predominante no infiltrado da inflamação aguda é o:</p><div class="alternativas"><label><input type="radio" name="q2" value="a">a) Linfócito</label><label><input type="radio" name="q2" value="b">b) Macrófago</label><label><input type="radio" name="q2" value="c">c) Neutrófilo</label><label><input type="radio" name="q2" value="d">d) Plasmócito</label><label><input type="radio" name="q2" value="e">e) Mastócito</label></div></div>
+                    <div class="questao"><p>3. A inflamação granulomatosa, com formação de granulomas e necrose caseosa, é a marca registrada de qual doença?</p><div class="alternativas"><label><input type="radio" name="q3" value="a">a) Apendicite aguda</label><label><input type="radio" name="q3" value="b">b) Infarto do miocárdio</label><label><input type="radio" name="q3" value="c">c) Tuberculose</label><label><input type="radio" name="q3" value="d">d) Queimadura de pele</label><label><input type="radio" name="q3" value="e">e) Dengue</label></div></div>
+                    <div class="questao"><p>4. O edema (inchaço) na inflamação aguda é causado principalmente por:</p><div class="alternativas"><label><input type="radio" name="q4" value="a">a) Vasoconstrição</label><label><input type="radio" name="q4" value="b">b) Aumento da permeabilidade vascular</label><label><input type="radio" name="q4" value="c">c) Diminuição do fluxo sanguíneo</label><label><input type="radio" name="q4" value="d">d) Proliferação de fibroblastos</label><label><input type="radio" name="q4" value="e">e) Acúmulo de linfócitos</label></div></div>
+                    <div class="questao"><p>5. Qual das seguintes células é a principal orquestradora da inflamação crônica?</p><div class="alternativas"><label><input type="radio" name="q5" value="a">a) Neutrófilo</label><label><input type="radio" name="q5" value="b">b) Macrófago</label><label><input type="radio" name="q5" value="c">c) Eosinófilo</label><label><input type="radio" name="q5" value="d">d) Basófilo</label><label><input type="radio" name="q5" value="e">e) Hemácia</label></div></div>
+                    <div class="questao"><p>6. A formação de pus, como em um abscesso, é característica da inflamação:</p><div class="alternativas"><label><input type="radio" name="q6" value="a">a) Serosa</label><label><input type="radio" name="q6" value="b">b) Fibrinosa</label><label><input type="radio" name="q6" value="c">c) Crônica</label><label><input type="radio" name="q6" value="d">d) Granulomatosa</label><label><input type="radio" name="q6" value="e">e) Purulenta (supurativa)</label></div></div>
+                    <div class="questao"><p>7. Qual das seguintes condições é mais provável de levar à inflamação crônica em vez de aguda?</p><div class="alternativas"><label><input type="radio" name="q7" value="a">a) Um corte superficial na pele</label><label><input type="radio" name="q7" value="b">b) Uma queimadura de primeiro grau</label><label><input type="radio" name="q7" value="c">c) Uma infecção bacteriana que é rapidamente eliminada</label><label><input type="radio" name="q7" value="d">d) Uma infecção persistente por um microrganismo resistente</label><label><input type="radio" name="q7" value="e">e) Uma picada de mosquito</label></div></div>
+                    <div class="questao"><p>8. O processo de migração de leucócitos do vaso sanguíneo para o tecido, guiado por um gradiente químico, é chamado de:</p><div class="alternativas"><label><input type="radio" name="q8" value="a">a) Marginação</label><label><input type="radio" name="q8" value="b">b) Rolamento</label><label><input type="radio" name="q8" value="c">c) Opsonização</label><label><input type="radio" name="q8" value="d">d) Fagocitose</label><label><input type="radio" name="q8" value="e">e) Quimiotaxia</label></div></div>
+                    <div class="questao"><p>9. A principal diferença citológica entre um infiltrado inflamatório agudo e um crônico é:</p><div class="alternativas"><label><input type="radio" name="q9" value="a">a) Predomínio de neutrófilos no agudo e de linfócitos/macrófagos no crônico</label><label><input type="radio" name="q9" value="b">b) Predomínio de linfócitos no agudo e de neutrófilos no crônico</label><label><input type="radio" name="q9" value="c">c) Presença de edema apenas no crônico</label><label><input type="radio" name="q9" value="d">d) Ausência de células no agudo</label><label><input type="radio" name="q9" value="e">e) Presença de células gigantes apenas no agudo</label></div></div>
+                    <div class="questao"><p>10. Em um granuloma, os macrófagos ativados que assumem uma aparência semelhante a células epiteliais são chamados de:</p><div class="alternativas"><label><input type="radio" name="q10" value="a">a) Plasmócitos</label><label><input type="radio" name="q10" value="b">b) Células gigantes</label><label><input type="radio" name="q10" value="c">c) Células epitelioides</label><label><input type="radio" name="q10" value="d">d) Fibroblastos</label><label><input type="radio" name="q10" value="e">e) Linfócitos</label></div></div>
+                    <div class="questao"><p>11. Uma bolha formada após uma queimadura leve é um exemplo de inflamação:</p><div class="alternativas"><label><input type="radio" name="q11" value="a">a) Fibrinosa</label><label><input type="radio" name="q11" value="b">b) Purulenta</label><label><input type="radio" name="q11" value="c">c) Serosa</label><label><input type="radio" name="q11" value="d">d) Granulomatosa</label><label><input type="radio" name="q11" value="e">e) Crônica</label></div></div>
+                    <div class="questao"><p>12. A destruição tecidual é uma característica mais proeminente da inflamação:</p><div class="alternativas"><label><input type="radio" name="q12" value="a">a) Serosa</label><label><input type="radio" name="q12" value="b">b) Aguda leve</label><label><input type="radio" name="q12" value="c">c) Crônica</label><label><input type="radio" name="q12" value="d">d) Adaptativa</label><label><input type="radio" name="q12" value="e">e) Inata sem células</label></div></div>
+                    <div class="questao"><p>13. Qual dos seguintes mediadores é importante para causar vasodilatação e dor na inflamação aguda?</p><div class="alternativas"><label><input type="radio" name="q13" value="a">a) Anticorpos</label><label><input type="radio" name="q13" value="b">b) Complemento C9</label><label><input type="radio" name="q13" value="c">c) Prostaglandinas</label><label><input type="radio" name="q13" value="d">d) Fator de coagulação XII</label><label><input type="radio" name="q13" value="e">e) Lisozima</label></div></div>
+                    <div class="questao"><p>14. A fibrose (cicatrização) é um resultado comum associado à inflamação:</p><div class="alternativas"><label><input type="radio" name="q14" value="a">a) Aguda que se resolve completamente</label><label><input type="radio" name="q14" value="b">b) Serosa</label><label><input type="radio" name="q14" value="c">c) Crônica</label><label><input type="radio" name="q14" value="d">d) Inata</label><label><input type="radio" name="q14" value="e">e) Humoral</label></div></div>
+                    <div class="questao"><p>15. O "desvio à esquerda" no hemograma de um paciente com apendicite aguda refere-se a:</p><div class="alternativas"><label><input type="radio" name="q15" value="a">a) Aumento de linfócitos</label><label><input type="radio" name="q15" value="b">b) Aumento de neutrófilos jovens (bastonetes)</label><label><input type="radio" name="q15" value="c">c) Diminuição de todas as células brancas</label><label><input type="radio" name="q15" value="d">d) Aumento de eosinófilos</label><label><input type="radio" name="q15" value="e">e) Aumento de plaquetas</label></div></div>
+                    <div class="questao"><p>16. A principal função da inflamação é:</p><div class="alternativas"><label><input type="radio" name="q16" value="a">a) Causar doença</label><label><input type="radio" name="q16" value="b">b) Destruir o tecido do hospedeiro</label><label><input type="radio" name="q16" value="c">c) Iniciar uma resposta protetora para eliminar a causa da lesão</label><label><input type="radio" name="q16" value="d">d) Ativar a memória imunológica</label><label><input type="radio" name="q16" value="e">e) Apenas causar dor para alertar o indivíduo</label></div></div>
+                    <div class="questao"><p>17. Uma úlcera péptica é um exemplo de qual padrão morfológico de inflamação?</p><div class="alternativas"><label><input type="radio" name="q17" value="a">a) Seroso</label><label><input type="radio" name="q17" value="b">b) Fibrinoso</label><label><input type="radio" name="q17" value="c">c) Supurativo</label><label><input type="radio" name="q17" value="d">d) Ulceração</label><label><input type="radio" name="q17" value="e">e) Granulomatoso</label></div></div>
+                    <div class="questao"><p>18. A interação entre linfócitos T e macrófagos é um mecanismo de amplificação central na inflamação:</p><div class="alternativas"><label><input type="radio" name="q18" value="a">a) Aguda</label><label><input type="radio" name="q18" value="b">b) Serosa</label><label><input type="radio" name="q18" value="c">c) Crônica</label><label><input type="radio" name="q18" value="d">d) Fibrinosa</label><label><input type="radio" name="q18" value="e">e) Purulenta</label></div></div>
+                    <div class="questao"><p>19. Qual das seguintes não é uma característica da inflamação aguda?</p><div class="alternativas"><label><input type="radio" name="q19" value="a">a) Início rápido</label><label><input type="radio" name="q19" value="b">b) Curta duração</label><label><input type="radio" name="q19" value="c">c) Infiltrado de neutrófilos</label><label><input type="radio" name="q19" value="d">d) Edema</label><label><input type="radio" name="q19" value="e">e) Fibrose proeminente</label></div></div>
+                    <div class="questao"><p>20. A pericardite fibrinosa, com deposição de uma malha de fibrina sobre o pericárdio, é um exemplo de inflamação:</p><div class="alternativas"><label><input type="radio" name="q20" value="a">a) Aguda</label><label><input type="radio" name="q20" value="b">b) Crônica</label><label><input type="radio" name="q20" value="c">c) Granulomatosa</label><label><input type="radio" name="q20" value="d">d) Serosa</label><label><input type="radio" name="q20" value="e">e) Supurativa</label></div></div>
+
+                    <button type="button" class="btn-quiz" id="btnVerificarQuiz">🚀 Finalizar e Corrigir Prova</button>
+                </form>
+                <div id="resultado-quiz"></div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 1</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+            
+            const btnVerificarQuiz = document.getElementById('btnVerificarQuiz');
+            const quizForm = document.getElementById('quiz-form');
+            const resultadoQuiz = document.getElementById('resultado-quiz');
+
+            const gabarito = {
+                q1: 'c', q2: 'c', q3: 'c', q4: 'b', q5: 'b', q6: 'e', q7: 'd', q8: 'e', q9: 'a', q10: 'c',
+                q11: 'c', q12: 'c', q13: 'c', q14: 'c', q15: 'b', q16: 'c', q17: 'd', q18: 'c', q19: 'e', q20: 'a'
+            };
+
+            btnVerificarQuiz.addEventListener('click', () => {
+                let acertos = 0;
+                const totalQuestoes = Object.keys(gabarito).length;
+                
+                for (let i = 1; i <= totalQuestoes; i++) {
+                    const questao = 'q' + i;
+                    const respostaSelecionada = quizForm.querySelector(`input[name="${questao}"]:checked`);
+                    const labels = quizForm.querySelectorAll(`input[name="${questao}"]`);
+                    
+                    labels.forEach(labelInput => {
+                        const parent = labelInput.parentElement;
+                        parent.style.backgroundColor = '';
+                        parent.style.color = '';
+                        parent.style.border = '1px solid var(--cor-borda)';
+                    });
+
+                    if (respostaSelecionada) {
+                        const labelSelecionada = respostaSelecionada.parentElement;
+                        const respostaCorretaInput = quizForm.querySelector(`input[name="${questao}"][value="${gabarito[questao]}"]`);
+                        
+                        if (respostaSelecionada.value === gabarito[questao]) {
+                            acertos++;
+                            labelSelecionada.style.backgroundColor = 'var(--cor-sucesso)';
+                            labelSelecionada.style.color = 'var(--cor-texto-sucesso)';
+                            labelSelecionada.style.border = '1px solid var(--cor-verde)';
+                        } else {
+                            labelSelecionada.style.backgroundColor = 'var(--cor-erro)';
+                            labelSelecionada.style.color = 'var(--cor-texto-erro)';
+                            labelSelecionada.style.border = '1px solid var(--cor-erro)';
+                            if(respostaCorretaInput) {
+                                const labelCorreta = respostaCorretaInput.parentElement;
+                                labelCorreta.style.backgroundColor = 'var(--cor-sucesso)';
+                                labelCorreta.style.border = '1px solid var(--cor-verde)';
+                            }
+                        }
+                    }
+                }
+                
+                resultadoQuiz.textContent = `Seu resultado: ${acertos} de ${totalQuestoes} questões corretas.`;
+                resultadoQuiz.style.color = acertos > (totalQuestoes / 2) ? 'var(--cor-verde)' : 'var(--cor-texto-erro)';
+            });
+        });
+    </script>
+</body>
+</html>

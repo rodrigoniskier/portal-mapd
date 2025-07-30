@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-1 | Aula 6: Resposta de Células B</title>
+    <style>
+        /* Reset e Estilos Globais */
+        :root {
+            --cor-fundo: #FFFFFF;
+            --cor-texto: #212529;
+            --cor-azul: #0057B8;
+            --cor-verde: #28A745;
+            --cor-amarelo: #FFD700;
+            --cor-borda: #dee2e6;
+            --cor-sombra: rgba(0, 0, 0, 0.1);
+            --cor-sucesso: #d4edda;
+            --cor-erro: #f8d7da;
+            --cor-texto-sucesso: #155724;
+            --cor-texto-erro: #721c24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+
+        /* Estrutura Principal */
+        .menu-lateral {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .conteudo-principal {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cabeçalho do Menu */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .menu-header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-azul);
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Navegação do Menu */
+        .menu-nav ul {
+            list-style: none;
+        }
+
+        .menu-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #495057;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-nav li a:hover,
+        .menu-nav li a.active {
+            background-color: var(--cor-azul);
+            color: var(--cor-fundo);
+        }
+        
+        .menu-nav li a .icon {
+            font-size: 1.2rem;
+        }
+
+        /* Conteúdo da Página */
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-azul);
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--cor-amarelo);
+            padding-bottom: 10px;
+        }
+
+        header p.subtitulo {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--cor-azul);
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        
+        h3 {
+             color: var(--cor-azul);
+             margin-bottom: 15px;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        strong {
+            color: #343a40;
+        }
+        
+        ul {
+            list-style-position: inside;
+        }
+
+        /* Componentes Interativos */
+        .acordeao {
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .acordeao-titulo {
+            background-color: #f1f3f5;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .acordeao-titulo:hover {
+            background-color: #e9ecef;
+        }
+
+        .acordeao-titulo::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .acordeao-titulo.active::after {
+            transform: rotate(45deg);
+        }
+
+        .acordeao-conteudo {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            background-color: var(--cor-fundo);
+            padding: 0 20px;
+        }
+        
+        .acordeao-conteudo-interno {
+             padding: 20px 0;
+        }
+
+        /* Modal */
+        .imagem-container {
+            cursor: pointer;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .imagem-container:hover {
+            box-shadow: 0 6px 12px var(--cor-sombra);
+        }
+
+        .imagem-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .imagem-container p {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-conteudo {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80vh;
+        }
+
+        .modal-legenda {
+            margin: 15px auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        /* Quiz */
+        .quiz-container {
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #fdfdff;
+        }
+        
+        .questao {
+            margin-bottom: 25px;
+        }
+        
+        .questao p {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alternativas label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .alternativas label:hover {
+            background-color: #f1f3f5;
+        }
+
+        .alternativas input {
+            margin-right: 10px;
+        }
+        
+        .btn-quiz {
+            display: inline-block;
+            background-color: var(--cor-verde);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .btn-quiz:hover {
+            background-color: #218838;
+        }
+        
+        #resultado-quiz {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Rodapé */
+        .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-amarelo);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-azul);
+        }
+
+        .rodape-info p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .rodape-info p:first-child {
+            font-size: 1.2rem;
+        }
+
+        /* Menu Hambúrguer para Responsividade */
+        .btn-hamburger {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--cor-azul);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-lateral {
+                transform: translateX(-100%);
+                z-index: 1000;
+                width: 250px;
+            }
+            
+            .menu-lateral.aberto {
+                transform: translateX(0);
+            }
+
+            .conteudo-principal {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn-hamburger {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-hamburger" id="btnHamburger">☰</button>
+
+    <aside class="menu-lateral" id="menuLateral">
+        <div class="menu-header">
+            <h1> humoral</h1>
+            <p>Aula 6: Resposta de Células B</p>
+        </div>
+        <nav class="menu-nav">
+            <ul>
+                <li><a href="#introducao" class="active"><span class="icon">📖</span> Introdução</a></li>
+                <li><a href="#maturacao"><span class="icon">🧬</span> Maturação e BCR</a></li>
+                <li><a href="#ativacao"><span class="icon">⚡</span> Ativação e Diferenciação</a></li>
+                <li><a href="#anticorpos"><span class="icon">💥</span> Anticorpos: Estrutura e Função</a></li>
+                <li><a href="#memoria"><span class="icon">🧠</span> Memória Imunológica</a></li>
+                <li><a href="#casos-clinicos"><span class="icon">🩺</span> Casos Clínicos (JP)</a></li>
+                <li><a href="#quiz"><span class="icon">✅</span> Quiz e Prova</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="conteudo-principal">
+        <header>
+            <h1> humoral Aula 6: Resposta de Células B</h1>
+            <p class="subtitulo">As fábricas de anticorpos da imunidade adaptativa.</p>
+        </header>
+
+        <section id="introducao" class="content-section active">
+            <h2>📖 1. Introdução à Imunidade Humoral</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Que é Imunidade Humoral?</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A imunidade humoral é o braço da imunidade adaptativa mediado por moléculas nos fluidos corporais (humores), principalmente os <strong>anticorpos</strong>. Os principais arquitetos desta resposta são os <strong>Linfócitos B</strong>.</p>
+                        <p>A função central da imunidade humoral é combater patógenos <strong>extracelulares</strong> (como a maioria das bactérias e fungos) e suas toxinas. Os anticorpos se ligam a esses alvos, neutralizando-os e marcando-os para destruição por outras células, como os fagócitos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="maturacao" class="content-section">
+            <h2>🧬 2. Maturação na Medula Óssea e o Receptor de Célula B (BCR)</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Desenvolvimento e Seleção de Células B</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Diferente dos linfócitos T, os linfócitos B se originam e amadurecem na <strong>medula óssea</strong>. Durante sua maturação, eles também passam por um processo de seleção para eliminar clones autorreativos (tolerância central).</p>
+                        <p>A principal característica de um linfócito B maduro é a expressão de um receptor de antígeno único em sua superfície, o <strong>Receptor de Célula B (BCR)</strong>, que é, na verdade, uma molécula de anticorpo ligada à membrana.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">O Receptor de Célula B (BCR)</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>O BCR é capaz de reconhecer e se ligar a antígenos em sua forma <strong>nativa</strong> (tridimensional), sem a necessidade de processamento e apresentação por MHC, como ocorre com os linfócitos T. Isso permite que os linfócitos B reconheçam uma vasta gama de moléculas, como proteínas, polissacarídeos e lipídios na superfície de um patógeno.</p>
+                        <p>Assim como o TCR, a diversidade de BCRs é gerada por recombinação somática dos genes de imunoglobulina.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/28A745/FFFFFF?text=Estrutura+do+BCR" data-legenda="Diagrama da estrutura do Receptor de Célula B (BCR), uma imunoglobulina de membrana associada a moléculas de sinalização.">
+                            <img src="https://placehold.co/800x500/28A745/FFFFFF?text=Estrutura+do+BCR" alt="Estrutura do BCR">
+                            <p>Clique para ampliar: Estrutura do BCR.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ativacao" class="content-section">
+            <h2>⚡ 3. Ativação e Diferenciação de Linfócitos B</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Ativação T-Dependente: A Resposta Mais Robusta</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A maioria das respostas de células B a antígenos proteicos requer a "ajuda" de <strong>Linfócitos T CD4+ auxiliares</strong> (geralmente do subtipo T folicular auxiliar - Tfh).</p>
+                        <ol>
+                            <li>O linfócito B reconhece um antígeno nativo através de seu BCR, internaliza e o processa.</li>
+                            <li>O linfócito B apresenta peptídeos desse antígeno em suas moléculas de <strong>MHC de classe II</strong>.</li>
+                            <li>Um linfócito Tfh previamente ativado, que reconhece o mesmo peptídeo, interage com o linfócito B.</li>
+                            <li>Essa interação, mediada por moléculas como <strong>CD40L (no Tfh) e CD40 (no B)</strong>, junto com citocinas liberadas pelo Tfh, fornece os sinais para a ativação completa do linfócito B.</li>
+                        </ol>
+                        <p>Esta colaboração é essencial para gerar respostas de anticorpos de alta afinidade, com troca de classe e memória duradoura.</p>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/0057B8/FFFFFF?text=Ativação+T-Dependente" data-legenda="Diagrama da interação entre um linfócito B e um linfócito T auxiliar folicular (Tfh) em um linfonodo, levando à ativação do linfócito B.">
+                            <img src="https://placehold.co/800x500/0057B8/FFFFFF?text=Ativação+T-Dependente" alt="Ativação T-Dependente">
+                            <p>Clique para ampliar: Colaboração T-B.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Diferenciação em Plasmócitos e Células de Memória</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Após a ativação, o linfócito B prolifera e se diferencia em duas principais populações celulares:</p>
+                        <ul>
+                            <li><strong>Plasmócitos:</strong> São verdadeiras "fábricas" de anticorpos. Eles perdem a expressão do BCR de superfície e se especializam em secretar grandes quantidades de anticorpos solúveis com a mesma especificidade do BCR original.</li>
+                            <li><strong>Células B de Memória:</strong> São células de vida longa que persistem após a eliminação do patógeno. Elas permitem uma resposta mais rápida e robusta em uma futura exposição ao mesmo antígeno.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="anticorpos" class="content-section">
+            <h2>💥 4. Anticorpos (Imunoglobulinas): Estrutura e Função</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Estrutura Básica de um Anticorpo</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Os anticorpos, ou imunoglobulinas (Ig), são proteínas em forma de Y. A estrutura básica consiste em:</p>
+                        <ul>
+                            <li><strong>Duas cadeias pesadas e duas cadeias leves</strong> idênticas.</li>
+                            <li><strong>Região Fab (Fragment antigen-binding):</strong> As pontas do "Y", que contêm as regiões variáveis e são responsáveis por se ligar ao antígeno. A especificidade está aqui.</li>
+                            <li><strong>Região Fc (Fragment crystallizable):</strong> A haste do "Y", que é constante dentro de uma mesma classe de anticorpo e determina a função efetora (ex: se vai ativar o complemento ou se ligar a fagócitos).</li>
+                        </ul>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/FFD700/212529?text=Estrutura+do+Anticorpo" data-legenda="Estrutura de uma molécula de anticorpo (IgG), destacando as cadeias pesadas, cadeias leves, e as regiões Fab e Fc.">
+                            <img src="https://placehold.co/800x500/FFD700/212529?text=Estrutura+do+Anticorpo" alt="Estrutura do Anticorpo">
+                            <p>Clique para ampliar: Estrutura da Imunoglobulina.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Classes (Isotipos) de Anticorpos</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Existem cinco classes principais de anticorpos, cada uma com funções distintas:</p>
+                        <ul>
+                            <li><strong>IgM:</strong> O primeiro anticorpo produzido em uma resposta primária. É um pentâmero, muito eficiente em ativar o sistema complemento.</li>
+                            <li><strong>IgG:</strong> O principal anticorpo na circulação sanguínea e na resposta secundária. Atravessa a placenta (imunidade passiva para o feto), opsoniza patógenos e ativa o complemento.</li>
+                            <li><strong>IgA:</strong> O principal anticorpo em secreções mucosas (saliva, leite, trato gastrointestinal e respiratório), atuando como uma primeira linha de defesa neutralizante.</li>
+                            <li><strong>IgE:</strong> Envolvido na defesa contra helmintos e é o principal mediador de reações alérgicas (hipersensibilidade tipo I), ao se ligar a mastócitos.</li>
+                            <li><strong>IgD:</strong> Principalmente encontrado como um BCR em linfócitos B virgens; sua função como molécula solúvel é menos clara.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+             <div class="acordeao">
+                <div class="acordeao-titulo">Funções Efetoras dos Anticorpos</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>Os anticorpos não matam patógenos diretamente. Eles funcionam como "etiquetas" e "neutralizadores":</p>
+                        <ul>
+                            <li><strong>Neutralização:</strong> Ligam-se a toxinas ou a superfícies de vírus, impedindo que eles se liguem e entrem nas células do hospedeiro.</li>
+                            <li><strong>Opsonização:</strong> Revestem a superfície de patógenos (ex: bactérias), facilitando sua fagocitose por macrófagos e neutrófilos, que possuem receptores para a região Fc dos anticorpos.</li>
+                            <li><strong>Ativação do Complemento:</strong> A ligação de IgM ou IgG a um patógeno pode iniciar a cascata do complemento pela via clássica, levando à lise do patógeno.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="memoria" class="content-section">
+            <h2>🧠 5. Memória Imunológica</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Resposta Primária vs. Secundária</div>
+                <div class="acordeao-conteudo">
+                    <div class="acordeao-conteudo-interno">
+                        <p>A memória é uma característica fundamental da imunidade adaptativa e a base da vacinação.</p>
+                        <ul>
+                            <li><strong>Resposta Primária:</strong> Ocorre na primeira exposição a um antígeno. É mais lenta (leva de 7 a 10 dias para atingir o pico), tem menor magnitude e o principal anticorpo produzido é o <strong>IgM</strong>.</li>
+                            <li><strong>Resposta Secundária:</strong> Ocorre em exposições subsequentes ao mesmo antígeno. Graças às células B de memória, a resposta é muito mais <strong>rápida</strong> (pico em 2-3 dias), tem <strong>maior magnitude</strong> e o principal anticorpo produzido é o <strong>IgG</strong> (ou IgA/IgE), que geralmente tem maior afinidade pelo antígeno.</li>
+                        </ul>
+                        <div class="imagem-container" data-src="https://placehold.co/800x500/dc3545/FFFFFF?text=Resposta+Primária+vs+Secundária" data-legenda="Gráfico comparando a cinética e a magnitude da produção de anticorpos nas respostas imunes primária e secundária.">
+                            <img src="https://placehold.co/800x500/dc3545/FFFFFF?text=Resposta+Primária+vs+Secundária" alt="Resposta Primária vs Secundária">
+                            <p>Clique para ampliar: Memória Imunológica.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="casos-clinicos" class="content-section">
+            <h2>🩺 6. Casos Clínicos Contextualizados (João Pessoa, PB)</h2>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso 1: Diagnóstico Sorológico da Chikungunya</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Paciente de 40 anos apresenta febre alta, dor articular intensa e exantema há 5 dias. A suspeita clínica é de Chikungunya, uma arbovirose comum em João Pessoa. O médico solicita sorologia para confirmar o diagnóstico.</p>
+                    <h3>Discussão Imunológica:</h3>
+                    <p>O diagnóstico sorológico se baseia na detecção de anticorpos específicos contra o vírus. Na fase aguda da infecção (primeiros dias), o exame detectará principalmente anticorpos da classe <strong>IgM</strong>, indicando uma infecção recente (resposta primária). Semanas a meses depois, os níveis de IgM cairão e os de <strong>IgG</strong> se tornarão dominantes, permanecendo detectáveis por anos e conferindo imunidade duradoura (memória). A detecção de IgM é, portanto, uma ferramenta crucial para diagnosticar a infecção aguda.</p>
+                </div></div>
+            </div>
+            <div class="acordeao">
+                <div class="acordeao-titulo">Caso 2: Vacinação e Imunidade Humoral</div>
+                <div class="acordeao-conteudo"><div class="acordeao-conteudo-interno">
+                    <h3>Apresentação:</h3>
+                    <p>Uma criança de 2 meses é levada a uma Unidade de Saúde da Família para iniciar seu calendário vacinal, incluindo a vacina pentavalente (que protege contra difteria, tétano, coqueluche, Haemophilus influenzae tipo b e hepatite B).</p>
+                    <h3>Discussão Imunológica:</h3>
+                    <p>A vacinação é a aplicação mais bem-sucedida dos princípios da imunidade humoral. A vacina introduz antígenos dos patógenos de forma segura, sem causar a doença. Isso induz uma <strong>resposta imune primária</strong>, com ativação de linfócitos B e T e a geração de <strong>plasmócitos e células de memória</strong>. Se a criança for exposta ao patógeno real no futuro, as células de memória orquestrarão uma <strong>resposta secundária</strong> rápida e potente, produzindo grandes quantidades de anticorpos IgG neutralizantes que impedirão o desenvolvimento da doença.</p>
+                </div></div>
+            </div>
+        </section>
+
+        <section id="quiz" class="content-section">
+            <h2>✅ 7. Quiz e Prova</h2>
+            <p>Teste seus conhecimentos sobre a resposta de células B.</p>
+            <div class="quiz-container">
+                <form id="quiz-form">
+                    <div class="questao"><p>1. Onde ocorre a maturação dos linfócitos B em mamíferos?</p><div class="alternativas"><label><input type="radio" name="q1" value="a">a) Timo</label><label><input type="radio" name="q1" value="b">b) Baço</label><label><input type="radio" name="q1" value="c">c) Medula óssea</label><label><input type="radio" name="q1" value="d">d) Linfonodos</label><label><input type="radio" name="q1" value="e">e) Fígado</label></div></div>
+                    <div class="questao"><p>2. O Receptor de Célula B (BCR) reconhece antígenos de que forma?</p><div class="alternativas"><label><input type="radio" name="q2" value="a">a) Apenas peptídeos apresentados por MHC I</label><label><input type="radio" name="q2" value="b">b) Apenas peptídeos apresentados por MHC II</label><label><input type="radio" name="q2" value="c">c) Em sua forma nativa e tridimensional</label><label><input type="radio" name="q2" value="d">d) Apenas após processamento por células dendríticas</label><label><input type="radio" name="q2" value="e">e) Apenas lipídios</label></div></div>
+                    <div class="questao"><p>3. Qual é a principal função dos plasmócitos?</p><div class="alternativas"><label><input type="radio" name="q3" value="a">a) Apresentar antígenos</label><label><input type="radio" name="q3" value="b">b) Fagocitar patógenos</label><label><input type="radio" name="q3" value="c">c) Secretar grandes quantidades de anticorpos</label><label><input type="radio" name="q3" value="d">d) Gerar memória imunológica</label><label><input type="radio" name="q3" value="e">e) Ativar linfócitos T</label></div></div>
+                    <div class="questao"><p>4. A interação entre CD40L (no linfócito Tfh) e CD40 (no linfócito B) é essencial para:</p><div class="alternativas"><label><input type="radio" name="q4" value="a">a) A resposta imune inata</label><label><input type="radio" name="q4" value="b">b) A ativação T-dependente do linfócito B</label><label><input type="radio" name="q4" value="c">c) A seleção negativa no timo</label><label><input type="radio" name="q4" value="d">d) A função das células NK</label><label><input type="radio" name="q4" value="e">e) A fagocitose por macrófagos</label></div></div>
+                    <div class="questao"><p>5. Qual classe de anticorpo é a primeira a ser produzida em uma resposta imune primária?</p><div class="alternativas"><label><input type="radio" name="q5" value="a">a) IgG</label><label><input type="radio" name="q5" value="b">b) IgA</label><label><input type="radio" name="q5" value="c">c) IgE</label><label><input type="radio" name="q5" value="d">d) IgM</label><label><input type="radio" name="q5" value="e">e) IgD</label></div></div>
+                    <div class="questao"><p>6. A principal imunoglobulina encontrada em secreções mucosas, como saliva e leite, é a:</p><div class="alternativas"><label><input type="radio" name="q6" value="a">a) IgG</label><label><input type="radio" name="q6" value="b">b) IgA</label><label><input type="radio" name="q6" value="c">c) IgE</label><label><input type="radio" name="q6" value="d">d) IgM</label><label><input type="radio" name="q6" value="e">e) IgD</label></div></div>
+                    <div class="questao"><p>7. O processo pelo qual os anticorpos revestem um patógeno para facilitar sua fagocitose é chamado de:</p><div class="alternativas"><label><input type="radio" name="q7" value="a">a) Neutralização</label><label><input type="radio" name="q7" value="b">b) Ativação do complemento</label><label><input type="radio" name="q7" value="c">c) Opsonização</label><label><input type="radio" name="q7" value="d">d) Apoptose</label><label><input type="radio" name="q7" value="e">e) Quimiotaxia</label></div></div>
+                    <div class="questao"><p>8. Qual é a principal característica de uma resposta imune secundária comparada à primária?</p><div class="alternativas"><label><input type="radio" name="q8" value="a">a) É mais lenta e de menor magnitude</label><label><input type="radio" name="q8" value="b">b) Produz principalmente IgM</label><label><input type="radio" name="q8" value="c">c) É mais rápida, de maior magnitude e produz principalmente IgG</label><label><input type="radio" name="q8" value="d">d) Não depende de células de memória</label><label><input type="radio" name="q8" value="e">e) É menos específica</label></div></div>
+                    <div class="questao"><p>9. A imunidade passada da mãe para o feto através da placenta é mediada por qual classe de anticorpo?</p><div class="alternativas"><label><input type="radio" name="q9" value="a">a) IgA</label><label><input type="radio" name="q9" value="b">b) IgE</label><label><input type="radio" name="q9" value="c">c) IgM</label><label><input type="radio" name="q9" value="d">d) IgG</label><label><input type="radio" name="q9" value="e">e) IgD</label></div></div>
+                    <div class="questao"><p>10. Reações alérgicas imediatas (hipersensibilidade tipo I) são mediadas pela ligação de antígenos a qual classe de anticorpo, que está previamente ligada a mastócitos?</p><div class="alternativas"><label><input type="radio" name="q10" value="a">a) IgG</label><label><input type="radio" name="q10" value="b">b) IgA</label><label><input type="radio" name="q10" value="c">c) IgE</label><label><input type="radio" name="q10" value="d">d) IgM</label><label><input type="radio" name="q10" value="e">e) IgD</label></div></div>
+                    <div class="questao"><p>11. A região de um anticorpo que determina sua função efetora (ex: ativação do complemento) é a:</p><div class="alternativas"><label><input type="radio" name="q11" value="a">a) Região Fab</label><label><input type="radio" name="q11" value="b">b) Região variável</label><label><input type="radio" name="q11" value="c">c) Cadeia leve</label><label><input type="radio" name="q11" value="d">d) Região Fc</label><label><input type="radio" name="q11" value="e">e) Dobradiça</label></div></div>
+                    <div class="questao"><p>12. A base da vacinação é a indução de:</p><div class="alternativas"><label><input type="radio" name="q12" value="a">a) Uma doença atenuada</label><label><input type="radio" name="q12" value="b">b) Tolerância ao patógeno</label><label><input type="radio" name="q12" value="c">c) Memória imunológica</label><label><input type="radio" name="q12" value="d">d) Uma resposta imune inata crônica</label><label><input type="radio" name="q12" value="e">e) Anergia de linfócitos</label></div></div>
+                    <div class="questao"><p>13. Qual célula é crucial para fornecer a "ajuda" necessária na maioria das respostas de células B a antígenos proteicos?</p><div class="alternativas"><label><input type="radio" name="q13" value="a">a) Linfócito T CD8+</label><label><input type="radio" name="q13" value="b">b) Célula NK</label><label><input type="radio" name="q13" value="c">c) Neutrófilo</label><label><input type="radio" name="q13" value="d">d) Linfócito T CD4+ auxiliar</label><label><input type="radio" name="q13" value="e">e) Macrófago</label></div></div>
+                    <div class="questao"><p>14. A detecção de anticorpos IgM específicos para o vírus da Chikungunya no soro de um paciente sugere:</p><div class="alternativas"><label><input type="radio" name="q14" value="a">a) Infecção passada e imunidade duradoura</label><label><input type="radio" name="q14" value="b">b) Infecção aguda ou recente</label><label><input type="radio" name="q14" value="c">c) Que o paciente foi vacinado</label><label><input type="radio" name="q14" value="d">d) Uma reação alérgica ao vírus</label><label><input type="radio" name="q14" value="e">e) Falha da resposta imune</label></div></div>
+                    <div class="questao"><p>15. A função de neutralização dos anticorpos é particularmente importante para combater:</p><div class="alternativas"><label><input type="radio" name="q15" value="a">a) Bactérias intracelulares</label><label><input type="radio" name="q15" value="b">b) Vírus e toxinas bacterianas</label><label><input type="radio" name="q15" value="c">c) Helmintos</label><label><input type="radio" name="q15" value="d">d) Células tumorais</label><label><input type="radio" name="q15" value="e">e) Fungos</label></div></div>
+                    <div class="questao"><p>16. A diversidade de especificidades dos anticorpos é gerada principalmente por:</p><div class="alternativas"><label><input type="radio" name="q16" value="a">a) Diferentes tipos de células B</label><label><input type="radio" name="q16" value="b">b) Recombinação somática dos genes de imunoglobulina</label><label><input type="radio" name="q16" value="c">c) Ação de diferentes citocinas</label><label><input type="radio" name="q16" value="d">d) Processamento alternativo de RNA</label><label><input type="radio" name="q16" value="e">e) Herança de um grande número de genes de anticorpos</label></div></div>
+                    <div class="questao"><p>17. Qual é a principal vantagem da estrutura pentamérica do IgM?</p><div class="alternativas"><label><input type="radio" name="q17" value="a">a) Atravessar a placenta</label><label><input type="radio" name="q17" value="b">b) Ser resistente a proteases em mucosas</label><label><input type="radio" name="q17" value="c">c) Alta avidez e eficiência em ativar o complemento</label><label><input type="radio" name="q17" value="d">d) Ligar-se a mastócitos</label><label><input type="radio" name="q17" value="e">e) Ter uma longa meia-vida no soro</label></div></div>
+                    <div class="questao"><p>18. Um linfócito B, para ser ativado por um antígeno T-dependente, deve realizar qual função?</p><div class="alternativas"><label><input type="radio" name="q18" value="a">a) Secretar perforina e granzimas</label><label><input type="radio" name="q18" value="b">b) Atuar como uma célula apresentadora de antígenos para um linfócito T auxiliar</label><label><input type="radio" name="q18" value="c">c) Matar a célula T auxiliar</label><label><input type="radio" name="q18" value="d">d) Migrar para o timo</label><label><input type="radio" name="q18" value="e">e) Fagocitar o linfócito T</label></div></div>
+                    <div class="questao"><p>19. A troca de classe (ou isotipo) de um anticorpo (ex: de IgM para IgG) é um processo que depende de:</p><div class="alternativas"><label><input type="radio" name="q19" value="a">a) Sinais da imunidade inata</label><label><input type="radio" name="q19" value="b">b) Apenas da ligação do antígeno ao BCR</label><label><input type="radio" name="q19" value="c">c) Sinais de ajuda dos linfócitos T CD4+</label><label><input type="radio" name="q19" value="d">d) Células NK</label><label><input type="radio" name="q19" value="e">e) Ativação do complemento</label></div></div>
+                    <div class="questao"><p>20. A imunidade humoral é mais eficaz contra:</p><div class="alternativas"><label><input type="radio" name="q20" value="a">a) Células infectadas por vírus</label><label><input type="radio" name="q20" value="b">b) Células tumorais</label><label><input type="radio" name="q20" value="c">c) Patógenos intracelulares</label><label><input type="radio" name="q20" value="d">d) Bactérias extracelulares e toxinas</label><label><input type="radio" name="q20" value="e">e) Células transplantadas</label></div></div>
+                    <button type="button" class="btn-quiz" id="btnVerificarQuiz">🚀 Verificar Respostas</button>
+                </form>
+                <div id="resultado-quiz"></div>
+            </div>
+        </section>
+
+        <footer class="rodape-pagina">
+            <div class="rodape-foto">
+                <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+            </div>
+            <div class="rodape-info">
+                <p><strong>Prof. Rodrigo Niskier</strong></p>
+                <p>Curso de Medicina</p>
+                <p><em>Mecanismos de Agressão, Patológicos e de Defesa 1</em></p>
+            </div>
+        </footer>
+
+    </main>
+    
+    <div id="meuModal" class="modal">
+        <span class="fechar-modal">&times;</span>
+        <img class="modal-conteudo" id="imgModal">
+        <div id="legendaModal" class="modal-legenda"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHamburger = document.getElementById('btnHamburger');
+            const menuLateral = document.getElementById('menuLateral');
+
+            btnHamburger.addEventListener('click', () => {
+                menuLateral.classList.toggle('aberto');
+            });
+
+            document.querySelector('.conteudo-principal').addEventListener('click', () => {
+                if (menuLateral.classList.contains('aberto')) {
+                    menuLateral.classList.remove('aberto');
+                }
+            });
+
+            const linksMenu = document.querySelectorAll('.menu-nav a');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            linksMenu.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    document.querySelector(targetId).classList.add('active');
+                    linksMenu.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    if (window.innerWidth <= 768) {
+                        menuLateral.classList.remove('aberto');
+                    }
+                });
+            });
+
+            const acordeoes = document.querySelectorAll('.acordeao-titulo');
+            acordeoes.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    acc.classList.toggle('active');
+                    const content = acc.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const modal = document.getElementById('meuModal');
+            const imgModal = document.getElementById('imgModal');
+            const legendaModal = document.getElementById('legendaModal');
+            document.querySelectorAll('.imagem-container').forEach(container => {
+                container.addEventListener('click', function() {
+                    modal.style.display = "flex";
+                    imgModal.src = this.dataset.src;
+                    legendaModal.innerHTML = this.dataset.legenda;
+                });
+            });
+
+            document.querySelector('.fechar-modal').onclick = () => modal.style.display = "none";
+            window.onclick = (event) => {
+                if (event.target == modal) modal.style.display = "none";
+            };
+            
+            const btnVerificarQuiz = document.getElementById('btnVerificarQuiz');
+            const quizForm = document.getElementById('quiz-form');
+            const resultadoQuiz = document.getElementById('resultado-quiz');
+
+            const gabarito = {
+                q1: 'c', q2: 'c', q3: 'c', q4: 'b', q5: 'd', q6: 'b', q7: 'c', q8: 'c', q9: 'd', q10: 'c',
+                q11: 'd', q12: 'c', q13: 'd', q14: 'b', q15: 'b', q16: 'b', q17: 'c', q18: 'b', q19: 'c', q20: 'd'
+            };
+
+            btnVerificarQuiz.addEventListener('click', () => {
+                let acertos = 0;
+                const totalQuestoes = Object.keys(gabarito).length;
+                
+                for (let i = 1; i <= totalQuestoes; i++) {
+                    const questao = 'q' + i;
+                    const respostaSelecionada = quizForm.querySelector(`input[name="${questao}"]:checked`);
+                    const labels = quizForm.querySelectorAll(`input[name="${questao}"]`);
+                    
+                    labels.forEach(labelInput => {
+                        const parent = labelInput.parentElement;
+                        parent.style.backgroundColor = '';
+                        parent.style.color = '';
+                        parent.style.border = '1px solid var(--cor-borda)';
+                    });
+
+                    if (respostaSelecionada) {
+                        const labelSelecionada = respostaSelecionada.parentElement;
+                        const respostaCorretaInput = quizForm.querySelector(`input[name="${questao}"][value="${gabarito[questao]}"]`);
+                        
+                        if (respostaSelecionada.value === gabarito[questao]) {
+                            acertos++;
+                            labelSelecionada.style.backgroundColor = 'var(--cor-sucesso)';
+                            labelSelecionada.style.color = 'var(--cor-texto-sucesso)';
+                            labelSelecionada.style.border = '1px solid var(--cor-verde)';
+                        } else {
+                            labelSelecionada.style.backgroundColor = 'var(--cor-erro)';
+                            labelSelecionada.style.color = 'var(--cor-texto-erro)';
+                            labelSelecionada.style.border = '1px solid var(--cor-erro)';
+                            if(respostaCorretaInput) {
+                                const labelCorreta = respostaCorretaInput.parentElement;
+                                labelCorreta.style.backgroundColor = 'var(--cor-sucesso)';
+                                labelCorreta.style.border = '1px solid var(--cor-verde)';
+                            }
+                        }
+                    }
+                }
+                
+                resultadoQuiz.textContent = `Você acertou ${acertos} de ${totalQuestoes} questões.`;
+                resultadoQuiz.style.color = acertos > (totalQuestoes / 2) ? 'var(--cor-verde)' : 'var(--cor-texto-erro)';
+            });
+        });
+    </script>
+</body>
+</html>
