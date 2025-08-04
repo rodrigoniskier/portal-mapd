@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPDFLIX | Aula 1: Apresentação e Resgate</title>
+    
+    <!-- FONTES DO GOOGLE -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- BIBLIOTECAS DE ÍCONES E SOM -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    
+    <style>
+        /* --- VARIÁVEIS DE ESTILO E RESET --- */
+        :root {
+            --cor-netflix-vermelho: #E50914;
+            --cor-netflix-vermelho-escuro: #B00710;
+            --cor-netflix-preto: #141414;
+            --cor-netflix-cinza-escuro: #222;
+            --cor-netflix-cinza-claro: #e5e5e5;
+            --cor-texto-principal: #ffffff;
+            --cor-texto-secundario: #a0a0a0;
+            
+            --fonte-titulo: 'Bebas Neue', sans-serif;
+            --fonte-texto: 'Roboto', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--cor-netflix-preto);
+            color: var(--cor-texto-principal);
+            font-family: var(--fonte-texto);
+            overflow-x: hidden;
+            overflow-y: hidden; /* Prevenir scroll durante splash */
+        }
+
+        /* --- TELAS DE SPLASH --- */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            cursor: pointer;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        #splash-logo-view .splash-logo {
+            font-family: var(--fonte-titulo);
+            font-size: 6rem;
+            color: var(--cor-netflix-vermelho);
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        }
+
+        .splash-m-img {
+            width: 40vw;
+            max-width: 250px;
+            height: auto;
+            opacity: 0;
+            transform: scale(0.8);
+            object-fit: contain;
+        }
+
+        .splash-m-img.animate {
+            animation: tudum-animation 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes tudum-animation {
+            0% { transform: scale(0.8); opacity: 0; }
+            40% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- ESTRUTURA PRINCIPAL --- */
+        #app-container {
+            width: 100%;
+            min-height: 100vh;
+            display: none; /* Inicia oculto */
+        }
+
+        .view {
+            width: 100%;
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .view.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- TELA DE NAVEGAÇÃO (CATÁLOGO) --- */
+        #browse-view header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(180deg, rgba(20, 20, 20, 0.8) 0%, rgba(20, 20, 20, 0) 100%);
+            transition: background-color 0.3s ease;
+        }
+        #browse-view header.scrolled { background-color: var(--cor-netflix-preto); }
+        
+        .header-left { display: flex; align-items: center; gap: 25px; }
+
+        .logo {
+            font-family: var(--fonte-titulo);
+            font-size: 2.5rem;
+            color: var(--cor-netflix-vermelho);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .logo span {
+            font-size: 2.5rem;
+            color: var(--cor-texto-principal);
+            font-family: var(--fonte-titulo);
+        }
+
+        .user-nav { display: flex; align-items: center; gap: 20px; }
+        .user-nav .nav-icon {
+            color: var(--cor-texto-principal);
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+        .user-nav .nav-icon:hover { transform: scale(1.1); }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .user-profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .hero-section {
+            width: 100%;
+            height: 90vh;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 50px;
+        }
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, rgba(20, 20, 20, 1) 20%, rgba(20, 20, 20, 0.6) 50%, rgba(20, 20, 20, 0) 100%);
+        }
+        .hero-content {
+            z-index: 10;
+            max-width: 45%;
+        }
+        .hero-content h1 {
+            font-family: var(--fonte-titulo);
+            font-size: 5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        .hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            color: var(--cor-texto-secundario);
+            font-weight: 500;
+        }
+        .hero-meta .stars { color: #f5c518; }
+        .hero-meta .age-rating {
+            border: 1px solid var(--cor-texto-secundario);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+        .hero-content p.description {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-top: 15px;
+            max-width: 600px;
+            color: var(--cor-netflix-cinza-claro);
+        }
+        .hero-content .elenco {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: var(--cor-netflix-cinza-claro);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero-content .elenco img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .hero-buttons {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s ease;
+            white-space: nowrap;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .btn-primary {
+            background-color: var(--cor-texto-principal);
+            color: var(--cor-netflix-preto);
+        }
+        .btn-secondary {
+            background-color: rgba(109, 109, 110, 0.7);
+            color: var(--cor-texto-principal);
+        }
+
+        .catalog-container {
+            padding: 0 0 50px 50px;
+            margin-top: -40px;
+            position: relative;
+            z-index: 20;
+        }
+        .topic-row { margin-bottom: 40px; }
+        .row-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .row-content {
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            gap: 10px;
+            padding-bottom: 20px;
+        }
+        .row-content::-webkit-scrollbar { height: 8px; }
+        .row-content::-webkit-scrollbar-track { background: var(--cor-netflix-cinza-escuro); border-radius: 10px; }
+        .row-content::-webkit-scrollbar-thumb { background: var(--cor-netflix-vermelho); border-radius: 10px; }
+
+        .topic-card {
+            flex: 0 0 280px;
+            height: 160px;
+            background-color: var(--cor-netflix-cinza-escuro);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-size: cover;
+            background-position: center;
+        }
+        .topic-card:hover {
+            transform: scale(1.1);
+            z-index: 50;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .card-overlay {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(0deg, rgba(20, 20, 20, 0.9) 0%, rgba(20, 20, 20, 0) 50%);
+            display: flex;
+            align-items: flex-end;
+            padding: 15px;
+        }
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        /* --- TELA DE DETALHES --- */
+        #detail-view {
+            padding: 40px;
+            background-color: var(--cor-netflix-preto);
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 30px;
+        }
+        
+        .detail-main-content {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--cor-texto-principal);
+            font-size: 2.5rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: color 0.2s ease;
+        }
+        .back-button:hover { color: var(--cor-netflix-vermelho); }
+
+        /* --- MENU LATERAL DE EPISÓDIOS --- */
+        #episode-menu {
+            width: 320px;
+            height: calc(100vh - 80px);
+            background-color: var(--cor-netflix-cinza-escuro);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #episode-menu h3 {
+            font-family: var(--fonte-titulo);
+            font-size: 1.8rem;
+            color: var(--cor-texto-principal);
+            margin-bottom: 20px;
+        }
+        #episode-menu ul { list-style: none; }
+        #episode-menu li {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+        #episode-menu li:hover { background-color: rgba(255,255,255,0.1); }
+        #episode-menu li.active {
+            background-color: var(--cor-netflix-preto);
+            border-left: 4px solid var(--cor-netflix-vermelho);
+            font-weight: bold;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- ESTILOS ADAPTADOS DO CONTEÚDO --- */
+        .detail-content h2 {
+            font-family: var(--fonte-titulo);
+            font-size: 3rem;
+            color: var(--cor-texto-principal);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--cor-netflix-vermelho);
+        }
+         .detail-content h3 {
+            font-family: var(--fonte-titulo);
+            font-size: 1.8rem;
+            color: var(--cor-netflix-cinza-claro);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .detail-content h4 {
+            font-family: var(--fonte-titulo);
+            font-size: 1.5rem;
+            color: var(--cor-netflix-vermelho);
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .detail-content p, .detail-content li {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--cor-netflix-cinza-claro);
+            margin-bottom: 15px;
+        }
+        .detail-content ul { padding-left: 25px; }
+        .detail-content strong {
+            color: #fff;
+            font-weight: 700;
+        }
+        .detail-content .imagem-container {
+            border: 2px solid #444;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 25px auto;
+            max-width: 700px;
+            background-color: var(--cor-netflix-cinza-escuro);
+        }
+        .detail-content .imagem-container img {
+            width: 100%;
+            height: 450px;
+            display: block;
+            object-fit: contain;
+        }
+        .detail-content .imagem-container p.legenda {
+            padding: 10px 15px;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+            font-size: 0.9rem;
+            color: var(--cor-texto-secundario);
+        }
+        .detail-content .momento-ia {
+            background-color: rgba(229, 9, 20, 0.1);
+            border-left: 4px solid var(--cor-netflix-vermelho);
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .detail-content .momento-ia h4 {
+            color: var(--cor-netflix-vermelho);
+            margin-top: 0;
+        }
+        .detail-content .momento-ia .prompt-ia {
+            background-color: var(--cor-netflix-preto);
+            border: 1px dashed var(--cor-netflix-vermelho);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            color: #ccc;
+            margin: 15px 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .detail-content .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-netflix-vermelho);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .detail-content .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-netflix-vermelho);
+        }
+        .detail-content .rodape-info p { margin: 0; line-height: 1.4; }
+        .detail-content .rodape-info p:first-child { font-size: 1.2rem; }
+        
+        /* --- ESTILOS DO QUIZ --- */
+        .quiz-question {
+            background-color: var(--cor-netflix-cinza-escuro);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .quiz-question p { font-weight: bold; font-size: 1.2rem; }
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .quiz-options button {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(109, 109, 110, 0.7);
+            border: none;
+            color: var(--cor-texto-principal);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-align: left;
+        }
+        .quiz-options button:hover:not(:disabled) {
+            background-color: var(--cor-netflix-vermelho);
+        }
+        .quiz-options button:disabled { cursor: not-allowed; }
+        .quiz-options button.correct { background-color: #28a745; }
+        .quiz-options button.incorrect { background-color: #dc3545; }
+        #quiz-results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--cor-netflix-preto);
+            border: 2px solid var(--cor-netflix-vermelho);
+            border-radius: 8px;
+            text-align: center;
+        }
+        #quiz-results h3 { font-size: 2rem; }
+        #quiz-score { font-size: 1.5rem; margin-top: 10px; }
+
+        /* --- RESPONSIVIDADE --- */
+        @media (max-width: 1200px) {
+            #episode-menu {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 300px;
+                height: 100vh;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 150;
+                padding-top: 60px;
+            }
+            #episode-menu.open { transform: translateX(0); }
+            #detail-view {
+                flex-direction: column;
+                padding: 20px;
+            }
+            .menu-toggle-btn {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 160;
+                background: var(--cor-netflix-vermelho);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+                cursor: pointer;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #splash-logo-view .splash-logo { font-size: 4rem; }
+
+            #browse-view header { padding: 15px 20px; }
+            .header-left { gap: 15px; }
+            .logo { font-size: 2rem; }
+            .logo span { font-size: 2rem; }
+            .user-nav { gap: 10px; }
+            .user-profile span, .user-profile .ph-caret-down { display: none; }
+            
+            .hero-section { padding-left: 20px; height: 70vh; }
+            .hero-content { max-width: 90%; }
+            .hero-content h1 { font-size: 3.5rem; }
+            .hero-content p.description { font-size: 1rem; }
+
+            .catalog-container { padding: 0 0 20px 20px; margin-top: -100px; }
+            .row-title { font-size: 1.4rem; }
+            .topic-card { flex: 0 0 220px; height: 125px; }
+
+            .detail-content h2 { font-size: 2.2rem; }
+            .detail-content p, .detail-content li { font-size: 1rem; }
+        }
+
+        .menu-toggle-btn { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- TELAS DE SPLASH -->
+<div id="splash-logo-view" class="splash-screen">
+    <h1 class="splash-logo">MAPDFLIX</h1>
+</div>
+<div id="splash-tudum-view" class="splash-screen" style="display: none;">
+    <img src="eme.jpg" alt="M Logo" class="splash-m-img">
+</div>
+
+<div id="app-container">
+    <!-- TELA DE NAVEGAÇÃO (CATÁLOGO) -->
+    <div id="browse-view" class="view">
+        <header id="main-header">
+            <div class="header-left">
+                <div class="logo">MAPD<span>flix</span></div>
+            </div>
+            <div class="user-nav">
+                <a href="#" class="nav-icon" aria-label="Buscar"><i class="ph-bold ph-magnifying-glass"></i></a>
+                <a href="#" class="nav-icon" aria-label="Notificações"><i class="ph-bold ph-bell"></i></a>
+                <div class="user-profile">
+                    <img src="foto.jpg" alt="Foto do usuário" onerror="this.onerror=null;this.src='https://placehold.co/32x32/0057B8/FFFFFF?text=M';">
+                    <span>Medicina UNIPÊ</span>
+                    <i class="ph-bold ph-caret-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <section class="hero-section" style="background-image: url('image1.jpg');">
+            <div class="hero-content">
+                <h1>Aula 1: Apresentação e Resgate</h1>
+                <div class="hero-meta">
+                    <span class="stars" aria-label="5 de 5 estrelas">★★★★★</span>
+                    <span class="meta-item">2025</span>
+                    <span class="meta-item age-rating">L</span>
+                    <span class="meta-item">2h 30min</span>
+                </div>
+                <p class="description">Construindo sobre a base de MAPD-1 para avançar no estudo dos mecanismos de defesa e doença.</p>
+                <div class="elenco">
+                    <img src="foto.jpg" alt="Foto do Professor" onerror="this.onerror=null;this.src='https://placehold.co/28x28/FFFFFF/000000?text=R';">
+                    <span>Prof. Rodrigo Niskier</span>
+                </div>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="start-journey-btn"><i class="ph-bold ph-play"></i> Iniciar Aula</button>
+                    <button class="btn btn-secondary" id="add-list-btn"><i class="ph-bold ph-plus"></i> Minha Lista</button>
+                </div>
+            </div>
+        </section>
+
+        <main class="catalog-container">
+            <!-- As linhas de tópicos serão injetadas aqui pelo JS -->
+        </main>
+    </div>
+
+    <!-- TELA DE DETALHES DO TÓPICO -->
+    <div id="detail-view" class="view">
+        <button class="menu-toggle-btn" id="menu-toggle">☰</button>
+        <nav id="episode-menu">
+            <!-- Menu de episódios será injetado aqui -->
+        </nav>
+        <div class="detail-main-content">
+            <button class="back-button" id="back-to-browse-btn" title="Voltar ao Catálogo">
+                <i class="ph-bold ph-arrow-left"></i>
+            </button>
+            <div class="detail-content" id="detail-content-container">
+                <!-- O conteúdo do slide será injetado aqui pelo JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Conteúdo original da aula, oculto para parsing -->
+<div id="original-content" style="display:none;">
+
+    <!-- SLIDE 1: Capa (Usado no Hero) -->
+    <section class="slide" data-title="Apresentação e Resgate" data-category="Destaque">
+        <div class="slide-content"></div>
+    </section>
+
+    <!-- SLIDE 2: Apresentação do Componente -->
+    <section class="slide" data-title="O que é MAPD-2?" data-category="Tópicos da Aula" data-img="image2.jpg">
+        <div class="slide-content">
+            <h2>🎯 Apresentação do Componente: MAPD-2</h2>
+            <h3>O que Vamos Explorar?</h3>
+            <p>Bem-vindos ao MAPD-2! Neste componente, vamos aprofundar nosso estudo sobre a complexa interação entre agentes agressores e o hospedeiro. Enquanto o MAPD-1 construiu a base da patologia celular e da resposta imune, o MAPD-2 aplicará esses conceitos a cenários clínicos mais complexos e específicos.</p>
+            <h4>Grandes Temas de MAPD-2:</h4>
+            <ul>
+                <li><strong>Microbiologia Clínica Aplicada:</strong> Foco em bactérias, vírus, fungos e parasitas de maior relevância médica, com ênfase no diagnóstico e mecanismos de resistência.</li>
+                <li><strong>Imunopatologia:</strong> Estudo das disfunções do sistema imune, como hipersensibilidades, doenças autoimunes e imunodeficiências.</li>
+                <li><strong>Imunologia de Transplantes e Oncologia:</strong> Compreensão da resposta imune a tecidos transplantados e a tumores, e as bases das modernas imunoterapias.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- SLIDE 3: Uso da IA -->
+    <section class="slide" data-title="IA como Ferramenta" data-category="Tópicos da Aula" data-img="image3.jpg">
+        <div class="slide-content">
+            <h2>🎯 Apresentação do Componente: MAPD-2</h2>
+            <h3>Usando a IA como Ferramenta de Aprendizagem</h3>
+            <p>Conforme o plano de ensino, uma das competências que desenvolveremos é o uso de plataformas de Inteligência Artificial (IA) como ferramenta para aprofundar o conhecimento e auxiliar no raciocínio clínico. Ao longo das aulas, teremos "Momentos de Interação com IA".</p>
+            <p><strong>O objetivo não é obter uma resposta pronta, mas sim usar a IA para:</strong></p>
+            <ul>
+                <li>Explorar mecanismos moleculares em maior detalhe.</li>
+                <li>Gerar hipóteses e diagnósticos diferenciais.</li>
+                <li>Simular cenários e respostas fisiopatológicas.</li>
+            </ul>
+            <p>Sua capacidade de formular as perguntas corretas (prompts) e de analisar criticamente as respostas da IA será uma habilidade fundamental avaliada neste componente.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: Adaptações Celulares -->
+    <section class="slide" data-title="Adaptações Celulares" data-category="Tópicos da Aula" data-img="image4.jpg">
+        <div class="slide-content">
+            <h2>🔬 Resgate: Patologia Celular</h2>
+            <h3>Adaptações Celulares</h3>
+            <p>As células respondem ao estresse persistente alterando seu tamanho, número ou fenótipo. Lembre-se dos quatro tipos principais de adaptação reversível:</p>
+            <ul>
+                <li><strong>Hipertrofia:</strong> Aumento do tamanho da célula (ex: músculo cardíaco na hipertensão).</li>
+                <li><strong>Hiperplasia:</strong> Aumento do número de células (ex: endométrio sob estímulo estrogênico).</li>
+                <li><strong>Atrofia:</strong> Diminuição do tamanho e número de células (ex: músculo em desuso).</li>
+                <li><strong>Metaplasia:</strong> Substituição de um tipo celular maduro por outro (ex: epitélio escamoso no brônquio de um fumante).</li>
+            </ul>
+            <div class="imagem-container">
+                <img src="https://placehold.co/800x500/0057B8/FFFFFF?text=Adaptações+Celulares" alt="Adaptações Celulares">
+                <p class="legenda">Esquema ilustrando os quatro tipos de adaptação celular: hipertrofia, hiperplasia, atrofia e metaplasia.</p>
+            </div>
+            <div class="momento-ia">
+                <h4>🤖 Momento de Interação com IA 1</h4>
+                <p><strong>Cenário:</strong> Hipertrofia cardíaca patológica.</p>
+                <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                <div class="prompt-ia">"Explique em nível molecular como a sobrecarga de pressão crônica na hipertensão arterial leva à hipertrofia dos cardiomiócitos, detalhando as vias de sinalização envolvidas (como a via PI3K/Akt e vias mediadas por GPCRs) e diferencie da hipertrofia fisiológica do atleta."</div>
+                <p><strong>Feedback e Discussão:</strong> Após obter a resposta, reflita: Quais são os principais gatilhos mecânicos e neuro-hormonais? A resposta da IA deve destacar vias como PI3K/Akt e a sinalização via receptores acoplados à proteína G (GPCRs). Note que, na hipertrofia patológica, há frequentemente um aumento da fibrose e uma reexpressão de genes fetais, o que não ocorre na hipertrofia fisiológica do atleta. Essa diferença é crucial para o prognóstico.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5: Morte Celular -->
+    <section class="slide" data-title="Morte Celular" data-category="Tópicos da Aula" data-img="image5.jpg">
+        <div class="slide-content">
+            <h2>🔬 Resgate: Patologia Celular</h2>
+            <h3>Morte Celular: Necrose vs. Apoptose</h3>
+            <p>Quando a lesão é irreversível, a célula morre. É crucial diferenciar as duas principais vias:</p>
+            <ul>
+                <li><strong>Necrose:</strong> Morte "acidental" e patológica. Caracteriza-se por edema celular, ruptura da membrana e <strong>inflamação</strong>. Apresenta diferentes padrões (coagulação, liquefativa, etc.).</li>
+                <li><strong>Apoptose:</strong> Morte "programada" e controlada. A célula encolhe, a membrana permanece intacta e o conteúdo é empacotado em corpos apoptóticos, que são fagocitados <strong>sem gerar inflamação</strong>. Ocorre em processos fisiológicos e patológicos.</li>
+            </ul>
+            <div class="imagem-container">
+                <img src="https://placehold.co/800x500/dc3545/FFFFFF?text=Necrose+vs.+Apoptose" alt="Necrose vs. Apoptose">
+                <p class="legenda">Diagrama comparativo mostrando as principais diferenças morfológicas entre necrose (inchaço e ruptura) e apoptose (encolhimento e fragmentação).</p>
+            </div>
+            <div class="momento-ia">
+                <h4>🤖 Momento de Interação com IA 2</h4>
+                <p><strong>Cenário:</strong> Lesão de isquemia-reperfusão no miocárdio.</p>
+                <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                <div class="prompt-ia">"Descreva o paradoxo da lesão de isquemia-reperfusão. Quais mecanismos moleculares, incluindo a produção de espécies reativas de oxigênio (EROs), a sobrecarga de cálcio e a abertura do poro de transição de permeabilidade mitocondrial, contribuem para a morte celular (necrose e apoptose) após o restabelecimento do fluxo sanguíneo?"</div>
+                <p><strong>Feedback e Discussão:</strong> A resposta da IA deve explicar que, embora a reperfusão seja essencial, ela introduz oxigênio que, em um ambiente de mitocôndrias danificadas, gera uma explosão de radicais livres (EROs). Isso causa mais dano às membranas e ao DNA. A disfunção das bombas iônicas leva a uma sobrecarga de cálcio, que ativa enzimas degradativas e abre o poro de transição mitocondrial, um ponto de não retorno para a morte celular.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6: Imunidade Inata -->
+    <section class="slide" data-title="Imunidade Inata" data-category="Tópicos da Aula" data-img="image6.jpg">
+        <div class="slide-content">
+            <h2>🛡️ Resgate: Imunologia</h2>
+            <h3>Imunidade Inata: A Primeira Linha</h3>
+            <p>É a resposta rápida, não específica e sem memória. Seus principais componentes são:</p>
+            <ul>
+                <li><strong>Barreiras:</strong> Pele e mucosas.</li>
+                <li><strong>Células:</strong> Neutrófilos, macrófagos, células NK, células dendríticas.</li>
+                <li><strong>Proteínas:</strong> Sistema complemento e citocinas.</li>
+            </ul>
+            <p>O reconhecimento se dá por meio de <strong>PRRs</strong> (ex: TLRs) que identificam <strong>PAMPs</strong> (ex: LPS) e <strong>DAMPs</strong>, desencadeando a <strong>inflamação aguda</strong>.</p>
+        </div>
+    </section>
+    
+    <!-- SLIDE 7: Imunidade Adaptativa -->
+    <section class="slide" data-title="Imunidade Adaptativa" data-category="Tópicos da Aula" data-img="image7.jpg">
+        <div class="slide-content">
+            <h2>🛡️ Resgate: Imunologia</h2>
+            <h3>Imunidade Adaptativa: Especificidade e Memória</h3>
+            <p>É a resposta mais lenta, porém altamente específica e que gera memória duradoura.</p>
+            <ul>
+                <li><strong>Imunidade Celular (Linfócitos T):</strong>
+                    <ul>
+                        <li><strong>T CD4+ (Auxiliares):</strong> Os "maestros". Ativam outras células (macrófagos, linfócitos B) e se diferenciam em subtipos (Th1, Th2, Th17).</li>
+                        <li><strong>T CD8+ (Citotóxicos):</strong> Matam células infectadas por vírus e células tumorais.</li>
+                    </ul>
+                </li>
+                <li><strong>Imunidade Humoral (Linfócitos B):</strong>
+                    <ul>
+                        <li>Diferenciam-se em <strong>plasmócitos</strong> para produzir <strong>anticorpos</strong> (IgM, IgG, IgA, etc.).</li>
+                        <li>Os anticorpos neutralizam e opsonizam patógenos <strong>extracelulares</strong>.</li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="imagem-container">
+                <img src="https://placehold.co/800x500/28A745/FFFFFF?text=Inata+e+Adaptativa" alt="Interação Inata-Adaptativa">
+                <p class="legenda">Esquema simplificado da interação entre imunidade inata e adaptativa, com a célula dendrítica atuando como ponte ao apresentar antígenos para os linfócitos T.</p>
+            </div>
+            <div class="momento-ia">
+                <h4>🤖 Momento de Interação com IA 3</h4>
+                <p><strong>Cenário:</strong> A importância do Sinal 2 na ativação de linfócitos T.</p>
+                <p><strong>Ação:</strong> Use uma ferramenta de IAG com o seguinte prompt:</p>
+                <div class="prompt-ia">"Simule um cenário: o que acontece com um linfócito T virgem que reconhece seu antígeno específico (Sinal 1) em uma célula que não expressa moléculas co-estimulatórias B7 (ausência do Sinal 2)? Qual é o nome desse estado de não responsividade e qual sua importância para a autotolerância?"</div>
+                <p><strong>Feedback e Discussão:</strong> A IA deve descrever o estado de <strong>anergia clonal</strong>. Este é um mecanismo de tolerância periférica fundamental. Ele garante que linfócitos T não sejam ativados por antígenos próprios apresentados por células normais (que não expressam B7). A ativação só ocorre quando uma APC profissional detecta um perigo (via PAMPs), passa a expressar B7 e fornece ambos os sinais, prevenindo assim a autoimunidade.</p>
+            </div>
+             <footer class="rodape-pagina">
+                <div class="rodape-foto">
+                    <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0057B8/FFFFFF?text=RN';">
+                </div>
+                <div class="rodape-info">
+                    <p><strong>Prof. Rodrigo Niskier</strong></p>
+                    <p>Curso de Medicina</p>
+                    <p><em>Mecanismos de Agressão, Patológicos e de Defesa 2</em></p>
+                </div>
+            </footer>
+        </div>
+    </section>
+
+    <!-- SLIDE 8: Quiz -->
+    <section class="slide" data-title="Quiz Final" data-category="Extras" data-img="image8.jpg">
+        <div class="slide-content">
+            <h2>📝 Quiz Final: Teste seu Conhecimento</h2>
+            <div id="quiz-container">
+                <!-- As questões do quiz serão inseridas aqui -->
+            </div>
+            <div id="quiz-results" style="display: none;">
+                <h3>Resultado Final</h3>
+                <p id="quiz-score"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 9: Apostila -->
+    <section class="slide" data-title="Apostila para Impressão" data-category="Extras" data-img="image9.jpg">
+        <div class="slide-content">
+            <!-- O conteúdo será gerado dinamicamente pelo JS -->
+        </div>
+    </section>
+
+
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- ELEMENTOS DO DOM ---
+    const splashLogoView = document.getElementById('splash-logo-view');
+    const splashTudumView = document.getElementById('splash-tudum-view');
+    const appContainer = document.getElementById('app-container');
+    const browseView = document.getElementById('browse-view');
+    const detailView = document.getElementById('detail-view');
+    const catalogContainer = document.querySelector('.catalog-container');
+    const detailContentContainer = document.getElementById('detail-content-container');
+    const backBtn = document.getElementById('back-to-browse-btn');
+    const startJourneyBtn = document.getElementById('start-journey-btn');
+    const mainHeader = document.getElementById('main-header');
+    const episodeMenu = document.getElementById('episode-menu');
+    const menuToggleBtn = document.getElementById('menu-toggle');
+
+    // --- DADOS E ESTADO ---
+    let topicsData = [];
+    let categories = {};
+
+    // --- LÓGICA DA TELA DE SPLASH ---
+    const synth = new Tone.Synth({
+        oscillator: { type: 'sine' },
+        envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }
+    }).toDestination();
+
+    function playTudumSound() {
+        const now = Tone.now();
+        synth.triggerAttackRelease("G2", "8n", now);
+        synth.triggerAttackRelease("D3", "8n", now + 0.2);
+    }
+
+    function startTudum() {
+        splashLogoView.style.opacity = '0';
+        splashTudumView.style.display = 'flex';
+        setTimeout(() => {
+            splashLogoView.style.display = 'none';
+            const mImg = document.querySelector('.splash-m-img');
+            mImg.classList.add('animate');
+            Tone.start().then(playTudumSound);
+            setTimeout(showApp, 1500); // Duração da animação do M
+        }, 500); // Duração da transição de fade-out
+    }
+    
+    function showApp() {
+        splashTudumView.style.opacity = '0';
+        setTimeout(() => {
+            splashTudumView.style.display = 'none';
+            document.body.style.overflowY = 'auto';
+            appContainer.style.display = 'block';
+            browseView.classList.add('active');
+        }, 500);
+    }
+    
+    splashLogoView.addEventListener('click', startTudum);
+
+
+    // --- FUNÇÕES PRINCIPAIS DO APP ---
+    function parseOriginalContent() {
+        const originalSlides = document.querySelectorAll('#original-content .slide');
+        originalSlides.forEach((slide, index) => {
+            const title = slide.dataset.title;
+            const category = slide.dataset.category;
+            const img = slide.dataset.img;
+            const content = slide.querySelector('.slide-content').innerHTML;
+            const topic = { id: index, title, category, img, content };
+            
+            topicsData.push(topic);
+
+            if (category && category !== 'Destaque') {
+                if (!categories[category]) {
+                    categories[category] = [];
+                }
+                categories[category].push(topic);
+            }
+        });
+    }
+
+    function renderCatalog() {
+        catalogContainer.innerHTML = '';
+        for (const categoryName in categories) {
+            const row = document.createElement('div');
+            row.className = 'topic-row';
+            
+            const rowTitle = document.createElement('h2');
+            rowTitle.className = 'row-title';
+            rowTitle.textContent = categoryName;
+            row.appendChild(rowTitle);
+            
+            const rowContent = document.createElement('div');
+            rowContent.className = 'row-content';
+            
+            categories[categoryName].forEach(topic => {
+                const card = document.createElement('div');
+                card.className = 'topic-card';
+                card.style.backgroundImage = `url('${topic.img}')`;
+                card.dataset.topicId = topic.id;
+                card.innerHTML = `<div class="card-overlay"><h3 class="card-title">${topic.title}</h3></div>`;
+                card.addEventListener('click', () => showTopicDetails(topic.id));
+                rowContent.appendChild(card);
+            });
+            
+            row.appendChild(rowContent);
+            catalogContainer.appendChild(row);
+        }
+    }
+
+    function renderEpisodeMenu(currentTopicId) {
+        const episodeTopics = topicsData.filter(t => t.category !== 'Destaque');
+
+        let menuHTML = `<h3>Episódios</h3><ul>`;
+        episodeTopics.forEach(topic => {
+            const isActive = topic.id === currentTopicId ? 'active' : '';
+            menuHTML += `<li data-topic-id="${topic.id}" class="${isActive}">${topic.title}</li>`;
+        });
+        menuHTML += `</ul>`;
+        episodeMenu.innerHTML = menuHTML;
+    }
+
+    function showTopicDetails(topicId) {
+        const topic = topicsData.find(t => t.id === topicId);
+        if (!topic) return;
+        
+        // Lógica para montar o conteúdo a ser exibido
+        if (topic.title === "Apostila para Impressão") {
+            let fullContent = `
+                <h2>🖨️ Apostila para Impressão</h2>
+                <p>Abaixo está todo o conteúdo da aula em formato de texto contínuo. Use a função de impressão do seu navegador (Ctrl+P ou Cmd+P) para imprimir.</p>
+                <hr style="margin: 20px 0; border-color: #444;">
+            `;
+            topicsData.forEach(t => {
+                if (t.category === 'Tópicos da Aula') {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = t.content;
+                    // Remove elementos não textuais para a impressão
+                    tempDiv.querySelectorAll('.imagem-container, .momento-ia, footer').forEach(el => el.remove());
+                    fullContent += tempDiv.innerHTML;
+                }
+            });
+            detailContentContainer.innerHTML = fullContent;
+        } else {
+             detailContentContainer.innerHTML = topic.content;
+        }
+       
+        renderEpisodeMenu(topic.id);
+        
+        if (topic.title === "Quiz Final") {
+            setupQuiz();
+        }
+        
+        browseView.classList.remove('active');
+        detailView.classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function backToBrowse() {
+        detailView.classList.remove('active');
+        browseView.classList.add('active');
+        detailContentContainer.innerHTML = '';
+        episodeMenu.classList.remove('open');
+    }
+
+    function handleHeaderScroll() {
+        if (browseView.classList.contains('active')) {
+            mainHeader.classList.toggle('scrolled', window.scrollY > 50);
+        }
+    }
+    
+    // --- LÓGICA DO QUIZ ---
+    function setupQuiz() {
+        const quizContainer = document.getElementById('quiz-container');
+        const questions = [
+            {
+                question: "Qual adaptação celular é caracterizada pela substituição de um tipo celular maduro por outro, frequentemente em resposta à irritação crônica?",
+                options: ["Hipertrofia", "Metaplasia", "Atrofia", "Hiperplasia"],
+                answer: "Metaplasia"
+            },
+            {
+                question: "A morte celular programada, que evita a inflamação ao empacotar o conteúdo celular em corpos apoptóticos, é chamada de:",
+                options: ["Necrose Coagulativa", "Necrose Liquefativa", "Apoptose", "Atrofia"],
+                answer: "Apoptose"
+            },
+            {
+                question: "Qual componente do sistema imune inato é responsável por reconhecer PAMPs (Padrões Moleculares Associados a Patógenos)?",
+                options: ["Linfócitos B", "Anticorpos", "Receptores Toll-like (TLRs)", "Linfócitos T CD8+"],
+                answer: "Receptores Toll-like (TLRs)"
+            },
+            {
+                question: "A principal função dos Linfócitos T CD8+ (citotóxicos) é:",
+                options: ["Produzir anticorpos", "Ativar macrófagos e Linfócitos B", "Matar células infectadas por vírus e células tumorais", "Apresentar antígenos"],
+                answer: "Matar células infectadas por vírus e células tumorais"
+            },
+            {
+                question: "O que acontece com um linfócito T que recebe o 'Sinal 1' (reconhecimento do antígeno) sem o 'Sinal 2' (co-estimulação)?",
+                options: ["Ativação e proliferação imediatas", "Diferenciação em célula de memória", "Entra em estado de anergia", "Sofre necrose"],
+                answer: "Entra em estado de anergia"
+            },
+            {
+                question: "Na lesão de isquemia-reperfusão, o dano paradoxal após o restabelecimento do fluxo sanguíneo é majoritariamente causado por:",
+                options: ["Falta de ATP", "Explosão de espécies reativas de oxigênio (EROs)", "Ativação do sistema complemento", "Diminuição do cálcio intracelular"],
+                answer: "Explosão de espécies reativas de oxigênio (EROs)"
+            },
+            {
+                question: "Qual tipo de imunidade é caracterizada pela produção de anticorpos e é mais eficaz contra patógenos extracelulares?",
+                options: ["Imunidade Inata", "Imunidade Celular", "Imunidade Humoral", "Imunidade Adaptativa Passiva"],
+                answer: "Imunidade Humoral"
+            },
+            {
+                question: "O aumento do músculo cardíaco em um atleta é um exemplo de:",
+                options: ["Hiperplasia patológica", "Hipertrofia fisiológica", "Metaplasia", "Hipertrofia patológica"],
+                answer: "Hipertrofia fisiológica"
+            },
+            {
+                question: "Qual célula atua como a principal ponte entre a imunidade inata e a adaptativa, apresentando antígenos aos linfócitos T?",
+                options: ["Neutrófilo", "Célula NK", "Plasmócito", "Célula Dendrítica"],
+                answer: "Célula Dendrítica"
+            },
+            {
+                question: "A inflamação é uma característica proeminente de qual processo de morte celular?",
+                options: ["Apoptose", "Anergia", "Necrose", "Atrofia"],
+                answer: "Necrose"
+            }
+        ];
+
+        let quizHTML = '';
+        questions.forEach((q, index) => {
+            quizHTML += `
+                <div class="quiz-question" id="q-${index}">
+                    <p>${index + 1}. ${q.question}</p>
+                    <div class="quiz-options">
+                        ${q.options.map(opt => `<button data-answer="${opt}">${opt}</button>`).join('')}
+                    </div>
+                </div>
+            `;
+        });
+        quizContainer.innerHTML = quizHTML;
+
+        let score = 0;
+        let questionsAnswered = 0;
+
+        quizContainer.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const button = e.target;
+                const questionDiv = button.closest('.quiz-question');
+                const questionIndex = parseInt(questionDiv.id.split('-')[1]);
+                const selectedAnswer = button.dataset.answer;
+                const correctAnswer = questions[questionIndex].answer;
+
+                const optionButtons = questionDiv.querySelectorAll('.quiz-options button');
+                optionButtons.forEach(btn => {
+                    btn.disabled = true;
+                    if (btn.dataset.answer === correctAnswer) {
+                        btn.classList.add('correct');
+                    } else if (btn === button) {
+                        btn.classList.add('incorrect');
+                    }
+                });
+
+                if (selectedAnswer === correctAnswer) {
+                    score++;
+                }
+                questionsAnswered++;
+                
+                if (questionsAnswered === questions.length) {
+                    const resultsDiv = document.getElementById('quiz-results');
+                    const scoreP = document.getElementById('quiz-score');
+                    scoreP.textContent = `Você acertou ${score} de ${questions.length} questões!`;
+                    resultsDiv.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    // --- EVENT LISTENERS ---
+    backBtn.addEventListener('click', backToBrowse);
+    window.addEventListener('scroll', handleHeaderScroll);
+
+    startJourneyBtn.addEventListener('click', () => {
+        const firstTopic = topicsData.find(t => t.category === "Tópicos da Aula");
+        if(firstTopic) {
+            showTopicDetails(firstTopic.id);
+        }
+    });
+
+    episodeMenu.addEventListener('click', (e) => {
+        if (e.target && e.target.matches('li')) {
+            const topicId = parseInt(e.target.dataset.topicId, 10);
+            showTopicDetails(topicId);
+            if (window.innerWidth <= 1200) {
+                episodeMenu.classList.remove('open');
+            }
+        }
+    });
+
+    menuToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        episodeMenu.classList.toggle('open');
+    });
+    
+    document.body.addEventListener('click', (e) => {
+        if (window.innerWidth <= 1200 && episodeMenu.classList.contains('open')) {
+            if (!episodeMenu.contains(e.target) && e.target !== menuToggleBtn) {
+                episodeMenu.classList.remove('open');
+            }
+        }
+    });
+
+    // --- INICIALIZAÇÃO ---
+    parseOriginalContent();
+    renderCatalog();
+});
+</script>
+
+</body>
+</html>
