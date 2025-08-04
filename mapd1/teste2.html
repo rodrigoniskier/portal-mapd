@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPDFLIX | Aula 1: Lesões e Adaptações Celulares</title>
+    
+    <!-- FONTES DO GOOGLE -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- BIBLIOTECAS DE ÍCONES E SOM -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    
+    <style>
+        /* --- VARIÁVEIS DE ESTILO E RESET --- */
+        :root {
+            --cor-netflix-vermelho: #E50914;
+            --cor-netflix-vermelho-escuro: #B00710;
+            --cor-netflix-preto: #141414;
+            --cor-netflix-cinza-escuro: #222;
+            --cor-netflix-cinza-medio: #333;
+            --cor-netflix-cinza-claro: #e5e5e5;
+            --cor-texto-principal: #ffffff;
+            --cor-texto-secundario: #a0a0a0;
+            --cor-sucesso: #28a745;
+            --cor-erro: #dc3545;
+            
+            --fonte-titulo: 'Bebas Neue', sans-serif;
+            --fonte-texto: 'Roboto', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--cor-netflix-preto);
+            color: var(--cor-texto-principal);
+            font-family: var(--fonte-texto);
+            overflow-x: hidden;
+            overflow-y: hidden; /* Prevenir scroll durante splash */
+        }
+
+        /* --- TELAS DE SPLASH --- */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            cursor: pointer;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        #splash-logo-view .splash-logo {
+            font-family: var(--fonte-titulo);
+            font-size: 6rem;
+            color: var(--cor-netflix-vermelho);
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        }
+
+        .splash-m-img {
+            width: 40vw;
+            max-width: 250px;
+            height: auto;
+            opacity: 0;
+            transform: scale(0.8);
+            object-fit: contain;
+        }
+
+        .splash-m-img.animate {
+            animation: tudum-animation 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes tudum-animation {
+            0% { transform: scale(0.8); opacity: 0; }
+            40% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- ESTRUTURA PRINCIPAL --- */
+        #app-container {
+            width: 100%;
+            min-height: 100vh;
+            display: none; /* Inicia oculto */
+        }
+
+        .view {
+            width: 100%;
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .view.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- TELA DE NAVEGAÇÃO (CATÁLOGO) --- */
+        #browse-view header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 50px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(180deg, rgba(20, 20, 20, 0.8) 0%, rgba(20, 20, 20, 0) 100%);
+            transition: background-color 0.3s ease;
+        }
+        #browse-view header.scrolled { background-color: var(--cor-netflix-preto); }
+        
+        .header-left { display: flex; align-items: center; gap: 25px; }
+
+        .logo {
+            font-family: var(--fonte-titulo);
+            font-size: 2.5rem;
+            color: var(--cor-netflix-vermelho);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .logo span {
+            font-size: 2.5rem;
+            color: var(--cor-texto-principal);
+            font-family: var(--fonte-titulo);
+        }
+
+        .user-nav { display: flex; align-items: center; gap: 20px; }
+        .user-nav .nav-icon {
+            color: var(--cor-texto-principal);
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+        .user-nav .nav-icon:hover { transform: scale(1.1); }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .user-profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .hero-section {
+            width: 100%;
+            height: 90vh;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 50px;
+        }
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, rgba(20, 20, 20, 1) 20%, rgba(20, 20, 20, 0.6) 50%, rgba(20, 20, 20, 0) 100%);
+        }
+        .hero-content {
+            z-index: 10;
+            max-width: 45%;
+        }
+        .hero-content h1 {
+            font-family: var(--fonte-titulo);
+            font-size: 5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        .hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            color: var(--cor-texto-secundario);
+            font-weight: 500;
+        }
+        .hero-meta .stars { color: #f5c518; }
+        .hero-meta .age-rating {
+            border: 1px solid var(--cor-texto-secundario);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+        .hero-content p.description {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-top: 15px;
+            max-width: 600px;
+            color: var(--cor-netflix-cinza-claro);
+        }
+        .hero-content .elenco {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: var(--cor-netflix-cinza-claro);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero-content .elenco img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .hero-buttons {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s ease;
+            white-space: nowrap;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .btn-primary {
+            background-color: var(--cor-texto-principal);
+            color: var(--cor-netflix-preto);
+        }
+        .btn-secondary {
+            background-color: rgba(109, 109, 110, 0.7);
+            color: var(--cor-texto-principal);
+        }
+
+        .catalog-container {
+            padding: 0 0 50px 50px;
+            margin-top: -40px;
+            position: relative;
+            z-index: 20;
+        }
+        .topic-row { margin-bottom: 40px; }
+        .row-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .row-content {
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            gap: 10px;
+            padding-bottom: 20px;
+        }
+        .row-content::-webkit-scrollbar { height: 8px; }
+        .row-content::-webkit-scrollbar-track { background: var(--cor-netflix-cinza-escuro); border-radius: 10px; }
+        .row-content::-webkit-scrollbar-thumb { background: var(--cor-netflix-vermelho); border-radius: 10px; }
+
+        .topic-card {
+            flex: 0 0 280px;
+            height: 160px;
+            background-color: var(--cor-netflix-cinza-escuro);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-size: cover;
+            background-position: center;
+        }
+        .topic-card:hover {
+            transform: scale(1.1);
+            z-index: 50;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .card-overlay {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(0deg, rgba(20, 20, 20, 0.9) 0%, rgba(20, 20, 20, 0) 50%);
+            display: flex;
+            align-items: flex-end;
+            padding: 15px;
+        }
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        /* --- TELA DE DETALHES --- */
+        #detail-view {
+            padding: 40px;
+            background-color: var(--cor-netflix-preto);
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 30px;
+        }
+        
+        .detail-main-content {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--cor-texto-principal);
+            font-size: 2.5rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: color 0.2s ease;
+        }
+        .back-button:hover { color: var(--cor-netflix-vermelho); }
+
+        /* --- MENU LATERAL DE EPISÓDIOS --- */
+        #episode-menu {
+            width: 320px;
+            height: calc(100vh - 80px);
+            background-color: var(--cor-netflix-cinza-escuro);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #episode-menu h3 {
+            font-family: var(--fonte-titulo);
+            font-size: 1.8rem;
+            color: var(--cor-texto-principal);
+            margin-bottom: 20px;
+        }
+        #episode-menu ul { list-style: none; }
+        #episode-menu li {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+        #episode-menu li:hover { background-color: rgba(255,255,255,0.1); }
+        #episode-menu li.active {
+            background-color: var(--cor-netflix-preto);
+            border-left: 4px solid var(--cor-netflix-vermelho);
+            font-weight: bold;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- ESTILOS ADAPTADOS DO CONTEÚDO --- */
+        .detail-content h2 {
+            font-family: var(--fonte-titulo);
+            font-size: 3rem;
+            color: var(--cor-texto-principal);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--cor-netflix-vermelho);
+        }
+         .detail-content h3 {
+            font-family: var(--fonte-titulo);
+            font-size: 1.8rem;
+            color: var(--cor-netflix-cinza-claro);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .detail-content h4 {
+            font-family: var(--fonte-titulo);
+            font-size: 1.5rem;
+            color: var(--cor-netflix-vermelho);
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .detail-content p, .detail-content li {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--cor-netflix-cinza-claro);
+            margin-bottom: 15px;
+        }
+        .detail-content ul { padding-left: 25px; }
+        .detail-content strong {
+            color: #fff;
+            font-weight: 700;
+        }
+        .detail-content .imagem-container {
+            border: 2px solid #444;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 25px auto;
+            max-width: 700px;
+            background-color: var(--cor-netflix-cinza-escuro);
+        }
+        .detail-content .imagem-container img {
+            width: 100%;
+            height: 450px;
+            display: block;
+            object-fit: contain;
+        }
+        .detail-content .imagem-container p.legenda {
+            padding: 10px 15px;
+            margin: 0;
+            text-align: center;
+            font-style: italic;
+            font-size: 0.9rem;
+            color: var(--cor-texto-secundario);
+        }
+        
+        .detail-content .rodape-pagina {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px solid var(--cor-netflix-vermelho);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .detail-content .rodape-foto img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--cor-netflix-vermelho);
+        }
+        .detail-content .rodape-info p { margin: 0; line-height: 1.4; }
+        .detail-content .rodape-info p:first-child { font-size: 1.2rem; }
+        
+        /* --- ESTILOS DO QUIZ --- */
+        .quiz-container {
+            background-color: var(--cor-netflix-cinza-escuro);
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .quiz-question {
+            margin-bottom: 25px;
+        }
+        .quiz-question p { font-weight: bold; font-size: 1.2rem; }
+        .quiz-options label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 8px;
+            background-color: var(--cor-netflix-cinza-medio);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .quiz-options label:hover {
+            border-color: var(--cor-netflix-vermelho);
+        }
+        .quiz-options input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .quiz-options label.correct {
+            background-color: var(--cor-sucesso);
+            border-color: var(--cor-sucesso);
+            color: #fff;
+        }
+        .quiz-options label.incorrect {
+            background-color: var(--cor-erro);
+            border-color: var(--cor-erro);
+            color: #fff;
+        }
+        #quiz-results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--cor-netflix-preto);
+            border: 2px solid var(--cor-netflix-vermelho);
+            border-radius: 8px;
+            text-align: center;
+        }
+        #quiz-results h3 { font-family: var(--fonte-titulo); font-size: 2rem; }
+        #quiz-score { font-size: 1.5rem; margin-top: 10px; }
+        #btn-verificar-quiz {
+            margin-top: 20px;
+            background-color: var(--cor-netflix-vermelho);
+        }
+        #btn-verificar-quiz:hover {
+            background-color: var(--cor-netflix-vermelho-escuro);
+        }
+        
+        /* --- FLASHCARDS --- */
+        .flashcard-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .flashcard {
+            width: 300px;
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        .flashcard.virado .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        .flashcard-frente, .flashcard-verso {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #444;
+        }
+        .flashcard-frente {
+            background-color: var(--cor-netflix-cinza-escuro);
+            color: var(--cor-texto-principal);
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        .flashcard-verso {
+            background-color: var(--cor-netflix-vermelho);
+            color: white;
+            transform: rotateY(180deg);
+            font-size: 1rem;
+        }
+
+        /* --- RESPONSIVIDADE --- */
+        @media (max-width: 1200px) {
+            #episode-menu {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 300px;
+                height: 100vh;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 150;
+                padding-top: 60px;
+            }
+            #episode-menu.open { transform: translateX(0); }
+            #detail-view {
+                flex-direction: column;
+                padding: 20px;
+            }
+            .menu-toggle-btn {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 160;
+                background: var(--cor-netflix-vermelho);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+                cursor: pointer;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #splash-logo-view .splash-logo { font-size: 4rem; }
+
+            #browse-view header { padding: 15px 20px; }
+            .header-left { gap: 15px; }
+            .logo { font-size: 2rem; }
+            .logo span { font-size: 2rem; }
+            .user-nav { gap: 10px; }
+            .user-profile span, .user-profile .ph-caret-down { display: none; }
+            
+            .hero-section { padding-left: 20px; height: 70vh; }
+            .hero-content { max-width: 90%; }
+            .hero-content h1 { font-size: 3.5rem; }
+            .hero-content p.description { font-size: 1rem; }
+
+            .catalog-container { padding: 0 0 20px 20px; margin-top: -100px; }
+            .row-title { font-size: 1.4rem; }
+            .topic-card { flex: 0 0 220px; height: 125px; }
+
+            .detail-content h2 { font-size: 2.2rem; }
+            .detail-content p, .detail-content li { font-size: 1rem; }
+        }
+
+        .menu-toggle-btn { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- TELAS DE SPLASH -->
+<div id="splash-logo-view" class="splash-screen">
+    <h1 class="splash-logo">MAPDFLIX</h1>
+</div>
+<div id="splash-tudum-view" class="splash-screen" style="display: none;">
+    <img src="eme.jpg" alt="M Logo" class="splash-m-img">
+</div>
+
+<div id="app-container">
+    <!-- TELA DE NAVEGAÇÃO (CATÁLOGO) -->
+    <div id="browse-view" class="view">
+        <header id="main-header">
+            <div class="header-left">
+                <div class="logo">MAPD<span>flix</span></div>
+            </div>
+            <div class="user-nav">
+                <a href="#" class="nav-icon" aria-label="Buscar"><i class="ph-bold ph-magnifying-glass"></i></a>
+                <a href="#" class="nav-icon" aria-label="Notificações"><i class="ph-bold ph-bell"></i></a>
+                <div class="user-profile">
+                    <img src="foto.jpg" alt="Foto do usuário">
+                    <span>Medicina UNIPÊ</span>
+                    <i class="ph-bold ph-caret-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <section class="hero-section" style="background-image: url('background.jpg');">
+            <div class="hero-content">
+                <h1>Lesões e Adaptações Celulares</h1>
+                <div class="hero-meta">
+                    <span class="stars" aria-label="5 de 5 estrelas">★★★★★</span>
+                    <span class="meta-item">2025</span>
+                    <span class="meta-item age-rating">L</span>
+                    <span class="meta-item">1h 15min</span>
+                </div>
+                <p class="description">Compreendendo como as células respondem ao estresse e à agressão, desde a homeostase até a morte celular.</p>
+                <div class="elenco">
+                    <img src="foto.jpg" alt="Foto do Professor">
+                    <span>Prof. Rodrigo Niskier</span>
+                </div>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="start-journey-btn"><i class="ph-bold ph-play"></i> Iniciar Aula</button>
+                    <button class="btn btn-secondary" id="add-list-btn"><i class="ph-bold ph-plus"></i> Minha Lista</button>
+                </div>
+            </div>
+        </section>
+
+        <main class="catalog-container">
+            <!-- As linhas de tópicos serão injetadas aqui pelo JS -->
+        </main>
+    </div>
+
+    <!-- TELA DE DETALHES DO TÓPICO -->
+    <div id="detail-view" class="view">
+        <button class="menu-toggle-btn" id="menu-toggle">☰</button>
+        <nav id="episode-menu">
+            <!-- Menu de episódios será injetado aqui -->
+        </nav>
+        <div class="detail-main-content">
+            <button class="back-button" id="back-to-browse-btn" title="Voltar ao Catálogo">
+                <i class="ph-bold ph-arrow-left"></i>
+            </button>
+            <div class="detail-content" id="detail-content-container">
+                <!-- O conteúdo do slide será injetado aqui pelo JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Conteúdo original da aula, oculto para parsing -->
+<div id="original-content" style="display:none;">
+
+    <!-- SLIDE 1: Capa (Usado no Hero) -->
+    <section class="slide" data-title="Lesões e Adaptações Celulares" data-category="Destaque">
+        <div class="slide-content"></div>
+    </section>
+
+    <!-- SLIDES DE CONTEÚDO -->
+    <section class="slide" data-title="Introdução à Patologia" data-category="Conteúdo da Aula" data-img="introducao.jpg">
+        <div class="slide-content">
+            <h2>🎓 1. Introdução à Patologia Celular</h2>
+            <h3>O que é Patologia Celular?</h3>
+            <p>A patologia é o estudo das doenças, focando nas alterações estruturais e funcionais que ocorrem em células, tecidos e órgãos. Para compreender a doença, é essencial começar pelo nível celular. As células são as unidades fundamentais da vida e estão constantemente se ajustando a mudanças em seu ambiente.</p>
+            <h3>O Conceito de Homeostase</h3>
+            <p>O corpo humano busca incessantemente um estado de equilíbrio dinâmico conhecido como <strong>homeostase</strong>. Quando confrontadas com estresses fisiológicos ou estímulos patológicos, as células tentam preservar sua viabilidade e função, mantendo a homeostase. Esta capacidade de resposta é central para a saúde e a doença.</p>
+            <div class="imagem-container">
+                <img src="homeostase.jpg" alt="Diagrama de Homeostase">
+                <p class="legenda">Diagrama ilustrando o conceito de homeostase.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="slide" data-title="Causas de Agressão" data-category="Conteúdo da Aula" data-img="agressao.jpg">
+         <div class="slide-content">
+            <h2>⚖️ 2. Homeostase e as Causas de Agressão Celular</h2>
+            <p>A homeostase é a manutenção de um ambiente interno estável. No entanto, diversos agentes e condições podem perturbar esse equilíbrio. As principais causas de lesão celular são:</p>
+            <ul>
+                <li><strong>Hipóxia e Isquemia:</strong> Deficiência de oxigênio e perda de suprimento sanguíneo.</li>
+                <li><strong>Agentes Físicos:</strong> Trauma, temperaturas extremas, radiação.</li>
+                <li><strong>Agentes Químicos e Drogas:</strong> Venenos, poluentes, álcool.</li>
+                <li><strong>Agentes Infecciosos:</strong> Vírus, bactérias, fungos e parasitas.</li>
+                <li><strong>Reações Imunológicas:</strong> Doenças autoimunes e alergias.</li>
+                <li><strong>Desequilíbrios Nutricionais:</strong> Deficiências ou excessos.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="slide" data-title="Adaptações Celulares" data-category="Conteúdo da Aula" data-img="adaptacoes.jpg">
+        <div class="slide-content">
+            <h2>🔄 3. Adaptações Celulares ao Estresse</h2>
+            <p>São alterações <strong>reversíveis</strong> no tamanho, número, fenótipo ou funções celulares em resposta ao estresse.</p>
+            <h4>Hipertrofia, Hiperplasia, Atrofia e Metaplasia</h4>
+            <p><strong>Hipertrofia:</strong> Aumento no tamanho das células (Ex: Músculo cardíaco na hipertensão).</p>
+            <p><strong>Hiperplasia:</strong> Aumento no número de células (Ex: Regeneração do fígado).</p>
+            <p><strong>Atrofia:</strong> Redução no tamanho e número de células (Ex: Atrofia muscular por desuso).</p>
+            <p><strong>Metaplasia:</strong> Substituição de um tipo celular por outro (Ex: Esôfago de Barrett).</p>
+            <div class="imagem-container">
+                <img src="adaptacoes-celulares.jpg" alt="Adaptações Celulares">
+                <p class="legenda">Esquema dos quatro tipos de adaptação celular.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" data-title="Lesão Celular" data-category="Conteúdo da Aula" data-img="lesao-celular.jpg">
+        <div class="slide-content">
+            <h2>💥 4. Lesão Celular: Reversível e Irreversível</h2>
+            <p>Se os limites da resposta adaptativa são excedidos, ocorre a lesão celular.</p>
+            <h4>Lesão Reversível</h4>
+            <p>Caracterizada por <strong>edema celular</strong> e <strong>degeneração gordurosa</strong>. As alterações são reversíveis se o estímulo for removido.</p>
+            <h4>Lesão Irreversível (Morte Celular)</h4>
+            <p>Ocorre quando a célula não pode se recuperar, levando à morte por <strong>necrose</strong> ou <strong>apoptose</strong>. Marcos incluem dano mitocondrial severo e ruptura de membranas.</p>
+        </div>
+    </section>
+
+    <section class="slide" data-title="Casos Clínicos" data-category="Conteúdo da Aula" data-img="casos-clinicos.jpg">
+        <div class="slide-content">
+            <h2>🩺 5. Casos Clínicos Contextualizados (João Pessoa, PB)</h2>
+            <h3>Caso 1: Lesão Hepática por Dengue</h3>
+            <p>Paciente com febre e mialgia. Exames mostram aumento das transaminases. O vírus da Dengue causa <strong>lesão celular</strong> nos hepatócitos, e a resposta imune contribui para o dano.</p>
+            <h3>Caso 2: Adaptação Celular no Esôfago</h3>
+            <p>Paciente com azia crônica. Endoscopia revela <strong>metaplasia</strong> (Esôfago de Barrett), uma adaptação ao refluxo ácido que aumenta o risco de adenocarcinoma.</p>
+        </div>
+    </section>
+
+    <!-- SLIDES DE RECURSOS ADICIONAIS -->
+    <section class="slide" data-title="Flashcards" data-category="Recursos Adicionais" data-img="flashcards.jpg">
+        <div class="slide-content">
+            <h2>🗂️ Flashcards: Termos-Chave</h2>
+            <p>Clique nos cartões para revelar as definições.</p>
+            <div class="flashcard-container">
+                <div class="flashcard"><div class="flashcard-inner"><div class="flashcard-frente">Homeostase</div><div class="flashcard-verso">Estado de equilíbrio dinâmico do ambiente interno do corpo.</div></div></div>
+                <div class="flashcard"><div class="flashcard-inner"><div class="flashcard-frente">Hipertrofia</div><div class="flashcard-verso">Aumento no tamanho das células.</div></div></div>
+                <div class="flashcard"><div class="flashcard-inner"><div class="flashcard-frente">Hiperplasia</div><div class="flashcard-verso">Aumento no número de células.</div></div></div>
+                <div class="flashcard"><div class="flashcard-inner"><div class="flashcard-frente">Atrofia</div><div class="flashcard-verso">Diminuição do tamanho e número de células.</div></div></div>
+                <div class="flashcard"><div class="flashcard-inner"><div class="flashcard-frente">Metaplasia</div><div class="flashcard-verso">Alteração reversível na qual um tipo de célula adulta é substituído por outro.</div></div></div>
+                <div class="flashcard"><div class="flashcard-inner"><div class="flashcard-frente">Hipóxia</div><div class="flashcard-verso">Deficiência de oxigênio nos tecidos.</div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" data-title="Quiz Final" data-category="Recursos Adicionais" data-img="quiz.jpg">
+        <div class="slide-content">
+            <h2>✅ Quiz e Prova</h2>
+            <p>Teste seus conhecimentos sobre os conceitos apresentados.</p>
+            <div class="quiz-container">
+                <form id="quiz-form"></form>
+                <div id="quiz-results" style="display: none;">
+                    <h3>Resultado Final</h3>
+                    <p id="quiz-score"></p>
+                </div>
+            </div>
+             <footer class="rodape-pagina">
+                <div class="rodape-foto">
+                    <img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier">
+                </div>
+                <div class="rodape-info">
+                    <p><strong>Prof. Rodrigo Niskier</strong></p>
+                    <p>Curso de Medicina</p>
+                    <p><em>Mecanismos de Agressão, Patológicos e de Defesa 1</em></p>
+                </div>
+            </footer>
+        </div>
+    </section>
+    
+    <section class="slide" data-title="Apostila para Impressão" data-category="Recursos Adicionais" data-img="apostila.jpg">
+         <div class="slide-content">
+            <!-- Conteúdo gerado via JS -->
+         </div>
+    </section>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- ELEMENTOS DO DOM ---
+    const splashLogoView = document.getElementById('splash-logo-view');
+    const splashTudumView = document.getElementById('splash-tudum-view');
+    const appContainer = document.getElementById('app-container');
+    const browseView = document.getElementById('browse-view');
+    const detailView = document.getElementById('detail-view');
+    const catalogContainer = document.querySelector('.catalog-container');
+    const detailContentContainer = document.getElementById('detail-content-container');
+    const backBtn = document.getElementById('back-to-browse-btn');
+    const startJourneyBtn = document.getElementById('start-journey-btn');
+    const mainHeader = document.getElementById('main-header');
+    const episodeMenu = document.getElementById('episode-menu');
+    const menuToggleBtn = document.getElementById('menu-toggle');
+
+    // --- DADOS E ESTADO ---
+    let topicsData = [];
+    let categories = {};
+
+    // --- LÓGICA DA TELA DE SPLASH ---
+    const synth = new Tone.Synth({
+        oscillator: { type: 'sine' },
+        envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }
+    }).toDestination();
+
+    function playTudumSound() {
+        const now = Tone.now();
+        synth.triggerAttackRelease("G2", "8n", now);
+        synth.triggerAttackRelease("D3", "8n", now + 0.2);
+    }
+
+    function startTudum() {
+        splashLogoView.style.opacity = '0';
+        splashTudumView.style.display = 'flex';
+        setTimeout(() => {
+            splashLogoView.style.display = 'none';
+            const mImg = document.querySelector('.splash-m-img');
+            mImg.classList.add('animate');
+            Tone.start().then(playTudumSound);
+            setTimeout(showApp, 1500);
+        }, 500);
+    }
+    
+    function showApp() {
+        splashTudumView.style.opacity = '0';
+        setTimeout(() => {
+            splashTudumView.style.display = 'none';
+            document.body.style.overflowY = 'auto';
+            appContainer.style.display = 'block';
+            browseView.classList.add('active');
+        }, 500);
+    }
+    
+    splashLogoView.addEventListener('click', startTudum);
+
+    // --- FUNÇÕES PRINCIPAIS DO APP ---
+    function parseOriginalContent() {
+        const originalSlides = document.querySelectorAll('#original-content .slide');
+        originalSlides.forEach((slide, index) => {
+            const title = slide.dataset.title;
+            const category = slide.dataset.category;
+            const img = slide.dataset.img;
+            const content = slide.querySelector('.slide-content').innerHTML;
+            const topic = { id: index, title, category, img, content };
+            
+            topicsData.push(topic);
+
+            if (category && category !== 'Destaque') {
+                if (!categories[category]) {
+                    categories[category] = [];
+                }
+                categories[category].push(topic);
+            }
+        });
+    }
+
+    function renderCatalog() {
+        catalogContainer.innerHTML = '';
+        for (const categoryName in categories) {
+            const row = document.createElement('div');
+            row.className = 'topic-row';
+            
+            const rowTitle = document.createElement('h2');
+            rowTitle.className = 'row-title';
+            rowTitle.textContent = categoryName;
+            row.appendChild(rowTitle);
+            
+            const rowContent = document.createElement('div');
+            rowContent.className = 'row-content';
+            
+            categories[categoryName].forEach(topic => {
+                const card = document.createElement('div');
+                card.className = 'topic-card';
+                card.style.backgroundImage = `url('${topic.img}')`;
+                card.dataset.topicId = topic.id;
+                card.innerHTML = `<div class="card-overlay"><h3 class="card-title">${topic.title}</h3></div>`;
+                card.addEventListener('click', () => showTopicDetails(topic.id));
+                rowContent.appendChild(card);
+            });
+            
+            row.appendChild(rowContent);
+            catalogContainer.appendChild(row);
+        }
+    }
+
+    function renderEpisodeMenu(currentTopicId) {
+        const episodeTopics = topicsData.filter(t => t.category !== 'Destaque');
+
+        let menuHTML = `<h3>Menu da Aula</h3><ul>`;
+        episodeTopics.forEach(topic => {
+            const isActive = topic.id === currentTopicId ? 'active' : '';
+            menuHTML += `<li data-topic-id="${topic.id}" class="${isActive}">${topic.title}</li>`;
+        });
+        menuHTML += `</ul>`;
+        episodeMenu.innerHTML = menuHTML;
+    }
+
+    function showTopicDetails(topicId) {
+        const topic = topicsData.find(t => t.id === topicId);
+        if (!topic) return;
+        
+        if (topic.title === "Apostila para Impressão") {
+            let fullContent = `
+                <h2>🖨️ Apostila para Impressão</h2>
+                <p>Abaixo está todo o conteúdo da aula em formato de texto contínuo. Use a função de impressão do seu navegador (Ctrl+P ou Cmd+P) para imprimir.</p>
+                <hr style="margin: 20px 0; border-color: #444;">
+            `;
+            topicsData.forEach(t => {
+                if (t.category === 'Conteúdo da Aula') {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = t.content;
+                    // Remove elementos não textuais para a impressão
+                    tempDiv.querySelectorAll('.imagem-container, .rodape-pagina').forEach(el => el.remove());
+                    fullContent += tempDiv.innerHTML;
+                }
+            });
+            detailContentContainer.innerHTML = fullContent;
+        } else {
+             detailContentContainer.innerHTML = topic.content;
+        }
+       
+        renderEpisodeMenu(topic.id);
+        
+        if (topic.title === "Quiz Final") {
+            setupQuiz();
+        }
+
+        const flashcards = detailContentContainer.querySelectorAll('.flashcard');
+        flashcards.forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('virado');
+            });
+        });
+        
+        browseView.classList.remove('active');
+        detailView.classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function backToBrowse() {
+        detailView.classList.remove('active');
+        browseView.classList.add('active');
+        detailContentContainer.innerHTML = '';
+        episodeMenu.classList.remove('open');
+    }
+
+    function handleHeaderScroll() {
+        if (browseView.classList.contains('active')) {
+            mainHeader.classList.toggle('scrolled', window.scrollY > 50);
+        }
+    }
+    
+    // --- LÓGICA DO QUIZ ---
+    const quizData = {
+        questions: [
+            { q: "1. O aumento da musculatura esquelética em um indivíduo que pratica levantamento de peso é um exemplo clássico de qual processo de adaptação celular?", o: ["Hiperplasia", "Metaplasia", "Hipertrofia", "Atrofia", "Displasia"], a: "c" },
+            { q: "2. Um fumante crônico desenvolve uma alteração no epitélio brônquico, onde o epitélio colunar ciliado pseudoestratificado é substituído por epitélio escamoso estratificado. Como se chama essa adaptação?", o: ["Hiperplasia", "Metaplasia", "Hipertrofia", "Anaplasia", "Atrofia"], a: "b" },
+            { q: "3. Qual das seguintes opções é a causa mais comum de hipóxia e lesão celular?", o: ["Reações imunológicas", "Agentes infecciosos", "Trauma físico", "Isquemia", "Desequilíbrio nutricional"], a: "d" },
+            { q: "4. A imobilização de um membro fraturado com gesso leva à diminuição da massa muscular nesse membro. Este fenômeno é denominado:", o: ["Atrofia por desuso", "Hipoplasia", "Necrose", "Hipertrofia compensatória", "Metaplasia por desuso"], a: "a" },
+            { q: "5. O crescimento do útero durante a gravidez é um exemplo de:", o: ["Apenas hipertrofia", "Apenas hiperplasia", "Hipertrofia e hiperplasia", "Metaplasia e displasia", "Apenas atrofia"], a: "c" },
+            { q: "6. Qual das seguintes alterações é considerada um marco de lesão celular irreversível?", o: ["Edema celular", "Degeneração gordurosa", "Dano mitocondrial severo e ruptura de membranas", "Diminuição do pH intracelular", "Desprendimento de ribossomos"], a: "c" },
+            { q: "7. A hiperplasia patológica, como a hiperplasia endometrial, aumenta o risco de desenvolvimento de:", o: ["Infecção", "Câncer", "Atrofia", "Isquemia", "Resposta autoimune"], a: "b" },
+            { q: "8. O Esôfago de Barrett é um exemplo de metaplasia que ocorre em resposta a qual estímulo crônico?", o: ["Infecção por H. pylori", "Fumaça de cigarro", "Radiação ultravioleta", "Refluxo de ácido gástrico", "Deficiência de vitamina A"], a: "d" },
+            { q: "9. A via da ubiquitina-proteassoma é um mecanismo fundamental em qual processo adaptativo?", o: ["Hipertrofia", "Hiperplasia", "Metaplasia", "Atrofia", "Acúmulo de lipídios"], a: "d" },
+            { q: "10. Qual das seguintes opções NÃO é considerada uma causa de agressão celular?", o: ["Agentes infecciosos", "Homeostase controlada", "Agentes químicos", "Hipóxia", "Reações imunológicas"], a: "b" }
+        ],
+        gabarito: { q1: 'c', q2: 'b', q3: 'd', q4: 'a', q5: 'c', q6: 'c', q7: 'b', q8: 'd', q9: 'd', q10: 'b' }
+    };
+
+    function setupQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        if (!quizForm) return;
+
+        let quizHTML = '';
+        quizData.questions.forEach((item, index) => {
+            const questionKey = `q${index + 1}`;
+            quizHTML += `<div class="quiz-question"><p>${item.q}</p><div class="quiz-options">`;
+            item.o.forEach((option, optionIndex) => {
+                const optionValue = String.fromCharCode(97 + optionIndex); // a, b, c...
+                quizHTML += `<label><input type="radio" name="${questionKey}" value="${optionValue}"> ${optionValue}) ${option}</label>`;
+            });
+            quizHTML += `</div></div>`;
+        });
+        
+        quizHTML += `<button type="button" class="btn btn-primary" id="btn-verificar-quiz">🚀 Verificar Respostas</button>`;
+        quizForm.innerHTML = quizHTML;
+
+        const btnVerificarQuiz = document.getElementById('btn-verificar-quiz');
+        btnVerificarQuiz.addEventListener('click', () => {
+            let acertos = 0;
+            const totalQuestoes = quizData.questions.length;
+            const gabarito = quizData.gabarito;
+            
+            for (let i = 1; i <= totalQuestoes; i++) {
+                const questao = 'q' + i;
+                const respostaSelecionada = quizForm.querySelector(`input[name="${questao}"]:checked`);
+                const alternativas = quizForm.querySelectorAll(`input[name="${questao}"]`);
+                
+                alternativas.forEach(input => {
+                    input.parentElement.classList.remove('correct', 'incorrect');
+                });
+
+                if (respostaSelecionada) {
+                    const labelSelecionada = respostaSelecionada.parentElement;
+                    if (respostaSelecionada.value === gabarito[questao]) {
+                        acertos++;
+                        labelSelecionada.classList.add('correct');
+                    } else {
+                        labelSelecionada.classList.add('incorrect');
+                        const respostaCorretaInput = quizForm.querySelector(`input[name="${questao}"][value="${gabarito[questao]}"]`);
+                        if (respostaCorretaInput) {
+                            respostaCorretaInput.parentElement.classList.add('correct');
+                        }
+                    }
+                }
+            }
+            
+            const resultsDiv = document.getElementById('quiz-results');
+            const scoreP = document.getElementById('quiz-score');
+            scoreP.innerHTML = `Você acertou <strong>${acertos}</strong> de ${totalQuestoes} questões!`;
+            resultsDiv.style.display = 'block';
+        });
+    }
+
+    // --- EVENT LISTENERS ---
+    backBtn.addEventListener('click', backToBrowse);
+    window.addEventListener('scroll', handleHeaderScroll);
+
+    startJourneyBtn.addEventListener('click', () => {
+        const firstTopic = topicsData.find(t => t.category === "Conteúdo da Aula");
+        if(firstTopic) {
+            showTopicDetails(firstTopic.id);
+        }
+    });
+
+    episodeMenu.addEventListener('click', (e) => {
+        if (e.target && e.target.matches('li')) {
+            const topicId = parseInt(e.target.dataset.topicId, 10);
+            showTopicDetails(topicId);
+            if (window.innerWidth <= 1200) {
+                episodeMenu.classList.remove('open');
+            }
+        }
+    });
+
+    menuToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        episodeMenu.classList.toggle('open');
+    });
+    
+    document.body.addEventListener('click', (e) => {
+        if (window.innerWidth <= 1200 && episodeMenu.classList.contains('open')) {
+            if (!episodeMenu.contains(e.target) && e.target !== menuToggleBtn) {
+                episodeMenu.classList.remove('open');
+            }
+        }
+    });
+
+    // --- INICIALIZAÇÃO ---
+    parseOriginalContent();
+    renderCatalog();
+});
+</script>
+
+</body>
+</html>
