@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InstagraMed | MAPD-2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Lobster&family=Billabong&family=Grand+Hotel&display=swap" rel="stylesheet">
+    <style>
+        /* --- FONTES --- */
+        @font-face {
+            font-family: 'Billabong';
+            src: url('https://raw.githubusercontent.com/z-av/Billabong/master/Billabong.ttf') format('truetype');
+        }
+        .instagram-font {
+            font-family: 'Billabong', 'Grand Hotel', cursive;
+        }
+
+        /* --- ESTILOS GLOBAIS --- */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e9e9e9;
+            /* Removido o flex para permitir rolagem */
+        }
+
+        /* --- TELA DE SPLASH --- */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #fff;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        #splash-screen .logo {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            border-radius: 25%;
+        }
+        #splash-screen .logo-inner {
+            width: 68px;
+            height: 68px;
+            border: 6px solid white;
+            border-radius: 20%;
+            position: relative;
+        }
+        #splash-screen .logo-inner::after {
+            content: '';
+            width: 32px;
+            height: 32px;
+            border: 6px solid white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #splash-screen .logo-inner::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        #splash-screen .from-text {
+            position: absolute;
+            bottom: 40px;
+            text-align: center;
+            color: #8e8e8e;
+        }
+        #splash-screen .from-text p {
+            font-size: 1rem;
+        }
+        #splash-screen .from-text .brand {
+            font-size: 2rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* --- MOLDURA VERTICAL (TELA INICIAL) --- */
+        .phone-container {
+            padding: 4rem 0; /* Espaço para rolagem */
+            display: flex;
+            justify-content: center;
+        }
+        .phone-frame-v {
+            width: 414px;
+            height: 896px;
+            background-color: #1c1c1c;
+            border-radius: 54px;
+            padding: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 8px #111;
+            position: relative;
+            flex-shrink: 0; /* Previne que o celular encolha */
+        }
+        .phone-screen-v {
+            background-color: #fff;
+            width: 100%;
+            height: 100%;
+            border-radius: 42px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .phone-notch-v {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background-color: #1c1c1c;
+            border-radius: 0 0 15px 15px;
+            z-index: 100;
+        }
+        .instagram-container {
+            flex-grow: 1;
+            overflow-y: auto;
+             &::-webkit-scrollbar { display: none; }
+        }
+        .grid-item {
+            aspect-ratio: 1 / 1;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+        }
+        .bottom-nav {
+            border-top: 1px solid #dbdbdb;
+            background-color: #fff;
+        }
+
+        /* --- TELA DE SLIDE HORIZONTAL --- */
+        #slide-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #f0f2f5;
+            z-index: 200;
+            display: flex;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #slide-view.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .slide-nav {
+            width: 280px;
+            background-color: #fff;
+            padding: 2rem 1rem;
+            border-right: 1px solid #dbdbdb;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        .slide-nav .nav-header {
+            font-size: 2.5rem;
+            padding: 0 1rem 2rem 1rem;
+        }
+        .slide-nav ul {
+            list-style: none;
+        }
+        .slide-nav li a, .slide-nav li div {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #262626;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .slide-nav li a:hover, .slide-nav li div:hover {
+            background-color: #f5f5f5;
+        }
+        .slide-nav li a.active {
+            font-weight: 700;
+        }
+        .slide-nav .nav-icon {
+            font-size: 1.5rem;
+            width: 30px;
+            text-align: center;
+        }
+        .slide-nav .profile-icon img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        #explorar-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding-left: 2.5rem;
+        }
+        #explorar-accordion-content a {
+            font-size: 0.9rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+        .slide-content-area {
+            flex-grow: 1;
+            padding: 2rem 3rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Parent hides scroll */
+        }
+        .slide-header {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+        }
+        .slide-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #262626;
+        }
+        #back-to-vertical {
+            background-color: #dbdbdb;
+            color: #262626;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        #back-to-vertical:hover {
+            background-color: #ccc;
+        }
+        .content-wrapper {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            font-size: 2.5em; /* Aumento da fonte */
+            flex-grow: 1;
+            overflow-y: auto; /* Content scrolls */
+            margin-top: 1rem;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .content-wrapper h3, .content-wrapper h4 {
+            font-size: 1.2em;
+        }
+        .slide-footer {
+            flex-shrink: 0;
+            padding: 1.5rem 2rem;
+            background-color: #fff;
+            border-top: 1px solid #dbdbdb;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+        }
+        .slide-footer .actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 1.8rem;
+            color: #262626;
+        }
+        .slide-footer .actions .save-icon {
+            margin-left: auto;
+        }
+         .slide-footer .actions i {
+            cursor: pointer;
+         }
+         .slide-footer .actions .fa-heart.liked {
+            color: red;
+            font-weight: 900;
+         }
+        .slide-footer .likes {
+            font-weight: 600;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+         /* --- ACORDEÃO NO CONTEÚDO --- */
+        .content-accordion-title {
+            background-color: #f7f7f7;
+            border: 1px solid #e0e0e0;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8em;
+        }
+        .content-accordion-title:hover {
+            background-color: #f0f0f0;
+        }
+        .content-accordion-title::after {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: 300;
+            transition: transform 0.3s ease;
+        }
+        .content-accordion-title.active::after {
+            transform: rotate(45deg);
+        }
+        .content-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 0 1.5rem;
+        }
+        .content-accordion-content-inner {
+            padding: 1.5rem 0;
+        }
+        .flashcard-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .flashcard {
+            width: 300px;
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+            font-size: 0.6em;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        .flashcard.virado .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        .flashcard-frente, .flashcard-verso {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #444;
+        }
+        .flashcard-frente {
+            background-color: #333;
+            color: white;
+            font-weight: bold;
+        }
+        .flashcard-verso {
+            background-color: #0057B8;
+            color: white;
+            transform: rotateY(180deg);
+        }
+        .quiz-container { font-size: 0.6em; }
+        .quiz-options label {
+            display: flex; /* Changed to flex for alignment */
+            align-items: center;
+            margin-top: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+        .quiz-options input[type="radio"] {
+            margin-right: 10px;
+        }
+        .quiz-options label:hover {
+            border-color: #0057B8;
+            background-color: #e7f3ff;
+        }
+        .quiz-options label.selected {
+            border-color: #0057B8;
+            background-color: #e7f3ff;
+        }
+        .quiz-options label.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+            font-weight: bold;
+        }
+        .quiz-options label.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+            font-weight: bold;
+        }
+        .quiz-options label.correct::after,
+        .quiz-options label.incorrect::after {
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+        }
+        .quiz-options label.correct::after {
+            content: '\\f00c'; /* Check icon */
+            color: #28a745;
+        }
+        .quiz-options label.incorrect::after {
+            content: '\\f00d'; /* Times icon */
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TELA DE SPLASH -->
+    <div id="splash-screen">
+        <div class="logo">
+            <div class="flex items-center justify-center h-full">
+                <div class="logo-inner"></div>
+            </div>
+        </div>
+        <div class="from-text">
+            <p>from</p>
+            <p class="brand instagram-font">InstagraMed</p>
+        </div>
+    </div>
+
+    <!-- MOLDURA VERTICAL (PRINCIPAL) -->
+    <div id="vertical-view" class="phone-container hidden">
+        <div class="phone-frame-v">
+            <div class="phone-notch-v"></div>
+            <div class="phone-screen-v">
+                <div class="instagram-container">
+                    <!-- Cabeçalho do Perfil -->
+                    <header class="p-4 bg-white">
+                        <div class="flex justify-between items-center mb-4"><h1 class="text-3xl instagram-font">InstagraMed</h1><div><i class="far fa-heart text-2xl mr-4"></i><i class="fab fa-facebook-messenger text-2xl"></i></div></div>
+                        <div class="flex items-center space-x-4"><div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 p-1"><img src="foto.jpg" alt="Foto do Professor Rodrigo Niskier" class="w-full h-full object-cover rounded-full"></div><div class="flex-1 flex justify-around text-center"><div><p class="font-bold text-lg">12</p><p class="text-sm text-gray-500">Posts</p></div><div><p class="font-bold text-lg">1.2k</p><p class="text-sm text-gray-500">Seguidores</p></div><div><p class="font-bold text-lg">89</p><p class="text-sm text-gray-500">Seguindo</p></div></div></div>
+                        <div class="mt-4"><p class="font-semibold">Prof. Rodrigo Niskier</p><p class="text-sm text-gray-600">Curso de Medicina | MAPD-2</p><p class="text-sm">Aplicando microbiologia e imunologia na prática clínica.</p><div class="flex space-x-2 mt-3"><button class="flex-1 bg-gray-200 text-sm font-semibold py-1.5 rounded-md">Editar Perfil</button><button class="flex-1 bg-gray-200 text-sm font-semibold py-1.5 rounded-md">Compartilhar Perfil</button></div></div>
+                    </header>
+
+                    <!-- Destaques -->
+                    <section class="p-4 border-t border-b border-gray-200">
+                        <div class="flex justify-around items-center">
+                            <div class="text-center"><div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-3xl border-2 border-gray-300">🎯</div><p class="text-xs mt-1 font-medium">Objetivos</p></div>
+                            <div class="text-center"><div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-3xl border-2 border-gray-300">🧬</div><p class="text-xs mt-1 font-medium">Patógenos</p></div>
+                            <div class="text-center"><div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-3xl border-2 border-gray-300">🔍</div><p class="text-xs mt-1 font-medium">Casos</p></div>
+                        </div>
+                    </section>
+
+                    <!-- Grade de Posts -->
+                    <main id="grid-view">
+                         <div class="flex justify-around border-b border-gray-200"><div class="p-3 text-black border-b-2 border-black"><i class="fas fa-th text-xl"></i></div><div class="p-3 text-gray-400"><i class="fas fa-video text-xl"></i></div><div class="p-3 text-gray-400"><i class="far fa-user-circle text-xl"></i></div></div>
+                        <div class="grid grid-cols-3 gap-0.5">
+                            <!-- Itens da grade inseridos pelo JS -->
+                        </div>
+                    </main>
+                </div>
+                 <!-- Barra de Navegação Inferior -->
+                <nav class="bottom-nav p-2 flex justify-around items-center"><i class="fas fa-home text-2xl"></i><i class="fas fa-search text-2xl"></i><i class="far fa-plus-square text-2xl"></i><i class="fas fa-video text-2xl"></i><div class="w-7 h-7 rounded-full overflow-hidden"><img src="foto.jpg" class="w-full h-full object-cover"></div></nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE SLIDE (CONTEÚDO) -->
+    <div id="slide-view">
+        <nav class="slide-nav">
+            <h1 class="nav-header instagram-font">InstagraMed</h1>
+            <ul>
+                <li><a href="#" id="nav-home"><i class="fas fa-home nav-icon"></i> Página Inicial</a></li>
+                <li><a href="https://gemini.google.com/" target="_blank"><i class="fas fa-search nav-icon"></i> Pesquisa</a></li>
+                <li id="explorar-accordion">
+                    <div><i class="far fa-compass nav-icon"></i> Explorar</div>
+                    <ul id="explorar-accordion-content" class="ml-4">
+                         <li><a href="#" class="slide-nav-link" data-content-id="content-objetivos">🎯 Objetivos da Aula</a></li>
+                         <li><a href="#" class="slide-nav-link" data-content-id="content-patogenos">🧬 Principais Patógenos</a></li>
+                         <li><a href="#" class="slide-nav-link" data-content-id="content-casos">🔍 Casos Clínicos</a></li>
+                         <li><a href="#" class="slide-nav-link" data-content-id="content-flashcards">🗂️ Flashcards</a></li>
+                         <li><a href="#" class="slide-nav-link" data-content-id="content-quiz">✅ Quiz Final</a></li>
+                         <li><a href="#" class="slide-nav-link" data-content-id="content-impressao">🖨️ Impressão</a></li>
+                    </ul>
+                </li>
+                <li><a href="https://cruzeirodosul.jaleko.com.br/login?redir=%2Fhome" target="_blank"><i class="fas fa-video nav-icon"></i> Reels</a></li>
+                <li><a href="#"><i class="far fa-comment nav-icon"></i> Mensagens</a></li>
+                <li><a href="#"><i class="far fa-heart nav-icon"></i> Notificações</a></li>
+                <li><a href="#"><i class="far fa-plus-square nav-icon"></i> Criar</a></li>
+                <li><a href="#"><span class="nav-icon profile-icon"><img src="foto.jpg" alt="Perfil"></span> Perfil</a></li>
+            </ul>
+        </nav>
+        <main class="slide-content-area">
+            <header class="slide-header">
+                <h1 id="slide-title"></h1>
+                <button id="back-to-vertical"><i class="fas fa-arrow-left mr-2"></i> Voltar ao Feed</button>
+            </header>
+            <div id="slide-content-wrapper" class="content-wrapper">
+                <!-- Conteúdo do slide inserido pelo JS -->
+            </div>
+            <footer class="slide-footer">
+                <div class="actions">
+                    <i class="far fa-heart" id="like-button"></i>
+                    <i class="far fa-comment"></i>
+                    <i class="far fa-paper-plane"></i>
+                    <i class="far fa-bookmark save-icon"></i>
+                </div>
+                <div class="likes">
+                    <strong>2.507 curtidas</strong>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- FONTE DE DADOS (OCULTO) -->
+    <div id="content-source" class="hidden">
+        <article id="content-objetivos" data-title="Objetivos da Aula" data-thumbnail="objetivos.jpg"></article>
+        <article id="content-patogenos" data-title="Principais Patógenos" data-thumbnail="patogenos.jpg"></article>
+        <article id="content-casos" data-title="Casos Clínicos" data-thumbnail="casos.jpg"></article>
+        <article id="content-flashcards" data-title="Flashcards" data-thumbnail="cards.jpg"></article>
+        <article id="content-quiz" data-title="Quiz Final" data-thumbnail="quiz.jpg"></article>
+        <article id="content-impressao" data-title="Apostila para Impressão" data-thumbnail="impressao.jpg"></article>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const splashScreen = document.getElementById('splash-screen');
+            const verticalView = document.getElementById('vertical-view');
+            const slideView = document.getElementById('slide-view');
+            const gridContainer = document.getElementById('grid-view').querySelector('.grid');
+            const backToVerticalBtn = document.getElementById('back-to-vertical');
+            const slideTitle = document.getElementById('slide-title');
+            const slideContentWrapper = document.getElementById('slide-content-wrapper');
+            const slideNavLinks = document.querySelectorAll('.slide-nav-link');
+            const explorarAccordion = document.getElementById('explorar-accordion');
+            const explorarAccordionContent = document.getElementById('explorar-accordion-content');
+            const navHomeBtn = document.getElementById('nav-home');
+            const likeBtn = document.getElementById('like-button');
+
+            // --- DADOS ---
+            const patogenos = [{nome:"Staphylococcus aureus",morfofisiologia:"Coco Gram-positivo, catalase-positivo, que se agrupa em 'cachos de uva'.",patogenia:"Produz uma vasta gama de toxinas (hemolisinas, leucocidinas, toxina do choque tóxico) e enzimas (coagulase, hialuronidase). A Proteína A em sua superfície liga-se à porção Fc de anticorpos, inibindo a opsonização e fagocitose.",relevancia:"Principal causa de infecções de pele e partes moles (furúnculos, abscessos), infecções de sítio cirúrgico, endocardite e osteomielite. A emergência de cepas resistentes à meticilina (MRSA) é um grande desafio hospitalar."},{nome:"Streptococcus pneumoniae",morfofisiologia:"Coco Gram-positivo, catalase-negativo, disposto em pares (diplococos) ou cadeias curtas, alfa-hemolítico.",patogenia:"Seu principal fator de virulência é a cápsula polissacarídica, que é antifagocitária e possui mais de 90 sorotipos. Produz a toxina pneumolisina, que forma poros na membrana das células do hospedeiro, causando lise e inflamação.",relevancia:"Principal agente da pneumonia adquirida na comunidade (PAC), meningite bacteriana em adultos, sinusite e otite média, especialmente em crianças e idosos."},{nome:"Escherichia coli",morfofisiologia:"Bacilo Gram-negativo, membro da família Enterobacteriaceae, fermentador de lactose.",patogenia:"Extremamente versátil. A UPEC (uropatogênica) possui fímbrias P para adesão ao urotélio. A ETEC (enterotoxigênica) produz toxinas termolábil (LT) e termoestável (ST), causando diarreia aquosa (diarreia do viajante). A EHEC (entero-hemorrágica) produz a toxina Shiga, que causa colite hemorrágica e síndrome hemolítico-urêmica (SHU).",relevancia:"Principal causa de infecção do trato urinário (ITU). Importante agente de diarreias infecciosas e sepse de origem abdominal ou urinária."},{nome:"Klebsiella pneumoniae",morfofisiologia:"Bacilo Gram-negativo, encapsulado, não móvel, também da família Enterobacteriaceae.",patogenia:"Possui uma espessa cápsula polissacarídica que lhe confere um aspecto mucoide e o protege da fagocitose. Produz LPS que desencadeia uma forte resposta inflamatória. Frequentemente possui plasmídeos de resistência, como os que codificam a KPC (Klebsiella pneumoniae carbapenemase).",relevancia:"Importante causa de infecções hospitalares, especialmente pneumonias (associadas à ventilação mecânica), ITUs e infecções de corrente sanguínea. A disseminação de cepas produtoras de carbapenemase (KPC) é uma emergência de saúde pública."},{nome:"Pseudomonas aeruginosa",morfofisiologia:"Bacilo Gram-negativo, aeróbio estrito, móvel, conhecido por produzir pigmentos como a piocianina (azul-esverdeado) e ter um odor adocicado característico.",patogenia:"Patógeno oportunista com múltiplos fatores de virulência, incluindo exotoxina A (que inibe a síntese proteica), enzimas (elastase, protease), e grande capacidade de formar biofilme, o que confere alta resistência a antibióticos.",relevancia:"Causa infecções graves em pacientes hospitalizados, imunocomprometidos, queimados ou com fibrose cística. Comum em pneumonias hospitalares, infecções de feridas cirúrgicas e otite externa ('ouvido de nadador')."},{nome:"Neisseria meningitidis",morfofisiologia:"Diplococo Gram-negativo em forma de rim ou grão de café.",patogenia:"A cápsula polissacarídica é o principal fator de virulência, protegendo contra a fagocitose e o sistema complemento. A liberação de grandes quantidades de lipooligossacarídeo (LOS, uma forma de endotoxina) na corrente sanguínea é responsável pelo choque séptico, coagulação intravascular disseminada (CIVD) e as lesões purpúricas na meningococcemia.",relevancia:"Principal agente da meningite bacteriana epidêmica e meningococcemia. A vacinação contra os sorogrupos mais comuns (A, C, W, Y e B) é a principal medida de controle."}];
+            const casosClinicos = [{titulo:"Caso Clínico 1: Infecção do Trato Urinário (ITU)",conteudo:`<h4>Apresentação do Caso:</h4><p>M.A.S., 24 anos, feminina, estudante, chega à UPA com queixa de "ardência para urinar há 2 dias", associada a polaciúria (aumento da frequência urinária) e urgência miccional. Nega febre. Exame de urina (EAS) revela leucocitúria (>10/campo), hematúria e nitrito positivo.</p><h4>Discussão Aprofundada:</h4><p>O quadro é típico de cistite aguda não complicada. O agente mais provável (>80% dos casos) é a <em>E. coli</em> uropatogênica (UPEC). A presença de nitrito positivo é altamente sugestiva de enterobactérias, que convertem nitrato (normal na urina) em nitrito. A patogênese se inicia com a adesão da UPEC às células uroepiteliais através de fímbrias. A resposta imune inata é ativada pelo reconhecimento do LPS bacteriano por receptores Toll-like (TLR4) nas células epiteliais, desencadeando uma cascata inflamatória com produção de citocinas (IL-6, IL-8) que recrutam neutrófilos, causando os sintomas de disúria e polaciúria.</p><img src="casos_ecoli.jpg" alt="Bacilos Gram-negativos" class="w-full h-auto object-cover my-4 rounded-lg">`},{titulo:"Caso Clínico 2: Pneumonia Adquirida na Comunidade (PAC)",conteudo:`<h4>Apresentação do Caso:</h4><p>F.G.N., 78 anos, masculino, aposentado e tabagista, chega à emergência com febre alta (39°C), calafrios, tosse produtiva com expectoração purulenta e dor torácica pleurítica à direita há 3 dias. Ao exame, apresenta taquipneia e estertores crepitantes na base do pulmão direito.</p><h4>Discussão Aprofundada:</h4><p>O quadro é de uma pneumonia lobar clássica, e o agente mais comum é o <em>Streptococcus pneumoniae</em> (pneumococo). A patogênese envolve a aspiração de secreções da orofaringe contendo o pneumococo. Sua cápsula impede a fagocitose pelos macrófagos alveolares, permitindo sua multiplicação. A toxina pneumolisina lesa as células do epitélio respiratório e os capilares, causando um influxo de fluido rico em eritrócitos, neutrófilos e fibrina para dentro dos alvéolos. Essa consolidação do parênquima pulmonar é o que causa as trocas gasosas deficientes e os achados na ausculta e na radiografia.</p><img src="casos_pneumonia.jpg" alt="Raio-X de Pneumonia" class="w-full h-auto object-cover my-4 rounded-lg">`}];
+            const flashcardsData = [{frente:"Staphylococcus aureus",verso:"Coco Gram-positivo, causa infecções de pele e MRSA."},{frente:"Streptococcus pneumoniae",verso:"Diplococo Gram-positivo, principal causa de pneumonia comunitária."},{frente:"Escherichia coli",verso:"Bacilo Gram-negativo, principal causa de ITU."},{frente:"Klebsiella pneumoniae",verso:"Bacilo Gram-negativo encapsulado, associado a infecções hospitalares e KPC."},{frente:"Pseudomonas aeruginosa",verso:"Bacilo Gram-negativo oportunista, comum em infecções de queimaduras."},{frente:"Neisseria meningitidis",verso:"Diplococo Gram-negativo, causa meningite epidêmica."},{frente:"MRSA",verso:"Staphylococcus aureus Resistente à Meticilina, um desafio no tratamento de infecções hospitalares."},{frente:"Pneumolisina",verso:"Toxina formadora de poros do S. pneumoniae que lesa células do hospedeiro."},{frente:"Endotoxina (LPS/LOS)",verso:"Componente da parede de bactérias Gram-negativas que desencadeia forte resposta inflamatória e choque séptico."},{frente:"Biofilme",verso:"Comunidade de microrganismos aderidos a uma superfície, protegidos por uma matriz polimérica, conferindo alta resistência. Característico da P. aeruginosa."},{frente:"Coagulase",verso:"Enzima do S. aureus que converte fibrinogênio em fibrina, formando um coágulo protetor."},{frente:"KPC",verso:"Carbapenemase da K. pneumoniae, confere resistência a múltiplos antibióticos."},{frente:"BAAR",verso:"Bacilo Álcool-Ácido Resistente, como o M. tuberculosis, corado por Ziehl-Neelsen."},{frente:"UPEC",verso:"E. coli Uropatogênica, especializada em causar ITU através de fímbrias de adesão."},{frente:"Proteína A",verso:"Fator de virulência do S. aureus que se liga à porção Fc de IgG, inibindo a fagocitose."}];
+            const quizData = { questions: [{q:"Qual o agente etiológico mais comum da Infecção do Trato Urinário (ITU) não complicada?",o:["Staphylococcus aureus","Escherichia coli","Klebsiella pneumoniae", "Pseudomonas aeruginosa"],a:"Escherichia coli"},{q:"A presença de uma espessa cápsula polissacarídica que confere aspecto mucoide é um fator de virulência chave de qual bactéria?",o:["Streptococcus pneumoniae","Neisseria meningitidis","Klebsiella pneumoniae", "Escherichia coli"],a:"Klebsiella pneumoniae"},{q:"A toxina do choque tóxico (TSST-1) é um superantígeno produzido por cepas de:",o:["Streptococcus pneumoniae","Clostridium difficile","Staphylococcus aureus","Neisseria gonorrhoeae"],a:"Staphylococcus aureus"},{q:"Qual o principal fator de virulência do Streptococcus pneumoniae?",o:["Pneumolisina","Cápsula polissacarídica","Proteína M", "Coagulase"],a:"Cápsula polissacarídica"},{q:"A Síndrome Hemolítico-Urêmica (SHU) pode ser uma complicação grave da infecção por qual tipo de E. coli?",o:["ETEC (Enterotoxigênica)","EPEC (Enteropatogênica)","EHEC (Entero-hemorrágica)", "UPEC (Uropatogênica)"],a:"EHEC (Entero-hemorrágica)"},{q:"O pigmento azul-esverdeado piocianina é característico de qual bactéria?",o:["Serratia marcescens","Pseudomonas aeruginosa","Klebsiella pneumoniae", "Staphylococcus aureus"],a:"Pseudomonas aeruginosa"},{q:"A meningococcemia, com seu quadro de choque e púrpura, é causada pela liberação maciça de:",o:["Exotoxina A","Lipooligossacarídeo (LOS)","Toxina Shiga", "Pneumolisina"],a:"Lipooligossacarídeo (LOS)"},{q:"Qual bactéria é um patógeno intracelular obrigatório que sobrevive dentro de macrófagos?",o:["Mycobacterium tuberculosis","Listeria monocytogenes","Ambos", "Nenhuma das anteriores"],a:"Ambos"},{q:"A Proteína A, que se liga à porção Fc de anticorpos, é um fator de virulência de:",o:["Streptococcus pyogenes","Staphylococcus aureus","Enterococcus faecalis", "Streptococcus pneumoniae"],a:"Staphylococcus aureus"},{q:"A formação de biofilme é um mecanismo de resistência importante em infecções por:",o:["Haemophilus influenzae","Moraxella catarrhalis","Pseudomonas aeruginosa", "Neisseria meningitidis"],a:"Pseudomonas aeruginosa"},{q:"O nitrito positivo em um exame de urina sugere a presença de:",o:["Bactérias Gram-positivas","Enterobactérias (Gram-negativas)","Fungos", "Vírus"],a:"Enterobactérias (Gram-negativas)"},{q:"Qual bactéria é uma causa comum de 'diarreia do viajante' através da produção de toxinas LT e ST?",o:["ETEC (Enterotoxigênica)","Salmonella enteritidis","Vibrio cholerae", "Shigella sonnei"],a:"ETEC (Enterotoxigênica)"},{q:"A resistência a carbapenêmicos mediada pela enzima KPC é uma grande preocupação em infecções por:",o:["Acinetobacter baumannii","Klebsiella pneumoniae","Stenotrophomonas maltophilia", "Escherichia coli"],a:"Klebsiella pneumoniae"},{q:"A vacinação é a principal medida de controle para qual das seguintes doenças?",o:["Infecção por E. coli","Meningite por Neisseria meningitidis","Infecção por Pseudomonas", "Tuberculose"],a:"Meningite por Neisseria meningitidis"},{q:"Qual das seguintes bactérias é um bacilo álcool-ácido resistente (BAAR)?",o:["Nocardia asteroides","Mycobacterium tuberculosis","Actinomyces israelii", "Listeria monocytogenes"],a:"Mycobacterium tuberculosis"},{q:"A 'otite de nadador' (otite externa) é frequentemente causada por:",o:["Staphylococcus epidermidis","Pseudomonas aeruginosa","Streptococcus agalactiae", "Escherichia coli"],a:"Pseudomonas aeruginosa"},{q:"A capacidade de sobreviver dentro de macrófagos e se disseminar pelo corpo é uma característica de qual patógeno associado a alimentos?",o:["Shigella sonnei","Campylobacter jejuni","Salmonella spp.", "Yersinia enterocolitica"],a:"Salmonella spp."},{q:"Qual é a principal função da cápsula bacteriana como fator de virulência?",o:["Adesão celular","Proteção contra fagocitose","Motilidade", "Invasão de tecidos"],a:"Proteção contra fagocitose"},{q:"A coagulase é uma enzima que converte fibrinogênio em fibrina, formando um coágulo protetor. Qual bactéria a produz?",o:["Staphylococcus epidermidis","Staphylococcus aureus","Streptococcus sanguinis", "Streptococcus pyogenes"],a:"Staphylococcus aureus"},{q:"Qual bactéria Gram-negativa em forma de diplococo é uma causa importante de meningite?",o:["Moraxella catarrhalis","Acinetobacter baumannii","Neisseria meningitidis", "Klebsiella pneumoniae"],a:"Neisseria meningitidis"}] };
+            const gridContentData = Array.from(document.querySelectorAll('#content-source article')).map(el => ({id: el.id, thumbnail: el.dataset.thumbnail}));
+
+            // --- FUNÇÕES ---
+            function createAccordion(title, content) {
+                return `<div class="content-accordion-item">
+                            <div class="content-accordion-title">${title}</div>
+                            <div class="content-accordion-content"><div class="content-accordion-content-inner">${content}</div></div>
+                        </div>`;
+            }
+
+            function displaySlideContent(contentId) {
+                const sourceArticle = document.getElementById(contentId);
+                if (!sourceArticle) return;
+
+                const title = sourceArticle.dataset.title;
+                slideTitle.textContent = title;
+                let contentHTML = '';
+
+                switch(contentId) {
+                    case 'content-objetivos':
+                        contentHTML = createAccordion("Objetivos da Aula", `<p>Esta aula teórico-prática visa aplicar os conhecimentos fundamentais de bacteriologia e da resposta imune inata na resolução de cenários clínicos comuns.</p><div class="mt-4 bg-gray-100 p-4 rounded-lg"><h3>Ao final desta sessão, você será capaz de:</h3><ul class="list-disc list-inside mt-2 space-y-2"><li><strong>Formular</strong> hipóteses diagnósticas.</li><li><strong>Correlacionar</strong> o agente etiológico.</li><li><strong>Analisar</strong> a resposta imune.</li><li><strong>Utilizar</strong> a IA para pesquisar.</li></ul></div>`);
+                        break;
+                    case 'content-patogenos':
+                        patogenos.forEach(p => { contentHTML += createAccordion(p.nome, `<p><strong>Morfofisiologia:</strong> ${p.morfofisiologia}</p><p class="mt-2"><strong>Patogenia:</strong> ${p.patogenia}</p><p class="mt-2"><strong>Relevância Local:</strong> ${p.relevancia}</p>`); });
+                        break;
+                    case 'content-casos':
+                        casosClinicos.forEach(c => { contentHTML += createAccordion(c.titulo, c.conteudo); });
+                        break;
+                    case 'content-flashcards':
+                         contentHTML = '<div class="flashcard-container">';
+                         flashcardsData.forEach(card => { contentHTML += `<div class="flashcard"><div class="flashcard-inner"><div class="flashcard-frente">${card.frente}</div><div class="flashcard-verso">${card.verso}</div></div></div>`; });
+                         contentHTML += '</div>';
+                         break;
+                    case 'content-quiz':
+                        let quizFormHTML = '<form id="quiz-form" class="quiz-container">';
+                        quizData.questions.forEach((item, index) => {
+                            quizFormHTML += `<div class="quiz-question"><p>${index + 1}. ${item.q}</p><div class="quiz-options">`;
+                            item.o.forEach(option => { quizFormHTML += `<label><input type="radio" name="q${index}" value="${option}" class="sr-only"> <span>${option}</span></label>`; });
+                            quizFormHTML += `</div></div>`;
+                        });
+                        quizFormHTML += `<button type="button" id="btn-verificar-quiz" class="bg-blue-600 text-white p-2 rounded-md mt-4">Verificar</button></form><div id="quiz-results" class="mt-4" style="display: none;"></div>`;
+                        contentHTML = createAccordion("Teste seus conhecimentos", quizFormHTML);
+                        break;
+                    case 'content-impressao':
+                        contentHTML = createAccordion("Gerar Apostila", `<p>Clique no botão para gerar uma versão para impressão de todo o conteúdo.</p><button id="print-btn" class="bg-blue-600 text-white p-2 rounded-md mt-4">Imprimir Aula</button>`);
+                        break;
+                }
+                slideContentWrapper.innerHTML = contentHTML;
+                
+                // Add event listeners for dynamically created elements
+                if (contentId === 'content-flashcards') {
+                    slideContentWrapper.querySelectorAll('.flashcard').forEach(card => card.addEventListener('click', () => card.classList.toggle('virado')));
+                }
+                if (contentId === 'content-quiz') {
+                    document.getElementById('btn-verificar-quiz').addEventListener('click', verifyQuiz);
+                    // Add selection highligh
+                    slideContentWrapper.querySelectorAll('.quiz-options input[type="radio"]').forEach(radio => {
+                        radio.addEventListener('change', (e) => {
+                            const groupName = e.target.name;
+                            slideContentWrapper.querySelectorAll(`input[name="${groupName}"]`).forEach(r => r.parentElement.classList.remove('selected'));
+                            e.target.parentElement.classList.add('selected');
+                        });
+                    });
+                }
+                if (contentId === 'content-impressao') {
+                    document.getElementById('print-btn').addEventListener('click', printContent);
+                }
+                 slideContentWrapper.querySelectorAll('.content-accordion-title').forEach(title => title.addEventListener('click', (e) => {
+                    e.currentTarget.classList.toggle('active');
+                    const content = e.currentTarget.nextElementSibling;
+                    content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px";
+                }));
+
+
+                slideNavLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.contentId === contentId);
+                });
+            }
+            
+            function verifyQuiz() {
+                let score = 0;
+                const form = document.getElementById('quiz-form');
+                quizData.questions.forEach((q, index) => {
+                    const selected = form.querySelector(`input[name="q${index}"]:checked`);
+                    const labels = form.querySelectorAll(`input[name="q${index}"]`);
+                    
+                    labels.forEach(input => {
+                        const label = input.parentElement;
+                        label.classList.remove('correct', 'incorrect', 'selected');
+                        // Highlight the correct answer regardless of user choice
+                        if (input.value === q.a) {
+                            label.classList.add('correct');
+                        }
+                    });
+
+                    if (selected) {
+                        if (selected.value === q.a) {
+                            score++;
+                        } else {
+                            // If selected is wrong, add incorrect class to it
+                            selected.parentElement.classList.add('incorrect');
+                        }
+                    }
+                });
+                const resultsDiv = document.getElementById('quiz-results');
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = `<h3>Você acertou ${score} de ${quizData.questions.length}!</h3>`;
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            function printContent() {
+                let fullContent = `<html><head><title>InstagraMed - Apostila</title><style>body{font-family:sans-serif;line-height:1.5;} h1,h2,h3{margin-top:1.5em;} img{max-width:500px;display:block;margin:1em 0;}</style></head><body>`;
+                fullContent += `<h1>InstagraMed - Aula: Bactérias de Interesse Clínico</h1>`;
+                
+                const contentOrder = ['content-objetivos', 'content-patogenos', 'content-casos'];
+                contentOrder.forEach(contentId => {
+                    const sourceArticle = document.getElementById(contentId);
+                    fullContent += `<h2>${sourceArticle.dataset.title}</h2>`;
+                    
+                    switch(contentId) {
+                        case 'content-objetivos':
+                            fullContent += `<p>Esta aula teórico-prática visa aplicar os conhecimentos fundamentais de bacteriologia e da resposta imune inata na resolução de cenários clínicos comuns.</p>
+                                            <h3>Ao final desta sessão, você será capaz de:</h3>
+                                            <ul><li><strong>Formular</strong> hipóteses diagnósticas.</li><li><strong>Correlacionar</strong> o agente etiológico.</li><li><strong>Analisar</strong> a resposta imune.</li><li><strong>Utilizar</strong> a IA para pesquisar.</li></ul>`;
+                            break;
+                        case 'content-patogenos':
+                            patogenos.forEach(p => {
+                                fullContent += `<h3>${p.nome}</h3><p><strong>Morfofisiologia:</strong> ${p.morfofisiologia}</p><p><strong>Patogenia:</strong> ${p.patogenia}</p><p><strong>Relevância Local:</strong> ${p.relevancia}</p><hr>`;
+                            });
+                            break;
+                        case 'content-casos':
+                            casosClinicos.forEach(c => {
+                                fullContent += `<h3>${c.titulo}</h3>${c.conteudo.replace(/<div class="momento-ia".*?<\/div>/gs, '')}<hr>`;
+                            });
+                            break;
+                    }
+                });
+
+                fullContent += '</body></html>';
+                
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(fullContent);
+                printWindow.document.close();
+                printWindow.print();
+            }
+
+            // --- INICIALIZAÇÃO E EVENTOS ---
+            splashScreen.addEventListener('click', () => {
+                splashScreen.style.display = 'none';
+                verticalView.classList.remove('hidden');
+                document.body.style.overflow = 'auto'; // Permitir rolagem
+            });
+
+            gridContentData.forEach(item => {
+                const gridItem = document.createElement('div');
+                gridItem.className = 'grid-item';
+                gridItem.style.backgroundImage = `url(${item.thumbnail})`;
+                gridItem.dataset.target = `#${item.id}`;
+                gridContainer.appendChild(gridItem);
+            });
+
+            gridContainer.addEventListener('click', function(e) {
+                const clickedItem = e.target.closest('.grid-item');
+                if (!clickedItem || !clickedItem.dataset.target) return;
+                
+                const contentId = clickedItem.dataset.target.substring(1);
+                displaySlideContent(contentId);
+                slideView.classList.add('visible');
+                document.body.style.overflow = 'hidden'; // Bloquear rolagem
+            });
+
+            function closeSlideView() {
+                slideView.classList.remove('visible');
+                document.body.style.overflow = 'auto'; // Permitir rolagem novamente
+            }
+
+            backToVerticalBtn.addEventListener('click', closeSlideView);
+            navHomeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeSlideView();
+            });
+
+            explorarAccordion.addEventListener('click', function() {
+                const content = explorarAccordionContent;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+
+            slideNavLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const contentId = this.dataset.contentId;
+                    displaySlideContent(contentId);
+                });
+            });
+            
+            likeBtn.addEventListener('click', () => {
+                likeBtn.classList.toggle('liked');
+                likeBtn.classList.toggle('fas');
+                likeBtn.classList.toggle('far');
+            });
+
+            displaySlideContent('content-objetivos');
+        });
+    </script>
+</body>
+</html>
