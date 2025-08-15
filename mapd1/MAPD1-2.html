@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quebra-cabeça Interativo: Lesão Celular</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        html { font-size: 18px; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .main-container.blurred {
+            filter: blur(8px) brightness(0.7);
+            transition: filter 0.3s ease-in-out;
+        }
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1px; /* Linha preta fina */
+            aspect-ratio: 3 / 2;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 1px; /* Para a borda externa */
+            background-color: black;
+            overflow: hidden; /* Garante que as bordas arredondadas funcionem */
+        }
+        .puzzle-piece {
+            border: 1px solid black; /* Linha preta ao redor da peça */
+            cursor: grab;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.85); /* Branco transparente */
+            font-family: 'Roboto Slab', serif;
+            font-size: 1.75rem;
+            font-weight: bold;
+            text-shadow: 0 0 5px #000, 0 0 5px #000, 0 0 5px #000; /* Sombra delineada */
+            background-image: url('puzzle.jpg');
+            background-size: 300% 200%; /* 3 colunas, 2 linhas */
+            position: relative;
+            overflow: hidden;
+        }
+        /* Overlay escuro para peças incorretas */
+        .puzzle-piece::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: background-color 0.5s ease;
+        }
+        /* Quando a peça está correta, o overlay fica transparente */
+        .puzzle-piece.correct::before {
+            background-color: rgba(0, 0, 0, 0);
+        }
+        .puzzle-piece:hover {
+            transform: scale(1.02);
+        }
+        .puzzle-piece.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        .puzzle-piece.correct {
+            border: 1px solid #4ade80; /* Borda verde sutil para feedback */
+        }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 50;
+        }
+        .modal-overlay.active {
+            opacity: 1; visibility: visible;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #e9eff5 100%);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 95%;
+            max-width: 1200px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-header { padding: 1.5rem 2rem; border-bottom: 1px solid #ddd; }
+        .modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+            flex-grow: 1;
+            font-size: 1.25rem;
+            line-height: 1.6;
+        }
+        .modal-footer {
+            padding: 1rem 2rem;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-close-btn {
+            position: absolute; top: 1rem; right: 1rem;
+            background: #e5e7eb; color: #4b5563;
+            border-radius: 9999px; width: 3rem; height: 3rem;
+            font-size: 2rem; font-weight: bold; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease; z-index: 10;
+        }
+        .modal-close-btn:hover { background: #d1d5db; transform: rotate(90deg); }
+        .slide-title {
+            font-family: 'Roboto Slab', serif; color: #1e3a8a;
+            font-size: 2.5rem;
+        }
+        .slide-subtitle {
+            font-family: 'Roboto Slab', serif; color: #3b82f6;
+            font-size: 2rem;
+        }
+        .content-card {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-left: 4px solid #3b82f6;
+            border-radius: 0.5rem; padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .mini-slide { display: none; }
+        .mini-slide.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .nav-btn {
+            background-color: #1e3a8a; color: white;
+            padding: 0.75rem 2rem; border-radius: 0.5rem;
+            font-weight: bold; transition: background-color 0.2s;
+            font-size: 1.25rem;
+        }
+        .nav-btn:hover { background-color: #3b82f6; }
+        .nav-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        
+        .slide-layout {
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+            align-items: center;
+        }
+        .slide-text { flex: 1; }
+        .slide-image-container { flex: 1; max-width: 45%; }
+        .slide-image {
+            width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            cursor: zoom-in;
+            transition: transform 0.2s ease;
+        }
+        .slide-image:hover { transform: scale(1.03); }
+
+        #image-zoom-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+        #image-zoom-overlay.active { opacity: 1; visibility: visible; }
+        #image-zoom-content {
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        #image-zoom-close {
+            position: absolute; top: 2rem; right: 2rem;
+            color: white; font-size: 3rem; font-weight: bold;
+            cursor: pointer;
+        }
+        .quiz-option.selected {
+            outline: 3px solid #3b82f6;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div id="main-container" class="max-w-7xl mx-auto transition-all duration-300">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold slide-title" style="font-size: 3.5rem;">Lesão Celular: Quebra-cabeça Interativo</h1>
+            <p class="text-lg text-gray-600 mt-2" style="font-size: 1.5rem;">Arraste as peças para montar o quebra-cabeça e clique para explorar.</p>
+        </header>
+
+        <main id="puzzle-grid" class="puzzle-grid">
+            <!-- As peças serão inseridas aqui pelo JavaScript -->
+        </main>
+    </div>
+
+    <!-- ===== MODALS ===== -->
+
+    <!-- Modal Lesão Reversível -->
+    <div id="modal-reversivel" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <div class="modal-header"><h2 class="slide-title text-3xl font-bold">Lesão Celular Reversível</h2></div>
+            <div class="modal-body">
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">O Epicentro do Problema: Falha Energética</h3>
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
+                            <p>O evento central na lesão por hipóxia é a falha na produção de energia (ATP). Isso leva a uma cascata de eventos:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-2">
+                                <li>Falha da Bomba de Na⁺/K⁺-ATPase</li>
+                                <li>Influxo de íons e água (edema celular)</li>
+                                <li>Ativação da glicólise anaeróbica com queda do pH</li>
+                                <li>Redução da síntese proteica</li>
+                            </ul>
+                        </div>
+                        <div class="slide-image-container">
+                            <img src="edema_celular.jpg" alt="Edema Celular" class="slide-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Morfologia Macroscópica e Microscópica</h3>
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
+                            <p><strong>Macroscopia:</strong> O órgão afetado torna-se pálido, túrgido e aumenta de peso.</p>
+                            <p class="mt-2"><strong>Microscopia:</strong> Vemos a <strong>Tumefação Celular</strong> (degeneração hidrópica), onde as células estão aumentadas, com citoplasma pálido. Outra forma é a <strong>Degeneração Gordurosa (Esteatose)</strong>, um acúmulo de lipídios, comum no fígado.</p>
+                        </div>
+                        <div class="slide-image-container">
+                            <img src="esteatose.jpg" alt="Esteatose Hepática" class="slide-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Exemplos Clínicos Relevantes</h3>
+                    <div class="content-card">
+                        <h4 class="font-bold text-xl mb-2">Angina Pectoris Estável:</h4>
+                        <p>A isquemia transitória no miocárdio durante o esforço causa lesão reversível e dor. Com o repouso, a lesão é revertida e a dor cessa. Não há morte celular.</p>
+                        <h4 class="font-bold text-xl mt-4 mb-2">Insuficiência Pré-Renal:</h4>
+                        <p>Num quadro de hipovolemia transitória, as células dos túbulos renais incham. Se a perfusão for restaurada a tempo, elas se recuperam, revertendo a disfunção renal aguda.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="nav-btn prev-slide">Anterior</button>
+                <span class="slide-counter font-semibold"></span>
+                <button class="nav-btn next-slide">Próximo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Lesão Irreversível -->
+    <div id="modal-irreversivel" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <div class="modal-header"><h2 class="slide-title text-3xl font-bold">Lesão Celular Irreversível</h2></div>
+            <div class="modal-body">
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">O Ponto de Não Retorno</h3>
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
+                            <p>Quando o estímulo persiste, a célula ultrapassa um limiar crítico. Dois fenômenos marcam a irreversibilidade:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-2">
+                                <li><strong>Disfunção Mitocondrial Irreversível.</strong></li>
+                                <li><strong>Danos Profundos às Membranas:</strong> Ruptura da membrana plasmática e dos lisossomos, com extravasamento de conteúdo e influxo maciço de Ca²⁺.</li>
+                            </ul>
+                        </div>
+                        <div class="slide-image-container">
+                             <img src="ruptura_membrana.jpg" alt="Ruptura da Membrana" class="slide-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Morfologia da Morte Celular</h3>
+                    <div class="content-card">
+                        <p>A morte por necrose é caracterizada por aumento da eosinofilia citoplasmática e alterações nucleares patognomônicas:</p>
+                        <ul class="list-disc list-inside space-y-2 mt-2">
+                            <li><strong>Picnose:</strong> Condensação e encolhimento do núcleo.</li>
+                            <li><strong>Cariorrexe:</strong> Fragmentação do núcleo picnótico.</li>
+                            <li><strong>Cariólise:</strong> Dissolução completa do núcleo.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Exemplos Clínicos</h3>
+                    <div class="content-card">
+                        <h4 class="font-bold text-xl mb-2">Infarto Agudo do Miocárdio (IAM):</h4>
+                        <p>A isquemia prolongada leva à necrose dos miócitos. O extravasamento de enzimas (Troponina) para o sangue confirma a lesão irreversível.</p>
+                        <h4 class="font-bold text-xl mt-4 mb-2">Acidente Vascular Cerebral (AVC) Isquêmico:</h4>
+                        <p>A oclusão de uma artéria cerebral causa hipóxia e morte de neurônios, resultando em sequela neurológica permanente.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="nav-btn prev-slide">Anterior</button>
+                <span class="slide-counter font-semibold"></span>
+                <button class="nav-btn next-slide">Próximo</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Necrose -->
+    <div id="modal-necrose" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <div class="modal-header"><h2 class="slide-title text-3xl font-bold">Necrose</h2></div>
+            <div class="modal-body">
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Necrose Coagulativa</h3>
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
+                            <p>A arquitetura do tecido é preservada por dias. A desnaturação de proteínas predomina. Típica de infartos em órgãos sólidos (coração, rim).</p>
+                        </div>
+                        <div class="slide-image-container">
+                            <img src="necrose_coagulativa.jpg" alt="Necrose Coagulativa" class="slide-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Necrose Liquefativa</h3>
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
+                            <p>A digestão enzimática predomina, transformando o tecido em uma massa líquida. Típica de infecções bacterianas (abscessos) e isquemia no cérebro.</p>
+                        </div>
+                        <div class="slide-image-container">
+                            <img src="necrose_liquefativa.jpg" alt="Necrose Liquefativa" class="slide-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Necrose Caseosa</h3>
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
+                            <p>Aspecto de "queijo cottage", friável e branco-amarelado. É a marca registrada da <strong>Tuberculose</strong>.</p>
+                        </div>
+                         <div class="slide-image-container">
+                            <img src="necrose_caseosa.jpg" alt="Necrose Caseosa" class="slide-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Necrose Gordurosa</h3>
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
+                            <p>Destruição de gordura por lipases, com saponificação (aspecto de giz). Típica da <strong>Pancreatite Aguda</strong>.</p>
+                        </div>
+                         <div class="slide-image-container">
+                            <img src="necrose_gordurosa.jpg" alt="Necrose Gordurosa" class="slide-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Necrose Fibrinoide</h3>
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
+                            <p>Ocorre em paredes de vasos sanguíneos, associada a reações imunes (vasculites) ou hipertensão maligna.</p>
+                        </div>
+                         <div class="slide-image-container">
+                            <img src="necrose_fibrinoide.jpg" alt="Necrose Fibrinoide" class="slide-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Gangrena</h3>
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
+                            <p>Termo clínico para necrose de um membro. <strong>Gangrena seca</strong> é necrose de coagulação por isquemia. <strong>Gangrena úmida</strong> ocorre quando há infecção bacteriana sobreposta.</p>
+                        </div>
+                         <div class="slide-image-container">
+                            <img src="gangrena.jpg" alt="Gangrena" class="slide-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="nav-btn prev-slide">Anterior</button>
+                <span class="slide-counter font-semibold"></span>
+                <button class="nav-btn next-slide">Próximo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Apoptose -->
+    <div id="modal-apoptose" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <div class="modal-header"><h2 class="slide-title text-3xl font-bold">Apoptose</h2></div>
+            <div class="modal-body">
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">A Morte "Silenciosa" e Programada</h3>
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
+                            <p>É uma via de morte celular controlada que ativa enzimas (<strong>caspases</strong>) para desmontar a célula de forma ordenada, <strong>sem gerar inflamação</strong>. Os restos celulares são empacotados em <strong>corpos apoptóticos</strong> e rapidamente fagocitados.</p>
+                        </div>
+                        <div class="slide-image-container">
+                            <img src="apoptose.jpg" alt="Corpos Apoptóticos" class="slide-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Causas Fisiológicas e Patológicas</h3>
+                    <div class="content-card">
+                        <p><strong>Fisiológicas:</strong> Essencial na embriogênese (formação dos dedos), involução de tecidos (endométrio) e eliminação de linfócitos autorreativos.</p>
+                        <p class="mt-4"><strong>Patológicas:</strong> Ocorre em resposta a danos irreparáveis no DNA (radiação, quimioterápicos), acúmulo de proteínas mal dobradas (doenças neurodegenerativas) e infecções virais.</p>
+                    </div>
+                </div>
+                <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Vias de Ativação e Relevância Clínica</h3>
+                    <div class="content-card">
+                        <p><strong>Via Intrínseca (Mitocondrial):</strong> Acionada por estresse interno. <br><strong>Via Extrínseca (Receptores de Morte):</strong> Iniciada por sinais externos.</p>
+                        <p class="mt-4">Falhas na regulação da apoptose causam doenças: pouca apoptose leva a <strong>câncer</strong> e <strong>autoimunidade</strong>; muita apoptose contribui para <strong>doenças neurodegenerativas</strong>.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="nav-btn prev-slide">Anterior</button>
+                <span class="slide-counter font-semibold"></span>
+                <button class="nav-btn next-slide">Próximo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Quiz -->
+    <div id="modal-quiz" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <div class="modal-header"><h2 class="slide-title text-3xl font-bold">Quiz Rápido</h2></div>
+            <div class="modal-body">
+                <div id="quiz-container"></div>
+                <div id="quiz-result" class="mt-4 font-bold text-2xl text-center"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Zoom Modal -->
+    <div id="image-zoom-overlay" class="modal-overlay">
+        <span id="image-zoom-close">&times;</span>
+        <img id="image-zoom-content" src="" alt="Imagem Ampliada">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContainer = document.getElementById('main-container');
+            const puzzleGrid = document.getElementById('puzzle-grid');
+            const modals = document.querySelectorAll('.modal-overlay:not(#image-zoom-overlay)');
+            const imageZoomOverlay = document.getElementById('image-zoom-overlay');
+            const imageZoomContent = document.getElementById('image-zoom-content');
+            const imageZoomClose = document.getElementById('image-zoom-close');
+
+            const pieceData = [
+                { modal: 'modal-reversivel', text: 'Lesão Reversível', correctIndex: 0 },
+                { modal: 'modal-irreversivel', text: 'Lesão Irreversível', correctIndex: 1 },
+                { modal: 'modal-necrose', text: 'Necrose', correctIndex: 2 },
+                { modal: 'modal-apoptose', text: 'Apoptose', correctIndex: 3 },
+                { modal: 'modal-quiz', text: 'Quiz Interativo', correctIndex: 4 },
+                { id: 'print-piece', text: 'Imprimir Apostila', correctIndex: 5 }
+            ];
+
+            let draggedPiece = null;
+
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function createPuzzle() {
+                puzzleGrid.innerHTML = '';
+                const piecesInOrder = [];
+
+                pieceData.forEach((data, index) => {
+                    const piece = document.createElement('div');
+                    piece.className = 'puzzle-piece';
+                    piece.textContent = data.text;
+                    piece.dataset.modal = data.modal;
+                    piece.dataset.correctIndex = data.correctIndex;
+                    if (data.id) piece.id = data.id;
+                    piece.draggable = true;
+
+                    const col = index % 3;
+                    const row = Math.floor(index / 3);
+                    const xPos = col * 50;
+                    const yPos = row * 100;
+                    piece.style.backgroundPosition = `${xPos}% ${yPos}%`;
+                    
+                    piecesInOrder.push(piece);
+                });
+
+                const shuffledPieces = shuffle(piecesInOrder);
+                shuffledPieces.forEach(piece => {
+                    puzzleGrid.appendChild(piece);
+                });
+                
+                addDragListeners();
+                checkCorrectness();
+            }
+
+            function addDragListeners() {
+                const pieces = document.querySelectorAll('.puzzle-piece');
+                pieces.forEach(piece => {
+                    piece.addEventListener('dragstart', handleDragStart);
+                    piece.addEventListener('dragover', handleDragOver);
+                    piece.addEventListener('drop', handleDrop);
+                    piece.addEventListener('dragend', handleDragEnd);
+                    
+                    if (piece.id !== 'print-piece') {
+                         piece.addEventListener('click', () => openModal(document.getElementById(piece.dataset.modal)));
+                    } else {
+                        piece.addEventListener('click', handlePrint);
+                    }
+                });
+            }
+
+            function handleDragStart(e) {
+                draggedPiece = e.target;
+                setTimeout(() => e.target.classList.add('dragging'), 0);
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                const targetPiece = e.target.closest('.puzzle-piece');
+                if (draggedPiece && targetPiece && draggedPiece !== targetPiece) {
+                    puzzleGrid.insertBefore(draggedPiece, targetPiece);
+                }
+                checkCorrectness();
+            }
+
+            function handleDragEnd(e) {
+                e.target.classList.remove('dragging');
+                draggedPiece = null;
+            }
+            
+            function checkCorrectness() {
+                const pieces = puzzleGrid.querySelectorAll('.puzzle-piece');
+                pieces.forEach((piece, index) => {
+                    if (parseInt(piece.dataset.correctIndex) === index) {
+                        piece.classList.add('correct');
+                    } else {
+                        piece.classList.remove('correct');
+                    }
+                });
+            }
+
+
+            // Setup Modals
+            modals.forEach(modal => {
+                const closeBtn = modal.querySelector('.modal-close-btn');
+                closeBtn.addEventListener('click', () => closeModal(modal));
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal(modal);
+                });
+
+                const slides = modal.querySelectorAll('.mini-slide');
+                if (slides.length > 0) {
+                    let currentSlide = 0;
+                    const prevBtn = modal.querySelector('.prev-slide');
+                    const nextBtn = modal.querySelector('.next-slide');
+                    const counter = modal.querySelector('.slide-counter');
+
+                    function showSlide(index) {
+                        slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+                        currentSlide = index;
+                        counter.textContent = `Slide ${index + 1} de ${slides.length}`;
+                        prevBtn.disabled = index === 0;
+                        nextBtn.disabled = index === slides.length - 1;
+                    }
+                    prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+                    nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+                    modal.resetSlideshow = () => showSlide(0);
+                }
+            });
+
+            function openModal(modal) {
+                mainContainer.classList.add('blurred');
+                modal.classList.add('active');
+                if (modal.resetSlideshow) modal.resetSlideshow();
+                if (modal.id === 'modal-quiz') loadQuiz();
+            }
+
+            function closeModal(modal) {
+                mainContainer.classList.remove('blurred');
+                modal.classList.remove('active');
+            }
+
+            // Image Zoom Logic
+            document.querySelectorAll('.slide-image').forEach(image => {
+                image.addEventListener('click', () => {
+                    imageZoomContent.src = image.src;
+                    imageZoomOverlay.classList.add('active');
+                });
+            });
+
+            const closeZoom = () => imageZoomOverlay.classList.remove('active');
+            imageZoomOverlay.addEventListener('click', closeZoom);
+            imageZoomClose.addEventListener('click', closeZoom);
+
+            // Quiz Logic
+            const quizData = [
+                { question: "Um homem de 58 anos, etilista crônico, apresenta fígado aumentado e amarelado. A biópsia revela acúmulo de gotículas de lipídios no citoplasma dos hepatócitos, sem inflamação significativa. Qual é o diagnóstico morfológico mais provável?", options: ["Necrose gordurosa", "Esteatose hepática", "Necrose caseosa", "Apoptose"], answer: "Esteatose hepática" },
+                { question: "Paciente chega à emergência com dor torácica intensa há 4 horas. Exames de sangue revelam níveis elevados de troponina. Este marcador indica qual processo celular no miocárdio?", options: ["Lesão reversível", "Apoptose", "Necrose", "Atrofia"], answer: "Necrose" },
+                { question: "Qual padrão de necrose é esperado em um paciente com um abscesso pulmonar causado por uma infecção bacteriana?", options: ["Coagulativa", "Caseosa", "Gordurosa", "Liquefativa"], answer: "Liquefativa" },
+                { question: "Durante o desenvolvimento embrionário, a eliminação das membranas entre os dedos ocorre por um processo de morte celular que não gera inflamação. Qual é este processo?", options: ["Necrose", "Displasia", "Apoptose", "Metaplasia"], answer: "Apoptose" },
+                { question: "Uma biópsia de um linfonodo de um paciente com suspeita de tuberculose revela uma área central de material amorfo, esbranquiçado e granuloso, cercado por inflamação. Este achado é característico de qual tipo de necrose?", options: ["Fibrinoide", "Liquefativa", "Coagulativa", "Caseosa"], answer: "Caseosa" },
+                { question: "A inativação da bomba de Na+/K+-ATPase por falta de ATP durante a isquemia leva diretamente a qual alteração morfológica inicial?", options: ["Picnose nuclear", "Edema celular", "Ruptura lisossômica", "Formação de corpos apoptóticos"], answer: "Edema celular" },
+                { question: "A proteína p53, frequentemente mutada em cânceres, desempenha um papel crucial em qual via de morte celular quando o dano ao DNA é irreparável?", options: ["Necrose liquefativa", "Apoptose (via intrínseca)", "Necrose gordurosa", "Apoptose (via extrínseca)"], answer: "Apoptose (via intrínseca)" },
+                { question: "Um paciente com pancreatite aguda grave desenvolve áreas esbranquiçadas, semelhantes a giz, no mesentério. Este processo é resultado da ação de lipases e é denominado:", options: ["Necrose caseosa", "Saponificação", "Calcificação distrófica", "Necrose fibrinoide"], answer: "Saponificação" },
+                { question: "Qual das seguintes alterações nucleares é um sinal definitivo de necrose?", options: ["Condensação da cromatina", "Cariorrexe", "Marginação da cromatina", "Edema nuclear"], answer: "Cariorrexe" },
+                { question: "A principal diferença funcional entre a via intrínseca e extrínseca da apoptose é:", options: ["O tipo de célula que afeta", "A presença ou ausência de inflamação", "O gatilho inicial (interno vs. externo)", "A velocidade do processo"], answer: "O gatilho inicial (interno vs. externo)" }
+            ];
+
+            function loadQuiz() {
+                const quizContainer = document.getElementById('quiz-container');
+                const quizResult = document.getElementById('quiz-result');
+                quizContainer.innerHTML = '';
+                quizResult.innerHTML = '';
+                quizData.forEach((q, index) => {
+                    const questionEl = document.createElement('div');
+                    questionEl.classList.add('mb-6', 'content-card');
+                    let optionsHtml = q.options.map(option => `<label class="quiz-option block mt-2 text-xl p-2"><input type="radio" name="question${index}" value="${option}" class="mr-3">${option}</label>`).join('');
+                    questionEl.innerHTML = `<p class="font-semibold text-2xl">${index + 1}. ${q.question}</p><div class="mt-2">${optionsHtml}</div>`;
+                    quizContainer.appendChild(questionEl);
+                });
+
+                quizContainer.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', (event) => {
+                        const name = event.target.name;
+                        document.querySelectorAll(`input[name="${name}"]`).forEach(sibling => {
+                            sibling.parentElement.classList.remove('selected');
+                        });
+                        event.target.parentElement.classList.add('selected');
+                    });
+                });
+
+                const submitButton = document.createElement('button');
+                submitButton.textContent = 'Verificar Respostas';
+                submitButton.className = 'nav-btn block mx-auto';
+                submitButton.onclick = checkQuizAnswers;
+                quizContainer.appendChild(submitButton);
+            }
+
+            function checkQuizAnswers() {
+                let score = 0;
+                quizData.forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="question${index}"]:checked`);
+                    if (selected && selected.value === q.answer) score++;
+                });
+                document.getElementById('quiz-result').textContent = `Você acertou ${score} de ${quizData.length} perguntas!`;
+            }
+
+            // Print Logic
+            function handlePrint() {
+                const newWindow = window.open('', '_blank');
+                let fullContent = `
+                    <!DOCTYPE html>
+                    <html lang="pt-BR">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Apostila: Lesão Celular</title>
+                        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+                        <style>
+                            body { font-family: 'Roboto', sans-serif; line-height: 1.6; margin: 2rem; }
+                            h1, h2, h3, h4 { font-family: 'Roboto Slab', serif; color: #1e3a8a; }
+                            h1 { font-size: 2.5rem; text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 1rem; margin-bottom: 2rem; }
+                            .print-section { page-break-before: always; border-top: 1px solid #ccc; padding-top: 2rem; }
+                            .print-section:first-of-type { page-break-before: auto; border-top: none; }
+                            .content-card { border-left: 4px solid #3b82f6; padding: 1rem; background-color: #f8f9fa; margin: 1rem 0; border-radius: 8px; }
+                            ul { padding-left: 20px; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Apostila Completa: Lesão Celular</h1>
+                `;
+                
+                document.querySelectorAll('.modal-overlay:not(#modal-quiz):not(#image-zoom-overlay)').forEach(modal => {
+                    const header = modal.querySelector('.modal-header');
+                    const body = modal.querySelector('.modal-body');
+                    if (header && body) {
+                        const tempBody = document.createElement('div');
+                        tempBody.innerHTML = body.innerHTML;
+                        tempBody.querySelectorAll('.mini-slide').forEach(slide => {
+                            slide.style.display = 'block';
+                        });
+                        tempBody.querySelectorAll('.slide-image-container').forEach(el => el.remove());
+                        fullContent += `<div class="print-section">${header.innerHTML}${tempBody.innerHTML}</div>`;
+                    }
+                });
+
+                fullContent += `</body></html>`;
+                
+                newWindow.document.open();
+                newWindow.document.write(fullContent);
+                newWindow.document.close();
+            }
+
+            // Initial setup
+            createPuzzle();
+        });
+    </script>
+</body>
+</html>
