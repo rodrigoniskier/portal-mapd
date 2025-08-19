@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Revolução da IA na Coloração de Gram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #4f46e5, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .quiz-option.selected {
+            background-color: #dbeafe; /* blue-100 */
+            border-color: #3b82f6; /* blue-500 */
+        }
+        .quiz-option.correct {
+            background-color: #dcfce7; /* green-100 */
+            border-color: #22c55e; /* green-500 */
+        }
+        .quiz-option.incorrect {
+            background-color: #fee2e2; /* red-100 */
+            border-color: #ef4444; /* red-500 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-6 py-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">A Coloração de Gram e a Revolução da IA</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- NEW Section: Gram Stain Basics -->
+        <section id="gram-basics" class="mb-16">
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 p-8">
+                <h2 class="text-3xl font-bold text-center mb-8">O Essencial da Coloração de Gram: Passo a Passo e Interpretação</h2>
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">O Procedimento Passo a Passo</h3>
+                        <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                            <li><strong>Fixação:</strong> A amostra bacteriana é espalhada em uma lâmina de vidro e fixada pelo calor para aderir as células à lâmina.</li>
+                            <li><strong>Cristal Violeta:</strong> O corante primário, roxo, é aplicado. Ele cora todas as células.</li>
+                            <li><strong>Lugol (Iodo):</strong> Atua como um mordente, formando um complexo insolúvel com o cristal violeta dentro da célula.</li>
+                            <li><strong>Descorante (Álcool-acetona):</strong> Esta é a etapa crucial. Remove o corante das bactérias Gram-negativas, mas não das Gram-positivas.</li>
+                            <li><strong>Fucsina ou Safranina:</strong> O contra-corante (vermelho/rosa) é aplicado para corar as células que foram descoradas.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Interpretação dos Resultados</h3>
+                        <div class="space-y-4">
+                            <div class="bg-purple-100 border-l-4 border-purple-500 p-4 rounded-r-lg">
+                                <h4 class="font-bold text-purple-800">Bactérias Gram-positivas</h4>
+                                <p class="text-purple-700">Possuem uma parede celular espessa de peptidoglicano que retém o complexo cristal violeta-iodo mesmo após a lavagem com o descorante. Por isso, permanecem <strong>roxas</strong>.</p>
+                            </div>
+                            <div class="bg-pink-100 border-l-4 border-pink-500 p-4 rounded-r-lg">
+                                <h4 class="font-bold text-pink-800">Bactérias Gram-negativas</h4>
+                                <p class="text-pink-700">Têm uma parede de peptidoglicano fina e uma membrana externa. O descorante dissolve a membrana externa e remove o cristal violeta. Elas são, então, coradas pela fucsina, aparecendo <strong>vermelhas ou rosas</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 1: Introduction to AI -->
+        <section id="introduction" class="mb-16">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold gradient-text mb-4">Uma Técnica Centenária na Era Digital</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    Desde sua criação em 1884 por Hans Christian Gram, a coloração de Gram tem sido uma ferramenta essencial da microbiologia clínica. Essa técnica simples, mas poderosa, continua fornecendo pistas fundamentais na identificação inicial de bactérias, orientando a escolha de terapias que salvam vidas. Entretanto, seu valor sempre esteve sujeito ao fator humano: a interpretação microscópica, por mais experiente que seja, carrega consigo variabilidade, cansaço e subjetividade. Agora, uma transformação decisiva acontece — a Inteligência Artificial (IA) está conduzindo o Gram para a era digital.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: How AI Transforms Gram -->
+        <section id="transformation" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-10">Como a IA Transforma o Gram</h2>
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Step 1: Digitalization -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">1. Digitalização</h3>
+                    <p class="text-gray-600">As lâminas, muitas vezes processadas por sistemas automatizados, são escaneadas em microscópios digitais de alta resolução, gerando imagens digitais completas (Whole-Slide Images).</p>
+                </div>
+                <!-- Step 2: Intelligent Analysis -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center">
+                    <div class="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">2. Análise Inteligente</h3>
+                    <p class="text-gray-600">As imagens são avaliadas por algoritmos de deep learning, como Redes Neurais Convolucionais (CNNs) e Vision Transformers, capazes de aprender padrões complexos.</p>
+                </div>
+                <!-- Step 3: Fast Results -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center">
+                   <div class="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">3. Resultados Rápidos e Padronizados</h3>
+                    <p class="text-gray-600">Em segundos, a IA detecta microrganismos, diferencia Gram-positivos/negativos, descreve morfologia, arranjos e estima a carga microbiana.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 3: Scientific Evidence -->
+        <section id="evidence" class="mb-16 bg-white rounded-xl shadow-md border border-gray-200 p-8">
+            <h2 class="text-3xl font-bold text-center mb-8">Evidências Científicas em Números</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div class="bg-gray-100 p-4 rounded-lg"><strong>CNNs em hemoculturas (2018):</strong> <span class="text-indigo-600 font-semibold">~95% de acurácia</span> e até 98% de sensibilidade.</div>
+                <div class="bg-gray-100 p-4 rounded-lg"><strong>CNNs (2024):</strong> Alta performance em <span class="text-indigo-600 font-semibold">sete categorias</span> de Gram.</div>
+                <div class="bg-gray-100 p-4 rounded-lg"><strong>Vision Transformers (2024):</strong> <span class="text-indigo-600 font-semibold">85,8% de acurácia</span> e AUC de 0,952.</div>
+                <div class="bg-gray-100 p-4 rounded-lg"><strong>Modelos híbridos (2025):</strong> Até <span class="text-indigo-600 font-semibold">96% de acerto</span> em algumas espécies.</div>
+                <div class="bg-gray-100 p-4 rounded-lg"><strong>Virtual Gram stain (2024):</strong> Geração de imagens coradas virtualmente.</div>
+                <div class="bg-gray-100 p-4 rounded-lg"><strong>Pontuação de Nugent (vaginose):</strong> IA com <span class="text-indigo-600 font-semibold">~94% de acurácia</span>, superando a consistência humana.</div>
+            </div>
+            <p class="text-center mt-8 text-lg font-semibold text-gray-700">Esses dados comprovam que a IA já rivaliza com o olhar humano — e em muitos cenários, o supera.</p>
+        </section>
+
+        <!-- Section 4: Clinical Impact -->
+        <section id="impact" class="mb-16">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4">Impacto Clínico: Rapidez e Confiabilidade</h2>
+                    <p class="text-gray-600 mb-6">A grande força da IA está em combinar velocidade com padronização. Em laboratórios de grande volume, ela:</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start"><span class="text-green-500 mr-2">✔</span> Libera automaticamente lâminas negativas.</li>
+                        <li class="flex items-start"><span class="text-green-500 mr-2">✔</span> Acelera decisões em casos críticos como sepse.</li>
+                        <li class="flex items-start"><span class="text-green-500 mr-2">✔</span> Fornece resultados reprodutíveis.</li>
+                        <li class="flex items-start"><span class="text-green-500 mr-2">✔</span> Garante rastreabilidade por meio de arquivos digitais arquivados.</li>
+                    </ul>
+                    <p class="mt-6 text-gray-600">Esse ganho de tempo e confiabilidade é especialmente valioso em ambientes de alta demanda e em diagnósticos de urgência.</p>
+                </div>
+                <div class="flex justify-center">
+                    <img src="https://placehold.co/500x350/e0e7ff/4f46e5?text=Velocidade+%26+Precisão" alt="Ilustração de um relógio e um alvo, simbolizando velocidade e precisão" class="rounded-xl shadow-lg">
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 5: Applications & Niches -->
+        <section id="applications" class="mb-16">
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 p-8">
+                <h2 class="text-3xl font-bold text-center mb-8">Exemplos de Aplicação e Nichos Críticos</h2>
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 border-b pb-2">Plataformas e Dispositivos</h3>
+                        <ul class="space-y-3 list-disc list-inside text-gray-700">
+                            <li><strong>COPAN WASPLab®:</strong> Automação total, da preparação à triagem com IA.</li>
+                            <li><strong>PhenoMATRIX®:</strong> Sensibilidade de 94,8% e especificidade de 99,8% em culturas de urina.</li>
+                            <li><strong>Techcyte Fusion Bacteriology Suite:</strong> Triagem assistida por IA para Gram (uso em pesquisa).</li>
+                            <li><strong>PoCGS®:</strong> Dispositivo portátil com 100% de concordância em testes de urina, pronto para integração com IA.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 border-b pb-2">Áreas de Destaque</h3>
+                        <ul class="space-y-3 list-disc list-inside text-gray-700">
+                            <li><strong>Sepse:</strong> Resultados em minutos com acurácia >97%, permitindo terapias precoces.</li>
+                            <li><strong>Vaginose Bacteriana:</strong> Diagnóstico mais consistente que o de especialistas.</li>
+                            <li><strong>Telemicrobiologia:</strong> Interpretação remota de lâminas, ampliando o acesso a regiões sem especialistas.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Future and Conclusion -->
+        <section id="future" class="mb-16 text-center max-w-4xl mx-auto">
+             <h2 class="text-3xl font-bold mb-4">O Futuro Imediato e a Conclusão</h2>
+             <p class="text-gray-600 mb-6">Apesar dos avanços, a maioria dessas soluções atua como ferramenta de apoio, e não substituição. Regulamentações como FDA e ANVISA ainda avaliam a aprovação para uso diagnóstico autônomo. Mas os próximos passos já são visíveis: microscopia digital com IA em tempo real, integração em pontos de cuidado e democratização do acesso diagnóstico.</p>
+             <div class="bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-r-lg text-left">
+                <h3 class="text-xl font-semibold text-indigo-800">Uma Parceria, Não uma Substituição</h3>
+                <p class="text-indigo-700 mt-2">A IA não veio para substituir o microbiologista, mas para potencializar sua atuação. A máquina lida com repetição, volume e padronização; o humano permanece essencial na interpretação clínica e no raciocínio diagnóstico.</p>
+                <p class="text-indigo-700 mt-4 font-semibold">A coloração de Gram, uma técnica centenária, encontra agora um aliado tecnológico que promete diagnósticos mais rápidos, consistentes e acessíveis. O futuro da microbiologia clínica já começou — silencioso, mas transformador.</p>
+             </div>
+        </section>
+
+        <!-- NEW Section: Other Stains -->
+        <section id="other-stains" class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-10">Além do Gram: Outras Colorações em Bacteriologia</h2>
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <h3 class="text-xl font-semibold mb-2 text-red-600">Ziehl-Neelsen (Ácido-Álcool Resistente)</h3>
+                    <p class="text-gray-600"><strong>Princípio:</strong> Identifica bactérias com alto teor de ácido micólico na parede celular, que resistem à descoloração por álcool-ácido.</p>
+                    <p class="text-gray-600 mt-2"><strong>Aplicação:</strong> Essencial para diagnosticar micobactérias, como o <em>Mycobacterium tuberculosis</em> (agente da tuberculose).</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <h3 class="text-xl font-semibold mb-2 text-green-600">Schaeffer-Fulton (Esporos)</h3>
+                    <p class="text-gray-600"><strong>Princípio:</strong> Usa calor para forçar o corante verde de malaquita a penetrar na parede resistente dos endósporos bacterianos.</p>
+                    <p class="text-gray-600 mt-2"><strong>Aplicação:</strong> Visualização de esporos em gêneros como <em>Bacillus</em> e <em>Clostridium</em>.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">Tinta da China (Cápsula)</h3>
+                    <p class="text-gray-600"><strong>Princípio:</strong> É uma coloração negativa. O fundo é corado com a tinta, enquanto a cápsula polissacarídica não se cora, aparecendo como um halo claro.</p>
+                    <p class="text-gray-600 mt-2"><strong>Aplicação:</strong> Identificação de bactérias encapsuladas, como <em>Cryptococcus neoformans</em> e <em>Klebsiella pneumoniae</em>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Further Reading -->
+        <section id="references" class="mb-16">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-8">Para Aprofundar: Artigos e Fontes</h2>
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-8 space-y-4">
+                    <!-- Article 1 -->
+                    <div class="border-b pb-4">
+                        <p class="font-semibold text-gray-800">Klausner, Z. et al. (2018). Deep Learning for the Classification of Gram-Stained Smears of Positive Blood Cultures.</p>
+                        <p class="text-sm text-gray-600">Journal of Clinical Microbiology, 56(11).</p>
+                        <a href="https://jcm.asm.org/content/56/11/e00630-18" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">Acessar Artigo</a>
+                    </div>
+                    <!-- Article 2 -->
+                    <div class="border-b pb-4">
+                        <p class="font-semibold text-gray-800">Lee, S. et al. (2024). Classification of Seven Categories in Gram Staining Based on Deep Learning.</p>
+                        <p class="text-sm text-gray-600">Journal of Clinical Microbiology, 62(1).</p>
+                        <a href="https://jcm.asm.org/content/62/1/e01089-23" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">Acessar Artigo</a>
+                    </div>
+                    <!-- Article 3 -->
+                    <div class="border-b pb-4">
+                        <p class="font-semibold text-gray-800">Colome-Calls, N. et al. (2024). Virtual Gram staining of vaginal bacteria.</p>
+                        <p class="text-sm text-gray-600">arXiv preprint.</p>
+                        <a href="https://arxiv.org/abs/2402.09919" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">Acessar Artigo</a>
+                    </div>
+                    <!-- Article 4 -->
+                    <div class="pb-4">
+                        <p class="font-semibold text-gray-800">Hardy, B. et al. (2021). Automated Nugent score assessment for bacterial vaginosis diagnosis using deep learning.</p>
+                        <p class="text-sm text-gray-600">Scientific Reports, 11(1), 7085.</p>
+                        <a href="https://www.nature.com/articles/s41598-021-86926-w" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">Acessar Artigo</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
+            <h2 class="text-3xl font-bold text-center mb-8">Teste seu Conhecimento</h2>
+            <div id="quiz-container" class="space-y-8">
+                <!-- Question 1 -->
+                <div class="quiz-question" data-correct="b">
+                    <p class="font-semibold text-lg mb-4">1. A técnica de coloração de Gram, embora centenária, enfrenta desafios relacionados à interpretação humana. Qual das alternativas abaixo descreve o principal problema que a Inteligência Artificial busca solucionar nesse contexto?</p>
+                    <div class="space-y-3">
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">A) A falta de reagentes adequados para a coloração.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">B) A variabilidade, cansaço e subjetividade da interpretação microscópica humana.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">C) A lentidão no processo de automação do preparo das lâminas.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">D) A incapacidade dos microscópios modernos de gerar imagens de alta resolução.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">E) O alto custo da técnica de Gram para laboratórios de pequeno porte.</button>
+                    </div>
+                </div>
+                <!-- Question 2 -->
+                <div class="quiz-question" data-correct="c">
+                    <p class="font-semibold text-lg mb-4">2. O processo de integração da IA à coloração de Gram envolve etapas sequenciais. Considerando o fluxo descrito, qual é o papel das Redes Neurais Convolucionais (CNNs) e dos Vision Transformers?</p>
+                    <div class="space-y-3">
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">A) Realizar a coloração automatizada das lâminas.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">B) Escanear as lâminas em microscópios para gerar as Whole-Slide Images.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">C) Avaliar as imagens digitais para detectar e classificar microrganismos com base em padrões.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">D) Arquivar os resultados em formato digital para garantir a rastreabilidade.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">E) Gerar imagens coradas virtualmente a partir de amostras não coradas.</button>
+                    </div>
+                </div>
+                <!-- Question 3 -->
+                <div class="quiz-question" data-correct="a">
+                    <p class="font-semibold text-lg mb-4">3. Em casos críticos como a sepse, a velocidade do diagnóstico é crucial. De que forma a IA impacta diretamente o manejo desses casos?</p>
+                    <div class="space-y-3">
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">A) Acelerando a liberação de resultados de Gram e morfologia em minutos, permitindo terapias mais precoces.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">B) Substituindo completamente a necessidade de hemoculturas.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">C) Aumentando a especificidade do diagnóstico para 100%, eliminando falsos positivos.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">D) Permitindo a interpretação remota das lâminas por um especialista em telemicrobiologia.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">E) Liberando automaticamente apenas as lâminas negativas, sem analisar as positivas.</button>
+                    </div>
+                </div>
+                <!-- Question 4 -->
+                <div class="quiz-question" data-correct="d">
+                    <p class="font-semibold text-lg mb-4">4. Plataformas como a PhenoMATRIX® já demonstram a aplicação prática da IA. Qual foi o desempenho notável desta plataforma em culturas de urina?</p>
+                    <div class="space-y-3">
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">A) Acurácia de ~95% e sensibilidade de até 98%.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">B) 100% de concordância em testes de urina em dispositivos portáteis.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">C) Atingiu 85,8% de acurácia e AUC de 0,952.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">D) Sensibilidade de 94,8% e especificidade de 99,8%.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">E) Alcançou até 96% de acerto na identificação de espécies bacterianas específicas.</button>
+                    </div>
+                </div>
+                <!-- Question 5 -->
+                <div class="quiz-question" data-correct="e">
+                    <p class="font-semibold text-lg mb-4">5. Qual é a visão predominante sobre o futuro da IA na microbiologia clínica, de acordo com o texto?</p>
+                    <div class="space-y-3">
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">A) A IA substituirá completamente os microbiologistas nos próximos anos.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">B) A tecnologia se limitará a laboratórios de pesquisa, sem impacto clínico direto.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">C) O uso diagnóstico autônomo já foi aprovado por agências como FDA e ANVISA.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">D) O principal avanço será a redução do custo da coloração de Gram.</button>
+                        <button class="quiz-option w-full text-left p-4 border-2 border-gray-200 rounded-lg transition-colors">E) A IA atuará como uma ferramenta de apoio para potencializar o trabalho do microbiologista, que continua essencial.</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <button id="check-quiz-btn" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-700 transition-colors">Verificar Respostas</button>
+            </div>
+            <div id="quiz-results" class="mt-8 text-center text-xl font-semibold hidden"></div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p>&copy; 2024 Conteúdo sobre IA na Microbiologia. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const quizContainer = document.getElementById('quiz-container');
+            const checkButton = document.getElementById('check-quiz-btn');
+            const resultsContainer = document.getElementById('quiz-results');
+
+            // Handle option selection
+            quizContainer.addEventListener('click', function (e) {
+                if (e.target.classList.contains('quiz-option')) {
+                    // Deselect other options in the same question
+                    const parentQuestion = e.target.closest('.quiz-question');
+                    const allOptions = parentQuestion.querySelectorAll('.quiz-option');
+                    allOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Select the clicked option
+                    e.target.classList.add('selected');
+                }
+            });
+
+            // Handle quiz checking
+            checkButton.addEventListener('click', function () {
+                const questions = quizContainer.querySelectorAll('.quiz-question');
+                let score = 0;
+                let answeredQuestions = 0;
+
+                questions.forEach((question, index) => {
+                    const correctAnswer = question.dataset.correct;
+                    const selectedOption = question.querySelector('.quiz-option.selected');
+                    const allOptions = question.querySelectorAll('.quiz-option');
+
+                    // Disable all options after checking
+                    allOptions.forEach(opt => opt.disabled = true);
+
+                    if (selectedOption) {
+                        answeredQuestions++;
+                        const selectedAnswer = selectedOption.textContent.trim().charAt(0).toLowerCase();
+                        
+                        // Remove selection style
+                        selectedOption.classList.remove('selected');
+
+                        if (selectedAnswer === correctAnswer) {
+                            score++;
+                            selectedOption.classList.add('correct');
+                        } else {
+                            selectedOption.classList.add('incorrect');
+                            // Highlight the correct answer as well
+                            const correctButton = Array.from(allOptions).find(opt => opt.textContent.trim().charAt(0).toLowerCase() === correctAnswer);
+                            if (correctButton) {
+                                correctButton.classList.add('correct');
+                            }
+                        }
+                    }
+                });
+
+                // Display results
+                if (answeredQuestions < questions.length) {
+                     resultsContainer.textContent = `Por favor, responda todas as ${questions.length} questões antes de verificar.`;
+                } else {
+                    resultsContainer.textContent = `Você acertou ${score} de ${questions.length} questões!`;
+                }
+                resultsContainer.classList.remove('hidden');
+                checkButton.disabled = true;
+                checkButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+            });
+        });
+    </script>
+
+</body>
+</html>
