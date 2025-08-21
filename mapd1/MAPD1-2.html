@@ -186,6 +186,9 @@
             outline: 3px solid #3b82f6;
             border-radius: 0.5rem;
         }
+        .table-auto { width: 100%; border-collapse: collapse; }
+        .table-auto th, .table-auto td { border: 1px solid #ddd; padding: 0.75rem; text-align: left; }
+        .table-auto th { background-color: #e9eff5; font-family: 'Roboto Slab', serif; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -213,12 +216,11 @@
                     <h3 class="slide-subtitle text-2xl font-bold mb-3">O Epicentro do Problema: Falha Energética</h3>
                     <div class="content-card slide-layout">
                         <div class="slide-text">
-                            <p>O evento central na lesão por hipóxia é a falha na produção de energia (ATP). Isso leva a uma cascata de eventos:</p>
+                            <p>A depleção de ATP é o evento central. A isquemia é mais danosa que a hipóxia, pois cessa o fornecimento de substratos e a remoção de metabólitos.</p>
                             <ul class="list-disc list-inside space-y-2 mt-2">
-                                <li>Falha da Bomba de Na⁺/K⁺-ATPase</li>
-                                <li>Influxo de íons e água (edema celular)</li>
-                                <li>Ativação da glicólise anaeróbica com queda do pH</li>
-                                <li>Redução da síntese proteica</li>
+                                <li><strong>Falha da Bomba de Na⁺/K⁺-ATPase:</strong> Causa influxo de Na⁺ e água, gerando o edema celular.</li>
+                                <li><strong>Glicólise Anaeróbica:</strong> Leva ao acúmulo de ácido lático e queda do pH, causando agregação da cromatina.</li>
+                                <li><strong>Redução da Síntese Proteica:</strong> Pelo desprendimento de ribossomos do RER edemaciado.</li>
                             </ul>
                         </div>
                         <div class="slide-image-container">
@@ -227,24 +229,29 @@
                     </div>
                 </div>
                 <div class="mini-slide">
-                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Morfologia Macroscópica e Microscópica</h3>
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Morfologia e Esteatose</h3>
                     <div class="content-card slide-layout">
                         <div class="slide-text">
                             <p><strong>Macroscopia:</strong> O órgão afetado torna-se pálido, túrgido e aumenta de peso.</p>
-                            <p class="mt-2"><strong>Microscopia:</strong> Vemos a <strong>Tumefação Celular</strong> (degeneração hidrópica), onde as células estão aumentadas, com citoplasma pálido. Outra forma é a <strong>Degeneração Gordurosa (Esteatose)</strong>, um acúmulo de lipídios, comum no fígado.</p>
+                            <p class="mt-2"><strong>Microscopia:</strong> Vemos a <strong>Tumefação Celular</strong> (degeneração hidrópica) e a <strong>Degeneração Gordurosa (Esteatose)</strong>, um acúmulo de triglicerídeos, comum no fígado em resposta a injúria metabólica (álcool, obesidade).</p>
                         </div>
                         <div class="slide-image-container">
                             <img src="esteatose.jpg" alt="Esteatose Hepática" class="slide-image">
                         </div>
                     </div>
                 </div>
-                <div class="mini-slide">
-                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Exemplos Clínicos Relevantes</h3>
-                    <div class="content-card">
-                        <h4 class="font-bold text-xl mb-2">Angina Pectoris Estável:</h4>
-                        <p>A isquemia transitória no miocárdio durante o esforço causa lesão reversível e dor. Com o repouso, a lesão é revertida e a dor cessa. Não há morte celular.</p>
-                        <h4 class="font-bold text-xl mt-4 mb-2">Insuficiência Pré-Renal:</h4>
-                        <p>Num quadro de hipovolemia transitória, as células dos túbulos renais incham. Se a perfusão for restaurada a tempo, elas se recuperam, revertendo a disfunção renal aguda.</p>
+                 <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Comparativo: Lesão Reversível vs. Irreversível</h3>
+                    <div class="content-card overflow-x-auto">
+                        <table class="table-auto">
+                            <thead>
+                                <tr><th>Tipo de Lesão</th><th>Características Gerais</th><th>Potencial de Recuperação</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Reversível</td><td>Alterações funcionais e estruturais transitórias, sem dano letal à membrana plasmática ou às organelas vitais.</td><td>Sim, com remoção do agente lesivo.</td></tr>
+                                <tr><td>Irreversível</td><td>Comprometimento estrutural grave e irreversível das membranas, mitocôndrias e núcleo.</td><td>Não, evolui para morte celular.</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -266,10 +273,10 @@
                     <h3 class="slide-subtitle text-2xl font-bold mb-3">O Ponto de Não Retorno</h3>
                     <div class="content-card slide-layout">
                         <div class="slide-text">
-                            <p>Quando o estímulo persiste, a célula ultrapassa um limiar crítico. Dois fenômenos marcam a irreversibilidade:</p>
+                            <p>O dano se torna irrecuperável. Dois fenômenos marcam a irreversibilidade:</p>
                             <ul class="list-disc list-inside space-y-2 mt-2">
-                                <li><strong>Disfunção Mitocondrial Irreversível.</strong></li>
-                                <li><strong>Danos Profundos às Membranas:</strong> Ruptura da membrana plasmática e dos lisossomos, com extravasamento de conteúdo e influxo maciço de Ca²⁺.</li>
+                                <li><strong>Disfunção Mitocondrial Irreversível:</strong> Falha permanente na geração de ATP.</li>
+                                <li><strong>Danos Profundos às Membranas:</strong> Ruptura da membrana plasmática e dos lisossomos, com extravasamento de conteúdo e influxo maciço de Ca²⁺, que ativa enzimas destrutivas.</li>
                             </ul>
                         </div>
                         <div class="slide-image-container">
@@ -279,22 +286,35 @@
                 </div>
                 <div class="mini-slide">
                     <h3 class="slide-subtitle text-2xl font-bold mb-3">Morfologia da Morte Celular</h3>
-                    <div class="content-card">
+                    <div class="content-card slide-layout">
+                        <div class="slide-text">
                         <p>A morte por necrose é caracterizada por aumento da eosinofilia citoplasmática e alterações nucleares patognomônicas:</p>
                         <ul class="list-disc list-inside space-y-2 mt-2">
                             <li><strong>Picnose:</strong> Condensação e encolhimento do núcleo.</li>
                             <li><strong>Cariorrexe:</strong> Fragmentação do núcleo picnótico.</li>
                             <li><strong>Cariólise:</strong> Dissolução completa do núcleo.</li>
                         </ul>
+                        </div>
+                        <div class="slide-image-container">
+                             <img src="alteracoes_nucleares.jpg" alt="Alterações Nucleares da Necrose" class="slide-image">
+                        </div>
                     </div>
                 </div>
                 <div class="mini-slide">
-                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Exemplos Clínicos</h3>
-                    <div class="content-card">
-                        <h4 class="font-bold text-xl mb-2">Infarto Agudo do Miocárdio (IAM):</h4>
-                        <p>A isquemia prolongada leva à necrose dos miócitos. O extravasamento de enzimas (Troponina) para o sangue confirma a lesão irreversível.</p>
-                        <h4 class="font-bold text-xl mt-4 mb-2">Acidente Vascular Cerebral (AVC) Isquêmico:</h4>
-                        <p>A oclusão de uma artéria cerebral causa hipóxia e morte de neurônios, resultando em sequela neurológica permanente.</p>
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Agentes Etiológicos e Mecanismos</h3>
+                    <div class="content-card overflow-x-auto">
+                        <table class="table-auto">
+                            <thead>
+                                <tr><th>Agente Etiológico</th><th>Mecanismos Principais</th><th>Resultados Típicos</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Hipóxia / Isquemia</td><td>Depleção massiva de ATP, falha da Na⁺/K⁺-ATPase, acidose.</td><td><strong>Rev:</strong> Edema celular. <br><strong>Irrev:</strong> Necrose Coagulativa (ou Liquefativa no cérebro).</td></tr>
+                                <tr><td>Agentes Físicos</td><td>Ruptura de membranas, radicais livres, dano ao DNA.</td><td><strong>Irrev:</strong> Necrose, Apoptose (radiação).</td></tr>
+                                <tr><td>Agentes Químicos</td><td>Toxicidade direta, conversão em metabólitos tóxicos.</td><td><strong>Rev:</strong> Esteatose. <br><strong>Irrev:</strong> Necrose (overdose), Apoptose (quimioterápicos).</td></tr>
+                                <tr><td>Agentes Infecciosos</td><td>Toxinas, resposta imune citotóxica, enzimas líticas.</td><td><strong>Irrev:</strong> Apoptose (vírus), Necrose Liquefativa (bactérias).</td></tr>
+                                <tr><td>Reações Imunológicas</td><td>Ação de linfócitos, complemento, imunocomplexos.</td><td><strong>Irrev:</strong> Apoptose (autoimunidade), Necrose Fibrinoide (vasculites).</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -405,17 +425,28 @@
                     </div>
                 </div>
                 <div class="mini-slide">
-                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Causas Fisiológicas e Patológicas</h3>
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Vias de Ativação Molecular</h3>
                     <div class="content-card">
-                        <p><strong>Fisiológicas:</strong> Essencial na embriogênese (formação dos dedos), involução de tecidos (endométrio) e eliminação de linfócitos autorreativos.</p>
-                        <p class="mt-4"><strong>Patológicas:</strong> Ocorre em resposta a danos irreparáveis no DNA (radiação, quimioterápicos), acúmulo de proteínas mal dobradas (doenças neurodegenerativas) e infecções virais.</p>
+                        <p><strong>Via Intrínseca (Mitocondrial):</strong> Acionada por estresse interno (dano ao DNA). Regulada pela família Bcl-2, culmina na liberação de citocromo c e ativação da Caspase-9.</p>
+                        <p class="mt-4"><strong>Via Extrínseca (Receptores de Morte):</strong> Iniciada por sinais externos via receptores como o Fas (CD95), levando à ativação direta da Caspase-8.</p>
                     </div>
                 </div>
-                <div class="mini-slide">
-                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Vias de Ativação e Relevância Clínica</h3>
-                    <div class="content-card">
-                        <p><strong>Via Intrínseca (Mitocondrial):</strong> Acionada por estresse interno. <br><strong>Via Extrínseca (Receptores de Morte):</strong> Iniciada por sinais externos.</p>
-                        <p class="mt-4">Falhas na regulação da apoptose causam doenças: pouca apoptose leva a <strong>câncer</strong> e <strong>autoimunidade</strong>; muita apoptose contribui para <strong>doenças neurodegenerativas</strong>.</p>
+                 <div class="mini-slide">
+                    <h3 class="slide-subtitle text-2xl font-bold mb-3">Necrose vs. Apoptose</h3>
+                    <div class="content-card overflow-x-auto">
+                        <table class="table-auto">
+                            <thead>
+                                <tr><th>Característica</th><th>Necrose</th><th>Apoptose</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Tamanho Celular</td><td>Edema (inchaço)</td><td>Retração (encolhimento)</td></tr>
+                                <tr><td>Núcleo</td><td>Picnose → Cariorrexe → Cariólise</td><td>Condensação e fragmentação</td></tr>
+                                <tr><td>Membrana Plasmática</td><td>Rompida</td><td>Íntegra; alterada para fagocitose</td></tr>
+                                <tr><td>Conteúdo Celular</td><td>Extravasamento e digestão</td><td>Empacotado em corpos apoptóticos</td></tr>
+                                <tr><td>Inflamação</td><td>Presente</td><td>Ausente</td></tr>
+                                <tr><td>Papel</td><td>Sempre patológico</td><td>Fisiológico e patológico</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -609,16 +640,16 @@
 
             // Quiz Logic
             const quizData = [
-                { question: "Um homem de 58 anos, etilista crônico, apresenta fígado aumentado e amarelado. A biópsia revela acúmulo de gotículas de lipídios no citoplasma dos hepatócitos, sem inflamação significativa. Qual é o diagnóstico morfológico mais provável?", options: ["Necrose gordurosa", "Esteatose hepática", "Necrose caseosa", "Apoptose"], answer: "Esteatose hepática" },
-                { question: "Paciente chega à emergência com dor torácica intensa há 4 horas. Exames de sangue revelam níveis elevados de troponina. Este marcador indica qual processo celular no miocárdio?", options: ["Lesão reversível", "Apoptose", "Necrose", "Atrofia"], answer: "Necrose" },
-                { question: "Qual padrão de necrose é esperado em um paciente com um abscesso pulmonar causado por uma infecção bacteriana?", options: ["Coagulativa", "Caseosa", "Gordurosa", "Liquefativa"], answer: "Liquefativa" },
-                { question: "Durante o desenvolvimento embrionário, a eliminação das membranas entre os dedos ocorre por um processo de morte celular que não gera inflamação. Qual é este processo?", options: ["Necrose", "Displasia", "Apoptose", "Metaplasia"], answer: "Apoptose" },
-                { question: "Uma biópsia de um linfonodo de um paciente com suspeita de tuberculose revela uma área central de material amorfo, esbranquiçado e granuloso, cercado por inflamação. Este achado é característico de qual tipo de necrose?", options: ["Fibrinoide", "Liquefativa", "Coagulativa", "Caseosa"], answer: "Caseosa" },
-                { question: "A inativação da bomba de Na+/K+-ATPase por falta de ATP durante a isquemia leva diretamente a qual alteração morfológica inicial?", options: ["Picnose nuclear", "Edema celular", "Ruptura lisossômica", "Formação de corpos apoptóticos"], answer: "Edema celular" },
-                { question: "A proteína p53, frequentemente mutada em cânceres, desempenha um papel crucial em qual via de morte celular quando o dano ao DNA é irreparável?", options: ["Necrose liquefativa", "Apoptose (via intrínseca)", "Necrose gordurosa", "Apoptose (via extrínseca)"], answer: "Apoptose (via intrínseca)" },
-                { question: "Um paciente com pancreatite aguda grave desenvolve áreas esbranquiçadas, semelhantes a giz, no mesentério. Este processo é resultado da ação de lipases e é denominado:", options: ["Necrose caseosa", "Saponificação", "Calcificação distrófica", "Necrose fibrinoide"], answer: "Saponificação" },
-                { question: "Qual das seguintes alterações nucleares é um sinal definitivo de necrose?", options: ["Condensação da cromatina", "Cariorrexe", "Marginação da cromatina", "Edema nuclear"], answer: "Cariorrexe" },
-                { question: "A principal diferença funcional entre a via intrínseca e extrínseca da apoptose é:", options: ["O tipo de célula que afeta", "A presença ou ausência de inflamação", "O gatilho inicial (interno vs. externo)", "A velocidade do processo"], answer: "O gatilho inicial (interno vs. externo)" }
+                { question: "Um paciente com pancreatite aguda grave desenvolve áreas de saponificação no mesentério. Qual padrão de necrose está associado a este achado?", options: ["Coagulativa", "Liquefativa", "Caseosa", "Gordurosa"], answer: "Gordurosa" },
+                { question: "A remoção de linfócitos T autorreativos no timo é um processo fisiológico crucial para a tolerância imunológica. Qual mecanismo de morte celular é predominante neste processo?", options: ["Necrose", "Apoptose", "Necroptose", "Autofagia"], answer: "Apoptose" },
+                { question: "Após um infarto cerebral, a área lesionada evolui para uma cavidade cística. Este desfecho é característico de qual tipo de necrose?", options: ["Coagulativa", "Liquefativa", "Caseosa", "Fibrinoide"], answer: "Liquefativa" },
+                { question: "A proteína p53, o 'guardião do genoma', interrompe o ciclo celular em caso de dano ao DNA. Se o dano for irreparável, a p53 induz a morte celular principalmente através da:", options: ["Ativação de receptores de morte (via extrínseca)", "Inibição da família Bcl-2", "Ativação de membros pró-apoptóticos da família Bcl-2 (via intrínseca)", "Indução de necrose inflamatória"], answer: "Ativação de membros pró-apoptóticos da família Bcl-2 (via intrínseca)" },
+                { question: "Um paciente com tuberculose pulmonar realiza uma biópsia que revela um granuloma com um centro amorfo e esbranquiçado. Qual é o padrão de necrose encontrado?", options: ["Liquefativa", "Coagulativa", "Caseosa", "Gordurosa"], answer: "Caseosa" },
+                { question: "Qual evento molecular é considerado o 'ponto de não retorno' definitivo, selando o destino de uma célula para a necrose?", options: ["Edema celular inicial", "Queda do pH intracelular", "Dano irreversível e permeabilização das membranas", "Desprendimento de ribossomos"], answer: "Dano irreversível e permeabilização das membranas" },
+                { question: "A principal diferença entre isquemia e hipóxia é que a isquemia também envolve:", options: ["Aumento da produção de ATP", "Aumento da temperatura local", "Cessação do fornecimento de substratos e remoção de metabólitos", "Aumento da pressão parcial de oxigênio"], answer: "Cessação do fornecimento de substratos e remoção de metabólitos" },
+                { question: "Um paciente com hipertensão maligna apresenta dano em arteríolas renais, com deposição de material eosinofílico brilhante na parede vascular. Qual tipo de necrose é este?", options: ["Coagulativa", "Liquefativa", "Caseosa", "Fibrinoide"], answer: "Fibrinoide" },
+                { question: "A ativação da cascata de caspases é um evento central em qual processo?", options: ["Lesão reversível", "Necrose coagulativa", "Apoptose", "Esteatose"], answer: "Apoptose" },
+                { question: "A presença de qual característica histológica distingue fundamentalmente a necrose da apoptose em um tecido?", options: ["Encolhimento celular", "Condensação da cromatina", "Infiltrado inflamatório agudo", "Fragmentação do DNA"], answer: "Infiltrado inflamatório agudo" }
             ];
 
             function loadQuiz() {
@@ -674,10 +705,17 @@
                             body { font-family: 'Roboto', sans-serif; line-height: 1.6; margin: 2rem; }
                             h1, h2, h3, h4 { font-family: 'Roboto Slab', serif; color: #1e3a8a; }
                             h1 { font-size: 2.5rem; text-align: center; border-bottom: 2px solid #1e3a8a; padding-bottom: 1rem; margin-bottom: 2rem; }
-                            .print-section { page-break-before: always; border-top: 1px solid #ccc; padding-top: 2rem; }
-                            .print-section:first-of-type { page-break-before: auto; border-top: none; }
+                            .print-section { page-break-inside: avoid; margin-bottom: 2rem; border-top: 1px solid #ccc; padding-top: 2rem; }
+                            .print-section:first-of-type { border-top: none; }
                             .content-card { border-left: 4px solid #3b82f6; padding: 1rem; background-color: #f8f9fa; margin: 1rem 0; border-radius: 8px; }
                             ul { padding-left: 20px; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+                            th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
+                            th { background-color: #e9eff5; }
+                            .slide-layout { display: flex; gap: 1rem; align-items: flex-start; }
+                            .slide-text { flex: 1; }
+                            .slide-image-container { flex: 0 0 40%; }
+                            .slide-image { max-width: 100%; height: auto; border-radius: 8px; }
                         </style>
                     </head>
                     <body>
@@ -693,7 +731,6 @@
                         tempBody.querySelectorAll('.mini-slide').forEach(slide => {
                             slide.style.display = 'block';
                         });
-                        tempBody.querySelectorAll('.slide-image-container').forEach(el => el.remove());
                         fullContent += `<div class="print-section">${header.innerHTML}${tempBody.innerHTML}</div>`;
                     }
                 });
