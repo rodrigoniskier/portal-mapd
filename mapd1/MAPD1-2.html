@@ -765,8 +765,9 @@
                             table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
                             th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
                             th { background-color: #e9eff5; }
-                            .slide-layout { display: block; } /* Simplified for printing */
-                            .slide-image-container { display: none; } /* Hide images for printing */
+                            .slide-layout { display: block; page-break-inside: avoid; }
+                            .slide-image-container { display: block; text-align: center; margin-top: 1rem; }
+                            .slide-image { max-width: 70%; height: auto; border-radius: 8px; display: inline-block; }
                         </style>
                     </head>
                     <body>
@@ -779,6 +780,25 @@
                     if (header && body) {
                         const tempBody = document.createElement('div');
                         tempBody.innerHTML = body.innerHTML;
+                        
+                        // Create a new DOM from the tempBody to query it
+                        const newDom = new DOMParser().parseFromString(tempBody.innerHTML, 'text/html');
+
+                        // Replace image sources for printing
+                        newDom.querySelectorAll('.slide-image').forEach(img => {
+                            const originalSrc = img.getAttribute('src');
+                            // This assumes you have access to the original image element to get its src
+                            // Since we are in a new context, we need to find the original image
+                            // A better approach would be to pass the whole modal content.
+                            // Let's find the corresponding image in the main document.
+                            const originalImage = document.querySelector(`img[src="${originalSrc}"]`);
+                            if(originalImage) {
+                                img.src = originalImage.src;
+                            }
+                        });
+
+                        tempBody.innerHTML = newDom.body.innerHTML;
+
                         tempBody.querySelectorAll('.mini-slide').forEach(slide => {
                             slide.style.display = 'block';
                         });
