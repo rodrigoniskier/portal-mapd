@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Bomba-Relógio — 50 minutos</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bomba-Relógio — UNIPE</title>
 <style>
   :root{
     --bg:#0b0f16; --accent:#ff3b3b; --accent2:#19d17f; --text:#e6eefc; --muted:#8ea2c0; --warn:#ffb020; --glass:#0b1422c0;
@@ -42,7 +42,7 @@
   .progress{height:10px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;border:1px solid rgba(255,255,255,.1)}
   .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent2),#22b3ff);transition:width .25s}
 
-  /* Main layout: 2 colunas — Timer • Perguntas */
+  /* Main layout: Timer • Perguntas */
   .main{
     position:relative; overflow:auto;
     border-radius:22px; padding:clamp(16px,3vw,28px);
@@ -113,17 +113,42 @@
   .feedback{min-height:40px; font-size:14px; color:var(--muted); line-height:1.35}
   .feedback.good{color:var(--accent2)} .feedback.bad{color:var(--accent)} .feedback.warn{color:var(--warn)}
 
-  /* Overlays */
-  .overlay{position:absolute; inset:0; background:rgba(0,0,0,.75); display:none; align-items:center; justify-content:center; text-align:center; padding:24px; z-index:12}
-  .card{background:#111924; border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px; max-width:680px; margin:0 auto; box-shadow:0 14px 40px rgba(0,0,0,.45)}
-  .card h2{margin:0 0 8px}.card p{margin:6px 0 18px; color:var(--muted)} .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
+  /* Cards e cenas com imagem à direita e balão à esquerda */
+  .card{background:#111924; border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px; max-width:960px; margin:0 auto; box-shadow:0 14px 40px rgba(0,0,0,.45)}
+  .row{display:flex; gap:10px; flex-wrap:wrap}
   .primary{background:var(--accent2); color:#062a1c; border:none; padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:900}
   .ghost{background:transparent; color:#fff; border:1px solid rgba(255,255,255,.2); padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:800}
 
-  /* Explosão (tela.jpg) */
-  .flash{position:fixed; inset:0; background:#fff; z-index:999; display:none}
+  .sceneGrid{ display:grid; grid-template-columns: minmax(260px, 1fr) minmax(260px, 42vw); gap:16px; align-items:center }
+  .leftCol{ display:flex; flex-direction:column; gap:12px; align-items:flex-start }
+  .sceneImg{ width: min(520px, 42vw); height:auto; border-radius:16px; border:1px solid rgba(255,255,255,.15); box-shadow:0 20px 60px rgba(0,0,0,.5) }
+  @media (max-width: 760px){
+    .sceneGrid{ grid-template-columns: 1fr; }
+    .sceneImg{ justify-self:center; width:min(420px, 90vw) }
+  }
+
+  .bubble{
+    background:#ffffff; color:#111; padding:14px 16px; border-radius:12px; font-weight:800;
+    filter: drop-shadow(0 6px 18px rgba(0,0,0,.35)); max-width: min(60ch, 80vw);
+    position:relative;
+  }
+  .bubble-left::after{
+    content:""; position:absolute; top:50%; left:100%; transform:translateY(-50%);
+    width:0; height:0; border-top:12px solid transparent; border-bottom:12px solid transparent; border-right:14px solid #fff;
+  }
+  .intro-meta{ color:var(--muted); margin-top:4px; font-size:13px }
+
+  /* OVERLAYS de camada */
+  .overlay{position:absolute; inset:0; background:rgba(0,0,0,.75); display:none; align-items:center; justify-content:center; text-align:left; padding:24px; z-index:12}
+
+  /* INTRO (cientista1) — overlay fixo por cima de tudo */
+  .intro{position:fixed; inset:0; background:rgba(0,0,0,.85); display:flex; align-items:center; justify-content:center; z-index:1000; padding:24px}
+
+  /* Explosão e vilão vencedor */
+  .flash{position:fixed; inset:0; background:#fff; z-index:1200; display:none}
+  .villainWin{ position:fixed; inset:0; background:rgba(0,0,0,.92); display:none; z-index:1201; align-items:center; justify-content:center; padding:24px }
   .crackimg{
-    position:fixed; inset:0; z-index:999; display:none; /* inicia oculta */
+    position:fixed; inset:0; z-index:1202; display:none;
     background: #000 url('tela.jpg') center/cover no-repeat;
     align-items:center; justify-content:center;
   }
@@ -149,7 +174,7 @@
 <div class="wrap" id="app">
 
   <header>
-    <div class="title"><div class="led" id="led"></div><div>Dispositivo • Série MX-9</div></div>
+    <div class="title"><div class="led" id="led"></div><div>Bomba • Protocolo UNIPE</div></div>
     <div class="status-line">
       <div class="pill">Pergunta: <span id="qidx">1</span>/<span id="qtotal">—</span></div>
       <div class="pill">Tentativas: <span id="tries">2</span>/2</div>
@@ -162,7 +187,7 @@
   </header>
 
   <div class="main" id="main">
-    <!-- COLUNA ESQUERDA: SÓ O TIMER -->
+    <!-- TIMER -->
     <div class="timerBox">
       <div style="font-weight:800;letter-spacing:.4px;color:var(--muted)">TIMER (50 min)</div>
       <div class="dial" id="dial">
@@ -171,31 +196,34 @@
       <div class="pill" style="justify-self:start">Cronômetro global</div>
     </div>
 
-    <!-- COLUNA DIREITA: PERGUNTAS -->
+    <!-- PERGUNTAS -->
     <div class="qbox">
       <div class="qhead">
-        <div class="question" id="question">Clique em “Iniciar” para começar.</div>
+        <div class="question" id="question">Aguarde…</div>
       </div>
       <div class="options" id="options"></div>
       <div class="feedback" id="feedback">&nbsp;</div>
     </div>
 
-    <!-- OVERLAY INICIAL -->
+    <!-- OVERLAY DE INFORMAÇÕES (após intro) -->
     <div class="overlay" id="entryOverlay" role="dialog" aria-modal="true" style="grid-column:1/-1">
       <div class="card">
         <h2>Protocolo de Desarmamento</h2>
-        <p>Responda todas as perguntas. Avança só quando <strong>acertar</strong>. Dois erros na mesma pergunta = <strong>BOOM</strong>. Tempo total: <strong>50 minutos</strong>.</p>
-        <div class="row"><button class="primary" id="startBtn">Iniciar</button></div>
-        <p style="font-size:12px;color:var(--muted);margin-top:10px">Texto não selecionável • Atalhos/Print bloqueados (melhor esforço)</p>
+        <p>Você terá <strong id="qcount1">—</strong> questões. Avança só quando <strong>acertar</strong>. Dois erros na mesma pergunta = <strong>BOOM</strong>. Tempo total: <strong>50 minutos</strong>.</p>
+        <p class="intro-meta">Texto não selecionável • Atalhos/Print bloqueados (melhor esforço)</p>
       </div>
     </div>
 
-    <!-- SUCESSO -->
+    <!-- SUCESSO (cientista2 preso) -->
     <div class="overlay" id="defused" style="z-index:20">
-      <div class="card" style="background:#0e1a14;border-color:rgba(25,209,127,.45)">
-        <h2 style="margin:0;font-size:clamp(28px,6vw,60px);color:var(--accent2);text-shadow:0 0 22px rgba(25,209,127,.6)">DISPOSITIVO DESARMADO</h2>
-        <p class="reason">Excelente trabalho! Todas as respostas corretas a tempo.</p>
-        <div class="row"><button class="primary" id="againBtn">Jogar de novo</button></div>
+      <div class="card">
+        <div class="sceneGrid">
+          <div class="leftCol">
+            <div class="bubble bubble-left"><strong>Missão cumprida!</strong><br/>A turma do UNIPE desarmou a bomba a tempo. Suspeito rendido e sob custódia.</div>
+            <div class="row" style="margin-top:6px"><button class="primary" id="againBtn">Jogar de novo</button></div>
+          </div>
+          <img class="sceneImg" src="cientista2.jpg" alt="Cientista detido">
+        </div>
       </div>
     </div>
   </div>
@@ -206,8 +234,41 @@
   </footer>
 </div>
 
-<!-- OVERLAYS DE EXPLOSÃO -->
+<!-- INTRO (cientista1 com fala à esquerda + botões abaixo do balão) -->
+<div class="intro" id="intro">
+  <div class="card">
+    <div class="sceneGrid">
+      <div class="leftCol">
+        <div class="bubble bubble-left">
+          Estudantes de Medicina do UNIPE…<br/>
+          <strong>Provem que merecem o jaleco!</strong><br/>
+          Desarmem minha bomba respondendo <strong id="qcount2">—</strong> questões antes do tempo acabar.
+        </div>
+        <div class="row">
+          <button class="primary" id="introStartBtn">Iniciar</button>
+          <a class="ghost" href="Apostila%20de%20Imunidade%20Inata.pdf" download>Baixar apostila (PDF)</a>
+        </div>
+        <div class="intro-meta">Clique em <em>Iniciar</em> para ver os informes e começar a missão.</div>
+      </div>
+      <img class="sceneImg" src="cientista1.jpg" alt="Cientista desafiando os estudantes">
+    </div>
+  </div>
+</div>
+
+<!-- EXPLOSÃO: Flash, vilão comemorando (cientista3), rachadura e reinício (com atraso de 5s após o vilão aparecer) -->
 <div class="flash" id="flash"></div>
+
+<div class="villainWin" id="villainWin">
+  <div class="card">
+    <div class="sceneGrid">
+      <div class="leftCol">
+        <div class="bubble bubble-left"><strong>Ha!</strong> Vocês falharam, UNIPE!<br/>A ciência sem atenção <em>explode</em> no final…</div>
+      </div>
+      <img class="sceneImg" src="cientista3.jpg" alt="Cientista comemorando a vitória">
+    </div>
+  </div>
+</div>
+
 <div class="crackimg" id="crackimg">
   <div class="stack">
     <h1 class="boom-title">BOOM</h1>
@@ -219,239 +280,98 @@
 /* ===== CONFIG ===== */
 const CONFIG = { requireFullscreen:false, explodeOnBlur:false, strictShortcuts:true };
 
-/* ===== PERGUNTAS (as suas) =====
-   Estrutura: { q, options: [...], a: indexCorreto, why: [justif A, justif B, ...] }
-*/
+/* ===== PERGUNTAS (sem marcas de citação) ===== */
 const QUESTIONS = [
-  {
-    q:`1. Qual é a função fisiológica primária e benéfica do sistema imune?`,
-    options:[
-      `(A) Manter a homeostase da temperatura corporal através da febre.`,
-      `(B) [cite_start]Defender o organismo contra microrganismos infecciosos e eliminar substâncias estranhas[cite: 703, 704].`,
-      `(C) Regular o crescimento e a diferenciação de todos os tecidos do corpo.`,
-      `(D) Exclusivamente reparar tecidos danificados após uma lesão.`
-    ],
+  { q:`1. Qual é a função fisiológica primária e benéfica do sistema imune?`,
+    options:[`(A) Manter a homeostase da temperatura corporal através da febre.`,`(B) Defender o organismo contra microrganismos infecciosos e eliminar substâncias estranhas.`,`(C) Regular o crescimento e a diferenciação de todos os tecidos do corpo.`,`(D) Exclusivamente reparar tecidos danificados após uma lesão.`],
     a:1,
-    why:[
-      `**(A) Incorreta.** A febre é um *efeito sistêmico* da resposta imune (uma consequência), não sua função primária.`,
-      `[cite_start]**(B) Correta.** A função fisiológica central do sistema imune é a defesa contra patógenos[cite: 704]. A eliminação de substâncias estranhas e células danificadas são funções correlatas.`,
-      `**(C) Incorreta.** Embora citocinas possam influenciar o crescimento celular, a regulação geral do desenvolvimento dos tecidos não é a função primária do sistema imune.`,
-      `**(D) Incorreta.** O reparo tecidual é consequência da inflamação; a função principal do sistema imune é a defesa, que precede o reparo.`
-    ]
-  },
-  {
-    q:`2. A existência de doenças como alergias e lúpus, onde o sistema imune causa dano ao hospedeiro, demonstra que:`,
-    options:[
-      `(A) O sistema imune pode falhar em sua função de defesa e se tornar inerentemente patológico.`,
-      `(B) [cite_start]Os mecanismos efetores da resposta imune são os mesmos que normalmente protegem o corpo, mas estão desregulados, mal direcionados ou excessivamente ativos[cite: 706, 707].`,
-      `(C) A imunidade adaptativa é sempre prejudicial, enquanto a imunidade inata é sempre protetora.`,
-      `(D) Patógenos específicos podem reprogramar permanentemente o sistema imune para atacar o próprio corpo.`
-    ],
-    a:1,
-    why:[
-      `**(A) Incorreta.** Não é uma “falha” de potência, e sim de regulação e alvo da resposta.`,
-      `**(B) Correta.** [cite_start]A inflamação que combate bactérias é mecanicamente similar à que ataca uma articulação na artrite reumatoide[cite: 706].`,
-      `**(C) Incorreta.** Tanto inata quanto adaptativa podem causar doença quando desreguladas.`,
-      `**(D) Incorreta.** Infecções podem ser gatilhos, mas a base é falha de autotolerância, não “reprogramação permanente”.`
-    ]
-  },
-  {
-    q:`3. Quando um patógeno entra no corpo, qual sistema imune inicia a resposta defensiva nas primeiras horas?`,
-    options:[
-      `(A) O sistema adaptativo, através da rápida produção de anticorpos.`,
-      `(B) [cite_start]O sistema inato, que utiliza mecanismos pré-existentes para uma defesa imediata[cite: 733, 734].`,
-      `(C) Ambos os sistemas respondem simultaneamente e com a mesma velocidade.`,
-      `(D) O sistema humoral, que libera complemento para neutralizar o patógeno instantaneamente.`
-    ],
-    a:1,
-    why:[
-      `[cite_start]**(A) Incorreta.** A resposta adaptativa, incluindo anticorpos, leva dias[cite: 759].`,
-      `[cite_start]**(B) Correta.** A inata responde em horas, pois seus componentes já estão prontos[cite: 733, 758].`,
-      `[cite_start]**(C) Incorreta.** Inata precede adaptativa (horas vs. dias)[cite: 732].`,
-      `**(D) Incorreta.** Complemento integra a inata, mas não é “instantâneo” e não é o único componente.`
-    ]
-  },
-  {
-    q:`4. A principal diferença no modo como a imunidade inata e a adaptativa "enxergam" um patógeno é:`,
-    options:[
-      `(A) [cite_start]A inata detecta PAMPs (estruturas compartilhadas), e a adaptativa reconhece antígenos específicos[cite: 765, 791, 2488, 2490].`,
-      `(B) A inata usa MHC, e a adaptativa usa TLRs.`,
-      `(C) A inata só reconhece bactérias; a adaptativa reconhece vírus e fungos.`,
-      `(D) A inata é ativada por DAMPs, e a adaptativa por PAMPs.`
-    ],
-    a:0,
-    why:[
-      `**(A) Correta.** [cite_start]A inata reconhece assinaturas de classes microbianas; a adaptativa distingue detalhes finos[cite: 765, 2488].`,
-      `**(B) Incorreta.** MHC é da apresentação para T (adaptativa); TLRs são canônicos da inata.`,
-      `**(C) Incorreta.** Ambos reconhecem vários tipos de patógenos.`,
-      `**(D) Incorreta.** Inata responde a PAMPs e DAMPs; adaptativa é ativada por antígenos.`
-    ]
-  },
-  {
-    q:`5. O que melhor define o conceito de "memória imunológica"?`,
-    options:[
-      `(A) A capacidade do sistema inato de intensificar-se em qualquer nova infecção.`,
-      `(B) [cite_start]Propriedade do sistema adaptativo de responder mais rápido e melhor na reexposição ao mesmo antígeno[cite: 822, 1093].`,
-      `(C) Inflamação crônica de baixo grau após infecção.`,
-      `(D) Presença constante de anticorpos no sangue como única forma de memória.`
-    ],
-    a:1,
-    why:[
-      `**(A) Incorreta.** Inata clássica não possui memória.`,
-      `**(B) Correta.** [cite_start]Linfócitos B/T de memória permitem resposta mais rápida e eficaz[cite: 822, 824].`,
-      `**(C) Incorreta.** Inflamação crônica é patológica, não “memória”.`,
-      `**(D) Incorreta.** Anticorpos são parte; memória celular é crucial.`
-    ]
-  },
-  {
-    q:`6. Por que é vantajoso possuir tanto imunidade inata quanto adaptativa?`,
-    options:[
-      `(A) Porque são redundantes e equivalentes.`,
-      `(B) [cite_start]Porque a inata contém inicialmente e instrui a adaptativa, que erradica a infecção[cite: 771, 2790].`,
-      `(C) Porque a inata cuida só de barreiras e a adaptativa só de órgãos internos.`,
-      `(D) Porque a inata combate bactérias e a adaptativa combate vírus.`
-    ],
-    a:1,
-    why:[
-      `**(A) Incorreta.** Elas são complementares, não redundantes.`,
-      `**(B) Correta.** [cite_start]A inata sinaliza e molda a adaptativa, além de conter a infecção no início[cite: 2790].`,
-      `**(C) Incorreta.** Ambas atuam em todo o corpo.`,
-      `**(D) Incorreta.** Falsa dicotomia.`
-    ]
-  },
-  {
-    q:`7. Em apendicite aguda, que célula domina o infiltrado inicial?`,
-    options:[
-      `(A) Plasmócitos.`,
-      `(B) Linfócitos T CD4+.`,
-      `(C) Mastócitos.`,
-      `(D) [cite_start]Neutrófilos, principal célula da inflamação aguda[cite: 1179, 2707].`
-    ],
-    a:3,
-    why:[
-      `**(A) e (B) Incorretas.** Adaptativas predominam mais tarde/crônico.`,
-      ``, /* B justification included above */
-      `**(C) Incorreta.** Mastócitos iniciam eventos vasculares, mas não dominam o infiltrado sanguíneo.`,
-      `**(D) Correta.** Neutrófilos migram rápido e marcam inflamação aguda.`
-    ]
-  },
-  {
-    q:`8. Função exclusiva da Célula Dendrítica (ponte inata–adaptativa):`,
-    options:[
-      `(A) Fagocitar e apresentar antígenos via MHC II.`,
-      `(B) [cite_start]Ativar linfócitos T *naive* para iniciar resposta adaptativa primária[cite: 1323, 2073].`,
-      `(C) Produzir TNF e IL-1.`,
-      `(D) Reconhecer PAMPs por TLRs.`
-    ],
-    a:1,
-    why:[
-      `**(A) Incorreta.** Macrófagos e B também apresentam, com outros objetivos.`,
-      `**(B) Correta.** [cite_start]DCs são únicas em ativar T *naive* de forma eficiente[cite: 2073].`,
-      `**(C) Incorreta.** Várias células fazem isso.`,
-      `**(D) Incorreta.** TLRs não são exclusivos de DCs.`
-    ]
-  },
-  {
-    q:`9. Propósito biológico fundamental da inflamação:`,
-    options:[
-      `(A) Causar dor para alertar o indivíduo.`,
-      `(B) [cite_start]Levar leucócitos e proteínas plasmáticas ao local para eliminar o agente e iniciar reparo[cite: 2477, 2705].`,
-      `(C) Aumentar a temperatura local para destruir patógenos.`,
-      `(D) Formar cicatriz fibrótica para isolar a área.`
-    ],
-    a:1,
-    why:[
-      `**(A) Incorreta.** Dor é sintoma/efeito colateral útil, não propósito.`,
-      `**(B) Correta.** [cite_start]É um processo de entrega de defesas ao foco[cite: 2705, 2706].`,
-      `**(C) Incorreta.** Calor vem da vasodilatação, não “cozimento” de patógenos.`,
-      `**(D) Incorreta.** Cicatriz pode ser desfecho crônico, não objetivo inicial.`
-    ]
-  },
-  {
-    q:`10. O que são PAMPs?`,
-    options:[
-      `(A) Moléculas únicas por cepa, da adaptativa.`,
-      `(B) Toxinas bacterianas que matam células do hospedeiro.`,
-      `(C) [cite_start]Estruturas conservadas em micróbios (ex: LPS, peptidoglicano), reconhecidas pela inata[cite: 2490, 2493].`,
-      `(D) Moléculas do hospedeiro liberadas no dano celular.`
-    ],
-    a:2,
-    why:[
-      `**(A) Incorreta.** Isso descreve antígeno/epítopo (adaptativa).`,
-      `**(B) Incorreta.** PAMPs são componentes estruturais, não apenas toxinas.`,
-      `[cite_start]**(C) Correta.** Origem microbiana e conservação permitem poucos receptores reconhecerem muitos alvos[cite: 2490].`,
-      `**(D) Incorreta.** Isso descreve DAMPs.`
-    ]
-  },
-  {
-    q:`11. Queimadura solar grave sem infecção: o que ativa a inata?`,
-    options:[
-      `(A) PAMPs liberados pela radiação UV.`,
-      `(B) [cite_start]DAMPs (ATP, DNA) liberados por células danificadas[cite: 2498, 2537].`,
-      `(C) Autoanticorpos pré-existentes.`,
-      `(D) Ativação direta do complemento pela luz solar.`
-    ],
-    a:1,
-    why:[
-      `**(A) Incorreta.** PAMPs vêm de patógenos; UV não libera PAMP.`,
-      `**(B) Correta.** Inflamação estéril é iniciada por DAMPs de dano celular.`,
-      `**(C) Incorreta.** Não é mecanismo típico de queimadura solar.`,
-      `**(D) Incorreta.** Complemento não é ativado diretamente por luz solar.`
-    ]
-  },
-  {
-    q:`12. Duas citocinas chave para iniciar/amplificar inflamação aguda no endotélio:`,
-    options:[
-      `(A) IL-10 e TGF-β.`,
-      `(B) IFN-γ e IL-4.`,
-      `(C) [cite_start]TNF e IL-1[cite: 2710, 2725, 2737].`,
-      `(D) IL-12 e IL-23.`
-    ],
-    a:2,
-    why:[
-      `**(A) Incorreta.** Anti-inflamatórias/regulatórias.`,
-      `**(B) Incorreta.** Associadas a polarização Th; fases posteriores.`,
-      `**(C) Correta.** [cite_start]Produzidas precocemente e ativam endotélio + efeitos sistêmicos[cite: 2710, 2716].`,
-      `**(D) Incorreta.** Importantes para diferenciação T (Th1/Th17), não iniciadoras vasculares primárias.`
-    ]
-  },
-  {
-    q:`13. Sequência correta da migração de neutrófilo do sangue para o tecido:`,
-    options:[
-      `(A) Adesão estável → Rolamento → Transmigração → Quimiotaxia.`,
-      `(B) [cite_start]Rolamento → Ativação de integrinas por quimiocinas → Adesão estável → Transmigração[cite: 2171, 2315, 2328, 2329, 2330].`,
-      `(C) Quimiotaxia → Transmigração → Rolamento → Adesão estável.`,
-      `(D) Ativação de integrinas → Quimiotaxia → Rolamento → Adesão estável.`
-    ],
-    a:1,
-    why:[
-      `**(A) Incorreta.** Ordem invertida.`,
-      `**(B) Correta.** [cite_start]Rolamento (selectinas) → integrinas ativadas → adesão firme → transmigração[cite: 2315, 2328, 2330].`,
-      `**(C) Incorreta.** Coloca quimiotaxia antes do extravasamento.`,
-      `**(D) Incorreta.** Rolamento deve vir antes da adesão firme.`
-    ]
-  },
-  {
-    q:`14. Principal função do inflamassoma NLRP3:`,
-    options:[
-      `(A) Reconhecer PAMPs na superfície e secretar interferons.`,
-      `(B) Ligar-se diretamente a bactérias e ativar complemento.`,
-      `(C) [cite_start]Detectar PAMPs/DAMPs no citosol → ativar Caspase-1 → IL-1β madura[cite: 2558, 2584, 2586, 2594].`,
-      `(D) Promover maturação de linfócitos T no timo.`
-    ],
-    a:2,
-    why:[
-      `**(A) Incorreta.** Superfície/IFNs ≈ TLRs/RLRs, não inflamassoma (citosólico).`,
-      `**(B) Incorreta.** Descreve vias de MBL/anticorpos, não NLRP3.`,
-      `**(C) Correta.** [cite_start]Ativação gera IL-1β/IL-18 via Caspase-1[cite: 2584, 2597].`,
-      `**(D) Incorreta.** Timo ≠ inflamassoma.`
-    ]
-  }
+    why:[`**(A) Incorreta.** Febre é consequência sistêmica, não a função primária.`,
+         `**(B) Correta.** A função central é defesa contra patógenos; eliminar estranhos é correlato.`,
+         `**(C) Incorreta.** Influência de citocinas ≠ função primária do SI.`,
+         `**(D) Incorreta.** Reparo decorre da inflamação; primeiro é a defesa.`] },
+  { q:`2. A existência de alergias e lúpus mostra que:`,
+    options:[`(A) O sistema imune torna-se inerentemente patológico.`,`(B) Mecanismos protetores, desregulados/mal direcionados, podem causar doença.`,`(C) Adaptativa é sempre prejudicial e inata sempre protetora.`,`(D) Patógenos reprogramam permanentemente o SI para autoagressão.`],
+    a:1, why:[`**(A) Incorreta.** O problema é regulação/alvo, não potência.`,
+                `**(B) Correta.** Mesmo mecanismo, alvo errado ou excesso = patologia.`,
+                `**(C) Incorreta.** Ambas podem causar doença quando desreguladas.`,
+                `**(D) Incorreta.** Gatilhos existem, mas o núcleo é falha de autotolerância.`] },
+  { q:`3. Nas primeiras horas após a entrada do patógeno, quem inicia a defesa?`,
+    options:[`(A) Adaptativa com anticorpos rápidos.`,`(B) Inata com mecanismos pré-existentes.`,`(C) Ambos ao mesmo tempo e velocidade.`,`(D) Humoral isolado via complemento instantâneo.`],
+    a:1, why:[`**(A) Incorreta.** Adaptativa leva dias.`,
+              `**(B) Correta.** Inata responde em horas porque já está pronta.`,
+              `**(C) Incorreta.** Inata precede adaptativa.`,
+              `**(D) Incorreta.** Complemento não é instantâneo nem único componente.`] },
+  { q:`4. Diferença central de reconhecimento entre inata e adaptativa:`,
+    options:[`(A) Inata detecta PAMPs; adaptativa reconhece antígenos específicos.`,`(B) Inata usa MHC; adaptativa usa TLRs.`,`(C) Inata só bactérias; adaptativa vírus/fungos.`,`(D) Inata apenas por DAMPs; adaptativa por PAMPs.`],
+    a:0, why:[`**(A) Correta.** Assinaturas compartilhadas vs. detalhes finos.`,
+              `**(B) Incorreta.** MHC é da adaptativa; TLRs são da inata.`,
+              `**(C) Incorreta.** Ambos lidam com vários patógenos.`,
+              `**(D) Incorreta.** Inata responde a PAMPs e DAMPs; adaptativa por antígenos.`] },
+  { q:`5. O que define “memória imunológica”?`,
+    options:[`(A) Inata sempre responde mais forte.`,`(B) Adaptativa responde mais rápido e melhor ao mesmo antígeno.`,`(C) Inflamação crônica de baixo grau.`,`(D) Só anticorpos circulantes.`],
+    a:1, why:[`**(A) Incorreta.** Inata clássica não tem memória específica.`,
+              `**(B) Correta.** B/T memória geram resposta secundária otimizada.`,
+              `**(C) Incorreta.** É estado patológico.`,
+              `**(D) Incorreta.** Memória celular também é crucial.`] },
+  { q:`6. Vantagem de possuir inata e adaptativa:`,
+    options:[`(A) São redundantes.`,`(B) Inata contém e instrui; adaptativa erradica.`,`(C) Inata só barreiras; adaptativa órgãos internos.`,`(D) Inata bactérias; adaptativa vírus.`],
+    a:1, why:[`**(A) Incorreta.** São complementares.`,
+              `**(B) Correta.** Inata sinaliza/molda adaptativa e contém no início.`,
+              `**(C) Incorreta.** Ambas atuam em todo o corpo.`,
+              `**(D) Incorreta.** Falsa dicotomia.`] },
+  { q:`7. Em apendicite aguda, qual célula domina o infiltrado inicial?`,
+    options:[`(A) Plasmócitos.`,`(B) Linfócitos T CD4+.`,`(C) Mastócitos.`,`(D) Neutrófilos.`],
+    a:3, why:[`**(A) e (B) Incorretas.** Predominam em fases tardias/crônicas.`,
+              `**(B) Nota.** T CD4+ orquestram, mas não dominam o início agudo.`,
+              `**(C) Incorreta.** Iniciam eventos locais, porém não predominam no infiltrado.`,
+              `**(D) Correta.** Marca clássica da inflamação aguda.`] },
+  { q:`8. Ponte inata–adaptativa pela célula dendrítica:`,
+    options:[`(A) Fagocitar e apresentar via MHC II.`,`(B) Ativar linfócitos T naive (resposta primária).`,`(C) Produzir TNF e IL-1.`,`(D) Reconhecer PAMPs por TLRs.`],
+    a:1, why:[`**(A) Incorreta.** Macrófagos e B também apresentam (objetivos diferentes).`,
+              `**(B) Correta.** DC ativa T naive com alta eficiência.`,
+              `**(C) Incorreta.** Não é exclusivo.`,
+              `**(D) Incorreta.** TLRs não são exclusivos.`] },
+  { q:`9. Propósito biológico da inflamação:`,
+    options:[`(A) Causar dor para alertar.`,`(B) Levar leucócitos e proteínas ao foco para eliminar agente e iniciar reparo.`,`(C) Aumentar temperatura local para destruir patógenos.`,`(D) Formar cicatriz fibrótica para isolar área.`],
+    a:1, why:[`**(A) Incorreta.** Dor é sintoma, não propósito.`,
+              `**(B) Correta.** Entrega de defesas no local certo.`,
+              `**(C) Incorreta.** Calor vem da vasodilatação.`,
+              `**(D) Incorreta.** Cicatriz é desfecho possível, não objetivo inicial.`] },
+  { q:`10. O que são PAMPs?`,
+    options:[`(A) Moléculas únicas por cepa (adaptativa).`,`(B) Toxinas bacterianas letais.`,`(C) Estruturas conservadas de micróbios (ex.: LPS, peptidoglicano) da inata.`,`(D) Moléculas do hospedeiro liberadas no dano.`],
+    a:2, why:[`**(A) Incorreta.** Isso descreve antígeno/epítopo.`,
+              `**(B) Incorreta.** PAMPs são estruturais, não apenas toxinas.`,
+              `**(C) Correta.** Conservação permite reconhecimento amplo com poucos receptores.`,
+              `**(D) Incorreta.** Define DAMPs.`] },
+  { q:`11. Queimadura solar sem infecção: o que ativa a inata?`,
+    options:[`(A) PAMPs liberados pela radiação UV.`,`(B) DAMPs (ATP, DNA) de células danificadas.`,`(C) Autoanticorpos pré-existentes.`,`(D) Complemento ativado diretamente pela luz.`],
+    a:1, why:[`**(A) Incorreta.** PAMPs são microbianos.`,
+              `**(B) Correta.** Inflamação estéril começa por DAMPs.`,
+              `**(C) Incorreta.** Não é o mecanismo aqui.`,
+              `**(D) Incorreta.** Luz não ativa diretamente o complemento.`] },
+  { q:`12. Citocinas-chave que iniciam/amplificam inflamação aguda no endotélio:`,
+    options:[`(A) IL-10 e TGF-β.`,`(B) IFN-γ e IL-4.`,`(C) TNF e IL-1.`,`(D) IL-12 e IL-23.`],
+    a:2, why:[`**(A) Incorreta.** Predominantemente regulatórias.`,
+              `**(B) Incorreta.** Relacionadas à polarização Th.`,
+              `**(C) Correta.** Ativam endotélio e efeitos sistêmicos precocemente.`,
+              `**(D) Incorreta.** Mais ligadas à diferenciação T.`] },
+  { q:`13. Sequência correta da migração do neutrófilo (sangue → tecido):`,
+    options:[`(A) Adesão estável → Rolamento → Transmigração → Quimiotaxia.`,`(B) Rolamento → Integrinas ativadas por quimiocinas → Adesão estável → Transmigração.`,`(C) Quimiotaxia → Transmigração → Rolamento → Adesão estável.`,`(D) Integrinas → Quimiotaxia → Rolamento → Adesão estável.`],
+    a:1, why:[`**(A) Incorreta.** Ordem invertida.`,
+              `**(B) Correta.** Rolamento → ativação de integrinas → adesão firme → transmigração.`,
+              `**(C) Incorreta.** Coloca quimiotaxia antes do extravasamento.`,
+              `**(D) Incorreta.** Falta o rolamento antes da adesão firme.`] },
+  { q:`14. Principal função do inflamassoma NLRP3:`,
+    options:[`(A) Reconhecer PAMPs na superfície e secretar interferons.`,`(B) Ligar-se diretamente a bactérias e ativar complemento.`,`(C) Detectar PAMPs/DAMPs no citosol → ativar Caspase-1 → liberar IL-1β madura.`,`(D) Promover a maturação de linfócitos T no timo.`],
+    a:2, why:[`**(A) Incorreta.** Isso é mais TLRs/RLRs; inflamassoma é citosólico.`,
+              `**(B) Incorreta.** Descreve vias de MBL/anticorpos.`,
+              `**(C) Correta.** Gera IL-1β/IL-18 via Caspase-1.`,
+              `**(D) Incorreta.** Timo não envolve inflamassoma.`] }
 ];
 
 /* ===== PARÂMETROS ===== */
 const TOTAL_TIME = 50*60; // 50 minutos
-const WARN_THRESHOLD = 60; // avisa com 1 min restante
+const WARN_THRESHOLD = 60; // destaca quando faltar 1 min
 
 /* ===== ESTADO ===== */
 let idx=0, wrong=0, timeLeft=TOTAL_TIME;
@@ -471,14 +391,18 @@ const digitsEl=document.getElementById('digits');
 const led=document.getElementById('led');
 
 const entryOverlay=document.getElementById('entryOverlay');
-const startBtn=document.getElementById('startBtn');
 const defusedOverlay=document.getElementById('defused');
-const againBtn=document.getElementById('againBtn');
+
+const intro=document.getElementById('intro');
+const introStartBtn=document.getElementById('introStartBtn');
 
 const fsToggle=document.getElementById('fsToggle');
+
 const flashEl=document.getElementById('flash');
+const villainWin=document.getElementById('villainWin');
 const crackImgEl=document.getElementById('crackimg');
 const restartBtn=document.getElementById('restartBtn');
+const againBtn=document.getElementById('againBtn');
 
 /* ===== UTILS ===== */
 const fmt=(s)=> s.toString().padStart(2,'0');
@@ -526,7 +450,7 @@ function choose(i,btn){
     document.getElementById('main').classList.add('shake'); setTimeout(()=>document.getElementById('main').classList.remove('shake'),250);
     const left=2-wrong;
 
-    // Mostrar justificativa da alternativa clicada (SEM revelar a correta)
+    // justificativa da alternativa clicada (sem revelar a correta)
     const why = QUESTIONS[idx].why?.[i] ?? 'Resposta incorreta.';
     fbEl.innerHTML = why; fbEl.classList.add('bad');
 
@@ -544,7 +468,7 @@ function tick(){
   timeLeft--; setTimer(timeLeft);
   if (timeLeft<=0) explode('Tempo esgotado.');
 }
-function start(){
+function startGame(){
   if (started) return; started=true;
   entryOverlay.style.display='none';
   setTimer(timeLeft);
@@ -552,16 +476,35 @@ function start(){
   ticking=setInterval(tick,1000);
 }
 
+/* ===== Fluxo de telas ===== */
+function showEntryThenStart(){
+  // mostra informes por ~2,5s e começa
+  entryOverlay.style.display='flex';
+  setTimeout(startGame, 2500);
+}
+introStartBtn.onclick = ()=>{
+  intro.style.display='none';
+  showEntryThenStart();
+};
+
 /* ===== EXPLOSÃO ===== */
 function explode(_reason){
   if (exploded||defused) return; exploded=true;
   clearInterval(ticking);
   // 1) flash branco (2s)
   flashEl.style.display='block';
-  // 2) tela rachada (tela.jpg) por 2s sem botão
-  setTimeout(()=>{ flashEl.style.display='none'; crackImgEl.style.display='flex'; },2000);
-  // 3) depois mais 2s, botão Reiniciar
-  setTimeout(()=>{ restartBtn.style.display='inline-block'; },4000);
+  // 2) vilão comemora (imagem à direita) — aparece no t=2s
+  setTimeout(()=>{
+  flashEl.style.display='none';
+  villainWin.style.display='flex';
+}, 2000);
+  // 3) tela rachada logo depois de 2s de vilão (t=4s)
+  setTimeout(()=>{
+  villainWin.style.display='none';
+  crackImgEl.style.display='flex';
+  restartBtn.style.display='inline-block'; // botão já visível
+}, 9000);
+
 }
 
 /* ===== SUCESSO ===== */
@@ -577,12 +520,14 @@ function defuse(){
 function restartGame(){
   clearInterval(ticking);
   idx=0; wrong=0; timeLeft=TOTAL_TIME; started=false; exploded=false; defused=false;
-  crackImgEl.style.display='none'; restartBtn.style.display='none'; flashEl.style.display='none';
-  defusedOverlay.style.display='none';
+  crackImgEl.style.display='none'; restartBtn.style.display='none';
+  flashEl.style.display='none'; villainWin.style.display='none';
+  defusedOverlay.style.display='none'; dialEl.classList.remove('warnGlow');
   led.style.background='radial-gradient(circle at 30% 30%, #ffa0a0, var(--accent))';
   barEl.style.width='0%';
-  setTimer(timeLeft); setProgress();
-  start();
+  // volta para a intro do cientista
+  document.getElementById('qcount2').textContent = QUESTIONS.length;
+  intro.style.display='flex';
 }
 
 /* ===== FULLSCREEN opcional ===== */
@@ -592,11 +537,7 @@ async function enterFullscreen(){
   else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
   else if (el.msRequestFullscreen) await el.msRequestFullscreen();
 }
-async function maybeFullscreenAndStart(){
-  try{ if (CONFIG.requireFullscreen) await enterFullscreen(); }catch(e){}
-  start();
-}
-fsToggle.onclick=async ()=>{ try{ await enterFullscreen(); }catch(e){} };
+document.getElementById('fsToggle').onclick=async ()=>{ try{ await enterFullscreen(); }catch(e){} };
 
 /* ===== Anti-cola (melhor esforço) ===== */
 window.addEventListener('contextmenu', e=> e.preventDefault());
@@ -611,19 +552,21 @@ if (CONFIG.strictShortcuts){
     }
   },{capture:true});
 }
-// opcional: explodir ao sair da aba
+// // se quiser ativar: explode se sair da aba
 // window.addEventListener('blur',()=>{ if(started&&!exploded&&!defused) explode('Aba perdeu foco.'); });
 // document.addEventListener('visibilitychange',()=>{ if(document.visibilityState!=='visible'&&started&&!exploded&&!defused) explode('Aba oculta.'); });
 window.addEventListener('beforeprint',(e)=>{ e.preventDefault(); setTimeout(()=> explode('Tentativa de imprimir.'),0); });
 
 /* ===== Inicialização ===== */
 document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('entryOverlay').style.display='flex';
-  document.getElementById('startBtn').onclick=maybeFullscreenAndStart;
-  document.getElementById('againBtn').onclick=restartGame;
-  document.getElementById('restartBtn').addEventListener('click', restartGame);
-  qtotalEl.textContent = QUESTIONS.length.toString();
+  document.getElementById('qtotal').textContent = QUESTIONS.length;
+  document.getElementById('qcount1').textContent = QUESTIONS.length;
+  document.getElementById('qcount2').textContent = QUESTIONS.length;
+
   setTimer(timeLeft); setProgress();
+
+  document.getElementById('restartBtn').addEventListener('click', restartGame);
+  document.getElementById('againBtn').addEventListener('click', restartGame);
 });
 </script>
 </body>
