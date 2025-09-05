@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Resposta das Células T: Uma Visão Detalhada</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+        .diagram-box {
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .arrow {
+            position: relative;
+            padding: 0 20px;
+        }
+        .arrow::after {
+            content: '→';
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #3b82f6;
+        }
+         .dot-pattern {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 15px 15px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.3;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 flex flex-col h-screen relative overflow-hidden">
+    <div class="dot-pattern"></div>
+    <main id="presentation-container" class="w-full h-full bg-white overflow-hidden flex flex-col relative">
+        <!-- Slides -->
+        <div class="flex-grow p-8 md:p-12 overflow-y-auto">
+
+            <!-- Slide 1: Título -->
+            <div class="slide active flex-col items-center justify-center text-center h-full">
+                <div class="w-full max-w-4xl px-4">
+                    <p class="text-xl md:text-2xl text-blue-600 font-semibold">Curso de Medicina - UNIPÊ</p>
+                    <h1 class="text-4xl md:text-6xl font-bold text-slate-800 my-4 leading-tight">A Resposta das Células T</h1>
+                    <p class="text-2xl md:text-3xl text-slate-600">Imunidade Adaptativa Celular</p>
+                    
+                    <div class="mt-16 border-t border-slate-300 pt-10">
+                        <p class="text-lg text-slate-700 font-semibold">Componente Curricular:</p>
+                        <p class="text-lg text-slate-600 mb-6">Mecanismos de Agressão, Patológicos e de Defesa</p>
+                        <p class="text-lg text-slate-700 font-semibold">Professor:</p>
+                        <p class="text-lg text-slate-600">Rodrigo Niskier</p>
+                    </div>
+                     <button id="printSlidesBtn" class="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        <span>Imprimir Versão Apostilada</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 2: Introdução -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-blue-600 mb-6">1. Introdução: Os Dois Braços da Imunidade</h2>
+                <div class="grid md:grid-cols-2 gap-8 text-lg">
+                    <div class="diagram-box bg-blue-50 border-blue-200">
+                        <h3 class="font-bold text-blue-800 mb-2">Imunidade Humoral</h3>
+                        <p>Mediada por <span class="font-semibold">Anticorpos (Linfócitos B)</span>.</p>
+                        <p class="mt-2 text-slate-600"><strong>Alvo:</strong> Patógenos extracelulares, toxinas no sangue e fluidos.</p>
+                        <p class="mt-1 text-slate-600"><strong>Ex:</strong> Bactérias encapsuladas, venenos.</p>
+                    </div>
+                    <div class="diagram-box bg-teal-50 border-teal-200">
+                        <h3 class="font-bold text-teal-800 mb-2">Imunidade Celular</h3>
+                        <p>Mediada por <span class="font-semibold">Linfócitos T</span>.</p>
+                        <p class="mt-2 text-slate-600"><strong>Alvo:</strong> Patógenos intracelulares e células anormais.</p>
+                        <p class="mt-1 text-slate-600"><strong>Ex:</strong> Vírus, bactérias intracelulares, células tumorais.</p>
+                    </div>
+                </div>
+                <div class="mt-8 p-6 bg-slate-50 rounded-lg">
+                    <h3 class="font-bold text-xl mb-3">Características Essenciais das Células T:</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><span class="font-semibold">Reconhecimento Restrito:</span> Só reconhecem antíge os apresentados por moléculas do <span class="font-semibold">MHC</span> (Complexo Principal de Histocompatibilidade).</li>
+                        <li><span class="font-semibold">Funções Diversas:</span> Ativam outras células (macrófagos, linfócitos B) ou matam diretamente células-alvo.</li>
+                        <li><span class="font-semibold">Regulação Fina:</span> Um sistema de controle rigoroso para evitar autoimunidade e imunodeficiência.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 3: Desenvolvimento e Maturação -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-blue-600 mb-6">2. A "Escola" Tímica: Desenvolvimento e Maturação</h2>
+                <p class="mb-6 text-lg">Os precursores de linfócitos T (timócitos) nascem na Medula Óssea e migram para o Timo para se "formarem".</p>
+                <div class="diagram-box space-y-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-red-200 p-3 rounded-full">🦴</div>
+                        <div class="font-semibold text-lg">Medula Óssea <br><span class="text-sm font-normal text-slate-600">Origem dos precursores</span></div>
+                        <div class="flex-grow border-t-2 border-blue-400 border-dashed"></div>
+                        <div class="bg-blue-200 p-3 rounded-full">🦋</div>
+                        <div class="font-semibold text-lg">Timo <br><span class="text-sm font-normal text-slate-600">Centro de maturação</span></div>
+                    </div>
+                    <h3 class="font-bold text-xl text-center mt-4">Os Dois Testes de Seleção no Timo:</h3>
+                    <div class="grid md:grid-cols-2 gap-6 text-center">
+                        <div class="p-4 bg-green-50 border border-green-300 rounded-lg">
+                            <h4 class="font-bold text-green-800 text-lg">✅ Seleção Positiva</h4>
+                            <p class="mt-2 text-slate-600"><strong>Pergunta:</strong> "Você consegue reconhecer o MHC próprio?"</p>
+                            <p class="mt-2 font-semibold text-green-700">Resultado: Sobrevivem apenas os que reconhecem MHC próprio. Garante a <span class="italic">restrição ao MHC</span>.</p>
+                        </div>
+                        <div class="p-4 bg-red-50 border border-red-300 rounded-lg">
+                             <h4 class="font-bold text-red-800 text-lg">❌ Seleção Negativa</h4>
+                            <p class="mt-2 text-slate-600"><strong>Pergunta:</strong> "Você reage FORTE DEMAIS contra antígenos próprios?"</p>
+                            <p class="mt-2 font-semibold text-red-700">Resultado: Células autorreativas são eliminadas (apoptose). Previne a <span class="italic">autoimunidade</span>.</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="mt-6 p-4 bg-yellow-50 border border-yellow-300 rounded-lg">
+                    <h4 class="font-bold text-yellow-800">Relevância Clínica: Síndrome de DiGeorge</h4>
+                    <p class="text-slate-700">Uma condição congênita com ausência ou hipoplasia do timo. A consequência é uma deficiência grave de células T, levando a infecções recorrentes e graves, pois o repertório de linfócitos T não pode ser formado.</p>
+                </div>
+            </div>
+
+            <!-- Slide 4: Apresentação de Antígenos -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-blue-600 mb-6">3. A Ponte entre Imunidade Inata e Adaptativa</h2>
+                <p class="mb-6 text-lg">A ativação da célula T começa quando uma <strong>Célula Apresentadora de Antígeno (APC)</strong> mostra um fragmento de patógeno (peptídeo).</p>
+                <div class="diagram-box">
+                    <h3 class="font-bold text-xl mb-4">APCs Profissionais: Os "Sentinelas"</h3>
+                    <div class="flex justify-around text-center">
+                        <div><span class="text-4xl">🔬</span><p>Cél. Dendríticas</p></div>
+                        <div><span class="text-4xl">🍔</span><p>Macrófagos</p></div>
+                        <div><span class="text-4xl">🅱️</span><p>Linfócitos B</p></div>
+                    </div>
+                    <p class="mt-4 text-slate-600 text-center">A imunidade inata (via TLRs) ativa as APCs, que então expressam mais moléculas de MHC e coestimuladoras, preparando o cenário para a resposta T.</p>
+                </div>
+                <h3 class="font-bold text-xl mt-6 mb-4 text-center">Duas Vias de Apresentação, Dois Destinos:</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-purple-50 border border-purple-300 rounded-lg">
+                        <h4 class="font-bold text-purple-800 text-lg">Via MHC Classe I</h4>
+                        <p class="mt-2 text-slate-600">Apresenta peptídeos <span class="font-semibold">endógenos</span> (de dentro da célula).</p>
+                        <ul class="list-disc list-inside mt-2 ml-2">
+                            <li><strong>Exemplo:</strong> Proteínas virais, proteínas de tumores.</li>
+                            <li><strong>Quem reconhece:</strong> Linfócitos T <span class="font-bold">CD8+</span>.</li>
+                            <li><strong>Mensagem:</strong> "Esta célula está infectada/transformada. Mate-a!"</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-orange-50 border border-orange-300 rounded-lg">
+                        <h4 class="font-bold text-orange-800 text-lg">Via MHC Classe II</h4>
+                        <p class="mt-2 text-slate-600">Apresenta peptídeos <span class="font-semibold">exógenos</span> (fagocitados).</p>
+                         <ul class="list-disc list-inside mt-2 ml-2">
+                            <li><strong>Exemplo:</strong> Bactérias fagocitadas por um macrófago.</li>
+                            <li><strong>Quem reconhece:</strong> Linfócitos T <span class="font-bold">CD4+</span>.</li>
+                            <li><strong>Mensagem:</strong> "Encontrei um invasor. Ajude a organizar a defesa!"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 5: Ativação dos Linfócitos T -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-blue-600 mb-6">4. O Modelo dos Três Sinais para Ativação T</h2>
+                <p class="mb-6 text-lg">Uma ativação robusta e segura requer três sinais distintos da APC para a célula T.</p>
+                <div class="diagram-box">
+                    <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
+                        <!-- Sinal 1 -->
+                        <div class="text-center p-4 bg-blue-100 rounded-lg w-full md:w-1/3">
+                            <div class="text-2xl font-bold text-blue-700 bg-blue-200 rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-2">1</div>
+                            <h3 class="font-bold text-lg text-blue-800">Sinal 1: Reconhecimento</h3>
+                            <p class="text-sm text-slate-600">O <strong>TCR</strong> (Receptor de Célula T) se liga ao complexo <strong>peptídeo-MHC</strong>.</p>
+                             <p class="text-sm text-slate-600 mt-2 italic">Define a especificidade da resposta.</p>
+                        </div>
+                        <div class="text-2xl font-bold text-slate-400">+</div>
+                        <!-- Sinal 2 -->
+                        <div class="text-center p-4 bg-green-100 rounded-lg w-full md:w-1/3">
+                            <div class="text-2xl font-bold text-green-700 bg-green-200 rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-2">2</div>
+                            <h3 class="font-bold text-lg text-green-800">Sinal 2: Coestimulação</h3>
+                            <p class="text-sm text-slate-600"><strong>CD28</strong> (célula T) se liga a <strong>B7</strong> (APC).</p>
+                            <p class="text-sm text-slate-600 mt-2 italic">Confirma o perigo. Sem ele, a célula T se torna anérgica (inativa).</p>
+                        </div>
+                         <div class="text-2xl font-bold text-slate-400">+</div>
+                        <!-- Sinal 3 -->
+                        <div class="text-center p-4 bg-yellow-100 rounded-lg w-full md:w-1/3">
+                            <div class="text-2xl font-bold text-yellow-700 bg-yellow-200 rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-2">3</div>
+                            <h3 class="font-bold text-lg text-yellow-800">Sinal 3: Citocinas</h3>
+                            <p class="text-sm text-slate-600">APCs secretam citocinas (ex: IL-12, IL-4) que direcionam a diferenciação.</p>
+                            <p class="text-sm text-slate-600 mt-2 italic">Define o "sabor" da resposta (Th1, Th2, etc.).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 text-center">
+                    <p class="text-2xl">⬇️</p>
+                    <div class="p-4 bg-indigo-100 border border-indigo-300 rounded-lg inline-block">
+                        <h3 class="font-bold text-xl text-indigo-800">Expansão Clonal</h3>
+                        <p class="text-slate-700">A célula T ativada se prolifera massivamente, criando um exército de clones específicos para o antígeno.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6: Diferenciação CD4+ -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-blue-600 mb-6">5. As Múltiplas Faces das Células T CD4+ (Auxiliares)</h2>
+                <p class="mb-6 text-lg">Dependendo das citocinas do Sinal 3, as células T CD4+ se diferenciam em subpopulações especializadas.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                    <div class="p-4 rounded-lg bg-red-50 border border-red-200">
+                        <h3 class="font-bold text-red-800">Th1 (Guerreiro Celular)</h3>
+                        <p><strong>Citocina chave:</strong> IFN-γ</p>
+                        <p><strong>Função:</strong> Ativa macrófagos para matar patógenos intracelulares.</p>
+                        <p><strong>Alvo:</strong> <em>M. tuberculosis</em>, vírus.</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-blue-50 border border-blue-200">
+                        <h3 class="font-bold text-blue-800">Th2 (Defesa Parasitária)</h3>
+                        <p><strong>Citocinas:</strong> IL-4, IL-5, IL-13</p>
+                        <p><strong>Função:</strong> Recruta eosinófilos, mastócitos e promove produção de IgE.</p>
+                        <p><strong>Alvo:</strong> Helmintos, alérgenos.</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+                        <h3 class="font-bold text-yellow-800">Th17 (Sentinela de Barreira)</h3>
+                        <p><strong>Citocinas:</strong> IL-17, IL-22</p>
+                        <p><strong>Função:</strong> Recruta neutrófilos para locais de infecção.</p>
+                        <p><strong>Alvo:</strong> Bactérias extracelulares, fungos (<em>Candida</em>).</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-green-50 border border-green-200">
+                        <h3 class="font-bold text-green-800">Treg (Diplomata/Regulador)</h3>
+                        <p><strong>Citocinas:</strong> IL-10, TGF-β</p>
+                        <p><strong>Função:</strong> Suprime a resposta imune, mantém a tolerância e previne autoimunidade.</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-purple-50 border border-purple-200">
+                        <h3 class="font-bold text-purple-800">Tfh (Auxiliar Folicular)</h3>
+                        <p><strong>Citocina chave:</strong> IL-21</p>
+                        <p><strong>Função:</strong> Ajuda linfócitos B nos centros germinativos a produzir anticorpos de alta afinidade.</p>
+                    </div>
+                </div>
+                 <div class="mt-6 p-4 bg-orange-50 border border-orange-300 rounded-lg">
+                    <h4 class="font-bold text-orange-800">Equilíbrio é Tudo</h4>
+                    <p class="text-slate-700">O desequilíbrio entre essas subpopulações está na raiz de muitas doenças: excesso de Th1/Th17 em doenças autoimunes, predomínio de Th2 em alergias, e deficiência de Treg em autoimunidade.</p>
+                </div>
+            </div>
+
+             <!-- Slide 7: Diferenciação CD8+ -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-blue-600 mb-6">6. A Formação dos Assassinos: Células T CD8+</h2>
+                <p class="mb-6 text-lg">As células T CD8+ naive se diferenciam em <strong>Linfócitos T Citotóxicos (CTLs)</strong>, a força de elite para eliminar células comprometidas.</p>
+                <div class="diagram-box">
+                    <h3 class="font-bold text-xl mb-4">Requisitos para Diferenciação:</h3>
+                     <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><strong>Apresentação Cruzada:</strong> Células dendríticas especializadas podem capturar antígenos exógenos (como de um vírus que infectou outra célula) e apresentá-los via MHC classe I para o CD8+.</li>
+                        <li><strong>Ajuda CD4+:</strong> Frequentemente, as células T CD4+ "licenciam" a APC (via CD40-CD40L) para que ela possa ativar eficientemente a célula CD8+ ou fornecem citocinas como a IL-2.</li>
+                    </ul>
+                </div>
+                 <div class="mt-6 p-6 bg-red-50 border border-red-300 rounded-lg">
+                    <h3 class="font-bold text-xl text-red-800 mb-3">O Arsenal do CTL:</h3>
+                    <div class="flex items-start space-x-4">
+                        <span class="text-3xl">🎯</span>
+                        <div>
+                            <h4 class="font-semibold">Grânulos Citotóxicos</h4>
+                            <p class="text-slate-600"><span class="font-bold">Perforina:</span> Cria poros na membrana da célula-alvo.</p>
+                            <p class="text-slate-600"><span class="font-bold">Granzimas:</span> Entram pelos poros e ativam caspases, induzindo a apoptose (morte celular programada).</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4 mt-4">
+                         <span class="text-3xl">🔥</span>
+                        <div>
+                            <h4 class="font-semibold">Produção de IFN-γ</h4>
+                            <p class="text-slate-600">Ativa macrófagos na vizinhança para limpar os restos celulares e aumenta a expressão de MHC I nas células próximas, tornando-as alvos mais fáceis se também estiverem infectadas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 8: Mecanismos Efetores -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-blue-600 mb-6">7. A Fase Efetora: Células T em Ação</h2>
+                <p class="mb-6 text-lg">Uma vez diferenciadas, as células T executam suas funções para eliminar a ameaça.</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Ação CD4+ -->
+                    <div class="diagram-box bg-sky-50 border-sky-200">
+                        <h3 class="font-bold text-2xl text-sky-800 mb-4">Ações das Células T CD4+</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start space-x-3">
+                                <span class="text-2xl">🗣️</span>
+                                <div><span class="font-semibold">Ativação de Fagócitos:</span> A Th1, via <span class="font-mono">CD40L</span> e <span class="font-mono">IFN-γ</span>, "superativa" macrófagos, aumentando sua capacidade de matar micróbios internalizados.</div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span class="text-2xl">🤝</span>
+                                <div><span class="font-semibold">Ajuda aos Linfócitos B:</span> A Tfh permite que os linfócitos B troquem de isotipo e produzam anticorpos de alta afinidade.</div>
+                            </li>
+                             <li class="flex items-start space-x-3">
+                                <span class="text-2xl">📣</span>
+                                <div><span class="font-semibold">Recrutamento:</span> Th17 recruta neutrófilos, enquanto Th2 recruta eosinófilos, trazendo as células certas para o tipo certo de briga.</div>
+                            </li>
+                        </ul>
+                    </div>
+                     <!-- Ação CD8+ -->
+                    <div class="diagram-box bg-rose-50 border-rose-200">
+                        <h3 class="font-bold text-2xl text-rose-800 mb-4">Ações das Células T CD8+</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start space-x-3">
+                                <span class="text-2xl">💣</span>
+                                <div><span class="font-semibold">Morte Direta (Perforina/Granzima):</span> O CTL se liga à célula-alvo infectada e libera seus grânulos, forçando-a a cometer suicídio (apoptose).</div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span class="text-2xl">💀</span>
+                                <div><span class="font-semibold">Morte via Fas/FasL:</span> O CTL expressa a molécula Fas Ligante (FasL), que se liga ao receptor Fas na célula-alvo, outra via potente para induzir apoptose.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 9: Memória Imunológica -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-blue-600 mb-6">8. Memória Imunológica: Resposta Primária vs. Secundária</h2>
+                <p class="mb-8 text-lg text-slate-600">A memória imunológica é a capacidade do sistema imune de responder de forma mais rápida e robusta a um patógeno que já encontrou. Isso se baseia na sobrevivência de células de memória de longa duração.</p>
+                <div class="flex-grow grid md:grid-cols-2 gap-8">
+                    <!-- Resposta Primária -->
+                    <div class="diagram-box flex flex-col border-l-4 border-slate-400">
+                        <h3 class="font-bold text-2xl text-slate-700 mb-4">Resposta Primária</h3>
+                        <p class="mb-4 text-slate-500 italic">Primeiro contato com o antígeno</p>
+                        <ul class="space-y-4 text-slate-700">
+                            <li class="flex items-start"><span class="mr-3 text-slate-400">🕒</span><div><strong>Latência:</strong> Lenta, leva de 7 a 14 dias para atingir o pico.</div></li>
+                            <li class="flex items-start"><span class="mr-3 text-slate-400">📉</span><div><strong>Magnitude:</strong> Menor número de células T efetoras geradas.</div></li>
+                            <li class="flex items-start"><span class="mr-3 text-slate-400">👶</span><div><strong>Células Ativadas:</strong> Depende da ativação de linfócitos T naive (inexperientes).</div></li>
+                        </ul>
+                        <div class="mt-auto pt-4">
+                            <p class="font-semibold text-center p-3 bg-slate-100 rounded-md text-slate-800">Resultado: Eliminação do patógeno e GERAÇÃO de um pool de células de memória.</p>
+                        </div>
+                    </div>
+                    <!-- Resposta Secundária -->
+                    <div class="diagram-box flex flex-col border-l-4 border-blue-500 bg-blue-50">
+                        <h3 class="font-bold text-2xl text-blue-700 mb-4">Resposta Secundária</h3>
+                        <p class="mb-4 text-blue-500 italic">Reencontro com o mesmo antígeno</p>
+                        <ul class="space-y-4 text-slate-700">
+                            <li class="flex items-start"><span class="mr-3 text-blue-500">⚡</span><div><strong>Latência:</strong> Muito mais rápida, pico em 2 a 3 dias.</div></li>
+                            <li class="flex items-start"><span class="mr-3 text-blue-500">📈</span><div><strong>Magnitude:</strong> 100 a 1000 vezes maior, com expansão massiva de células de memória.</div></li>
+                            <li class="flex items-start"><span class="mr-3 text-blue-500">🎖️</span><div><strong>Células Ativadas:</strong> Ativação direta de células de memória (experientes e mais sensíveis).</div></li>
+                        </ul>
+                        <div class="mt-auto pt-4">
+                             <p class="font-semibold text-center p-3 bg-blue-100 rounded-md text-blue-800">Resultado: Eliminação rápida e eficiente do patógeno, muitas vezes assintomática.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 p-4 bg-teal-50 border border-teal-300 rounded-lg">
+                    <h4 class="font-bold text-teal-800">A Base da Vacinação</h4>
+                    <p class="text-slate-700">As vacinas simulam a resposta primária de forma segura, criando células de memória sem causar a doença. Isso prepara o corpo para montar uma resposta secundária potente e protetora ao encontrar o patógeno real.</p>
+                </div>
+            </div>
+            
+             <!-- Slide 10: Regulação -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-blue-600 mb-6">9. Mecanismos de Regulação: Os "Freios" do Sistema</h2>
+                <p class="mb-6 text-lg">A resposta T é poderosa e precisa ser controlada para não sair do controle e atacar o próprio corpo.</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Treg -->
+                    <div class="diagram-box bg-green-50 border-green-200">
+                        <h3 class="font-bold text-xl text-green-800 mb-4">Células T Reguladoras (Treg)</h3>
+                         <ul class="space-y-3 text-slate-700">
+                             <li>Atuam como "pacificadores", suprimindo ativamente a proliferação e função de outras células T efetoras.</li>
+                             <li>Secretam citocinas imunossupressoras como <strong>IL-10</strong> e <strong>TGF-β</strong>.</li>
+                             <li>Essenciais para manter a tolerância periférica a autoantígenos e prevenir doenças autoimunes.</li>
+                        </ul>
+                    </div>
+                     <!-- Checkpoints -->
+                    <div class="diagram-box bg-orange-50 border-orange-200">
+                        <h3 class="font-bold text-xl text-orange-800 mb-4">Checkpoints Imunológicos</h3>
+                        <ul class="space-y-3 text-slate-700">
+                            <li>São moléculas inibitórias expressas em células T ativadas, funcionando como freios fisiológicos.</li>
+                            <li><strong>CTLA-4:</strong> Compete com CD28 pela ligação a B7, mas envia um sinal inibitório. Atua no início da ativação.</li>
+                             <li><strong>PD-1:</strong> Expresso em células T cronicamente ativadas. Sua ligação com PD-L1 (em outras células) induz inibição. Atua na fase efetora, nos tecidos.</li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="mt-6 p-4 bg-indigo-50 border border-indigo-300 rounded-lg">
+                    <h4 class="font-bold text-indigo-800">Revolução na Oncologia</h4>
+                    <p class="text-slate-700">Muitos tumores "sequestram" esses checkpoints (ex: expressando PD-L1) para desligar as células T que os atacam. A imunoterapia com <strong>inibidores de checkpoint (anti-PD-1, anti-CTLA-4)</strong> bloqueia esses freios, "soltando" as células T para que possam destruir o câncer. Isso rendeu o Prêmio Nobel de Medicina em 2018.</p>
+                </div>
+            </div>
+
+            <!-- Slide 11: Implicações Clínicas -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-blue-600 mb-6">10. Implicações Clínicas: Quando a Resposta T Falha ou Exagera</h2>
+                 <div class="space-y-4">
+                    <details class="bg-slate-50 p-4 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg">Infeccções Virais</summary>
+                        <p class="mt-2 text-slate-600"><strong>HIV:</strong> Destrói seletivamente as células T CD4+, desmantelando o comando central da imunidade adaptativa e abrindo portas para infecções oportunistas.</p>
+                        <p class="mt-1 text-slate-600"><strong>CMV, Adenovírus:</strong> Alguns vírus evoluíram para inibir a expressão de MHC classe I, tornando as células infectadas "invisíveis" para os CTLs CD8+.</p>
+                    </details>
+                    <details class="bg-slate-50 p-4 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg">Doenças Autoimunes</summary>
+                        <p class="mt-2 text-slate-600"><strong>Excesso de Th1/Th17:</strong> Respostas exageradas contra autoantígenos levam à destruição tecidual em doenças como Esclerose Múltipla, Artrite Reumatoide e Psoríase.</p>
+                        <p class="mt-1 text-slate-600"><strong>Deficiência de Treg:</strong> Falha na regulação permite que células T autorreativas causem doenças como Lúpus Eritematoso Sistêmico e Diabetes Tipo 1.</p>
+                    </details>
+                     <details class="bg-slate-50 p-4 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg">Alergias e Asma</summary>
+                        <p class="mt-2 text-slate-600"><strong>Predomínio de Th2:</strong> Uma resposta Th2 desproporcional a antígenos ambientais inofensivos (alérgenos) leva à produção de IgE, ativação de mastócitos e eosinófilos, causando a inflamação alérgica.</p>
+                    </details>
+                     <details class="bg-slate-50 p-4 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg">Transplantes e Câncer</summary>
+                        <p class="mt-2 text-slate-600"><strong>Rejeição de Transplantes:</strong> Células T do receptor (especialmente CD8+) reconhecem as moléculas de MHC do órgão doado como estranhas (aloantígenos) e o atacam. O tratamento envolve imunossupressores que inibem a ativação T (ex: Ciclosporina).</p>
+                        <p class="mt-1 text-slate-600"><strong>Câncer:</strong> Além da evasão por checkpoints, a terapia com <strong>células CAR-T</strong> modifica geneticamente as células T do próprio paciente para que expressem um receptor quimérico (CAR) que reconhece um antígeno tumoral, transformando-as em "mísseis teleguiados" contra o câncer.</p>
+                    </details>
+                </div>
+            </div>
+
+             <!-- Slide 12: Conclusão -->
+            <div class="slide flex-col items-center justify-center text-center h-full">
+                <h2 class="text-3xl md:text-4xl font-bold text-blue-600 mb-6">11. Conclusão: O Equilíbrio Delicado</h2>
+                <p class="text-xl text-slate-700 max-w-3xl mx-auto mb-8">A resposta das células T é um sistema de vigilância e defesa de extraordinária complexidade e poder, essencial para a nossa sobrevivência.</p>
+                <div class="grid md:grid-cols-2 gap-8 w-full max-w-3xl">
+                    <div class="p-6 bg-red-50 border border-red-200 rounded-lg">
+                        <h3 class="font-bold text-red-800 text-xl">Quando Deficiente</h3>
+                        <p class="mt-2 text-slate-600">O corpo se torna vulnerável a infecções graves (imunodeficiências) e à proliferação de células malignas (câncer).</p>
+                    </div>
+                     <div class="p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <h3 class="font-bold text-yellow-800 text-xl">Quando Exacerbada</h3>
+                        <p class="mt-2 text-slate-600">O sistema se volta contra si mesmo, causando autoimunidade, alergias e rejeição de transplantes.</p>
+                    </div>
+                </div>
+                 <p class="text-lg text-slate-600 max-w-3xl mx-auto mt-8">Compreender esses mecanismos não é apenas um exercício acadêmico; é a base da medicina moderna, impulsionando o desenvolvimento de vacinas, imunoterapias para o câncer e tratamentos para doenças autoimunes que transformam a vida de milhões de pessoas.</p>
+            </div>
+
+
+        </div>
+
+        <!-- Navegação e Barra de Progresso -->
+        <div class="flex-shrink-0 bg-slate-50 border-t border-slate-200 p-4 flex items-center justify-between">
+            <button id="prevBtn" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Anterior</button>
+            <div class="flex-grow mx-4">
+                <div class="w-full bg-slate-200 rounded-full h-2.5">
+                    <div id="progressBar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <div id="slideCounter" class="text-center text-sm text-slate-500 mt-1">Slide 1 / 12</div>
+            </div>
+            <button id="nextBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Próximo</button>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const progressBar = document.getElementById('progressBar');
+            const slideCounter = document.getElementById('slideCounter');
+            const printSlidesBtn = document.getElementById('printSlidesBtn');
+
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+
+            function showSlide(index) {
+                slides[currentSlide].classList.remove('active');
+                slides[index].classList.add('active');
+                const presentationContainer = document.querySelector('.flex-grow');
+                presentationContainer.scrollTop = 0;
+                currentSlide = index;
+                updateControls();
+            }
+
+            function updateControls() {
+                const progressPercentage = ((currentSlide + 1) / totalSlides) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+                slideCounter.textContent = `Slide ${currentSlide + 1} / ${totalSlides}`;
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+            }
+            
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) showSlide(currentSlide - 1);
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') nextBtn.click();
+                else if (e.key === 'ArrowLeft') prevBtn.click();
+            });
+
+            function generatePrintableVersion() {
+                const slideContent = Array.from(slides).map((slide) => {
+                    const contentNode = slide.cloneNode(true);
+                    contentNode.querySelectorAll('button').forEach(el => el.remove());
+                    
+                    if (slide.querySelector('details')) {
+                         const detailsContent = Array.from(slide.querySelectorAll('details')).map(detail => {
+                            const summary = detail.querySelector('summary').innerHTML;
+                            const content = Array.from(detail.childNodes).filter(node => node.tagName === 'P').map(p => `<p>${p.innerHTML}</p>`).join('');
+                            return `<h4>${summary}</h4>${content}`;
+                         }).join('<br>');
+                         const title = slide.querySelector('h2').outerHTML;
+                         return `<div class="slide-print">${title}${detailsContent}</div>`;
+                    }
+                    
+                    return `<div class="slide-print">${contentNode.innerHTML}</div>`;
+                }).join('<hr class="print-hr">');
+
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Versão para Impressão - A Resposta das Células T</title>
+                            <style>
+                                body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; }
+                                .slide-print { page-break-before: always; padding: 2rem; }
+                                .slide-print:first-child { page-break-before: avoid; }
+                                h1, h2, h3, h4 { color: #1e3a8a; }
+                                h1 { font-size: 2.5em; text-align: center; }
+                                h2 { font-size: 1.8em; border-bottom: 2px solid #93c5fd; padding-bottom: 0.5rem; margin-top: 2rem;}
+                                p { margin-bottom: 1rem; }
+                                ul { list-style-position: inside; padding-left: 1rem;}
+                                .print-hr { border: 0; border-top: 1px dashed #ccc; margin: 2rem 0; }
+                                .grid, .flex { display: block; }
+                                .diagram-box { border: 1px solid #ccc; background: #f9f9f9; padding: 1rem; margin-bottom: 1rem; border-radius: 8px;}
+                                @media print {
+                                    .print-hr { display: none; }
+                                    body { margin: 0; }
+                                    .slide-print { padding: 1.5rem; }
+                                }
+                            </style>
+                            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+                        </head>
+                        <body>
+                            ${slideContent}
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.focus();
+            }
+
+            printSlidesBtn.addEventListener('click', generatePrintableVersion);
+
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>
+
