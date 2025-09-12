@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Resposta das Células B: Uma Visão Detalhada</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https="fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+        .diagram-box {
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .arrow {
+            position: relative;
+            padding: 0 20px;
+        }
+        .arrow::after {
+            content: '→';
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #14b8a6; /* teal-500 */
+        }
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob {
+            animation: blob 8s infinite;
+        }
+        .animation-delay-2000 {
+            animation-delay: -2s;
+        }
+        .animation-delay-4000 {
+            animation-delay: -4s;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800 flex flex-col h-screen relative overflow-hidden">
+    <main id="presentation-container" class="w-full h-full bg-gray-50 overflow-hidden flex flex-col relative">
+        <div class="absolute top-0 -left-4 w-96 h-96 bg-teal-200 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-96 h-96 bg-amber-200 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-96 h-96 bg-rose-200 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-blob animation-delay-4000"></div>
+        
+        <!-- Slides -->
+        <div class="relative z-10 flex-grow p-8 md:p-12 overflow-y-auto">
+
+            <!-- Slide 1: Título -->
+            <div class="slide active flex-col items-center justify-center text-center h-full">
+                <div class="w-full max-w-4xl px-4">
+                    <p class="text-xl md:text-2xl text-teal-600 font-semibold">Curso de Medicina - UNIPÊ</p>
+                    <h1 class="text-4xl md:text-6xl font-bold text-slate-800 my-4 leading-tight">A Resposta das Células B</h1>
+                    <p class="text-2xl md:text-3xl text-slate-600">Imunidade Adaptativa Humoral</p>
+                    
+                    <div class="mt-16 border-t border-slate-300 pt-10">
+                        <p class="text-lg text-slate-700 font-semibold">Componente Curricular:</p>
+                        <p class="text-lg text-slate-600 mb-6">Mecanismos de Agressão, Patológicos e de Defesa</p>
+                        <p class="text-lg text-slate-700 font-semibold">Professor:</p>
+                        <p class="text-lg text-slate-600">Rodrigo Niskier</p>
+                    </div>
+                     <button id="printSlidesBtn" class="mt-8 px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition-colors flex items-center space-x-2 mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        <span>Imprimir Versão Apostilada</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 2: Introdução -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-teal-600 mb-6">1. Introdução: As Fábricas de Anticorpos</h2>
+                <div class="grid md:grid-cols-2 gap-8 text-lg">
+                    <div class="diagram-box bg-teal-50 border-teal-200">
+                        <h3 class="font-bold text-teal-800 mb-2">Imunidade Humoral (Foco de Hoje)</h3>
+                        <p>Mediada por <span class="font-semibold">Anticorpos</span> produzidos por <span class="font-semibold">Linfócitos B</span>.</p>
+                        <p class="mt-2 text-slate-600"><strong>Alvo:</strong> Patógenos extracelulares e suas toxinas.</p>
+                        <p class="mt-1 text-slate-600"><strong>Ex:</strong> Bactérias no sangue, toxina tetânica, vírus antes de infectar a célula.</p>
+                    </div>
+                    <div class="diagram-box bg-amber-50 border-amber-200">
+                        <h3 class="font-bold text-amber-800 mb-2">Imunidade Celular</h3>
+                        <p>Mediada por <span class="font-semibold">Linfócitos T</span>.</p>
+                        <p class="mt-2 text-slate-600"><strong>Alvo:</strong> Células infectadas por patógenos intracelulares e células tumorais.</p>
+                        <p class="mt-1 text-slate-600"><strong>Ex:</strong> Células infectadas por vírus, micobactérias.</p>
+                    </div>
+                </div>
+                <div class="mt-8 p-6 bg-slate-50 rounded-lg">
+                    <h3 class="font-bold text-xl mb-3">Características Essenciais das Células B:</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><span class="font-semibold">Reconhecimento Direto:</span> Reconhecem antígenos em sua forma <span class="font-semibold">nativa</span> (proteínas, polissacarídeos, lipídeos) via Receptor de Célula B (BCR).</li>
+                        <li><span class="font-semibold">Produção de Anticorpos:</span> Sua principal função é se diferenciar em plasmócitos, que secretam grandes quantidades de anticorpos.</li>
+                        <li><span class="font-semibold">Apresentadoras de Antígeno (APCs):</span> Podem apresentar antígenos para ativar células T auxiliares, um passo crucial para uma resposta robusta.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 3: Desenvolvimento e Maturação -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-teal-600 mb-6">2. A "Fábrica" na Medula Óssea: Desenvolvimento e Maturação B</h2>
+                <p class="mb-6 text-lg">Diferente das células T, todo o processo de maturação dos Linfócitos B ocorre na Medula Óssea.</p>
+                <div class="diagram-box space-y-6">
+                    <div class="flex items-center space-x-4 justify-center">
+                        <div class="bg-red-200 p-3 rounded-full text-2xl">🦴</div>
+                        <div class="font-semibold text-lg">Medula Óssea <br><span class="text-sm font-normal text-slate-600">Origem, maturação e seleção</span></div>
+                    </div>
+                    <h3 class="font-bold text-xl text-center mt-4">Os Testes de Qualidade da Medula:</h3>
+                    <div class="grid md:grid-cols-2 gap-6 text-center">
+                        <div class="p-4 bg-green-50 border border-green-300 rounded-lg">
+                            <h4 class="font-bold text-green-800 text-lg">✅ Seleção Positiva</h4>
+                            <p class="mt-2 text-slate-600"><strong>Teste:</strong> "Você consegue montar um BCR funcional?"</p>
+                            <p class="mt-2 font-semibold text-green-700">Resultado: Sobrevivem apenas as células que expressam um receptor pré-B funcional. Garante que a célula possa receber sinais.</p>
+                        </div>
+                        <div class="p-4 bg-red-50 border border-red-300 rounded-lg">
+                             <h4 class="font-bold text-red-800 text-lg">❌ Seleção Negativa</h4>
+                            <p class="mt-2 text-slate-600"><strong>Teste:</strong> "Você reage contra antígenos próprios da medula?"</p>
+                            <p class="mt-2 font-semibold text-red-700">Resultado: Células autorreativas são eliminadas (apoptose) ou têm seu receptor editado. Previne a <span class="italic">autoimunidade</span>.</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="mt-6 p-4 bg-rose-50 border border-rose-300 rounded-lg">
+                    <h4 class="font-bold text-rose-800">Relevância Clínica: Agamaglobulinemia Ligada ao X (Bruton)</h4>
+                    <p class="text-slate-700">Uma doença genética onde uma enzima (BTK) é defeituosa, impedindo a maturação dos linfócitos B após a seleção positiva. O resultado é a ausência quase total de células B e anticorpos, levando a infecções bacterianas recorrentes e graves.</p>
+                </div>
+            </div>
+
+            <!-- Slide 4: Ativação T-Independente -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-teal-600 mb-6">3. Resposta Rápida: Ativação T-Independente</h2>
+                <p class="mb-6 text-lg">Uma via de ativação rápida que não necessita da ajuda de Linfócitos T. Ideal para certos tipos de antígenos.</p>
+                <div class="diagram-box">
+                    <h3 class="font-bold text-xl mb-4 text-center">O Gatilho: Antígenos Multivalentes</h3>
+                    <p class="text-center text-slate-600 mb-6">Tipicamente ativada por antígenos com múltiplos epítopos repetidos, como polissacarídeos da cápsula bacteriana ou LPS.</p>
+                    <div class="flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="text-4xl">🦠</span>
+                            <p class="font-semibold">Antígeno T-Independente</p>
+                            <p class="text-sm text-slate-500">(Ex: cápsula de pneumococo)</p>
+                        </div>
+                        <div class="text-5xl mx-6 text-teal-500">→</div>
+                         <div class="text-center">
+                            <span class="text-4xl">🅱️</span>
+                            <p class="font-semibold">Ligação Cruzada de BCRs</p>
+                             <p class="text-sm text-slate-500">Vários receptores são ligados ao mesmo tempo</p>
+                        </div>
+                        <div class="text-5xl mx-6 text-teal-500">→</div>
+                         <div class="text-center">
+                            <span class="text-4xl">💥</span>
+                            <p class="font-semibold">Ativação Direta</p>
+                             <p class="text-sm text-slate-500">Sinal forte o suficiente para ativar a célula B</p>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="font-bold text-xl mt-6 mb-4">Características da Resposta T-Independente:</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-green-50 border border-green-300 rounded-lg">
+                        <h4 class="font-bold text-green-800 text-lg">Vantagens</h4>
+                        <ul class="list-disc list-inside mt-2 ml-2">
+                            <li><strong>Rápida:</strong> Essencial para a defesa inicial contra bactérias encapsuladas.</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-amber-50 border border-amber-300 rounded-lg">
+                        <h4 class="font-bold text-amber-800 text-lg">Limitações</h4>
+                         <ul class="list-disc list-inside mt-2 ml-2">
+                            <li><strong>Pouca Troca de Isotipo:</strong> Produz principalmente <span class="font-bold">IgM</span> de baixa afinidade.</li>
+                            <li><strong>Sem Memória:</strong> Não gera uma memória imunológica robusta.</li>
+                            <li><strong>Ineficaz em Crianças:</strong> A resposta é fraca em crianças menores de 2 anos, explicando a vulnerabilidade a bactérias como <em>Haemophilus influenzae</em>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 5: Ativação T-Dependente -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-teal-600 mb-6">4. A Resposta Principal: Ativação T-Dependente</h2>
+                <p class="mb-6 text-lg">Para antígenos proteicos, é necessária uma colaboração sofisticada entre Linfócitos B e T Auxiliares (Tfh).</p>
+                <div class="diagram-box">
+                     <h3 class="font-bold text-xl text-center mb-6">Etapa 1: Captura e Apresentação do Antígeno</h3>
+                    <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
+                        <!-- Sinal 1 -->
+                        <div class="text-center p-4 bg-teal-100 rounded-lg w-full">
+                            <div class="text-2xl font-bold text-teal-700 bg-teal-200 rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-2">1</div>
+                            <h3 class="font-bold text-lg text-teal-800">Reconhecimento do Antígeno</h3>
+                            <p class="text-sm text-slate-600">O <strong>BCR</strong> na superfície da célula B liga-se a um antígeno proteico em sua forma nativa.</p>
+                        </div>
+                        <div class="text-4xl font-bold text-slate-400">→</div>
+                        <!-- Sinal 2 -->
+                        <div class="text-center p-4 bg-amber-100 rounded-lg w-full">
+                            <div class="text-2xl font-bold text-amber-700 bg-amber-200 rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-2">2</div>
+                            <h3 class="font-bold text-lg text-amber-800">Internalização e Processamento</h3>
+                            <p class="text-sm text-slate-600">O complexo antígeno-BCR é internalizado. O antígeno é degradado em peptídeos.</p>
+                        </div>
+                         <div class="text-4xl font-bold text-slate-400">→</div>
+                        <!-- Sinal 3 -->
+                        <div class="text-center p-4 bg-sky-100 rounded-lg w-full">
+                            <div class="text-2xl font-bold text-sky-700 bg-sky-200 rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-2">3</div>
+                            <h3 class="font-bold text-lg text-sky-800">Apresentação via MHC-II</h3>
+                            <p class="text-sm text-slate-600">Os peptídeos são carregados em moléculas de <strong>MHC Classe II</strong> e apresentados na superfície da célula B.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 text-center">
+                    <p class="text-2xl">⬇️</p>
+                    <div class="p-4 bg-rose-100 border border-rose-300 rounded-lg inline-block">
+                        <h3 class="font-bold text-xl text-rose-800">Célula B se torna uma APC</h3>
+                        <p class="text-slate-700">A célula B agora está pronta para "conversar" com uma célula T auxiliar que reconhece o mesmo peptídeo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6: Interação B-T -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-teal-600 mb-6">5. O Diálogo Crucial: A Interação B-Tfh</h2>
+                <p class="mb-6 text-lg">A célula B migra para a fronteira entre a zona B e a zona T do linfonodo para encontrar sua parceira, a célula T Auxiliar Folicular (Tfh).</p>
+                <div class="p-6 rounded-lg bg-slate-50 border">
+                    <h3 class="font-bold text-xl mb-4 text-center">Os Dois Sinais de Confirmação da Célula T</h3>
+                     <div class="flex items-center justify-around">
+                         <div class="text-center">
+                             <p class="text-lg font-semibold">Célula B (APC)</p>
+                             <div class="text-6xl my-4">🅱️</div>
+                             <p class="font-mono bg-sky-100 p-2 rounded">MHC-II + Peptídeo</p>
+                             <p class="mt-4 font-mono bg-rose-100 p-2 rounded">CD40</p>
+                         </div>
+                         <div class="text-center mx-4">
+                             <p class="text-amber-600 font-bold text-lg">Sinal 1 (TCR)</p>
+                             <div class="text-4xl my-1">↔️</div>
+                             <p class="text-amber-600 font-bold text-lg">Sinal 2 (Coestimulação)</p>
+                             <div class="text-4xl my-1">↔️</div>
+                              <p class="text-red-600 font-bold text-lg mt-4">Citocinas (Ajuda)</p>
+                             <div class="text-4xl my-1">→</div>
+                         </div>
+                         <div class="text-center">
+                              <p class="text-lg font-semibold">Célula Tfh</p>
+                             <div class="text-6xl my-4"> T<sub class="text-2xl">FH</sub></div>
+                             <p class="font-mono bg-sky-100 p-2 rounded">TCR + CD4</p>
+                             <p class="mt-4 font-mono bg-rose-100 p-2 rounded">CD40L</p>
+                              <p class="mt-4 font-mono bg-red-100 p-2 rounded">IL-21, IL-4</p>
+                         </div>
+                     </div>
+                </div>
+                <div class="mt-6 p-4 bg-amber-50 border border-amber-300 rounded-lg">
+                    <h4 class="font-bold text-amber-800">Resultado da Colaboração</h4>
+                    <p class="text-slate-700">Essa interação bidirecional ativa <span class="font-semibold">ambas</span> as células. A célula T ativada fornece os sinais que a célula B precisa para sobreviver, proliferar e iniciar o processo de maturação da resposta humoral.</p>
+                </div>
+            </div>
+
+             <!-- Slide 7: Centro Germinativo -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-teal-600 mb-6">6. A "Academia de Elite": O Centro Germinativo</h2>
+                <p class="mb-6 text-lg">Após a ativação, as células B e Tfh migram para o centro do folículo linfoide, formando uma estrutura chamada <span class="font-semibold">Centro Germinativo (CG)</span>.</p>
+                <div class="diagram-box">
+                    <h3 class="font-bold text-xl mb-4 text-center">Dentro do Centro Germinativo</h3>
+                    <div class="flex items-center space-x-6">
+                        <div class="w-1/2 text-center p-4 bg-gray-100 rounded-lg">
+                             <h4 class="font-bold text-slate-800">Zona Escura</h4>
+                             <p class="text-3xl my-2">⚫</p>
+                             <p class="text-slate-600">As células B (agora chamadas centroblastos) proliferam intensamente.</p>
+                             <p class="mt-2 text-slate-600">Ocorre a <span class="font-bold">Hipermutação Somática</span>: mutações aleatórias são introduzidas nos genes que codificam os anticorpos.</p>
+                        </div>
+                        <div class="text-4xl font-bold text-slate-400">→</div>
+                        <div class="w-1/2 text-center p-4 bg-gray-100 rounded-lg">
+                            <h4 class="font-bold text-slate-800">Zona Clara</h4>
+                             <p class="text-3xl my-2">⚪</p>
+                            <p class="text-slate-600">As células B (centrócitos) são testadas.</p>
+                             <p class="mt-2 text-slate-600">Elas devem competir para pegar antígeno de células dendríticas foliculares e receber sinais de sobrevivência das células Tfh. Apenas as células B com os <span class="font-bold">anticorpos de maior afinidade</span> sobrevivem.</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="mt-6 p-6 bg-slate-50 border border-slate-300 rounded-lg">
+                    <h3 class="font-bold text-xl text-slate-800 mb-3">O Ciclo de Seleção Darwiniana</h3>
+                    <p class="text-slate-700">Este processo é uma forma de evolução em alta velocidade. Células B com mutações que melhoram a afinidade do anticorpo são selecionadas positivamente, enquanto aquelas com baixa afinidade ou autorreatividade morrem por apoptose. Isso garante que a resposta imune se torne progressivamente mais eficaz.</p>
+                </div>
+            </div>
+            
+            <!-- Slide 8: Maturação e Troca de Isotipo -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-teal-600 mb-6">7. Refinando as Armas: Troca de Isotipo</h2>
+                <p class="mb-6 text-lg">Além de melhorar a afinidade, as células B no centro germinativo podem alterar o <span class="font-semibold">tipo</span> (isotipo) de anticorpo que produzem, para adequar a função à ameaça.</p>
+                <div class="diagram-box bg-teal-50 border-teal-200">
+                    <h3 class="font-bold text-2xl text-teal-800 mb-4 text-center">De IgM para Funções Especializadas</h3>
+                    <p class="text-center mb-6">A célula B começa produzindo <strong>IgM</strong>. As citocinas secretadas pelas células Tfh instruem a célula B a "trocar" a região constante do seu anticorpo.</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center space-x-3">
+                            <span class="font-mono p-2 bg-red-200 rounded-lg text-red-800 font-bold">IFN-γ</span>
+                            <span class="text-2xl">→</span>
+                            <div><span class="font-semibold">IgG:</span> O anticorpo mais abundante no sangue. Excelente para opsonização (marcar para fagocitose), ativação do complemento e neutralização. Cruza a placenta.</div>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <span class="font-mono p-2 bg-rose-200 rounded-lg text-rose-800 font-bold">IL-4</span>
+                            <span class="text-2xl">→</span>
+                            <div><span class="font-semibold">IgE:</span> Defesa contra parasitas (helmintos) e o principal mediador de reações alérgicas (ativação de mastócitos).</div>
+                        </li>
+                         <li class="flex items-center space-x-3">
+                             <span class="font-mono p-2 bg-amber-200 rounded-lg text-amber-800 font-bold">TGF-β</span>
+                             <span class="text-2xl">→</span>
+                            <div><span class="font-semibold">IgA:</span> O "guardião das mucosas". Secretado no trato gastrointestinal, respiratório e no leite materno, neutralizando patógenos antes que eles invadam.</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 9: Diferenciação Final -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-teal-600 mb-6">8. Os Graduados do Centro Germinativo</h2>
+                <p class="mb-8 text-lg text-slate-600">Após a seleção e maturação, as células B de alta afinidade saem do centro germinativo e seguem um de dois destinos finais:</p>
+                <div class="flex-grow grid md:grid-cols-2 gap-8">
+                    <!-- Plasmócitos -->
+                    <div class="diagram-box flex flex-col border-l-4 border-rose-400">
+                        <h3 class="font-bold text-2xl text-rose-700 mb-4">Plasmócitos</h3>
+                        <p class="mb-4 text-slate-500 italic">As fábricas de anticorpos</p>
+                        <ul class="space-y-4 text-slate-700">
+                            <li class="flex items-start"><span class="mr-3 text-rose-400">🏭</span><div><strong>Função:</strong> São células terminalmente diferenciadas, dedicadas exclusivamente a secretar enormes quantidades de anticorpos (milhares por segundo).</div></li>
+                            <li class="flex items-start"><span class="mr-3 text-rose-400">📍</span><div><strong>Localização:</strong> Plasmócitos de vida curta permanecem nos órgãos linfoides, enquanto plasmócitos de vida longa migram para a medula óssea, fornecendo anticorpos por anos.</div></li>
+                        </ul>
+                    </div>
+                    <!-- Células de Memória -->
+                    <div class="diagram-box flex flex-col border-l-4 border-amber-500 bg-amber-50">
+                        <h3 class="font-bold text-2xl text-amber-700 mb-4">Células B de Memória</h3>
+                        <p class="mb-4 text-amber-500 italic">Os veteranos vigilantes</p>
+                        <ul class="space-y-4 text-slate-700">
+                            <li class="flex items-start"><span class="mr-3 text-amber-500">🎖️</span><div><strong>Função:</strong> São células de longa vida que circulam pelo corpo. Elas não secretam anticorpos, mas estão prontas para uma reativação rápida e potente.</div></li>
+                            <li class="flex items-start"><span class="mr-3 text-amber-500">⚡</span><div><strong>Vantagem:</strong> Em um segundo encontro com o antígeno, elas respondem mais rápido e com mais força, gerando uma nova onda de plasmócitos e mais células de memória.</div></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+             <!-- Slide 10: Funções dos Anticorpos -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-teal-600 mb-6">9. Mecanismos Efetores: Como os Anticorpos Funcionam</h2>
+                <p class="mb-6 text-lg">Os anticorpos não matam os patógenos diretamente. Eles agem como "etiquetas" moleculares que acionam outros mecanismos de eliminação.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+                    <div class="p-4 rounded-lg bg-sky-50 border border-sky-300">
+                        <h3 class="font-bold text-sky-800 text-lg">Neutralização</h3>
+                        <p class="text-5xl my-4">🛡️</p>
+                        <p class="text-slate-600">Anticorpos (IgG, IgA) se ligam a sítios críticos de toxinas ou patógenos (vírus, bactérias), impedindo que eles se liguem e entrem nas células do hospedeiro.</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-amber-50 border border-amber-300">
+                        <h3 class="font-bold text-amber-800 text-lg">Opsonização</h3>
+                        <p class="text-5xl my-4">🍔</p>
+                        <p class="text-slate-600">Anticorpos (principalmente IgG) revestem a superfície de um patógeno. Fagócitos (macrófagos, neutrófilos) têm receptores para a "cauda" do anticorpo (região Fc), o que aumenta drasticamente a eficiência da fagocitose.</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-teal-50 border border-teal-300">
+                        <h3 class="font-bold text-teal-800 text-lg">Ativação do Complemento</h3>
+                        <p class="text-5xl my-4">💥</p>
+                        <p class="text-slate-600">A ligação de anticorpos (IgM, IgG) a um patógeno pode iniciar a cascata do complemento, levando à formação do Complexo de Ataque à Membrana (MAC), que lisa o patógeno, e também promovendo inflamação e opsonização.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 11: Implicações Clínicas -->
+            <div class="slide flex-col h-full">
+                <h2 class="text-3xl font-bold text-teal-600 mb-6">10. Implicações Clínicas: O Desequilíbrio Humoral</h2>
+                 <div class="space-y-4">
+                    <details class="bg-slate-50 p-4 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg">Imunodeficiências</summary>
+                        <p class="mt-2 text-slate-600"><strong>Deficiência de Células B (Ex: Agamaglobulinemia):</strong> Ausência de anticorpos leva a infecções bacterianas sinopulmonares (otite, sinusite, pneumonia) recorrentes, pois a defesa contra bactérias encapsuladas é falha.</p>
+                        <p class="mt-1 text-slate-600"><strong>Deficiência Seletiva de IgA:</strong> A imunodeficiência primária mais comum. Pacientes podem ser assintomáticos ou ter infecções de mucosas e doenças autoimunes com mais frequência.</p>
+                    </details>
+                    <details class="bg-slate-50 p-4 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg">Doenças Autoimunes</summary>
+                        <p class="mt-2 text-slate-600"><strong>Autoanticorpos:</strong> Uma falha na tolerância leva à produção de anticorpos contra componentes do próprio corpo. Exemplos clássicos incluem:</p>
+                        <ul class="list-disc list-inside ml-4 mt-1 text-slate-600">
+                           <li><strong>Lúpus Eritematoso Sistêmico:</strong> Anticorpos contra componentes nucleares (ex: anti-DNA).</li>
+                           <li><strong>Miastenia Gravis:</strong> Anticorpos contra o receptor de acetilcolina na junção neuromuscular.</li>
+                           <li><strong>Artrite Reumatoide:</strong> Fator reumatoide (um anticorpo contra outro anticorpo) e anti-CCP.</li>
+                        </ul>
+                    </details>
+                     <details class="bg-slate-50 p-4 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg">Alergias (Hipersensibilidade Tipo I)</summary>
+                        <p class="mt-2 text-slate-600">Uma resposta inadequada a antígenos ambientais inofensivos (alérgenos), com produção de grandes quantidades de <strong>IgE</strong>. O IgE se liga a mastócitos, e um novo contato com o alérgeno causa a degranulação dessas células, liberando histamina e outros mediadores que causam os sintomas alérgicos.</p>
+                    </details>
+                     <details class="bg-slate-50 p-4 rounded-lg cursor-pointer">
+                        <summary class="font-semibold text-lg">Aplicações Terapêuticas</summary>
+                        <p class="mt-2 text-slate-600"><strong>Anticorpos Monoclonais:</strong> A engenharia de anticorpos específicos revolucionou a medicina. São usados para tratar câncer (ex: Rituximab, anti-CD20, para linfomas B), doenças autoimunes (ex: Infliximab, anti-TNF) e até infecções (ex: Palivizumab, contra VSR).</p>
+                    </details>
+                </div>
+            </div>
+
+             <!-- Slide 12: Conclusão -->
+            <div class="slide flex-col items-center justify-center text-center h-full">
+                <h2 class="text-3xl md:text-4xl font-bold text-teal-600 mb-6">11. Conclusão: A Precisão da Resposta Humoral</h2>
+                <p class="text-xl text-slate-700 max-w-3xl mx-auto mb-8">A resposta das células B é um processo multifásico e altamente regulado, resultando na produção de uma das ferramentas mais versáteis e potentes do sistema imune: os anticorpos.</p>
+                <div class="grid md:grid-cols-2 gap-8 w-full max-w-3xl">
+                    <div class="p-6 bg-red-50 border border-red-200 rounded-lg">
+                        <h3 class="font-bold text-red-800 text-xl">Quando Deficiente</h3>
+                        <p class="mt-2 text-slate-600">A incapacidade de produzir anticorpos eficazes deixa o corpo vulnerável a uma gama de patógenos, especialmente bactérias extracelulares.</p>
+                    </div>
+                     <div class="p-6 bg-amber-50 border border-amber-200 rounded-lg">
+                        <h3 class="font-bold text-amber-800 text-xl">Quando Desregulada</h3>
+                        <p class="mt-2 text-slate-600">A produção de anticorpos contra o próprio corpo (autoimunidade) ou contra substâncias inofensivas (alergias) causa doenças crônicas e debilitantes.</p>
+                    </div>
+                </div>
+                 <p class="text-lg text-slate-600 max-w-3xl mx-auto mt-8">Do desenvolvimento na medula óssea à seleção rigorosa nos centros germinativos, cada etapa garante que a resposta humoral seja específica, potente e segura. A compreensão desses mecanismos é a base para o desenvolvimento de vacinas eficazes e terapias com anticorpos monoclonais que moldam a medicina moderna.</p>
+            </div>
+
+
+        </div>
+
+        <!-- Navegação e Barra de Progresso -->
+        <div class="relative z-10 flex-shrink-0 bg-slate-50/80 backdrop-blur-sm border-t border-slate-200 p-4 flex items-center justify-between">
+            <button id="prevBtn" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Anterior</button>
+            <div class="flex-grow mx-4">
+                <div class="w-full bg-slate-200 rounded-full h-2.5">
+                    <div id="progressBar" class="bg-teal-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <div id="slideCounter" class="text-center text-sm text-slate-500 mt-1">Slide 1 / 12</div>
+            </div>
+            <button id="nextBtn" class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Próximo</button>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const progressBar = document.getElementById('progressBar');
+            const slideCounter = document.getElementById('slideCounter');
+            const printSlidesBtn = document.getElementById('printSlidesBtn');
+
+            let currentSlide = 0;
+            const totalSlides = slides.length;
+
+            function showSlide(index) {
+                slides[currentSlide].classList.remove('active');
+                slides[index].classList.add('active');
+                const presentationContainer = document.querySelector('.flex-grow');
+                presentationContainer.scrollTop = 0;
+                currentSlide = index;
+                updateControls();
+            }
+
+            function updateControls() {
+                const progressPercentage = ((currentSlide + 1) / totalSlides) * 100;
+                progressBar.style.width = `${progressPercentage}%`;
+                slideCounter.textContent = `Slide ${currentSlide + 1} / ${totalSlides}`;
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+            }
+            
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) showSlide(currentSlide - 1);
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') nextBtn.click();
+                else if (e.key === 'ArrowLeft') prevBtn.click();
+            });
+
+            function generatePrintableVersion() {
+                const slideContent = Array.from(slides).map((slide) => {
+                    const contentNode = slide.cloneNode(true);
+                    contentNode.querySelectorAll('button').forEach(el => el.remove());
+                    
+                    if (slide.querySelector('details')) {
+                         const detailsContent = Array.from(slide.querySelectorAll('details')).map(detail => {
+                            const summary = detail.querySelector('summary').innerHTML;
+                            const content = Array.from(detail.childNodes).filter(node => node.tagName === 'P' || node.tagName === 'UL').map(p => `<p>${p.innerHTML}</p>`).join('');
+                            return `<h4>${summary}</h4>${content}`;
+                         }).join('<br>');
+                         const title = slide.querySelector('h2').outerHTML;
+                         return `<div class="slide-print">${title}${detailsContent}</div>`;
+                    }
+                    
+                    return `<div class="slide-print">${contentNode.innerHTML}</div>`;
+                }).join('<hr class="print-hr">');
+
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Versão para Impressão - A Resposta das Células B</title>
+                            <style>
+                                body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; }
+                                .slide-print { page-break-before: always; padding: 2rem; }
+                                .slide-print:first-child { page-break-before: avoid; }
+                                h1, h2, h3, h4 { color: #134e4a; } /* teal-900 */
+                                h1 { font-size: 2.5em; text-align: center; }
+                                h2 { font-size: 1.8em; border-bottom: 2px solid #99f6e4; padding-bottom: 0.5rem; margin-top: 2rem;} /* teal-300 */
+                                p { margin-bottom: 1rem; }
+                                ul { list-style-position: inside; padding-left: 1rem;}
+                                .print-hr { border: 0; border-top: 1px dashed #ccc; margin: 2rem 0; }
+                                .grid, .flex { display: block; }
+                                .diagram-box { border: 1px solid #ccc; background: #f9f9f9; padding: 1rem; margin-bottom: 1rem; border-radius: 8px;}
+                                @media print {
+                                    .print-hr { display: none; }
+                                    body { margin: 0; }
+                                    .slide-print { padding: 1.5rem; }
+                                }
+                            </style>
+                            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+                        </head>
+                        <body>
+                            ${slideContent}
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.focus();
+            }
+
+            printSlidesBtn.addEventListener('click', generatePrintableVersion);
+
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>
+
+
