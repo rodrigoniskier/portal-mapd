@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mecanismos de Agressão, Patológicos e de Defesa - 2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: A dashboard-style SPA with a sticky top navigation for non-linear exploration of thematic sections: 'Fundamentos', 'Visão Geral', 'Viroses', 'Micoses', 'Comparações', and 'Material Complementar'. This structure prioritizes user-driven discovery, starting with a strong theoretical foundation before diving into high-level summary data, specific diseases (viral or fungal), or comparative analyses. This is more intuitive than the report's linear format, enabling users to build foundational knowledge first, then explore the data. -->
+    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Presentation Method -> Interaction -> Justification -> Library/Method.
+        - Dengue Trend -> Show change -> Line Chart -> Hover Tooltip -> Clear trend visualization -> Chart.js.
+        - Influenza Subtypes -> Compare parts of a whole -> Stacked Bar Chart -> Hover Tooltip -> Shows total cases and subtype contribution simultaneously -> Chart.js.
+        - Hepatitis B vs Vax -> Show relationship -> Combo Bar/Line Chart -> Hover Tooltip -> Effectively demonstrates the inverse correlation -> Chart.js.
+        - Herpes Prevalence -> Compare categories -> Grouped Bar Chart -> Hover Tooltip -> Easy side-by-side comparison of HSV-1/2 -> Chart.js.
+        - Fungal Infections -> Compare categories -> Grouped Bar Chart -> Hover Tooltip -> Clear comparison of different mycoses incidence -> Chart.js.
+        - Age Incidence -> Compare distributions -> Horizontal Grouped Bar -> Hover Tooltip -> Best for comparing demographic distributions across categories -> Chart.js.
+        - Seasonality -> Compare trends -> Multi-line Chart -> Hover Tooltip -> Superimposes seasonal patterns for direct comparison -> Chart.js.
+        - Pathogen Replication Cycle -> Organize process -> Styled HTML/CSS List -> Click to expand -> Textual flow representation without graphics -> Tailwind CSS.
+        - All textual analysis -> Inform -> Styled text blocks -> Dynamic show/hide -> Provides context directly alongside relevant charts -> Vanilla JS + Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #3f3f46;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 450px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 45vh;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link.active {
+            color: #0d9488;
+            border-bottom-color: #0d9488;
+        }
+        .tab-btn.active {
+            background-color: #0d9488;
+            color: #ffffff;
+        }
+        .tab-btn {
+             transition: background-color 0.3s, color 0.3s;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-lg md:text-xl font-bold text-teal-700">Mecanismos de Agressão, Patológicos e de Defesa - 2</h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#fundamentos" class="nav-link text-gray-600 hover:text-teal-600 border-b-2 border-transparent pb-1">Fundamentos</a>
+                <a href="#visao-geral" class="nav-link text-gray-600 hover:text-teal-600 border-b-2 border-transparent pb-1">Visão Geral</a>
+                <a href="#viroses" class="nav-link text-gray-600 hover:text-teal-600 border-b-2 border-transparent pb-1">Viroses</a>
+                <a href="#micoses" class="nav-link text-gray-600 hover:text-teal-600 border-b-2 border-transparent pb-1">Micoses</a>
+                <a href="#comparacoes" class="nav-link text-gray-600 hover:text-teal-600 border-b-2 border-transparent pb-1">Comparações</a>
+                <a href="#material-complementar" class="nav-link text-gray-600 hover:text-teal-600 border-b-2 border-transparent pb-1">Material Extra</a>
+            </div>
+            <div class="md:hidden">
+                 <select id="mobile-nav" class="border border-gray-300 rounded-md p-2 bg-white text-gray-700">
+                    <option value="#fundamentos">Fundamentos</option>
+                    <option value="#visao-geral">Visão Geral</option>
+                    <option value="#viroses">Viroses</option>
+                    <option value="#micoses">Micoses</option>
+                    <option value="#comparacoes">Comparações</option>
+                    <option value="#material-complementar">Material Extra</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="fundamentos" class="pt-16 -mt-16 mb-12">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Fundamentos Teóricos</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Para entender as doenças, é crucial conhecer os agentes causadores. Esta seção oferece um resumo sobre as características biológicas de vírus e fungos, bem como a resposta do nosso sistema imunológico a esses patógenos.</p>
+            </div>
+            <div class="space-y-4 max-w-4xl mx-auto">
+                <div class="accordion-item bg-white rounded-lg shadow-sm">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-gray-700">
+                        <span>🔬 Vírus: Características Fundamentais</span>
+                        <span class="accordion-icon transition-transform duration-300 transform">+</span>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <div class="p-5 border-t border-gray-200 text-gray-600 space-y-4">
+                            <div>
+                                <h4 class="font-bold text-teal-700">Estrutura e Morfologia</h4>
+                                <p>Vírus são parasitas intracelulares obrigatórios, com estrutura simples: um <strong>nucleocapsídeo</strong> (material genético, DNA ou RNA, envolto por um <strong>capsídeo</strong> proteico). A simetria do capsídeo pode ser icosaédrica, helicoidal ou complexa. Muitos vírus de importância médica possuem um <strong>envelope lipídico</strong> externo, derivado da membrana da célula hospedeira, onde se inserem glicoproteínas virais essenciais para a infecção.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-teal-700">Ciclo Replicativo Viral</h4>
+                                <ul class="list-disc list-inside mt-2 space-y-1">
+                                    <li><strong>Adsorção:</strong> Ligação específica das proteínas virais a receptores na superfície da célula hospedeira.</li>
+                                    <li><strong>Penetração:</strong> Entrada na célula por fusão do envelope, endocitose ou injeção direta do genoma.</li>
+                                    <li><strong>Desnudamento:</strong> Liberação do material genético viral no citoplasma.</li>
+                                    <li><strong>Síntese:</strong> O genoma viral "sequestra" a maquinaria celular para transcrever e traduzir suas proteínas e replicar seu material genético.</li>
+                                    <li><strong>Montagem:</strong> Novos componentes virais são montados para formar vírions completos.</li>
+                                    <li><strong>Liberação:</strong> Saída da célula, seja por lise (rompimento) celular ou por brotamento (para vírus envelopados).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="accordion-item bg-white rounded-lg shadow-sm">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-gray-700">
+                        <span>🍄 Fungos: Características Fundamentais</span>
+                        <span class="accordion-icon transition-transform duration-300 transform">+</span>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <div class="p-5 border-t border-gray-200 text-gray-600 space-y-4">
+                           <div>
+                                <h4 class="font-bold text-teal-700">Morfologia Fúngica</h4>
+                                <p>Fungos são eucariotos com parede celular de quitina. Apresentam-se principalmente de três formas:</p>
+                                <ul class="list-disc list-inside mt-2 space-y-1">
+                                    <li><strong>Leveduriformes:</strong> Células unicelulares, ovais ou esféricas, que se reproduzem por brotamento (ex: <em>Candida</em>, <em>Cryptococcus</em>).</li>
+                                    <li><strong>Filamentosas (Bolores):</strong> Estruturas multicelulares formadas por hifas, que em conjunto formam o micélio (ex: <em>Aspergillus</em>, dermatófitos).</li>
+                                    <li><strong>Dimórficas:</strong> Alternam entre a forma filamentosa no ambiente (≈25°C) e leveduriforme no hospedeiro (≈37°C). Esta capacidade é um importante fator de virulência (ex: <em>Histoplasma</em>, <em>Sporothrix</em>).</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-teal-700">Reprodução</h4>
+                                <p>A reprodução pode ser <strong>assexuada</strong>, através da formação de esporos (conídios), que são facilmente dispersos pelo ar, ou <strong>sexuada</strong>. A inalação de esporos é a principal via de entrada para muitas micoses sistêmicas.</p>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="accordion-item bg-white rounded-lg shadow-sm">
+                    <button class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-gray-700">
+                        <span>🛡️ Resposta Imune e Evasão</span>
+                         <span class="accordion-icon transition-transform duration-300 transform">+</span>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                         <div class="p-5 border-t border-gray-200 text-gray-600">
+                            <h4 class="font-bold text-teal-700">Resposta Antiviral</h4>
+                            <p>A imunidade inata é a primeira barreira, com células detectando material genético viral através de PRRs (Pattern Recognition Receptors) e produzindo <strong>Interferons tipo I</strong>. Os interferons induzem um estado antiviral nas células vizinhas e ativam células NK (Natural Killer), que destroem células infectadas. A imunidade adaptativa é crucial para a eliminação, com <strong>Linfócitos T CD8+</strong> matando células infectadas e <strong>anticorpos neutralizantes</strong> bloqueando a entrada do vírus nas células.</p>
+                            <p class="mt-2"><strong>Mecanismos de Evasão Viral:</strong> Vírus evoluíram para bloquear a produção ou ação dos interferons, inibir a apresentação de antígenos (diminuindo moléculas de MHC-I na superfície celular) e sofrer mutações em seus antígenos de superfície para escapar dos anticorpos (variação antigênica).</p>
+                             <h4 class="font-bold text-teal-700 mt-4">Resposta Antifúngica</h4>
+                            <p>A defesa inata depende de fagócitos como <strong>neutrófilos e macrófagos</strong>, que reconhecem PAMPs (Pathogen-Associated Molecular Patterns) na parede celular fúngica, como β-glucanos e mananas. A imunidade adaptativa é mediada principalmente por <strong>Linfócitos T auxiliares (Th1 e Th17)</strong>, que orquestram uma resposta inflamatória para controlar a infecção.</p>
+                            <p class="mt-2"><strong>Mecanismos de Evasão Fúngica:</strong> Fungos podem "mascarar" seus PAMPs na parede celular, produzir uma cápsula polissacarídica antifagocítica (ex: <em>Cryptococcus</em>), formar biofilmes resistentes ou mudar sua morfologia (hifa) para dificultar a fagocitose.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="visao-geral" class="pt-16 -mt-16 mb-12">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Panorama das Micoses e Viroses</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Uma análise clínico-epidemiológica interativa das principais infecções em João Pessoa, Paraíba.</p>
+            </div>
+             <div class="bg-teal-50 border-l-4 border-teal-500 text-teal-800 p-4 rounded-r-lg mb-10" role="alert">
+                <p class="font-bold">Bem-vindo ao painel!</p>
+                <p>Esta plataforma traduz um denso relatório médico em uma experiência visual e interativa. Explore os dados de saúde pública de João Pessoa, compare tendências e aprofunde-se nos fundamentos de vírus e fungos. Comece pela visão geral abaixo para entender os padrões sazonais e demográficos da região.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-1 text-center">Padrões Sazonais de Infecções</h3>
+                     <p class="text-sm text-gray-500 text-center mb-4">Comparativo mensal entre Dengue (pico em 2022), Influenza e Micoses (dados de 2023).</p>
+                    <div class="chart-container">
+                        <canvas id="seasonalChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-1 text-center">Incidência por Faixa Etária</h3>
+                     <p class="text-sm text-gray-500 text-center mb-4">Distribuição de casos de Dengue e Infecções Fúngicas entre diferentes grupos etários.</p>
+                    <div class="chart-container">
+                        <canvas id="ageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="viroses" class="pt-16 -mt-16 mb-12">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Análise de Viroses</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Explore os dados epidemiológicos das principais infecções virais que afetam a população de João Pessoa.</p>
+            </div>
+            <div class="flex justify-center flex-wrap gap-2 mb-8">
+                <button data-virus="dengue" class="tab-btn virus-tab-btn active px-4 py-2 bg-white text-gray-700 rounded-full shadow-sm hover:bg-teal-100">Dengue</button>
+                <button data-virus="influenza" class="tab-btn virus-tab-btn px-4 py-2 bg-white text-gray-700 rounded-full shadow-sm hover:bg-teal-100">Influenza</button>
+                <button data-virus="hepatiteB" class="tab-btn virus-tab-btn px-4 py-2 bg-white text-gray-700 rounded-full shadow-sm hover:bg-teal-100">Hepatite B</button>
+                <button data-virus="herpes" class="tab-btn virus-tab-btn px-4 py-2 bg-white text-gray-700 rounded-full shadow-sm hover:bg-teal-100">Herpes</button>
+            </div>
+
+            <div id="virus-content-area"></div>
+        </section>
+
+        <section id="micoses" class="pt-16 -mt-16 mb-12">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Análise de Micoses</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Panorama das infecções fúngicas de maior relevância para a saúde pública local.</p>
+            </div>
+            <div class="flex justify-center flex-wrap gap-2 mb-8">
+                 <button data-mycosis="geral" class="tab-btn mycosis-tab-btn active px-4 py-2 bg-white text-gray-700 rounded-full shadow-sm hover:bg-teal-100">Visão Geral</button>
+                <button data-mycosis="candidiase" class="tab-btn mycosis-tab-btn px-4 py-2 bg-white text-gray-700 rounded-full shadow-sm hover:bg-teal-100">Candidíase</button>
+                <button data-mycosis="esporotricose" class="tab-btn mycosis-tab-btn px-4 py-2 bg-white text-gray-700 rounded-full shadow-sm hover:bg-teal-100">Esporotricose</button>
+                <button data-mycosis="histoplasmose" class="tab-btn mycosis-tab-btn px-4 py-2 bg-white text-gray-700 rounded-full shadow-sm hover:bg-teal-100">Histoplasmose</button>
+                <button data-mycosis="dermatomicose" class="tab-btn mycosis-tab-btn px-4 py-2 bg-white text-gray-700 rounded-full shadow-sm hover:bg-teal-100">Dermatomicoses</button>
+            </div>
+            <div id="mycosis-content-area"></div>
+        </section>
+
+        <section id="comparacoes" class="pt-16 -mt-16 mb-12">
+             <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Comparações & Sazonalidade</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Esta seção aprofunda a análise comparativa, examinando como diferentes infecções se comportam em relação a fatores demográficos e climáticos. A visualização lado a lado dos dados permite identificar padrões e correlações importantes para a vigilância em saúde.</p>
+            </div>
+            <div class="grid grid-cols-1 gap-8">
+                 <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-1 text-center">Incidência Comparada por Faixa Etária</h3>
+                     <div class="chart-container">
+                        <canvas id="ageChart2"></canvas>
+                    </div>
+                     <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-semibold text-teal-800">Análise dos Dados</h4>
+                        <p class="text-gray-700 mt-2">Os padrões etários revelam dinâmicas de transmissão distintas. A **dengue** atinge seu pico na população economicamente ativa (20-39 anos), refletindo maior exposição ao vetor Aedes aegypti devido à mobilidade urbana e ocupacional. Em contrapartida, as **infecções fúngicas invasivas** mostram uma incidência marcadamente maior em idosos (60+), um padrão consistente com a imunossenescência e a maior prevalência de comorbidades e hospitalizações nesta faixa etária, que são fatores de risco conhecidos.</p>
+                    </div>
+                </div>
+                 <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-1 text-center">Padrões Sazonais Detalhados</h3>
+                    <div class="chart-container">
+                        <canvas id="seasonalChart2"></canvas>
+                    </div>
+                     <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-semibold text-teal-800">Análise dos Dados</h4>
+                        <p class="text-gray-700 mt-2">A sazonalidade das infecções em João Pessoa é fortemente influenciada por fatores climáticos. A **dengue** apresenta um pico claro no outono (março-maio), correlacionado com o aumento das chuvas e temperaturas favoráveis à proliferação do mosquito. A **influenza**, por sua vez, segue o padrão de regiões subtropicais com pico no inverno (junho-agosto), período de temperaturas mais amenas e maior aglomeração em ambientes fechados. As **infecções fúngicas** mostram menor variação, com um discreto aumento no período mais seco, possivelmente pela maior dispersão de esporos no ar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="material-complementar" class="pt-16 -mt-16 mb-12">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Material Complementar</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Acesse os materiais de apoio para aprofundar seus conhecimentos sobre os temas abordados.</p>
+            </div>
+            <div class="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <a href="video1.mp4" target="_blank" rel="noopener noreferrer" class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col items-center text-center group">
+                    <span class="text-5xl mb-4 transform group-hover:scale-110 transition-transform">🎥</span>
+                    <h3 class="text-xl font-semibold text-gray-700">Vídeo-Aula</h3>
+                    <p class="text-gray-500 mt-2">Assista à aula completa em vídeo para uma revisão visual dos conceitos.</p>
+                </a>
+                <a href="audio1.mp3" target="_blank" rel="noopener noreferrer" class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow flex flex-col items-center text-center group">
+                    <span class="text-5xl mb-4 transform group-hover:scale-110 transition-transform">🎧</span>
+                    <h3 class="text-xl font-semibold text-gray-700">Áudio-Aula</h3>
+                    <p class="text-gray-500 mt-2">Ouça o conteúdo em formato de podcast, ideal para aprender em trânsito.</p>
+                </a>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto p-6 text-center">
+            <p>&copy; 2025 Mecanismos de Agressão, Patológicos e de Defesa - 2.</p>
+            <p class="text-sm text-gray-400 mt-2">Idealizada pelo Prof. Rodrigo Niskier, docente do curso de Medicina do UNIPÊ.</p>
+            <p class="text-sm text-gray-400 mt-1">Fonte dos dados: Relatório "Micoses e Viroses: Perspectiva Clínico-Epidemiológica".</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const chartConfig = {
+        plugins: {
+            legend: {
+                labels: {
+                    font: {
+                        family: 'Inter, sans-serif'
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    font: {
+                        family: 'Inter, sans-serif'
+                    }
+                },
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                ticks: {
+                    font: {
+                        family: 'Inter, sans-serif'
+                    }
+                },
+                 grid: {
+                    color: '#e5e7eb'
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+    };
+
+    const dataStore = {
+        seasonal: {
+            labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+            datasets: [{
+                label: 'Dengue 2022',
+                data: [400, 600, 1200, 1800, 1500, 900, 700, 500, 600, 1000, 1450, 700],
+                borderColor: '#0d9488',
+                backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                tension: 0.4,
+                fill: true,
+            }, {
+                label: 'Influenza 2023',
+                data: [600, 750, 450, 300, 200, 150, 250, 350, 400, 550, 650, 750],
+                borderColor: '#f43f5e',
+                backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                tension: 0.4,
+                fill: true,
+            }, {
+                label: 'Fúngicas 2023',
+                data: [45, 48, 50, 52, 50, 48, 45, 55, 58, 60, 55, 50],
+                borderColor: '#78716c',
+                backgroundColor: 'rgba(120, 113, 108, 0.1)',
+                tension: 0.4,
+                fill: true,
+            }]
+        },
+        age: {
+            labels: ['0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60+'],
+            datasets: [{
+                label: 'Dengue',
+                data: [9, 13, 19, 22, 16, 12, 10],
+                backgroundColor: '#0d9488',
+                borderRadius: 4
+            }, {
+                label: 'Infec. Fúngicas',
+                data: [2, 3, 4, 5, 6, 8, 9],
+                backgroundColor: '#f43f5e',
+                borderRadius: 4
+            }]
+        },
+        dengue: {
+            labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: 'Casos Totais',
+                data: [4200, 5100, 7800, 10611, 6200, 4800],
+                borderColor: '#0d9488',
+                tension: 0.1,
+                fill: false,
+            }, {
+                label: 'Mortes',
+                data: [2, 1, 3, 5, 2, 1],
+                borderColor: '#f43f5e',
+                tension: 0.1,
+                fill: false,
+            }]
+        },
+        influenza: {
+            labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: 'A/H1N1',
+                data: [1300, 1650, 1100, 1550, 2050, 1800],
+                backgroundColor: '#14b8a6',
+            }, {
+                label: 'A/H3N2',
+                data: [1100, 1400, 1000, 1300, 1800, 1600],
+                backgroundColor: '#f43f5e',
+            }, {
+                label: 'B',
+                data: [800, 1000, 700, 1000, 1300, 1200],
+                backgroundColor: '#a1a1aa',
+            }]
+        },
+        hepatitisB: {
+            labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+            datasets: [{
+                type: 'bar',
+                label: 'Casos HBsAg+',
+                data: [156, 142, 138, 135, 129, 124],
+                backgroundColor: '#0d9488',
+                yAxisID: 'y_cases',
+                borderRadius: 4,
+            }, {
+                type: 'line',
+                label: 'Cobertura Vacinal (%)',
+                data: [87.2, 88.5, 89.1, 89.8, 91.2, 93.1],
+                borderColor: '#f43f5e',
+                backgroundColor: 'rgba(244, 63, 94, 0.2)',
+                yAxisID: 'y_coverage',
+                tension: 0.4
+            }]
+        },
+        herpes: {
+            labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: 'HSV-1 (%)',
+                data: [78.2, 79.1, 80.0, 80.5, 81.1, 81.8],
+                backgroundColor: '#14b8a6',
+                borderRadius: 4
+            }, {
+                label: 'HSV-2 (%)',
+                data: [12.1, 12.5, 12.9, 13.2, 13.5, 13.9],
+                backgroundColor: '#f43f5e',
+                 borderRadius: 4
+            }]
+        },
+        fungal: {
+            labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: 'Candidemia',
+                data: [45, 52, 48, 55, 49, 46],
+                backgroundColor: '#14b8a6',
+                borderRadius: 4
+            }, {
+                label: 'Esporotricose',
+                data: [28, 35, 42, 48, 44, 40],
+                backgroundColor: '#f43f5e',
+                borderRadius: 4
+            }, {
+                label: 'Histoplasmose',
+                data: [8, 11, 9, 12, 10, 9],
+                backgroundColor: '#a1a1aa',
+                borderRadius: 4
+            }]
+        }
+    };
+    
+    const virusContentTemplates = {
+        dengue: `
+            <div class="bg-white p-6 rounded-2xl shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">Dengue</h3>
+                <div class="chart-container"><canvas id="dengueChart"></canvas></div>
+                <div class="mt-4 p-4 bg-gray-50 rounded-lg space-y-3">
+                    <div>
+                        <h4 class="font-semibold text-teal-800">Clínica</h4>
+                        <p class="text-gray-700 mt-1">A infecção cursa com três fases: <strong>Febril</strong> (febre alta, cefaleia, mialgia), <strong>Crítica</strong> (ocorre na defervescência da febre, com risco de extravasamento de plasma e choque) e de <strong>Recuperação</strong>. Sinais de alarme são cruciais para identificar casos graves: dor abdominal intensa, vômitos persistentes, sangramentos e letargia.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-teal-800">Diagnóstico Laboratorial</h4>
+                        <p class="text-gray-700 mt-1">O hemograma tipicamente mostra <strong>leucopenia com linfocitose relativa</strong> e <strong>trombocitopenia</strong>. A hemoconcentração (aumento do hematócrito) indica extravasamento plasmático. O diagnóstico específico é feito pela detecção do antígeno <strong>NS1</strong> (fase inicial), sorologia com <strong>IgM</strong> (a partir do 5º dia) ou RT-PCR.</p>
+                    </div>
+                </div>
+            </div>
+        `,
+        influenza: `
+            <div class="bg-white p-6 rounded-2xl shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">Influenza</h3>
+                <div class="chart-container"><canvas id="influenzaChart"></canvas></div>
+                 <div class="mt-4 p-4 bg-gray-50 rounded-lg space-y-3">
+                    <div>
+                        <h4 class="font-semibold text-teal-800">Clínica</h4>
+                        <p class="text-gray-700 mt-1">Quadro agudo de febre alta, calafrios, mialgia intensa, cefaleia e tosse seca. A principal complicação é a pneumonia, que pode ser <strong>viral primária</strong> (grave, com insuficiência respiratória) ou <strong>bacteriana secundária</strong> (geralmente por <em>S. pneumoniae</em> ou <em>S. aureus</em>), que ocorre após uma melhora inicial do quadro gripal.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-teal-800">Diagnóstico Laboratorial</h4>
+                        <p class="text-gray-700 mt-1">O padrão-ouro é o <strong>RT-PCR</strong> a partir de amostra de swab de nasofaringe, que identifica o tipo e subtipo do vírus. Testes rápidos de antígeno têm menor sensibilidade, mas podem ser úteis em triagem.</p>
+                    </div>
+                </div>
+            </div>
+        `,
+        hepatiteB: `
+            <div class="bg-white p-6 rounded-2xl shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">Hepatite B</h3>
+                <div class="chart-container"><canvas id="hepatitisBChart"></canvas></div>
+                <div class="mt-4 p-4 bg-gray-50 rounded-lg space-y-3">
+                    <div>
+                        <h4 class="font-semibold text-teal-800">Clínica</h4>
+                        <p class="text-gray-700 mt-1">A infecção aguda é muitas vezes assintomática. Quando sintomática, causa fadiga, icterícia e dor abdominal. A principal preocupação é a cronificação, que pode levar a <strong>cirrose</strong> e <strong>carcinoma hepatocelular</strong> ao longo de décadas.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-teal-800">Diagnóstico Laboratorial (Marcadores Sorológicos)</h4>
+                        <ul class="text-gray-700 mt-1 list-disc list-inside">
+                             <li><strong>HBsAg:</strong> Marcador de infecção. Se positivo > 6 meses, indica cronicidade.</li>
+                             <li><strong>Anti-HBs:</strong> Marcador de imunidade (cura ou vacina).</li>
+                             <li><strong>Anti-HBc Total:</strong> Marcador de contato com o vírus.</li>
+                             <li><strong>Anti-HBc IgM:</strong> Marcador de infecção aguda ou reativação.</li>
+                             <li><strong>HBeAg / Anti-HBe:</strong> Indicam, respectivamente, alta e baixa replicação viral.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `,
+        herpes: `
+             <div class="bg-white p-6 rounded-2xl shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">Herpes Simplex (HSV-1 & HSV-2)</h3>
+                <div class="chart-container"><canvas id="herpesChart"></canvas></div>
+                <div class="mt-4 p-4 bg-gray-50 rounded-lg space-y-3">
+                    <div>
+                        <h4 class="font-semibold text-teal-800">Clínica</h4>
+                        <p class="text-gray-700 mt-1">Caracteriza-se por lesões vesiculares agrupadas em base eritematosa. <strong>HSV-1</strong> classicamente causa herpes labial, mas é uma causa crescente de herpes genital. É também o principal agente da <strong>encefalite herpética</strong> esporádica. <strong>HSV-2</strong> é o agente clássico do herpes genital. Ambos estabelecem latência em gânglios neurais e podem reativar.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-teal-800">Diagnóstico Laboratorial</h4>
+                        <p class="text-gray-700 mt-1">O diagnóstico de lesões ativas pode ser feito por cultura viral ou PCR do fluido da vesícula. Na suspeita de encefalite, o <strong>PCR do líquido cefalorraquidiano (LCR)</strong> é o padrão-ouro. A sorologia tipo-específica (IgG) é útil para identificar infecção prévia, mas não distingue infecção ativa.</p>
+                    </div>
+                </div>
+            </div>
+        `
+    };
+
+    const mycosisContentTemplates = {
+        geral: `
+            <div class="bg-white p-6 rounded-2xl shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4 text-center">Incidência de Infecções Fúngicas Invasivas (2019-2024)</h3>
+                <div class="chart-container"><canvas id="fungalChart"></canvas></div>
+                <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold text-teal-800">Análise dos Dados</h4>
+                    <p class="text-gray-700 mt-2">A candidemia se mantém como a principal micose hospitalar. O dado mais alarmante é a tendência crescente da esporotricose, refletindo uma expansão zoonótica (via felinos) que replica o padrão observado em outras regiões do Brasil. A histoplasmose, por outro lado, permanece com baixa incidência, provavelmente devido às condições climáticas locais menos favoráveis ao fungo.</p>
+                </div>
+            </div>
+        `,
+        candidiase: `
+             <div class="bg-white p-6 rounded-2xl shadow-lg text-gray-700 space-y-4">
+                <h3 class="text-xl font-semibold text-gray-700 text-center">Candidíase</h3>
+                <div>
+                    <h4 class="font-semibold text-teal-800">Clínica</h4>
+                    <p>As manifestações variam de <strong>mucocutâneas</strong> (candidíase oral "sapinho", esofagite, candidíase vaginal) a <strong>invasivas</strong>. A forma mais grave é a <strong>candidemia</strong> (presença de <em>Candida</em> na corrente sanguínea), que pode levar a focos metastáticos em órgãos como olhos (endocardite), coração (endocardite) e cérebro.</p>
+                </div>
+                 <div>
+                    <h4 class="font-semibold text-teal-800">Diagnóstico Laboratorial</h4>
+                    <p>A <strong>hemocultura</strong> é o padrão-ouro para candidemia, mas sua sensibilidade é baixa (≈50%). Biomarcadores como a <strong>Beta-D-glucana</strong> no soro podem sugerir infecção fúngica invasiva precocemente. Para formas mucocutâneas, o exame micológico direto da lesão é suficiente.</p>
+                </div>
+            </div>
+        `,
+         esporotricose: `
+             <div class="bg-white p-6 rounded-2xl shadow-lg text-gray-700 space-y-4">
+                <h3 class="text-xl font-semibold text-gray-700 text-center">Esporotricose</h3>
+                <div>
+                    <h4 class="font-semibold text-teal-800">Clínica</h4>
+                    <p>A forma mais comum é a <strong>linfocutânea</strong>, que se inicia com um nódulo no local da inoculação (ex: arranhadura de gato) que ulcera, seguido pelo surgimento de nódulos secundários ao longo do trajeto linfático. A <strong>forma cutânea fixa</strong> é uma placa única, sem disseminação linfática. Formas disseminadas são raras e ocorrem em imunossuprimidos.</p>
+                </div>
+                 <div>
+                    <h4 class="font-semibold text-teal-800">Diagnóstico Laboratorial</h4>
+                    <p>O diagnóstico definitivo é feito pela <strong>cultura fúngica</strong> de secreção ou biópsia da lesão, que permite o isolamento e identificação do <em>Sporothrix</em>. O exame histopatológico pode mostrar corpos asteroides, mas é inespecífico.</p>
+                </div>
+            </div>
+        `,
+        histoplasmose: `
+             <div class="bg-white p-6 rounded-2xl shadow-lg text-gray-700 space-y-4">
+                <h3 class="text-xl font-semibold text-gray-700 text-center">Histoplasmose</h3>
+                <div>
+                    <h4 class="font-semibold text-teal-800">Clínica</h4>
+                    <p>A maioria das infecções é assintomática. A <strong>forma pulmonar aguda</strong> assemelha-se a uma gripe. A <strong>forma disseminada progressiva</strong> é a mais grave, ocorrendo em imunossuprimidos (especialmente pacientes com AIDS e CD4 < 100), com febre, perda de peso, hepatoesplenomegalia e pancitopenia.</p>
+                </div>
+                 <div>
+                    <h4 class="font-semibold text-teal-800">Diagnóstico Laboratorial</h4>
+                    <p>A <strong>detecção de antígeno urinário</strong> é um teste rápido e altamente sensível e específico para a forma disseminada. A cultura de sangue, medula óssea ou outros tecidos é confirmatória, mas demorada. A sorologia tem valor em formas pulmonares crônicas, mas pode ser negativa em imunossuprimidos.</p>
+                </div>
+            </div>
+        `,
+        dermatomicose: `
+             <div class="bg-white p-6 rounded-2xl shadow-lg text-gray-700 space-y-4">
+                <h3 class="text-xl font-semibold text-gray-700 text-center">Dermatomicoses (Tinhas)</h3>
+                <div>
+                    <h4 class="font-semibold text-teal-800">Clínica</h4>
+                    <p>Apresentam-se como lesões de pele anulares, com bordas elevadas, avermelhadas e descamativas, e clareamento central. O nome varia com a localização: <em>tinea capitis</em> (couro cabeludo), <em>tinea corporis</em> (corpo), <em>tinea cruris</em> (virilha), <em>tinea pedis</em> ("pé de atleta").</p>
+                </div>
+                 <div>
+                    <h4 class="font-semibold text-teal-800">Diagnóstico Laboratorial</h4>
+                    <p>O diagnóstico é primariamente clínico, mas pode ser confirmado pelo <strong>exame micológico direto (EMD)</strong> de raspados da lesão, utilizando hidróxido de potássio (KOH) para visualizar as hifas. A <strong>cultura fúngica</strong> identifica a espécie, o que pode ter implicações no tratamento e na identificação da fonte de infecção (humana, animal ou solo).</p>
+                </div>
+            </div>
+        `
+    };
+
+    let charts = {};
+
+    function createChart(id, type, data, options = {}) {
+        if (charts[id]) {
+            charts[id].destroy();
+        }
+        const ctx = document.getElementById(id)?.getContext('2d');
+        if (ctx) {
+            charts[id] = new Chart(ctx, { type, data, options: { ...chartConfig, ...options } });
+        }
+    }
+
+    function initCharts() {
+        createChart('seasonalChart', 'line', dataStore.seasonal);
+        createChart('ageChart', 'bar', dataStore.age, { indexAxis: 'y' });
+        createChart('seasonalChart2', 'line', dataStore.seasonal);
+        createChart('ageChart2', 'bar', dataStore.age, { indexAxis: 'y' });
+    }
+
+    function renderVirusContent(virus) {
+        const container = document.getElementById('virus-content-area');
+        container.innerHTML = virusContentTemplates[virus];
+        
+        switch(virus) {
+            case 'dengue':
+                createChart('dengueChart', 'line', dataStore.dengue);
+                break;
+            case 'influenza':
+                createChart('influenzaChart', 'bar', dataStore.influenza, { scales: { x: { stacked: true }, y: { stacked: true } } });
+                break;
+            case 'hepatiteB':
+                createChart('hepatitisBChart', 'bar', dataStore.hepatitisB, {
+                    scales: {
+                        y_cases: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Casos' } },
+                        y_coverage: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Cobertura Vacinal (%)' } }
+                    }
+                });
+                break;
+            case 'herpes':
+                createChart('herpesChart', 'bar', dataStore.herpes);
+                break;
+        }
+    }
+
+    function renderMycosisContent(mycosis) {
+        const container = document.getElementById('mycosis-content-area');
+        container.innerHTML = mycosisContentTemplates[mycosis];
+        if (mycosis === 'geral') {
+            createChart('fungalChart', 'bar', dataStore.fungal);
+        }
+    }
+
+    document.querySelectorAll('.virus-tab-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelector('.virus-tab-btn.active').classList.remove('active');
+            button.classList.add('active');
+            renderVirusContent(button.dataset.virus);
+        });
+    });
+
+    document.querySelectorAll('.mycosis-tab-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelector('.mycosis-tab-btn.active').classList.remove('active');
+            button.classList.add('active');
+            renderMycosisContent(button.dataset.mycosis);
+        });
+    });
+    
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.accordion-icon');
+            
+            header.parentElement.classList.toggle('open');
+            
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                icon.textContent = '+';
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.textContent = '-';
+            }
+        });
+    });
+
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section');
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 80) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').substring(1) === current) {
+                link.classList.add('active');
+            }
+        });
+    });
+    
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+    
+    document.getElementById('mobile-nav').addEventListener('change', function(e) {
+        const targetId = e.target.value;
+        document.querySelector(targetId).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+
+    initCharts();
+    renderVirusContent('dengue');
+    renderMycosisContent('geral');
+});
+</script>
+
+</body>
+</html>
+
