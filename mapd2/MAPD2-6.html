@@ -3,447 +3,845 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Micoses e Viroses: Guia Interativo</title>
+    <title>Gerador de Slides Epidemiológicos</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
-        .disease-card {
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        .step-card {
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .disease-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        .progress-bar-fill {
+            transition: width 0.4s ease-in-out;
         }
-        #details-container {
-            scroll-margin-top: 20px;
+        .infection-btn {
+            transition: all 0.2s ease-in-out;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .infection-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: #4ECDC4;
+        }
+        .infection-btn.selected {
+            background-color: #4ECDC4;
+            color: #1A535C;
+            border-color: #4ECDC4;
+            font-weight: 600;
+        }
+        .variable-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .variable-btn.active {
+            background-color: #4ECDC4 !important;
+            color: #1A535C !important;
+            font-weight: 600;
+        }
+        .data-input-cell {
+            padding: 8px;
+            border: 1px solid #4a5568;
+            min-width: 80px;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-700">
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
 
-    <!-- Container Principal -->
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="container mx-auto max-w-5xl">
+        <div id="app" class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-gray-700" style="background: linear-gradient(145deg, #2d3748, #1a202c);">
+            
+            <div class="p-6 border-b border-gray-700">
+                <h1 class="text-3xl font-bold text-gray-100 text-center mb-4">Gerador de Apresentação Epidemiológica</h1>
+                <div class="w-full bg-gray-700 rounded-full h-3">
+                    <div id="progressBar" class="h-3 rounded-full progress-bar-fill" style="width: 25%; background: linear-gradient(90deg, #4ECDC4, #F7B801);"></div>
+                </div>
+                 <p id="step-indicator" class="text-center text-sm text-gray-400 mt-2">Passo 1 de 4</p>
+            </div>
 
-        <!-- Cabeçalho -->
-        <header class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-bold text-blue-800">Micoses e Viroses 🦠🍄</h1>
-            <p class="mt-3 text-lg text-slate-600">Guia Interativo sobre Morfologia e Imunopatologia</p>
-            <a href="apostila.pdf" target="_blank" class="mt-6 inline-block bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300">
-                Download de apostila em PDF 📄
-            </a>
-        </header>
+            <div id="steps-container" class="p-8">
+                <!-- Passo 1: Seleção da Infecção -->
+                <div id="step-1" class="step-card">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-200">1. Escolha a Infecção para Análise</h2>
+                    <div id="infection-list" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Opções de infecção -->
+                    </div>
+                </div>
 
-        <!-- Seção de Seleção -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            <!-- Card Fundamentos -->
-            <div onclick="showDetails('fundamentos')" class="disease-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center border-b-4 border-slate-400">
-                <span class="text-5xl mb-3">📚</span>
-                <h2 class="text-xl font-semibold text-slate-900">Fundamentos</h2>
+                <!-- Passo 2: Visualização dos Dados -->
+                <div id="step-2" class="step-card hidden">
+                    <h2 class="text-2xl font-semibold mb-4 text-gray-200">2. Visualização dos Dados Brutos</h2>
+                    <p class="text-gray-400 mb-4">A tabela abaixo exibe os dados originais utilizados para a análise. Clique em "Próxima" para continuar.</p>
+                    <div class="h-80 overflow-auto border border-gray-600 rounded-lg p-2 bg-gray-900/50">
+                        <table id="data-table" class="min-w-full text-sm text-left">
+                            <thead class="bg-gray-700 sticky top-0"></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Passo 3: Análise Descritiva -->
+                <div id="step-3" class="step-card hidden">
+                    <h2 class="text-2xl font-semibold mb-4 text-gray-200">3. Análise Descritiva dos Dados</h2>
+                    <p class="text-gray-400 mb-6">Selecione uma variável na lista à esquerda para visualizar as métricas de tendência central à direita.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 min-h-[400px]">
+                        <div id="variable-buttons" class="flex flex-col gap-2 overflow-y-auto max-h-[400px] pr-2">
+                            <!-- Botões das variáveis -->
+                        </div>
+                        <div id="metrics-display-container" class="md:col-span-2 bg-gray-900/50 p-6 rounded-lg border border-gray-700 flex flex-col justify-center">
+                           <!-- As métricas serão exibidas aqui -->
+                        </div>
+                    </div>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                        <div>
+                            <label for="observations" class="block mb-2 text-sm font-medium text-gray-300">Observações sobre os Dados:</label>
+                            <textarea id="observations" rows="4" class="block p-2.5 w-full text-sm bg-gray-700 text-white rounded-lg border border-gray-600 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Digite suas observações aqui..."></textarea>
+                        </div>
+                        <div>
+                            <label for="conclusion" class="block mb-2 text-sm font-medium text-gray-300">Conclusão Epidemiológica:</label>
+                            <textarea id="conclusion" rows="4" class="block p-2.5 w-full text-sm bg-gray-700 text-white rounded-lg border border-gray-600 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Digite sua conclusão aqui..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Passo 4: Layout e Finalização -->
+                <div id="step-4" class="step-card hidden">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-200">4. Finalizar Apresentação</h2>
+                    <div class="mb-6">
+                        <label class="block mb-2 text-sm font-medium text-gray-300">Escolha um Layout (Cor do Tema):</label>
+                        <div id="layout-options" class="flex flex-wrap gap-4">
+                            <!-- Opções de Layout -->
+                        </div>
+                    </div>
+                    <div>
+                        <label for="authors" class="block mb-2 text-sm font-medium text-gray-300">Responsáveis pelo Relatório:</label>
+                        <input type="text" id="authors" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2.5" placeholder="Ex: João da Silva, Maria Oliveira">
+                    </div>
+                </div>
             </div>
-            <!-- Card Epidemiologia JP -->
-            <div onclick="showDetails('epidemiologia')" class="disease-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center border-b-4 border-teal-400">
-                <span class="text-5xl mb-3">📊</span>
-                <h2 class="text-xl font-semibold text-teal-900">Epidemiologia JP</h2>
-            </div>
-            <!-- Card Vídeo-aula -->
-            <a href="video1.mp4" target="_blank" class="disease-card bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center justify-center text-center border-b-4 border-red-400">
-                <span class="text-5xl mb-3">🎬</span>
-                <h2 class="text-xl font-semibold text-red-900">Vídeo-aula</h2>
-            </a>
-            <!-- Card Áudio-aula -->
-            <a href="audio1.mp3" target="_blank" class="disease-card bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center justify-center text-center border-b-4 border-purple-400">
-                <span class="text-5xl mb-3">🎧</span>
-                <h2 class="text-xl font-semibold text-purple-900">Áudio-aula</h2>
-            </a>
-            <!-- Card Herpes Simplex -->
-            <div onclick="showDetails('herpes')" class="disease-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center border-b-4 border-blue-400">
-                <span class="text-5xl mb-3">👄</span>
-                <h2 class="text-xl font-semibold text-blue-900">Herpes Simplex</h2>
-            </div>
-            <!-- Card Influenza -->
-            <div onclick="showDetails('influenza')" class="disease-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center border-b-4 border-green-400">
-                <span class="text-5xl mb-3">🤒</span>
-                <h2 class="text-xl font-semibold text-green-900">Influenza</h2>
-            </div>
-            <!-- Card Dengue -->
-            <div onclick="showDetails('dengue')" class="disease-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center border-b-4 border-yellow-400">
-                <span class="text-5xl mb-3">🦟</span>
-                <h2 class="text-xl font-semibold text-yellow-900">Dengue</h2>
-            </div>
-            <!-- Card Hepatite B -->
-            <div onclick="showDetails('hepatiteB')" class="disease-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center border-b-4 border-blue-400">
-                <span class="text-5xl mb-3">🩺</span>
-                <h2 class="text-xl font-semibold text-blue-900">Hepatite B</h2>
-            </div>
-            <!-- Card Candidíase -->
-            <div onclick="showDetails('candidiase')" class="disease-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center border-b-4 border-green-400">
-                <span class="text-5xl mb-3">⚪️</span>
-                <h2 class="text-xl font-semibold text-green-900">Candidíase</h2>
-            </div>
-            <!-- Card Esporotricose -->
-            <div onclick="showDetails('esporotricose')" class="disease-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center border-b-4 border-yellow-400">
-                <span class="text-5xl mb-3">🌹</span>
-                <h2 class="text-xl font-semibold text-yellow-900">Esporotricose</h2>
-            </div>
-            <!-- Card Histoplasmose -->
-            <div onclick="showDetails('histoplasmose')" class="disease-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center border-b-4 border-blue-400">
-                <span class="text-5xl mb-3">🦇</span>
-                <h2 class="text-xl font-semibold text-blue-900">Histoplasmose</h2>
-            </div>
-            <!-- Card Dermatomicoses -->
-            <div onclick="showDetails('dermatomicoses')" class="disease-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer flex flex-col items-center justify-center text-center border-b-4 border-green-400">
-                <span class="text-5xl mb-3">👣</span>
-                <h2 class="text-xl font-semibold text-green-900">Dermatomicoses</h2>
+
+            <!-- Navegação -->
+            <div class="flex justify-between p-6 bg-gray-900/50 border-t border-gray-700">
+                <button id="prev-btn" class="py-2 px-5 rounded-lg text-white font-semibold bg-gray-600 hover:bg-gray-500 disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">Anterior</button>
+                <button id="next-btn" class="py-2 px-5 rounded-lg text-gray-900 font-semibold bg-cyan-400 hover:bg-cyan-300 disabled:bg-cyan-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">Próxima</button>
+                <button id="generate-btn" class="py-2 px-5 rounded-lg text-white font-semibold bg-green-500 hover:bg-green-400 hidden disabled:bg-green-800 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors">Gerar Apresentação</button>
             </div>
         </div>
-
-        <!-- Seção de Detalhes da Doença -->
-        <div id="details-container" class="mt-12 hidden">
-            <div id="details-content" class="bg-white rounded-2xl shadow-xl p-6 md:p-10 relative">
-                <!-- Conteúdo será inserido aqui pelo JavaScript -->
-            </div>
-        </div>
-        
-        <!-- Rodapé -->
-        <footer class="text-center mt-12 pt-8 border-t border-slate-200">
-            <p class="text-sm text-slate-500">Este material foi idealizado por Prof. Rodrigo Niskier, docente de Medicina do UNIPÊ.</p>
-        </footer>
-
     </div>
 
-    <script>
-        const diseaseData = {
-            fundamentos: {
-                title: '📚 Fundamentos Gerais',
-                color: 'slate',
-                content: `
-                    <div class="space-y-10">
-                        <div>
-                            <h3 class="text-3xl font-bold text-slate-800 mb-4 border-l-4 border-slate-500 pl-4">Vírus 🦠</h3>
-                            <div class="grid lg:grid-cols-2 gap-6 text-left">
-                                <div class="bg-slate-50 p-5 rounded-lg">
-                                    <h4 class="text-xl font-semibold text-slate-700 mb-3">Taxonomia e Morfologia</h4>
-                                    <p class="mb-2">A estrutura viral básica consiste em material genético (DNA ou RNA) dentro de um <strong>capsídeo</strong> proteico. Alguns são envoltos por um <strong>envelope lipídico</strong>.</p>
-                                    <ul class="space-y-2 list-disc list-inside">
-                                        <li><strong>Classificação de Baltimore:</strong> Divide os vírus em 7 classes com base no tipo de ácido nucleico e na estratégia de replicação.</li>
-                                        <li><strong>Hierarquia Taxonômica:</strong> Segue a ordem Reino (-viria), Filo (-viricota), Classe (-viricetes), Ordem (-virales), Família (-viridae), e Gênero (-virus). Reinos principais incluem <em>Riboviria</em> (vírus de RNA) e <em>Duplodnaviria</em> (vírus de DNA).</li>
-                                    </ul>
-                                </div>
-                                <div class="bg-slate-50 p-5 rounded-lg">
-                                    <h4 class="text-xl font-semibold text-slate-700 mb-3">Imunidade e Evasão</h4>
-                                    <ul class="space-y-2 list-disc list-inside">
-                                        <li><strong>Imunidade Inata:</strong> Células infectadas produzem <strong>Interferons (IFN) tipo I</strong>, que alertam células vizinhas. Células <strong>Natural Killer (NK)</strong> destroem células infectadas que apresentam menos moléculas de MHC-I em sua superfície.</li>
-                                        <li><strong>Mecanismos de Evasão:</strong>
-                                            <ul class="list-disc list-inside ml-4 mt-1">
-                                                <li>Bloqueio da sinalização do IFN.</li>
-                                                <li>Redução (<em>downregulation</em>) da expressão de MHC-I para escapar de linfócitos T citotóxicos.</li>
-                                                <li>Variação antigênica (<em>drift</em> e <em>shift</em>) para evadir anticorpos.</li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <h3 class="text-3xl font-bold text-slate-800 mb-4 border-l-4 border-slate-500 pl-4">Fungos 🍄</h3>
-                            <div class="grid lg:grid-cols-2 gap-6 text-left">
-                                <div class="bg-slate-50 p-5 rounded-lg">
-                                    <h4 class="text-xl font-semibold text-slate-700 mb-3">Taxonomia e Morfologia</h4>
-                                    <p class="mb-2">Organismos eucarióticos do Reino Fungi. Os filos de importância médica incluem Ascomycota e Basidiomycota.</p>
-                                     <ul class="space-y-2 list-disc list-inside">
-                                        <li><strong>Leveduriformes:</strong> Células únicas que se reproduzem por brotamento (ex: <em>Candida</em>).</li>
-                                        <li><strong>Filamentosos:</strong> Estruturas multicelulares formadas por hifas (ex: dermatófitos).</li>
-                                        <li><strong>Dimórficos:</strong> Alternam entre as formas de levedura e filamentosa dependendo da temperatura (ex: <em>Histoplasma</em>).</li>
-                                    </ul>
-                                </div>
-                                <div class="bg-slate-50 p-5 rounded-lg">
-                                    <h4 class="text-xl font-semibold text-slate-700 mb-3">Imunidade e Evasão</h4>
-                                    <ul class="space-y-2 list-disc list-inside">
-                                         <li><strong>Imunidade Inata:</strong> Fagócitos como <strong>macrófagos e neutrófilos</strong> são a principal defesa. Receptores (ex: Dectina-1) reconhecem componentes da parede fúngica, como <strong>β-glucanos</strong>, ativando a resposta inflamatória.</li>
-                                         <li><strong>Mecanismos de Evasão:</strong>
-                                            <ul class="list-disc list-inside ml-4 mt-1">
-                                                <li><strong>Mascaramento de PAMPs:</strong> Alteram a parede celular para esconder os β-glucanos.</li>
-                                                <li><strong>Cápsula:</strong> Uma cápsula polissacarídica (ex: <em>Cryptococcus</em>) inibe a fagocitose.</li>
-                                                <li><strong>Biofilmes:</strong> Comunidades fúngicas (ex: <em>Candida</em>) que aderem a superfícies e são resistentes a antifúngicos e à resposta imune.</li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            epidemiologia: {
-                title: '📊 Dados Epidemiológicos (João Pessoa, PB)',
-                color: 'teal',
-                content: `
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="text-2xl font-bold text-teal-800 mb-3">Visão Geral</h3>
-                            <p>A análise epidemiológica de João Pessoa revela padrões distintos influenciados por fatores climáticos, socioeconômicos e biológicos.</p>
-                        </div>
-                        <div class="bg-teal-50 p-6 rounded-lg">
-                            <h4 class="text-xl font-semibold text-teal-700 mb-3">Principais Achados</h4>
-                            <ul class="space-y-4 list-disc list-inside">
-                                <li><strong>Dengue:</strong> Apresenta um padrão epidêmico cíclico, com um pico significativo em 2022. A sazonalidade é marcada, com aumento de casos no outono (março a maio), correlacionado com as chuvas.</li>
-                                <li><strong>Influenza:</strong> Mostra variabilidade anual e circulação prolongada, com pico no inverno (junho a agosto), adaptando-se ao clima tropical.</li>
-                                <li><strong>Hepatite B:</strong> A incidência está em declínio constante, um sucesso direto da campanha de vacinação universal no Brasil.</li>
-                                <li><strong>Infecções Fúngicas:</strong> A <strong>candidemia</strong> é a principal micose invasiva hospitalar. Observa-se um aumento preocupante da <strong>esporotricose</strong> zoonótica (transmitida por felinos), replicando o padrão visto em outras regiões do Brasil. A <strong>histoplasmose</strong> permanece rara.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            herpes: {
-                title: '👄 Herpes Simplex (HSV-1 & HSV-2)',
-                color: 'blue',
-                content: `
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-2xl font-bold text-blue-800 mb-4">🔬 Morfologia e Estrutura</h3>
-                            <p class="mb-4">O Herpes Simplex Vírus (HSV) é um vírus de DNA envelopado. Sua estrutura consiste em um nucleocapsídeo icosaédrico contendo o material genético, envolvido por um tegumento proteico e um envelope lipídico derivado da célula hospedeira, com glicoproteínas virais na superfície.</p>
-                            
-                            <h3 class="text-2xl font-bold text-blue-800 mb-4">🛡️ Imunopatologia e Patogênese</h3>
-                            <ul class="space-y-3 list-disc list-inside">
-                                <li><strong>Latência:</strong> O HSV estabelece uma infecção latente nos gânglios sensoriais, onde o genoma viral persiste de forma epissomal, escapando da vigilância imune.</li>
-                                <li><strong>Evasão Imune:</strong> O vírus possui mecanismos sofisticados para evadir a resposta imune, como o bloqueio da apresentação de antígenos via MHC-I e a inibição da sinalização de interferon.</li>
-                                <li><strong>Reativação:</strong> Fatores como estresse, imunossupressão ou radiação UV podem desencadear a reativação viral, levando ao transporte de novos vírions pelos axônios até o local da infecção primária.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-blue-50 p-6 rounded-lg">
-                            <h3 class="text-2xl font-bold text-blue-800 mb-4">🩺 Manifestações Clínicas</h3>
-                            <ul class="space-y-3">
-                                <li><strong class="text-blue-700">HSV-1:</strong> Geralmente associado a infecções orofaciais (herpes labial), ceratite e, em casos raros, encefalite.</li>
-                                <li><strong class="text-blue-700">HSV-2:</strong> Principalmente associado ao herpes genital e meningoencefalite neonatal.</li>
-                                <li><strong class="text-blue-700">Imunossuprimidos:</strong> Podem desenvolver infecções disseminadas e atípicas com maior gravidade.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            influenza: {
-                title: '🤒 Influenza',
-                color: 'green',
-                content: `
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-2xl font-bold text-green-800 mb-4">🔬 Morfologia e Estrutura</h3>
-                            <p class="mb-4">O vírus da Influenza pertence à família Orthomyxoviridae. É um vírus de RNA envelopado, com um genoma segmentado. Sua superfície é coberta por duas glicoproteínas principais: a Hemaglutinina (HA), que se liga às células hospedeiras, e a Neuraminidase (NA), que facilita a liberação de novos vírions.</p>
-                            
-                            <h3 class="text-2xl font-bold text-green-800 mb-4">🛡️ Imunopatologia e Patogênese</h3>
-                            <ul class="space-y-3 list-disc list-inside">
-                                <li><strong>Infecção Celular:</strong> O vírus infecta as células epiteliais do trato respiratório, causando destruição celular e inflamação.</li>
-                                <li><strong>Tempestade de Citocinas:</strong> A resposta imune pode ser exacerbada, resultando em uma "tempestade de citocinas" que contribui para a lesão pulmonar aguda, especialmente em infecções por cepas mais virulentas como A(H1N1).</li>
-                                <li><strong>Variação Antigênica:</strong> O vírus escapa da imunidade pré-existente através do "drift" (pequenas mutações graduais) e "shift" antigênico (recombinação de segmentos genômicos), o que exige a reformulação anual da vacina.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-green-50 p-6 rounded-lg">
-                            <h3 class="text-2xl font-bold text-green-800 mb-4">🩺 Complicações Comuns</h3>
-                             <ul class="space-y-3">
-                                <li><strong class="text-green-700">Pneumonia:</strong> Pode ser viral primária ou levar a uma pneumonia bacteriana secundária.</li>
-                                <li><strong class="text-green-700">SARA:</strong> Síndrome Respiratória Aguda Grave.</li>
-                                <li><strong class="text-green-700">Outras:</strong> Miocardite e complicações neurológicas também podem ocorrer.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            dengue: {
-                title: '🦟 Dengue',
-                color: 'yellow',
-                content: `
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-2xl font-bold text-yellow-800 mb-4">🔬 Morfologia e Estrutura</h3>
-                            <p class="mb-4">O vírus da Dengue (DENV) é um arbovírus da família Flaviviridae. É um vírus de RNA de fita simples, envelopado, com morfologia esférica e simetria icosaédrica. Existem quatro sorotipos distintos (DENV-1, 2, 3 e 4).</p>
-                            
-                            <h3 class="text-2xl font-bold text-yellow-800 mb-4">🛡️ Imunopatologia e Patogênese</h3>
-                            <ul class="space-y-3 list-disc list-inside">
-                                <li><strong>Extravasamento Capilar:</strong> A principal característica da dengue grave é o aumento da permeabilidade vascular, mediado por citocinas inflamatórias, que leva ao extravasamento de plasma.</li>
-                                <li><strong>ADE (Antibody-Dependent Enhancement):</strong> Em uma infecção secundária por um sorotipo diferente, anticorpos não neutralizantes da infecção anterior podem facilitar a entrada do vírus em monócitos, aumentando a replicação viral e a resposta inflamatória.</li>
-                                <li><strong>Resposta Imune:</strong> Uma resposta Th1/Th17 exacerbada contribui para o dano endotelial, extravasamento capilar e trombocitopenia.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-yellow-50 p-6 rounded-lg">
-                            <h3 class="text-2xl font-bold text-yellow-800 mb-4">🩺 Fases da Doença</h3>
-                            <ul class="space-y-3">
-                                <li><strong class="text-yellow-700">Fase Febril:</strong> Alta viremia, febre e sintomas gerais.</li>
-                                <li><strong class="text-yellow-700">Fase Crítica:</strong> Queda da febre, mas com risco de extravasamento de plasma, hemorragias e choque.</li>
-                                <li><strong class="text-yellow-700">Fase de Recuperação:</strong> Reabsorção gradual do fluido extravasado e melhora do estado geral.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            hepatiteB: {
-                title: '🩺 Hepatite B',
-                color: 'blue',
-                content: `
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-2xl font-bold text-blue-800 mb-4">🔬 Morfologia e Estrutura</h3>
-                            <p class="mb-4">O Vírus da Hepatite B (HBV) é um Hepadnavirus, um vírus de DNA parcialmente de fita dupla. Possui um nucleocapsídeo (core) e um envelope externo contendo o Antígeno de Superfície da Hepatite B (HBsAg).</p>
-                            
-                            <h3 class="text-2xl font-bold text-blue-800 mb-4">🛡️ Imunopatologia e Patogênese</h3>
-                            <ul class="space-y-3 list-disc list-inside">
-                                <li><strong>Dano Hepatocelular:</strong> A lesão no fígado não é causada diretamente pelo vírus (não é citopático), mas sim pela resposta imune do hospedeiro, principalmente por linfócitos T citotóxicos que destroem os hepatócitos infectados.</li>
-                                <li><strong>Infecção Crônica:</strong> A falha em eliminar o vírus leva à inflamação crônica, que pode progredir para fibrose, cirrose e carcinoma hepatocelular.</li>
-                                <li><strong>Tolerância Imune:</strong> Em infecções perinatais, pode ocorrer uma fase de tolerância imune, com alta replicação viral mas pouca inflamação hepática.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-blue-50 p-6 rounded-lg">
-                            <h3 class="text-2xl font-bold text-blue-800 mb-4">🩺 Marcadores Sorológicos</h3>
-                             <ul class="space-y-2">
-                                <li><strong class="text-blue-700">HBsAg:</strong> Indica infecção ativa.</li>
-                                <li><strong class="text-blue-700">Anti-HBs:</strong> Indica imunidade (pós-vacina ou cura).</li>
-                                <li><strong class="text-blue-700">Anti-HBc:</strong> Indica exposição prévia ao vírus.</li>
-                                <li><strong class="text-blue-700">HBeAg:</strong> Indica alta replicação viral.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            candidiase: {
-                title: '⚪️ Candidíase',
-                color: 'green',
-                content: `
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-2xl font-bold text-green-800 mb-4">🔬 Morfologia</h3>
-                            <p class="mb-4"><em>Candida spp.</em> é um fungo dimórfico, o que significa que pode existir na forma de <strong>leveduras</strong> (unicelulares, ovais, que se reproduzem por brotamento) ou como <strong>hifas/pseudo-hifas</strong> (estruturas filamentosas multicelulares). Essa transição é um fator de virulência chave.</p>
-                            
-                            <h3 class="text-2xl font-bold text-green-800 mb-4">🛡️ Imunopatologia e Patogênese</h3>
-                            <ul class="space-y-3 list-disc list-inside">
-                                <li><strong>Adesão e Invasão:</strong> O fungo adere às células hospedeiras e a transição para a forma de hifa facilita a invasão dos tecidos.</li>
-                                <li><strong>Biofilme:</strong> <em>Candida</em> é capaz de formar biofilmes em superfícies (como cateteres), que são matrizes extracelulares que protegem o fungo de antifúngicos e da resposta imune.</li>
-                                <li><strong>Evasão Imune:</strong> O fungo pode mascarar PAMPs (como β-glucanos) na sua parede celular para evitar o reconhecimento por células imunes e inibir a ativação de neutrófilos.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-green-50 p-6 rounded-lg">
-                            <h3 class="text-2xl font-bold text-green-800 mb-4">🩺 Manifestações Clínicas</h3>
-                            <ul class="space-y-3">
-                                <li><strong class="text-green-700">Mucocutânea:</strong> Infecções orais ("sapinho"), vaginais e cutâneas.</li>
-                                <li><strong class="text-green-700">Invasiva:</strong> Candidemia (infecção na corrente sanguínea), endocardite, meningite, afetando principalmente pacientes imunocomprometidos ou hospitalizados.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            esporotricose: {
-                title: '🌹 Esporotricose',
-                color: 'yellow',
-                content: `
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-2xl font-bold text-yellow-800 mb-4">🔬 Morfologia</h3>
-                            <p class="mb-4"><em>Sporothrix spp.</em> é um fungo dimórfico termal. No ambiente (25°C), cresce como um mofo filamentoso. Nos tecidos do hospedeiro (37°C), converte-se para a forma de levedura, tipicamente com um formato de "charuto" (cigar-shaped). A espécie <em>S. brasilisensis</em> é a mais virulenta.</p>
-                            
-                            <h3 class="text-2xl font-bold text-yellow-800 mb-4">🛡️ Imunopatologia e Patogênese</h3>
-                            <ul class="space-y-3 list-disc list-inside">
-                                <li><strong>Inoculação Traumática:</strong> A infecção geralmente começa com a inoculação do fungo na pele através de traumas com espinhos de plantas ou arranhões/mordidas de animais infectados (especialmente gatos).</li>
-                                <li><strong>Disseminação Linfática:</strong> A partir da lesão inicial, o fungo se dissemina através dos vasos linfáticos, causando nódulos e úlceras secundárias ao longo do trajeto linfático.</li>
-                                <li><strong>Resposta Imune:</strong> Uma resposta imune celular do tipo Th1 é crucial para controlar a infecção. A deficiência na resposta Th1/Th17 pode levar a formas disseminadas da doença.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-yellow-50 p-6 rounded-lg">
-                            <h3 class="text-2xl font-bold text-yellow-800 mb-4">🩺 Formas Clínicas</h3>
-                            <ul class="space-y-3">
-                                <li><strong class="text-yellow-700">Linfocutânea:</strong> A forma mais clássica, com lesões que seguem o trajeto dos vasos linfáticos.</li>
-                                <li><strong class="text-yellow-700">Cutânea Fixa:</strong> Uma única lesão ulcerada ou verrucosa que não se dissemina.</li>
-                                <li><strong class="text-yellow-700">Disseminada:</strong> Afeta múltiplos órgãos e ocorre principalmente em pacientes imunossuprimidos.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            histoplasmose: {
-                title: '🦇 Histoplasmose',
-                color: 'blue',
-                content: `
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-2xl font-bold text-blue-800 mb-4">🔬 Morfologia</h3>
-                            <p class="mb-4"><em>Histoplasma capsulatum</em> também é um fungo dimórfico termal. No solo (rico em guano de aves ou morcegos), existe como mofo filamentoso que produz microconídios infecciosos. Após a inalação e ao atingir 37°C nos pulmões, transforma-se em pequenas leveduras ovais.</p>
-                            
-                            <h3 class="text-2xl font-bold text-blue-800 mb-4">🛡️ Imunopatologia e Patogênese</h3>
-                            <ul class="space-y-3 list-disc list-inside">
-                                <li><strong>Inalação:</strong> A infecção é adquirida pela inalação dos microconídios, que são fagocitados por macrófagos alveolares.</li>
-                                <li><strong>Parasitismo Intracelular:</strong> O fungo sobrevive e se replica dentro dos macrófagos, inibindo a fusão do fagossomo com o lisossomo e neutralizando o pH do fagossomo.</li>
-                                <li><strong>Resposta Th1:</strong> O controle da infecção depende criticamente de uma forte resposta imune celular mediada por Th1, com produção de IFN-γ e IL-12, que ativam os macrófagos para destruir o fungo. A falha nessa resposta leva à doença disseminada.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-blue-50 p-6 rounded-lg">
-                            <h3 class="text-2xl font-bold text-blue-800 mb-4">🩺 Espectro Clínico</h3>
-                            <ul class="space-y-3">
-                                <li><strong class="text-blue-700">Assintomática:</strong> A maioria das infecções (90%) não causa sintomas.</li>
-                                <li><strong class="text-blue-700">Pulmonar Aguda:</strong> Semelhante a uma gripe.</li>
-                                <li><strong class="text-blue-700">Disseminada Progressiva:</strong> Grave e potencialmente fatal, ocorre em imunossuprimidos (ex: pacientes com AIDS).</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            dermatomicoses: {
-                title: '👣 Dermatomicoses (Tinhas)',
-                color: 'green',
-                content: `
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-2xl font-bold text-green-800 mb-4">🔬 Morfologia</h3>
-                            <p class="mb-4">Os dermatófitos (gêneros <em>Trichophyton</em>, <em>Microsporum</em>, <em>Epidermophyton</em>) são fungos filamentosos (mofos) que não são dimórficos. Eles são queratinofílicos, ou seja, utilizam a queratina como fonte de nutriente, restringindo a infecção à pele, cabelo e unhas.</p>
-                            
-                            <h3 class="text-2xl font-bold text-green-800 mb-4">🛡️ Imunopatologia e Patogênese</h3>
-                            <ul class="space-y-3 list-disc list-inside">
-                                <li><strong>Ação Enzimática:</strong> A patogênese se baseia na produção de enzimas, como as queratinases, que degradam a queratina e permitem a invasão das camadas queratinizadas.</li>
-                                <li><strong>Resposta Inflamatória Variável:</strong> A intensidade da inflamação depende da espécie do fungo e sua adaptação ao hospedeiro:</li>
-                                <li class="ml-4"><strong>Antropofílicas (humanos):</strong> Tendem a causar pouca inflamação e infecções crônicas.</li>
-                                <li class="ml-4"><strong>Zoofílicas (animais):</strong> Provocam uma resposta inflamatória intensa no ser humano, que muitas vezes leva à resolução espontânea.</li>
-                                <li class="ml-4"><strong>Geofílicas (solo):</strong> Resposta inflamatória intermediária.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-green-50 p-6 rounded-lg">
-                            <h3 class="text-2xl font-bold text-green-800 mb-4">🩺 Tipos de Tinhas</h3>
-                            <p>As infecções são nomeadas conforme a área do corpo afetada:</p>
-                            <ul class="space-y-2 mt-2">
-                                <li><strong class="text-green-700">Tinea capitis:</strong> Couro cabeludo</li>
-                                <li><strong class="text-green-700">Tinea corporis:</strong> Corpo</li>
-                                <li><strong class="text-green-700">Tinea pedis:</strong> Pés ("pé de atleta")</li>
-                                <li><strong class="text-green-700">Tinea unguium:</strong> Unhas (onicomicose)</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            }
+<script>
+const state = {
+    currentStep: 1,
+    selectedInfection: null,
+    analysis: {
+        observations: '',
+        conclusion: ''
+    },
+    presentation: {
+        layout: 'teal',
+        authors: ''
+    },
+    data: {},
+};
+
+const infectionData = {
+    'Dengue': {
+        rawData: `Paciente,Sexo,Idade,Febre alta súbita,Cefaleia intensa,Mialgia/artralgia,Exantema,Dor retro-orbitária,Plaquetas <100.000,Hemoconcentração (Ht ↑),Dor abdominal intensa,Sangramento,Sorologia NS1/IgM positiva
+1,F,22,Sim,Sim,Sim,Sim,Sim,Não,Não,Não,Não,Sim
+2,M,35,Sim,Sim,Sim,Não,Sim,Sim,Sim,Não,Sim,Sim
+3,F,28,Sim,Sim,Sim,Sim,Não,Não,Não,Não,Não,Sim
+4,M,41,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+5,F,19,Sim,Sim,Sim,Não,Sim,Não,Não,Não,Não,Sim
+6,M,56,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+7,F,33,Sim,Sim,Sim,Sim,Não,Não,Não,Não,Não,Sim
+8,M,27,Sim,Sim,Sim,Não,Sim,Não,Não,Não,Não,Sim
+9,F,48,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Não,Sim
+10,M,52,Sim,Sim,Sim,Não,Sim,Sim,Sim,Sim,Sim,Sim
+11,F,30,Sim,Sim,Sim,Sim,Não,Não,Não,Não,Não,Sim
+12,M,44,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+13,F,25,Sim,Sim,Sim,Não,Sim,Não,Não,Não,Não,Sim
+14,M,39,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+15,F,21,Sim,Sim,Sim,Não,Sim,Não,Não,Não,Não,Sim
+16,M,47,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Não,Sim
+17,F,34,Sim,Sim,Sim,Sim,Sim,Não,Não,Não,Não,Sim
+18,M,50,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+19,F,29,Sim,Sim,Sim,Não,Sim,Não,Não,Não,Não,Sim
+20,M,61,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim`,
+        info: {
+            introduction: `<ul><li><strong>Família:</strong> Flaviviridae</li><li><strong>Gênero:</strong> Flavivirus</li><li><strong>Espécie:</strong> Vírus da Dengue (DENV)</li><li><strong>Genoma:</strong> RNA de fita simples, sentido positivo.</li><li><strong>Morfologia:</strong> Partícula esférica, envelopada, com aproximadamente 50 nm de diâmetro.</li><li><strong>Sorotipos:</strong> Quatro sorotipos antigênicamente distintos (DENV-1, DENV-2, DENV-3, DENV-4), o que torna a resposta imune complexa.</li></ul>`,
+            medicalImportance: `<ul><li><strong>Impacto Global:</strong> Uma das arboviroses de maior impacto no mundo, endêmica em mais de 100 países.</li><li><strong>Espectro Clínico:</strong> Varia de quadros febris leves a formas graves como a Dengue Hemorrágica e a Síndrome do Choque da Dengue.</li><li><strong>Fator de Risco:</strong> A infecção secundária por um sorotipo diferente aumenta o risco de desenvolver formas graves da doença.</li></ul>`,
+            clinicalPerspective: `<ul><li><strong>Manejo Clínico:</strong> Focado no suporte hídrico e reconhecimento precoce dos sinais de alarme (dor abdominal, sangramentos, etc.).</li><li><strong>Controle Epidemiológico:</strong> Baseado no combate ao vetor <em>Aedes aegypti</em> e na vigilância ativa de casos.</li><li><strong>Prevenção:</strong> Vacinas já estão disponíveis e são uma ferramenta importante para o controle em áreas endêmicas.</li></ul>`
+        }
+    },
+    'Herpes': {
+        rawData: `Paciente,Sexo,Idade,Tipo clínico,Lesões vesiculares dolorosas,Localização (oral/genital),Recorrência,Febre,HIV+,PCR positivo para HSV
+1,F,23,HSV-2,Sim,Genital,Sim,Não,Não,Sim
+2,M,31,HSV-1,Sim,Oral,Sim,Não,Não,Sim
+3,F,27,HSV-2,Sim,Genital,Sim,Não,Não,Sim
+4,M,35,HSV-1,Sim,Oral,Não,Sim,Não,Sim
+5,F,29,HSV-2,Sim,Genital,Sim,Não,Não,Sim
+6,M,42,HSV-1,Sim,Oral,Sim,Não,Não,Sim
+7,F,26,HSV-2,Sim,Genital,Não,Sim,Não,Sim
+8,M,38,HSV-1,Sim,Oral,Sim,Não,Não,Sim
+9,F,33,HSV-2,Sim,Genital,Sim,Não,Não,Sim
+10,M,45,HSV-1,Sim,Oral,Não,Sim,Não,Sim
+11,F,21,HSV-2,Sim,Genital,Sim,Não,Não,Sim
+12,M,36,HSV-1,Sim,Oral,Sim,Não,Não,Sim
+13,F,40,HSV-2,Sim,Genital,Não,Sim,Não,Sim
+14,M,28,HSV-1,Sim,Oral,Sim,Não,Não,Sim
+15,F,25,HSV-2,Sim,Genital,Sim,Não,Não,Sim
+16,M,49,HSV-1,Sim,Oral,Sim,Sim,Sim,Sim
+17,F,32,HSV-2,Sim,Genital,Sim,Não,Não,Sim
+18,M,53,HSV-1,Sim,Oral,Não,Sim,Sim,Sim
+19,F,30,HSV-2,Sim,Genital,Sim,Não,Não,Sim
+20,M,41,HSV-1,Sim,Oral,Sim,Não,Sim,Sim`,
+        info: {
+            introduction: `<ul><li><strong>Família:</strong> Herpesviridae</li><li><strong>Subfamília:</strong> Alphaherpesvirinae</li><li><strong>Gênero:</strong> Simplexvirus</li><li><strong>Genoma:</strong> DNA de fita dupla, linear.</li><li><strong>Morfologia:</strong> Vírus grande, envelopado, com um capsídeo icosaédrico.</li><li><strong>Tipos Principais:</strong> Herpes Simplex Virus 1 (HSV-1), classicamente oral, e Herpes Simplex Virus 2 (HSV-2), classicamente genital.</li></ul>`,
+            medicalImportance: `<ul><li><strong>Prevalência:</strong> Infecções extremamente comuns e disseminadas globalmente.</li><li><strong>Latência e Recorrência:</strong> Caracteriza-se por establecer infecção latente nos gânglios neurais, com reativações periódicas.</li><li><strong>Complicações:</strong> Embora geralmente benignas, podem causar quadros graves como encefalite, ceratite e infecções neonatais de alta mortalidade.</li></ul>`,
+            clinicalPerspective: `<ul><li><strong>Tratamento:</strong> Antivirais (ex: Aciclovir) reduzem a duração e a gravidade dos surtos, mas não curam a infecção.</li><li><strong>Prevenção:</strong> Focada na educação sobre transmissão (contato direto com lesões) e práticas sexuais seguras.</li><li><strong>Populações de Risco:</strong> Pacientes imunocomprometidos podem apresentar quadros atípicos, extensos e mais graves.</li></ul>`
+        }
+    },
+    'Hepatite B': {
+        rawData: `Paciente,Sexo,Idade,Forma clínica,Icterícia,Astenia,Dor abdominal,Náuseas,HBsAg,Anti-HBc IgM,Anti-HBc total,HBeAg,Carga viral detectável,ALT elevada
+1,M,32,Aguda,Sim,Sim,Sim,Sim,Pos,Pos,Pos,Pos,Alta,Sim
+2,F,41,Crônica,Não,Sim,Não,Não,Pos,Neg,Pos,Neg,Baixa,Leve
+3,M,55,Crônica,Não,Sim,Sim,Não,Pos,Neg,Pos,Neg,Alta,Sim
+4,F,27,Aguda,Sim,Sim,Sim,Sim,Pos,Pos,Pos,Pos,Alta,Sim
+5,M,63,Crônica,Não,Sim,Não,Não,Pos,Neg,Pos,Neg,Alta,Sim
+6,F,36,Crônica,Não,Sim,Não,Não,Pos,Neg,Pos,Neg,Baixa,Leve
+7,M,44,Crônica,Não,Sim,Sim,Não,Pos,Neg,Pos,Neg,Alta,Sim
+8,F,50,Crônica,Não,Sim,Não,Não,Pos,Neg,Pos,Neg,Baixa,Leve
+9,M,39,Aguda,Sim,Sim,Sim,Sim,Pos,Pos,Pos,Pos,Alta,Sim
+10,F,29,Aguda,Sim,Sim,Sim,Sim,Pos,Pos,Pos,Pos,Alta,Sim
+11,M,58,Crônica,Não,Sim,Não,Não,Pos,Neg,Pos,Neg,Alta,Sim
+12,F,35,Crônica,Não,Sim,Não,Não,Pos,Neg,Pos,Neg,Baixa,Leve
+13,M,46,Crônica,Não,Sim,Sim,Não,Pos,Neg,Pos,Neg,Alta,Sim
+14,F,40,Crônica,Não,Sim,Não,Não,Pos,Neg,Pos,Neg,Baixa,Leve
+15,M,60,Crônica,Não,Sim,Não,Não,Pos,Neg,Pos,Neg,Alta,Sim
+16,F,34,Aguda,Sim,Sim,Sim,Sim,Pos,Pos,Pos,Pos,Alta,Sim
+17,M,49,Crônica,Não,Sim,Não,Não,Pos,Neg,Pos,Neg,Alta,Sim
+18,F,38,Crônica,Não,Sim,Sim,Não,Pos,Neg,Pos,Neg,Baixa,Leve
+19,M,54,Crônica,Não,Sim,Não,Não,Pos,Neg,Pos,Neg,Alta,Sim
+20,F,31,Aguda,Sim,Sim,Sim,Sim,Pos,Pos,Pos,Pos,Alta,Sim`,
+        info: {
+            introduction: `<ul><li><strong>Família:</strong> Hepadnaviridae</li><li><strong>Gênero:</strong> Orthohepadnavirus</li><li><strong>Espécie:</strong> Vírus da Hepatite B (HBV)</li><li><strong>Genoma:</strong> DNA circular, parcialmente de fita dupla.</li><li><strong>Morfologia:</strong> Partícula viral complexa (Partícula de Dane), com antígenos de superfície (HBsAg), core (HBcAg) e "e" (HBeAg).</li></ul>`,
+            medicalImportance: `<ul><li><strong>Saúde Pública:</strong> Um dos maiores problemas de saúde globais, com milhões de portadores crônicos.</li><li><strong>Doença Crônica:</strong> A principal causa de cirrose hepática e carcinoma hepatocelular em todo o mundo.</li><li><strong>Transmissão:</strong> Ocorre por vias parenteral (sangue), sexual e vertical (mãe-filho).</li></ul>`,
+            clinicalPerspective: `<ul><li><strong>Prevenção:</strong> A vacinação é a medida mais eficaz e segura para prevenir a infecção.</li><li><strong>Tratamento:</strong> Para a forma crônica, visa suprimir a replicação viral, reduzir a inflamação hepática e prevenir a progressão da doença.</li><li><strong>Diagnóstico:</strong> Realizado por meio de marcadores sorológicos que definem o estágio da infecção (aguda, crônica, curada).</li></ul>`
+        }
+    },
+    'Influenza': {
+        rawData: `Paciente,Sexo,Idade,Febre,Tosse seca,Odinofagia,Mialgia,Cefaleia,Dispneia,Comorbidade (HAS/DM/Asma),Hospitalização,RT-PCR positivo
+1,F,24,Sim,Sim,Sim,Sim,Sim,Não,Não,Não,Sim
+2,M,37,Sim,Sim,Não,Sim,Sim,Não,Não,Não,Sim
+3,F,58,Sim,Sim,Sim,Sim,Sim,Sim,HAS,Sim,Sim
+4,M,19,Sim,Sim,Sim,Sim,Sim,Não,Não,Não,Sim
+5,F,43,Sim,Sim,Não,Sim,Sim,Não,DM,Não,Sim
+6,M,62,Sim,Sim,Sim,Sim,Sim,Sim,HAS,Sim,Sim
+7,F,29,Sim,Sim,Sim,Sim,Sim,Não,Não,Não,Sim
+8,M,46,Sim,Sim,Sim,Sim,Sim,Não,Asma,Não,Sim
+9,F,33,Sim,Sim,Não,Sim,Sim,Não,Não,Não,Sim
+10,M,71,Sim,Sim,Sim,Sim,Sim,Sim,HAS/DM,Sim,Sim
+11,F,40,Sim,Sim,Sim,Sim,Sim,Não,Não,Não,Sim
+12,M,55,Sim,Sim,Não,Sim,Sim,Sim,HAS,Sim,Sim
+13,F,27,Sim,Sim,Sim,Sim,Sim,Não,Não,Não,Sim
+14,M,64,Sim,Sim,Sim,Sim,Sim,Sim,HAS,Sim,Sim
+15,F,36,Sim,Sim,Não,Sim,Sim,Não,Não,Não,Sim
+16,M,42,Sim,Sim,Sim,Sim,Sim,Não,Asma,Não,Sim
+17,F,31,Sim,Sim,Sim,Sim,Sim,Não,Não,Não,Sim
+18,M,68,Sim,Sim,Sim,Sim,Sim,Sim,DM,Sim,Sim
+19,F,50,Sim,Sim,Não,Sim,Sim,Não,HAS,Não,Sim
+20,M,74,Sim,Sim,Sim,Sim,Sim,Sim,HAS/DM,Sim,Sim`,
+        info: {
+            introduction: `<ul><li><strong>Família:</strong> Orthomyxoviridae</li><li><strong>Gênero:</strong> Influenzavirus</li><li><strong>Genoma:</strong> RNA de fita simples, segmentado (8 segmentos).</li><li><strong>Morfologia:</strong> Vírus envelopado com duas glicoproteínas de superfície principais: Hemaglutinina (HA) e Neuraminidase (NA).</li><li><strong>Variabilidade:</strong> A natureza segmentada do genoma permite alta taxa de mutação (drift) e rearranjo genético (shift), causando epidemias e pandemias.</li></ul>`,
+            medicalImportance: `<ul><li><strong>Sazonalidade:</strong> Causa epidemias anuais com impacto significativo na saúde pública e na economia.</li><li><strong>Pandemias:</strong> O rearranjo de genes entre vírus de diferentes espécies pode originar novas cepas pandêmicas com alta virulência.</li><li><strong>Grupos de Risco:</strong> A infecção pode ser grave e fatal em idosos, crianças, gestantes e pessoas com comorbidades.</li></ul>`,
+            clinicalPerspective: `<ul><li><strong>Prevenção:</strong> A vacinação anual é a principal estratégia de controle, atualizada para as cepas circulantes.</li><li><strong>Tratamento:</strong> Antivirais (inibidores da neuraminidase) podem ser usados, principalmente em casos graves ou em grupos de risco.</li><li><strong>Vigilância:</strong> A vigilância epidemiológica e virológica global é fundamental para monitorar a evolução do vírus.</li></ul>`
+        }
+    },
+    'Candidíase': {
+        rawData: `Paciente,Sexo,Idade,Prurido genital,Corrimento branco,Placas esbranquiçadas orais,Dispareunia,HIV+,Glicemia elevada,Cultura positiva p/ Candida
+1,F,26,Sim,Sim,Não,Sim,Não,Não,Sim
+2,F,34,Sim,Sim,Não,Não,Não,Sim,Sim
+3,M,41,Não,Não,Sim,Não,Sim,Não,Sim
+4,F,29,Sim,Sim,Não,Não,Não,Não,Sim
+5,F,50,Sim,Sim,Não,Sim,Não,Sim,Sim
+6,F,23,Sim,Sim,Não,Não,Não,Não,Sim
+7,M,38,Não,Não,Sim,Não,Sim,Sim,Sim
+8,F,45,Sim,Sim,Não,Sim,Não,Sim,Sim
+9,F,32,Sim,Sim,Não,Não,Não,Não,Sim
+10,M,48,Não,Não,Sim,Não,Sim,Sim,Sim
+11,F,27,Sim,Sim,Não,Não,Não,Não,Sim
+12,F,52,Sim,Sim,Não,Sim,Não,Sim,Sim
+13,F,36,Sim,Sim,Não,Não,Não,Não,Sim
+14,M,44,Não,Não,Sim,Não,Sim,Sim,Sim
+15,F,28,Sim,Sim,Não,Sim,Não,Não,Sim
+16,F,39,Sim,Sim,Não,Não,Não,Sim,Sim
+17,M,42,Não,Não,Sim,Não,Sim,Não,Sim
+18,F,31,Sim,Sim,Não,Sim,Não,Não,Sim
+19,F,47,Sim,Sim,Não,Não,Não,Sim,Sim
+20,M,55,Não,Não,Sim,Não,Sim,Sim,Sim`,
+        info: {
+            introduction: `<ul><li><strong>Reino:</strong> Fungi</li><li><strong>Gênero:</strong> Candida</li><li><strong>Espécie Principal:</strong> <em>Candida albicans</em>.</li><li><strong>Morfologia:</strong> Levedura dimórfica, pode existir como blastoconídios (forma comensal) ou hifas/pseudo-hifas (forma invasiva).</li><li><strong>Comensalismo:</strong> Faz parte da microbiota normal da pele, trato gastrointestinal e geniturinário.</li></ul>`,
+            medicalImportance: `<ul><li><strong>Infecção Oportunista:</strong> Causa doença quando há um desequilíbrio na microbiota ou imunossupressão do hospedeiro.</li><li><strong>Espectro:</strong> Varia de infecções superficiais (candidíase oral, vulvovaginal) a infecções sistêmicas (candidemia) com alta mortalidade.</li><li><strong>Fatores de Risco:</strong> Diabetes, uso de antibióticos, corticoides, cateteres e imunodeficiências (ex: HIV/AIDS).</li></ul>`,
+            clinicalPerspective: `<ul><li><strong>Diagnóstico:</strong> Clínico, confirmado por exame micológico direto ou cultura.</li><li><strong>Tratamento:</strong> Antifúngicos tópicos ou sistêmicos, dependendo da localização e gravidade da infecção.</li><li><strong>Controle:</strong> Manejo dos fatores de risco é crucial para prevenir a doença e suas recorrências.</li></ul>`
+        }
+    },
+    'Esporotricose': {
+        rawData: `Paciente,Sexo,Idade,Profissão/Exposição,Lesão ulcerada cutânea,Forma linfocutânea,Forma disseminada,Contato com gato,HIV+,Cultura positiva p/ Sporothrix
+1,M,45,Agricultor,Sim,Sim,Não,Não,Não,Sim
+2,F,32,Dona de casa (jardim),Sim,Não,Não,Sim,Não,Sim
+3,M,60,Jardineiro,Sim,Sim,Não,Não,Não,Sim
+4,F,28,Estudante (gatos),Sim,Não,Não,Sim,Não,Sim
+5,M,54,Agricultor,Sim,Sim,Não,Não,Não,Sim
+6,F,37,Professora (gatos),Sim,Não,Não,Sim,Não,Sim
+7,M,42,Pedreiro,Sim,Sim,Não,Não,Não,Sim
+8,F,47,Feirante (hortaliças),Sim,Sim,Não,Não,Não,Sim
+9,M,35,Agricultor,Sim,Sim,Não,Não,Não,Sim
+10,F,29,Dona de casa (gatos),Sim,Não,Não,Sim,Não,Sim
+11,M,62,Aposentado (horta),Sim,Sim,Não,Não,Não,Sim
+12,F,41,Veterinária,Sim,Não,Não,Sim,Não,Sim
+13,M,56,Agricultor,Sim,Sim,Não,Não,Não,Sim
+14,F,39,Comerciante (gatos),Sim,Não,Não,Sim,Não,Sim
+15,M,48,Agricultor,Sim,Sim,Não,Não,Não,Sim
+16,F,44,Dona de casa (jardim),Sim,Não,Não,Sim,Não,Sim
+17,M,51,Agricultor,Sim,Sim,Não,Não,Não,Sim
+18,F,33,Estudante (gatos),Sim,Não,Não,Sim,Não,Sim
+19,M,65,Aposentado (horta),Sim,Sim,Não,Não,Não,Sim
+20,M,40,HIV+,Sim,Sim,Sim,Não,Sim,Sim`,
+        info: {
+            introduction: `<ul><li><strong>Reino:</strong> Fungi</li><li><strong>Gênero:</strong> <em>Sporothrix</em></li><li><strong>Morfologia:</strong> Fungo dimórfico, apresentando-se como mofo no ambiente (25°C) e levedura nos tecidos do hospedeiro (37°C).</li><li><strong>Transmissão:</strong> Inoculação traumática na pele a partir de solo, plantas ou matéria orgânica contaminada. Recentemente, a transmissão zoonótica por gatos se tornou a principal via no Brasil.</li></ul>`,
+            medicalImportance: `<ul><li><strong>Micose Subcutânea:</strong> É a micose de implantação mais comum na América Latina.</li><li><strong>Zoonose Emergente:</strong> A epidemia de esporotricose felina no Brasil transformou o perfil epidemiológico da doença, que agora é um problema de saúde pública urbana.</li><li><strong>Formas Clínicas:</strong> A mais comum é a linfocutânea, mas formas disseminadas podem ocorrer em imunocomprometidos.</li></ul>`,
+            clinicalPerspective: `<ul><li><strong>Diagnóstico:</strong> Isolamento do fungo em cultura é o padrão-ouro.</li><li><strong>Tratamento:</strong> Itraconazol é o tratamento de escolha para as formas cutâneas. Anfotericina B é usada em casos graves.</li><li><strong>Saúde Única:</strong> O controle da epidemia exige uma abordagem integrada entre a saúde humana, animal e ambiental.</li></ul>`
+        }
+    },
+    'Histoplasmose': {
+        rawData: `Paciente,Sexo,Idade,Exposição (aves/morcegos),Tosse crônica,Febre,Perda de peso,Lesões cutâneas,Dispneia,HIV+,Rx tórax (infiltrado/adenopatia),Sorologia positiva,Cultura positiva
+1,M,48,Sim,Sim,Sim,Sim,Não,Sim,Sim,Sim,Sim,Sim
+2,F,35,Sim,Sim,Sim,Não,Não,Sim,Não,Sim,Sim,Sim
+3,M,52,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+4,F,29,Não,Sim,Sim,Não,Não,Sim,Não,Sim,Sim,Sim
+5,M,60,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+6,F,33,Sim,Sim,Sim,Não,Não,Sim,Não,Sim,Sim,Sim
+7,M,41,Sim,Sim,Sim,Sim,Não,Sim,Não,Sim,Sim,Sim
+8,F,55,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+9,M,38,Não,Sim,Sim,Não,Não,Sim,Não,Sim,Sim,Sim
+10,F,44,Sim,Sim,Sim,Sim,Não,Sim,Sim,Sim,Sim,Sim
+11,M,47,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+12,F,32,Não,Sim,Não,Não,Não,Sim,Não,Sim,Sim,Sim
+13,M,53,Sim,Sim,Sim,Sim,Não,Sim,Sim,Sim,Sim,Sim
+14,F,39,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+15,M,46,Sim,Sim,Sim,Sim,Não,Sim,Não,Sim,Sim,Sim
+16,F,28,Não,Sim,Sim,Não,Não,Sim,Não,Sim,Sim,Sim
+17,M,50,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+18,F,42,Sim,Sim,Sim,Sim,Não,Sim,Não,Sim,Sim,Sim
+19,M,61,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim
+20,M,36,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim,Sim`,
+        info: {
+            introduction: `<ul><li><strong>Reino:</strong> Fungi</li><li><strong>Gênero:</strong> <em>Histoplasma</em></li><li><strong>Espécie:</strong> <em>Histoplasma capsulatum</em>.</li><li><strong>Morfologia:</strong> Fungo dimórfico térmico, encontrado como mofo no solo e levedura nos tecidos.</li><li><strong>Habitat:</strong> Solos ricos em excrementos de aves e morcegos, como cavernas, galinheiros e construções abandonadas.</li><li><strong>Transmissão:</strong> Inalação de microconídios.</li></ul>`,
+            medicalImportance: `<ul><li><strong>Micose Sistêmica:</strong> Uma das micoses endêmicas mais comuns no continente americano.</li><li><strong>Infecção Oportunista Grave:</strong> Em pacientes com imunodeficiência celular, como na AIDS, pode causar a forma disseminada progressiva, que é fatal se não tratada.</li><li><strong>Espectro Clínico:</strong> A maioria das infecções é assintomática; as formas sintomáticas podem ser pulmonares agudas, crônicas ou disseminadas.</li></ul>`,
+            clinicalPerspective: `<ul><li><strong>Diagnóstico:</strong> Requer alta suspeita clínica e é confirmado por cultura, sorologia ou detecção de antígeno.</li><li><strong>Tratamento:</strong> Formas leves podem ser autolimitadas. Formas moderadas a graves requerem tratamento com antifúngicos como Itraconazol ou Anfotericina B.</li><li><strong>Prevenção:</strong> Evitar a exposição em áreas de alto risco, especialmente para indivíduos imunocomprometidos.</li></ul>`
+        }
+    },
+    'Pitiríase Versicolor': {
+        rawData: `Paciente,Sexo,Idade,Fototipo de pele,Máculas hipopigmentadas,Máculas hipercromicas,Descamação fina,Prurido leve,Sudorese excessiva,Exame direto positivo ( Malassezia )
+1,M,22,III,Sim,Não,Sim,Sim,Sim,Sim
+2,F,28,II,Sim,Sim,Sim,Não,Sim,Sim
+3,M,19,IV,Sim,Não,Sim,Não,Sim,Sim
+4,F,34,III,Sim,Não,Sim,Sim,Sim,Sim
+5,M,25,V,Não,Sim,Sim,Não,Sim,Sim
+6,F,30,II,Sim,Não,Sim,Sim,Sim,Sim
+7,M,21,III,Sim,Não,Sim,Não,Sim,Sim
+8,F,27,IV,Sim,Sim,Sim,Sim,Sim,Sim
+9,M,23,II,Sim,Não,Sim,Não,Sim,Sim
+10,F,29,III,Sim,Não,Sim,Sim,Não,Sim
+11,M,26,IV,Sim,Sim,Sim,Não,Sim,Sim
+12,F,31,V,Não,Sim,Sim,Sim,Sim,Sim
+13,M,20,II,Sim,Não,Sim,Sim,Sim,Sim
+14,F,33,III,Sim,Sim,Sim,Não,Sim,Sim
+15,M,18,IV,Sim,Não,Sim,Sim,Sim,Sim
+16,F,36,II,Sim,Não,Sim,Não,Não,Sim
+17,M,24,III,Sim,Não,Sim,Sim,Sim,Sim
+18,F,40,IV,Não,Sim,Sim,Não,Sim,Sim
+19,M,22,II,Sim,Não,Sim,Sim,Sim,Sim
+20,F,35,III,Sim,Sim,Sim,Não,Sim,Sim`,
+        info: {
+            introduction: `<ul><li><strong>Reino:</strong> Fungi</li><li><strong>Gênero:</strong> <em>Malassezia</em></li><li><strong>Características:</strong> Leveduras lipofílicas que fazem parte da microbiota normal da pele humana.</li><li><strong>Patogênese:</strong> A doença ocorre quando a levedura comensal se converte em sua forma filamentosa patogênica.</li><li><strong>Fatores Predisponentes:</strong> Calor, umidade, sudorese excessiva e oleosidade da pele.</li></ul>`,
+            medicalImportance: `<ul><li><strong>Dermatose Comum:</strong> Uma das micoses superficiais mais frequentes em todo o mundo, especialmente em climas quentes.</li><li><strong>Clínica:</strong> Caracteriza-se por máculas discrômicas (hipo ou hiperpigmentadas), geralmente no tronco superior.</li><li><strong>Impacto:</strong> É uma condição benigna, mas o impacto estético pode ser significativo para o paciente, e as recidivas são comuns.</li></ul>`,
+            clinicalPerspective: `<ul><li><strong>Diagnóstico:</strong> Geralmente clínico, podendo ser confirmado por exame micológico direto (visualização de hifas e leveduras).</li><li><strong>Tratamento:</strong> Tópico na maioria dos casos, com antifúngicos em xampus ou cremes. Antifúngicos orais são reservados para casos extensos ou recorrentes.</li><li><strong>Recorrência:</strong> A educação do paciente sobre a natureza recorrente da doença é importante, pois o fungo é um habitante normal da pele.</li></ul>`
+        }
+    }
+};
+
+function parseCSV(csvText) {
+    const lines = csvText.trim().split('\n');
+    const headers = lines[0].split(',').map(h => h.trim());
+    return lines.slice(1).map(line => {
+        const values = line.split(',');
+        const obj = {};
+        headers.forEach((header, i) => {
+            obj[header] = values[i] ? values[i].trim() : '';
+        });
+        return obj;
+    });
+}
+
+function analyzeData(parsedData) {
+    const analysis = {};
+    if (!parsedData || parsedData.length === 0) return analysis;
+    const headers = Object.keys(parsedData[0]);
+    headers.forEach(header => {
+        const lowerHeader = header.toLowerCase();
+        if (lowerHeader === 'paciente' || lowerHeader === 'idade' || lowerHeader.includes('profissão') || lowerHeader.includes('fototipo')) return;
+        
+        const counts = parsedData.reduce((acc, row) => {
+            const value = row[header] || 'N/A';
+            acc[value] = (acc[value] || 0) + 1;
+            return acc;
+        }, {});
+        analysis[header] = counts;
+    });
+    return analysis;
+}
+
+function updateUI() {
+    const steps = document.querySelectorAll('.step-card');
+    steps.forEach((step, index) => {
+        step.classList.toggle('hidden', index + 1 !== state.currentStep);
+    });
+
+    const progressBar = document.getElementById('progressBar');
+    const stepIndicator = document.getElementById('step-indicator');
+    const totalSteps = steps.length;
+    const progress = (state.currentStep / totalSteps) * 100;
+    progressBar.style.width = `${progress}%`;
+    stepIndicator.textContent = `Passo ${state.currentStep} de ${totalSteps}`;
+
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const generateBtn = document.getElementById('generate-btn');
+
+    prevBtn.disabled = state.currentStep === 1;
+    nextBtn.classList.toggle('hidden', state.currentStep === totalSteps);
+    generateBtn.classList.toggle('hidden', state.currentStep !== totalSteps);
+
+    validateStep();
+}
+
+function validateStep() {
+    const nextBtn = document.getElementById('next-btn');
+    const generateBtn = document.getElementById('generate-btn');
+    let isValid = false;
+
+    switch (state.currentStep) {
+        case 1:
+            isValid = !!state.selectedInfection;
+            break;
+        case 2:
+            isValid = true;
+            break;
+        case 3:
+            const obs = document.getElementById('observations').value;
+            const conc = document.getElementById('conclusion').value;
+            isValid = obs.trim() !== '' && conc.trim() !== '';
+            break;
+        case 4:
+            const authors = document.getElementById('authors').value;
+            isValid = authors.trim() !== '' && !!state.presentation.layout;
+            break;
+    }
+    nextBtn.disabled = !isValid;
+    generateBtn.disabled = !isValid;
+}
+
+function renderStep1() {
+    const list = document.getElementById('infection-list');
+    list.innerHTML = '';
+    Object.keys(infectionData).forEach(name => {
+        const button = document.createElement('button');
+        button.className = `p-4 rounded-lg text-center cursor-pointer infection-btn ${state.selectedInfection === name ? 'selected' : ''}`;
+        button.textContent = name;
+        button.onclick = () => {
+            state.selectedInfection = name;
+            renderStep1();
+            validateStep();
         };
+        list.appendChild(button);
+    });
+}
 
-        const detailsContainer = document.getElementById('details-container');
-        const detailsContent = document.getElementById('details-content');
+function renderStep2() {
+    const rawData = infectionData[state.selectedInfection].rawData;
+    const headers = rawData.split('\n')[0].split(',').map(h => h.trim());
+    const parsedData = parseCSV(rawData);
 
-        function showDetails(diseaseKey) {
-            const data = diseaseData[diseaseKey];
-            if (!data) return;
+    const tableHead = document.querySelector('#data-table thead');
+    const tableBody = document.querySelector('#data-table tbody');
+    tableHead.innerHTML = '';
+    tableBody.innerHTML = '';
 
-            detailsContent.innerHTML = `
-                <button onclick="closeDetails()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
-                <h2 class="text-3xl md:text-4xl font-bold text-${data.color}-800 mb-6">${data.title}</h2>
-                ${data.content}
-            `;
+    const trHead = document.createElement('tr');
+    headers.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        th.className = 'p-2';
+        trHead.appendChild(th);
+    });
+    tableHead.appendChild(trHead);
+
+    parsedData.forEach(rowData => {
+        const trBody = document.createElement('tr');
+        trBody.className = 'border-b border-gray-700 hover:bg-gray-700/50';
+        headers.forEach(header => {
+            const td = document.createElement('td');
+            td.className = 'data-input-cell';
+            td.textContent = rowData[header] || '';
+            trBody.appendChild(td);
+        });
+        tableBody.appendChild(trBody);
+    });
+}
+
+function calculateAndRenderMetrics(variableName) {
+    const metricsDisplay = document.getElementById('metrics-display-container');
+    metricsDisplay.innerHTML = ''; // Clear previous metrics
+
+    const variableData = state.data.analysis[variableName];
+    if (!variableData) {
+        metricsDisplay.innerHTML = `<p class="text-gray-400">Dados não disponíveis para esta variável.</p>`;
+        return;
+    }
+
+    const total = state.data.total;
+    const categories = Object.keys(variableData);
+
+    // Calculate Mode
+    let mode = '';
+    let maxCount = 0;
+    categories.forEach(cat => {
+        if (variableData[cat] > maxCount) {
+            maxCount = variableData[cat];
+            mode = cat;
+        }
+    });
+
+    let html = `<h3 class="text-2xl font-bold text-cyan-400 mb-6 text-center">${variableName}</h3>`;
+    html += `<div class="space-y-4">`;
+
+    // Display Mode
+    html += `
+        <div class="bg-gray-800 p-4 rounded-lg">
+            <p class="text-sm text-gray-400">Tendência Central (Moda)</p>
+            <p class="text-xs text-gray-500 mb-2">O valor que aparece com mais frequência.</p>
+            <p class="text-xl font-semibold text-white">${mode}</p>
+        </div>
+    `;
+
+    // Display Frequency Distribution
+    html += `<div class="bg-gray-800 p-4 rounded-lg">`;
+    html += `<p class="text-sm text-gray-400 mb-3">Distribuição de Frequência</p>`;
+    categories.forEach(cat => {
+        const count = variableData[cat];
+        const percentage = ((count / total) * 100).toFixed(1);
+        html += `
+            <div class="mb-3">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-white text-sm">${cat}</span>
+                    <span class="text-gray-300 font-mono text-xs">${count} / ${total} (${percentage}%)</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div class="bg-cyan-500 h-2 rounded-full" style="width: ${percentage}%"></div>
+                </div>
+            </div>
+        `;
+    });
+    html += `</div>`;
+    html += `</div>`;
+
+    metricsDisplay.innerHTML = html;
+}
+
+function renderStep3() {
+    const parsed = parseCSV(infectionData[state.selectedInfection].rawData);
+    const analysis = analyzeData(parsed);
+    state.data.analysis = analysis;
+    state.data.total = parsed.length;
+
+    const buttonsContainer = document.getElementById('variable-buttons');
+    buttonsContainer.innerHTML = '';
+    
+    const variables = Object.keys(analysis);
+    variables.forEach((variable, index) => {
+        const button = document.createElement('button');
+        button.textContent = variable;
+        button.dataset.variable = variable;
+        button.className = `variable-btn w-full text-left p-3 rounded-md bg-gray-700 hover:bg-gray-600 text-white`;
+        if (index === 0) button.classList.add('active');
+        buttonsContainer.appendChild(button);
+    });
+
+    buttonsContainer.addEventListener('click', (e) => {
+        if (e.target && e.target.matches('button.variable-btn')) {
+            const variableName = e.target.dataset.variable;
+            document.querySelectorAll('.variable-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            calculateAndRenderMetrics(variableName);
+        }
+    });
+
+    if (variables.length > 0) {
+        calculateAndRenderMetrics(variables[0]);
+    }
+    
+    document.getElementById('observations').addEventListener('input', validateStep);
+    document.getElementById('conclusion').addEventListener('input', validateStep);
+}
+
+
+function renderStep4() {
+    const layouts = {
+        'teal': { name: 'Água-marinha', class: 'bg-gradient-to-br from-teal-400 to-cyan-600' },
+        'amber': { name: 'Dourado', class: 'bg-gradient-to-br from-amber-400 to-orange-600' },
+        'indigo': { name: 'Violeta', class: 'bg-gradient-to-br from-indigo-400 to-purple-600' },
+        'rose': { name: 'Magenta', class: 'bg-gradient-to-br from-rose-400 to-pink-600' }
+    };
+    const container = document.getElementById('layout-options');
+    container.innerHTML = '';
+    
+    for (const key in layouts) {
+        const layout = layouts[key];
+        const button = document.createElement('button');
+        button.dataset.layoutKey = key;
+        button.innerHTML = `<div class="w-10 h-10 rounded-full ${layout.class} mb-1 shadow-lg pointer-events-none"></div><span class="text-xs text-gray-300 pointer-events-none">${layout.name}</span>`;
+        button.className = `flex flex-col items-center p-2 border-2 rounded-lg transition-colors ${state.presentation.layout === key ? 'border-cyan-400' : 'border-transparent'}`;
+        button.onclick = () => {
+            state.presentation.layout = key;
+            container.querySelectorAll('button').forEach(btn => {
+                btn.classList.toggle('border-cyan-400', btn.dataset.layoutKey === key);
+                btn.classList.toggle('border-transparent', btn.dataset.layoutKey !== key);
+            });
+            validateStep();
+        };
+        container.appendChild(button);
+    }
+    
+    document.getElementById('authors').addEventListener('input', (e) => {
+        state.presentation.authors = e.target.value;
+        validateStep();
+    });
+    validateStep();
+}
+
+function generateMetricsHTML(theme, variablesToShow) {
+    const total = state.data.total;
+    let metricsHtml = '';
+
+    for (const variable of variablesToShow) {
+        const variableData = state.data.analysis[variable];
+        if (!variableData) continue;
+        const categories = Object.keys(variableData);
+
+        let mode = '';
+        let maxCount = 0;
+        categories.forEach(cat => {
+            if (variableData[cat] > maxCount) {
+                maxCount = variableData[cat];
+                mode = cat;
+            }
+        });
+        
+        let distributionHtml = '';
+        categories.forEach(cat => {
+             const count = variableData[cat];
+             const percentage = ((count / total) * 100).toFixed(1);
+             distributionHtml += `
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 1.1em;">
+                        <span style="color: ${theme.text};">${cat}</span>
+                        <span style="color: ${theme.text}; opacity: 0.8;">${percentage}%</span>
+                    </div>
+                    <div style="width: 100%; background-color: rgba(0,0,0,0.2); border-radius: 5px; height: 10px;">
+                        <div style="background-color: ${theme.secondary}; height: 10px; border-radius: 5px; width: ${percentage}%;"></div>
+                    </div>
+                </div>
+             `;
+        });
+
+        metricsHtml += `
+            <div style="background-color: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; text-align: left;">
+                <h4 style="margin: 0 0 20px 0; font-size: 1.4em; color: ${theme.text}; text-align: center; font-family: 'Poppins', sans-serif;">${variable}</h4>
+                <p style="font-size: 1.1em; opacity: 0.8; margin: 0;">Moda (Mais Frequente):</p>
+                <p style="font-size: 1.5em; font-weight: bold; color: ${theme.secondary}; margin: 5px 0 20px 0;">${mode}</p>
+                ${distributionHtml}
+            </div>
+        `;
+    }
+    return metricsHtml;
+}
+
+function generateTextCardSlides(title, icon, text, itemsPerSlide) {
+    let slidesHTML = '';
+    const items = text.split('\n').filter(item => item.trim() !== '');
+    if (items.length === 0) return '';
+
+    const itemChunks = [];
+    for (let i = 0; i < items.length; i += itemsPerSlide) {
+        itemChunks.push(items.slice(i, i + itemsPerSlide));
+    }
+
+    itemChunks.forEach(chunk => {
+        const cardHTML = `<div class="info-card"><ul>${chunk.map(item => `<li>${item}</li>`).join('')}</ul></div>`;
+        slidesHTML += `<section class="slide text-card-slide"><header></header><div class="slide-content"><h2>${icon} ${title}</h2><div>${cardHTML}</div></div><footer></footer></section>`;
+    });
+    return slidesHTML;
+}
+
+
+async function generatePresentation() {
+    const { selectedInfection, analysis, presentation } = state;
+    const info = infectionData[selectedInfection].info;
+    
+    document.getElementById('generate-btn').textContent = 'Gerando...';
+    document.getElementById('generate-btn').disabled = true;
+
+    const colorSchemes = {
+        teal: { primary: '#0D7377', secondary: '#4ECDC4', accent: '#F7B801', text: '#F7FFF7', textDark: '#1A535C' },
+        amber: { primary: '#B45309', secondary: '#F59E0B', accent: '#65A30D', text: '#FFFBEB', textDark: '#78350F' },
+        indigo: { primary: '#312E81', secondary: '#6366F1', accent: '#EC4899', text: '#EEF2FF', textDark: '#3730A3' },
+        rose: { primary: '#881337', secondary: '#F43F5E', accent: '#0891B2', text: '#FFF1F2', textDark: '#9F1239' }
+    };
+    const theme = colorSchemes[presentation.layout];
+    
+    const icons = {
+        introduction: '📖', medicalImportance: '⚕️', data: '📊',
+        observations: '💡', conclusion: '📌', perspective: '🔭', thanks: '🙏'
+    };
+
+    const variables = Object.keys(state.data.analysis);
+    const variableChunks = [];
+    for (let i = 0; i < variables.length; i += 2) {
+        variableChunks.push(variables.slice(i, i + 2));
+    }
+
+    let metricsSlidesHTML = '';
+    variableChunks.forEach(chunk => {
+        const metricsContentHTML = generateMetricsHTML(theme, chunk);
+        metricsSlidesHTML += `<section class="slide"><header></header><div class="slide-content"><h2>${icons.data} Análise Descritiva</h2><div class="grid-metrics">${metricsContentHTML}</div></div><footer></footer></section>`;
+    });
+
+    const observationsSlidesHTML = generateTextCardSlides('Observações', icons.observations, analysis.observations, 3);
+    const conclusionSlidesHTML = generateTextCardSlides('Conclusão', icons.conclusion, analysis.conclusion, 3);
+
+    const slidesHTML = `
+        <!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Apresentação: ${selectedInfection}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+        <style>
+            :root { --p: ${theme.primary}; --s: ${theme.secondary}; --a: ${theme.accent}; --t: ${theme.text}; --td: ${theme.textDark}; }
+            body { font-family: 'Lato', sans-serif; background-color: var(--p); color: var(--t); margin: 0; overflow: hidden; }
+            .slide { box-sizing: border-box; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 40px 60px; height: 100vh; width: 100%; position: absolute; top: 0; left: 0; opacity: 0; transform: scale(0.95); visibility: hidden; transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s; }
+            .slide.active { display: flex; opacity: 1; transform: scale(1); visibility: visible; }
+            .slide-content { max-width: 1200px; width: 100%; animation: fadeIn 1s ease-out 0.3s both; }
+            header { position: absolute; top: 20px; left: 20px; right: 20px; font-size: 1em; text-align: left; border-bottom: 1px solid var(--s); padding-bottom: 12px; opacity: 0.7; }
+            header p { margin: 2px 0; color: var(--t); }
+            footer { position: absolute; bottom: 20px; right: 20px; font-size: 1.1em; color: var(--t); opacity: 0.7; }
+            h1 { font-family: 'Poppins', sans-serif; font-size: clamp(3.5rem, 8vw, 5.5rem); letter-spacing: -1px; font-weight: 800; color: white; text-shadow: 2px 2px 15px rgba(0,0,0,0.3); margin: 0; }
+            h2 { font-family: 'Poppins', sans-serif; font-size: clamp(2.5rem, 4.5vw, 3.5rem); color: white; border-bottom: 3px solid var(--s); padding-bottom: 15px; margin-bottom: 30px; font-weight: 700; display: inline-flex; align-items: center; gap: 20px; }
+            h3 { font-family: 'Poppins', sans-serif; font-size: 1.8em; color: var(--s); margin-bottom: 30px; font-weight: 600; }
+            ul { list-style: none; padding: 0; text-align: left; max-width: 900px; margin: 0 auto;}
+            ul li { font-size: clamp(1.2rem, 2.2vw, 1.5rem); line-height: 1.7; color: #e2e8f0; margin-bottom: 12px; }
+            ul li strong { color: var(--s); }
+            .grid-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; }
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+            .info-card { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 25px; margin: 0 auto 25px auto; border-left: 6px solid var(--s); text-align: left; max-width: 900px;}
+            .info-card ul { margin: 0; }
+            .text-card-slide .slide-content { display: flex; flex-direction: column; justify-content: center; height: 100%;}
+            .text-card-slide li { font-size: clamp(1.2rem, 2vw, 1.4rem) !important; line-height: 1.6 !important; }
+
+        </style></head><body>
+            <div id="slide-container">
+                <section class="slide active"><header></header><div class="slide-content"><h3>Análise Epidemiológica de</h3><h1>${selectedInfection}</h1><p style="text-align: center; margin-top: 60px; color: var(--s); font-family: 'Poppins', sans-serif; font-size: 1.3em;"><strong>Responsáveis:</strong> ${presentation.authors}</p></div><footer></footer></section>
+                <section class="slide"><header></header><div class="slide-content"><h2>${icons.introduction} Introdução</h2>${info.introduction}</div><footer></footer></section>
+                <section class="slide"><header></header><div class="slide-content"><h2>${icons.medicalImportance} Importância Médica</h2>${info.medicalImportance}</div><footer></footer></section>
+                ${metricsSlidesHTML}
+                ${observationsSlidesHTML}
+                ${conclusionSlidesHTML}
+                <section class="slide"><header></header><div class="slide-content"><h2>${icons.perspective} Perspectivas</h2>${info.clinicalPerspective}</div><footer></footer></section>
+                <section class="slide"><header></header><div class="slide-content"><h3>Agradecimentos</h3><h1>${icons.thanks} Obrigado!</h1></div><footer></footer></section>
+            </div>
             
-            detailsContainer.classList.remove('hidden');
-            detailsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+            <script>
+                let current = 0;
+                const slides = document.querySelectorAll('.slide');
+                const total = slides.length;
+                const headers = document.querySelectorAll('header');
+                const footers = document.querySelectorAll('footer');
 
-        function closeDetails() {
-            detailsContainer.classList.add('hidden');
-        }
-    </script>
+                const show = (index) => {
+                    slides.forEach((s, i) => s.classList.toggle('active', i === index));
+                    const slideElement = slides[index];
+                    const realIndex = Array.from(slides).indexOf(slideElement) + 1;
+                    
+                    footers.forEach(f => {
+                         const parentSlide = f.closest('.slide');
+                         const parentIndex = Array.from(slides).indexOf(parentSlide) + 1;
+                         f.textContent = 'Slide ' + parentIndex + ' / ' + total;
+                    });
+                    headers.forEach(h => h.innerHTML = '<p>Centro Universitário de João Pessoa - UNIPÊ</p><p>Mecanismos de Agressão, Patológicos e de Defesa - 2 | Prof. Rodrigo Niskier</p>');
+                };
+                
+                document.addEventListener('keydown', (e) => { 
+                    if (e.key === 'ArrowRight') {
+                        current = (current + 1) % total;
+                        show(current);
+                    }
+                    if (e.key === 'ArrowLeft') {
+                        current = (current - 1 + total) % total;
+                        show(current);
+                    }
+                });
+                                
+                show(0);
+            <\/script>
+        </body></html>`;
 
+    const presentationWindow = window.open('', '_blank');
+    presentationWindow.document.write(slidesHTML);
+    presentationWindow.document.close();
+    
+    document.getElementById('generate-btn').textContent = 'Gerar Apresentação';
+    document.getElementById('generate-btn').disabled = false;
+}
+
+// Inicialização e Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const nextBtn = document.getElementById('next-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const generateBtn = document.getElementById('generate-btn');
+
+    nextBtn.addEventListener('click', () => {
+        if (state.currentStep < 4) {
+            state.currentStep++;
+            if (state.currentStep === 2) renderStep2();
+            if (state.currentStep === 3) { renderStep3(); }
+            if (state.currentStep === 4) renderStep4();
+            updateUI();
+        }
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (state.currentStep > 1) { state.currentStep--; updateUI(); }
+    });
+    
+    document.getElementById('observations').addEventListener('input', (e) => { state.analysis.observations = e.target.value; validateStep(); });
+    document.getElementById('conclusion').addEventListener('input', (e) => { state.analysis.conclusion = e.target.value; validateStep(); });
+
+    generateBtn.addEventListener('click', () => { if (!generateBtn.disabled) { generatePresentation(); } });
+
+    renderStep1();
+    updateUI();
+});
+</script>
 </body>
 </html>
 
