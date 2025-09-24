@@ -309,9 +309,6 @@
 
         function setupEventListeners() {
             document.getElementById('start-quiz-btn').addEventListener('click', startQuiz);
-            if (document.getElementById('restart-quiz-btn')) {
-                document.getElementById('restart-quiz-btn').addEventListener('click', startQuiz);
-            }
             document.getElementById('shuffle-flashcards').addEventListener('click', loadFlashcards);
             window.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
@@ -321,6 +318,10 @@
                     }
                 }
             });
+             const restartBtn = document.getElementById('restart-quiz-btn');
+             if(restartBtn) {
+                restartBtn.addEventListener('click', startQuiz);
+             }
         }
 
         // --- Funções da Aba Introdução ---
