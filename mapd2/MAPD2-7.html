@@ -95,6 +95,10 @@
         #apostila-content p {
             line-height: 1.75;
             margin-bottom: 1rem;
+            text-align: justify;
+        }
+        #apostila-content strong {
+            color: #1e40af;
         }
         #apostila-content .image-placeholder {
             border: 1px dashed #cbd5e1;
@@ -162,12 +166,9 @@
                         <div id="quiz-end-screen" class="hidden text-center"></div>
                     </div>
                 </section>
-
-                <section id="apostila" class="tab-pane hidden max-h-[70vh] overflow-y-auto">
+                
+                <section id="apostila" class="tab-pane hidden max-h-[80vh] overflow-y-auto pr-4">
                     <div id="apostila-content" class="prose max-w-none">
-                         <h2 class="text-center">Apostila Completa: Parasitologia Contemporânea (2ª Edição)</h2>
-                         <p class="text-center italic">Conteúdo extraído de: FERREIRA, Marcelo Urbano. Parasitologia Contemporânea. 2ª ed. Rio de Janeiro: Guanabara Koogan, 2021.</p>
-                         
                          <!-- Conteúdo da apostila será inserido aqui -->
                     </div>
                 </section>
@@ -210,7 +211,7 @@
             },
             {
                 title: "Helmintos vs. Protozoários: As Diferenças Essenciais",
-                content: "Os parasitas de importância médica são classicamente divididos em dois grandes grupos: <br><strong>Protozoários:</strong> São organismos eucariotos unicelulares e microscópicos. Reproduzem-se de forma rápida no hospedeiro, e uma pequena carga infectante pode levar a uma doença grave. Exemplos incluem *Trypanosoma cruzi* (Chagas) e *Plasmodium falciparum* (Malária).<br><strong>Helmintos:</strong> São metazoários (vermes multicelulares), geralmente macroscópicos, com ciclos de vida complexos que frequentemente envolvem estágios fora do corpo humano. A gravidade da doença geralmente é proporcional à carga de vermes adultos. Dividem-se em Nematelmintos (vermes cilíndricos, como *Ascaris*) e Platelmintos (vermes achatados, como *Schistosoma* e *Taenia*)."
+                content: "Os parasitas de importância médica são classicamente divididos em dois grandes grupos: <br><strong>Protozoários:</strong> São organismos eucariotos uniculares e microscópicos. Reproduzem-se de forma rápida no hospedeiro, e uma pequena carga infectante pode levar a uma doença grave. Exemplos incluem *Trypanosoma cruzi* (Chagas) e *Plasmodium falciparum* (Malária).<br><strong>Helmintos:</strong> São metazoários (vermes multicelulares), geralmente macroscópicos, com ciclos de vida complexos que frequentemente envolvem estágios fora do corpo humano. A gravidade da doença geralmente é proporcional à carga de vermes adultos. Dividem-se em Nematelmintos (vermes cilíndricos, como *Ascaris*) e Platelmintos (vermes achatados, como *Schistosoma* e *Taenia*)."
             },
             {
                 title: "Importância para a Saúde Pública no Nordeste do Brasil",
@@ -332,14 +333,6 @@
             { f_q: "Por que o diagnóstico microscópico de amebíase é um desafio?", f_a: "Pela existência da *Entamoeba dispar*, uma espécie morfologicamente idêntica, mas não patogênica.", q_prompt: "O principal desafio no diagnóstico microscópico da amebíase é diferenciar *E. histolytica* da espécie não patogênica:", options: ["*Entamoeba coli*", "*Entamoeba hartmanni*", "*Entamoeba dispar*", "*Endolimax nana*"], correct: 2 }
         ].sort(() => Math.random() - 0.5);
         
-        const apostilaContent = `
-            <h3>Capítulo 1: Introdução à Parasitologia</h3>
-            <h4>Introdução</h4>
-            <p>A Parasitologia é muitas vezes definida como o estudo dos parasitos, seres vivos que vivem em dependência metabólica com os seus hospedeiros, causando-lhes algum tipo de dano. Causar dano a seus hospedeiros não é, entretanto, uma consequência inevitável da infecção por organismos classicamente definidos como parasitos. Seria mais lógico, portanto, definir a Parasitologia como o estudo de um tipo particular de associação entre seres vivos, conhecido como parasitismo, em que alguns organismos podem estar engajados de modo ocasional ou permanente...</p>
-            <!-- ... O restante do conteúdo da apostila será inserido aqui dinamicamente ... -->
-        `;
-
-
         // --- LÓGICA DA APLICAÇÃO ---
         document.addEventListener('DOMContentLoaded', () => {
             loadIntroduction();
@@ -368,48 +361,53 @@
 
         function loadApostilaContent() {
             const container = document.getElementById('apostila-content');
-            // Conteúdo textual extenso da apostila
-            container.innerHTML += `
-                <h3>Capítulo 16: Trematódeos | Schistosoma mansoni e Fasciola hepatica</h3>
-                <h4>Introdução</h4>
-                <p>Os trematódeos são conhecidos desde a Antiguidade. São helmintos muitos abundantes, geralmente visíveis a olho nu, que parasitam todos os grupos de vertebrados. Pertencem ao filo Platyhelminthes e à subclasse Trematoda. Entre os trematódeos incluem-se vários parasitos importantes em Medicina, agrupados na infraclasse Digenea. Os trematódeos digenéticos são vermes achatados dorsoventralmente e quase sempre providos de ventosas, estruturas importantes para sua fixação ao seu hábitat no hospedeiro definitivo. Este capítulo trata exclusivamente de trematódeos digenéticos que produzem doença humana nas Américas; as duas espécies mais importantes são Schistosoma mansoni, da família Schistosomatidae, e Fasciola hepatica, da família Fasciolidae.</p>
-                <h4>Schistosoma mansoni</h4>
-                <p>O principal hospedeiro vertebrado no ciclo de vida de S. mansoni é o homem. Os vermes adultos, com até 1,5 cm de comprimento, habitam as vênulas do plexo mesentérico inferior e do sistema porta. As fêmeas depositam, por dia, 100 a 300 ovos elipsoides, com uma espícula lateral característica. Cerca de um terço e metade dos ovos eliminados pelas fêmeas chegue ao meio externo, misturados às fezes. A inflamação que a presença dos ovos desperta no hospedeiro, especialmente pela liberação de glicoproteínas antigênicas, resulta em ruptura da parede da vênula, liberando os ovos nos tecidos perivasculares e finalmente no lúmen intestinal. Parte dos ovos eliminados, no entanto, fica retida no tecido fibroso resultante da inflamação em torno das vênulas, sem chegar ao lúmen intestinal.</p>
-                <div class="image-placeholder"><p class="italic">FIGURA 16.2 Ciclo vital de Schistosoma mansoni.</p><img src="ciclo1.jpg" class="mx-auto" alt="Ciclo vital de S. mansoni"></div>
-                <h4>Esquistossomose mansônica: Aspectos clínicos</h4>
-                <p>A primeira evidência clínica da penetração de cercárias é a ocorrência de prurido transitório acompanhado de exantema papular (dermatite cercariana). As formas agudas (febre de Katayama) são mais comuns em indivíduos não imunes, com febre, cefaleia, prostração, anorexia, dores abdominais e musculares. A forma crônica depende da carga parasitária. A esquistossomose intestinal pode ser assintomática por anos. A forma hepatointestinal tem quadro clínico também pouco exuberante. A forma hepatoesplênica, a mais grave, ocorre em 5 a 10% dos pacientes cronicamente infectados, com hepatoesplenomegalia e hipertensão portal, que pode levar a hemorragias maciças por rompimento de varizes esofágicas.</p>
-                
-                <h3>Capítulo 13: Os Nematódeos Intestinais</h3>
-                <h4>Ascaris e a ascaríase</h4>
-                <p>Ascaris lumbricoides é o maior nematódeo do trato digestório humano (20 a 35 cm). Os vermes adultos habitam o lúmen do intestino delgado. A fêmea deposita cerca de 200.000 ovos por dia, que são eliminados nas fezes. Quando ingeridos, os ovos liberam larvas que penetram ativamente na parede intestinal, atingindo vênulas ou vasos linfáticos, para realizarem seu ciclo pulmonar (Ciclo de Looss). A gravidade dos sintomas é diretamente proporcional à quantidade de vermes. As infecções maciças, especialmente em crianças, podem causar distensão e dor abdominais, levando eventualmente ao bloqueio mecânico do intestino delgado.</p>
-                <div class="image-placeholder"><p class="italic">FIGURA 13.8 Ciclo vital de Ascaris lumbricoides.</p><img src="ciclo2.jpg" class="mx-auto" alt="Ciclo vital de A. lumbricoides"></div>
-                <h4>Ancilostomídeos e a ancilostomíase</h4>
-                <p>Os principais ancilostomídeos que infectam o trato digestório humano são Ancylostoma duodenale e Necator americanus. A transmissão ocorre pela penetração ativa, na pele, de larvas filarioides (L3) infectantes. Os vermes adultos fixam-se à mucosa do intestino delgado e alimentam-se de sangue. As manifestações clínicas devem-se essencialmente à anemia ferropriva, que depende da magnitude da perda sanguínea, diretamente proporcional à quantidade de vermes.</p>
-                <div class="image-placeholder"><p class="italic">FIGURA 13.13 Ciclo vital dos ancilostomídeos.</p><img src="ciclo3.jpg" class="mx-auto" alt="Ciclo vital dos ancilostomídeos"></div>
-                <h4>Trichuris e a tricuríase</h4>
-                <p>Trichuris trichiura é um nematódeo com formato de chicote. Os vermes adultos (3 a 5 cm) fixam-se à mucosa do intestino grosso. A transmissão é fecal-oral. As infecções leves são assintomáticas. As infecções maciças podem produzir colite, caracterizada por dor abdominal, diarreia crônica, tenesmo e, eventualmente, prolapso retal, especialmente em crianças desnutridas.</p>
-                <div class="image-placeholder"><p class="italic">FIGURA 13.10 Ciclo vital de Trichuris trichiura.</p><img src="ciclo4.jpg" class="mx-auto" alt="Ciclo vital de T. trichiura"></div>
-
-                <h3>Capítulo 5: Trypanosoma cruzi e a Doença de Chagas</h3>
-                <h4>Introdução</h4>
-                <p>A tripanossomíase americana ou doença de Chagas é causada pelo protozoário flagelado Trypanosoma cruzi. No hospedeiro mamífero, predominam os amastigotas (intracelulares) e os tripomastigotas (circulantes). A doença de Chagas apresenta duas fases: aguda e crônica. A fase aguda caracteriza-se por parasitemia patente. A fase crônica inicia-se entre algumas semanas e uns poucos meses depois, e caracteriza-se pela ausência de parasitemia patente e por uma intensa resposta imune humoral. A maior parte das infecções agudas é assintomática. A forma indeterminada pode evoluir para formas sintomáticas cardíaca e digestiva (megaesôfago e megacólon).</p>
-                <div class="image-placeholder"><p class="italic">FIGURA 5.6 Ciclo de vida de Trypanosoma cruzi.</p><img src="ciclo5.jpg" class="mx-auto" alt="Ciclo de vida de T. cruzi"></div>
-                
-                <h3>Capítulo 7: O Gênero Leishmania e as Leishmanioses</h3>
-                <h4>Introdução</h4>
-                <p>As leishmanioses constituem um grupo de doenças causadas por protozoários do gênero Leishmania. O ciclo de vida dos protozoários do gênero Leishmania é heteroxeno, envolvendo um hospedeiro mamífero e um inseto (flebotomíneo). No Brasil, a principal espécie causadora de leishmaniose visceral é L. (L.) infantum chagasi. O cão é o principal reservatório. A leishmaniose visceral tem início insidioso, com febre alta, porém irregular. O quadro agrava-se com o aparecimento de hepatoesplenomegalia e pancitopenia.</p>
-                <div class="image-placeholder"><p class="italic">FIGURA 7.2 Ciclo de vida das leishmânias.</p><img src="ciclo6.jpg" class="mx-auto" alt="Ciclo de vida das leishmânias"></div>
-
-                <h3>Capítulo 8: Os Protozoários Intestinais Clássicos</h3>
-                <h4>Giardia duodenalis e a giardíase</h4>
-                <p>Giardia duodenalis é um parasito monoxeno cujo ciclo vital inclui trofozoítos e cistos. O hábitat desse flagelado é o intestino delgado. A infecção humana ocorre pela ingestão de cistos. Em seres humanos, a infecção por Giardia pode ser assintomática ou produzir síndromes graves de má absorção. O quadro clínico mais comum é de diarreia de início súbito, com fezes aquosas ou pastosas, sem sangue, acompanhada de cólicas abdominais, flatulência e distensão.</p>
-                <div class="image-placeholder"><p class="italic">FIGURA 8.8 Ciclo vital de Giardia duodenalis.</p><img src="ciclo7.jpg" class="mx-auto" alt="Ciclo vital de G. duodenalis"></div>
-                <h4>Amebas intestinais e a amebíase</h4>
-                <p>O termo amebíase refere-se ao parasitismo humano por Entamoeba histolytica. O ciclo vital inclui trofozoítos e cistos. O hábitat é o intestino grosso. A infecção ocorre por ingestão de cistos. Os indivíduos infectados podem tornar-se portadores crônicos assintomáticos, apresentar disenteria moderada a grave (disenteria amebiana), ou colite sem disenteria. A complicação extraintestinal mais comum e grave da amebíase é o abscesso hepático, com febre e dor no hipocôndrio direito.</p>
-                <div class="image-placeholder"><p class="italic">FIGURA 8.3 Ciclo vital de Entamoeba histolytica/E. dispar.</p><img src="ciclo8.jpg" class="mx-auto" alt="Ciclo vital de E. histolytica"></div>
+            let htmlContent = `
+                <h2 class="text-3xl font-bold text-center text-blue-900 mb-2">Apostila Completa: Guia de Parasitologia</h2>
+                <p class="text-center italic text-gray-600 mb-8">Conteúdo consolidado para estudo, baseado em Parasitologia Contemporânea (2ª Ed.).</p>
             `;
+
+            // Adiciona Conteúdo da Introdução
+            htmlContent += `<h3>Panorama da Parasitologia Médica</h3>`;
+            introData.forEach(item => {
+                htmlContent += `
+                    <h4>${item.title}</h4>
+                    <p>${item.content}</p>
+                `;
+            });
+
+            // Adiciona Conteúdo dos Parasitas
+            htmlContent += `<h3 class="mt-12">Principais Parasitas de Importância Médica</h3>`;
+            parasitesData.forEach(parasite => {
+                htmlContent += `
+                    <h4 class="!text-2xl">${parasite.name} (${parasite.commonName})</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
+                        <div class="image-placeholder">
+                            <p class="font-semibold mb-2 text-lg">Ciclo de Vida</p>
+                            <a href="${parasite.cycleImg}" target="_blank">
+                                <img src="${parasite.cycleImg}" alt="Imagem do ciclo de vida de ${parasite.name}" class="w-full h-auto object-cover rounded-lg border-2 border-gray-200 shadow-md hover:opacity-80 transition-opacity">
+                            </a>
+                        </div>
+                        <div class="image-placeholder">
+                             <p class="font-semibold mb-2 text-lg">Manifestação Clínica</p>
+                            <a href="${parasite.clinicImg}" target="_blank">
+                                <img src="${parasite.clinicImg}" alt="Imagem da manifestação clínica de ${parasite.commonName}" class="w-full h-auto object-cover rounded-lg border-2 border-gray-200 shadow-md hover:opacity-80 transition-opacity">
+                            </a>
+                        </div>
+                    </div>
+                `;
+                parasite.details.forEach(detail => {
+                    htmlContent += `
+                        <div class="mt-3">
+                            <p><strong>${detail.label}:</strong> ${detail.value}</p>
+                        </div>
+                    `;
+                });
+                htmlContent += `<hr class="my-8 border-t-2 border-gray-200">`;
+            });
+
+            container.innerHTML = htmlContent;
         }
-        
+
         // --- Funções da Aba Introdução ---
         function loadIntroduction() {
             const container = document.getElementById('accordion-container');
