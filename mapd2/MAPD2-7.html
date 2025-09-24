@@ -76,38 +76,6 @@
         .accordion-button svg {
             transition: transform 0.3s ease-out;
         }
-        #apostila-content h3 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #1e3a8a;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #60a5fa;
-            padding-bottom: 0.5rem;
-        }
-        #apostila-content h4 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1d4ed8;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-        }
-        #apostila-content p {
-            line-height: 1.75;
-            margin-bottom: 1rem;
-            text-align: justify;
-        }
-        #apostila-content strong {
-            color: #1e40af;
-        }
-        #apostila-content .image-placeholder {
-            border: 1px dashed #cbd5e1;
-            padding: 1rem;
-            text-align: center;
-            margin: 1.5rem auto;
-            background-color: #f8fafc;
-            border-radius: 0.5rem;
-        }
     </style>
 </head>
 <body>
@@ -124,12 +92,15 @@
     <main class="container mx-auto p-4 md:p-8">
         <div class="main-container rounded-lg shadow-2xl overflow-hidden">
             <div class="border-b border-gray-200">
-                <nav class="flex flex-wrap justify-center -mb-px p-2 space-x-2 md:space-x-4 bg-gray-50">
+                <nav class="flex flex-wrap justify-center items-center -mb-px p-2 space-x-2 md:space-x-4 bg-gray-50">
                     <button class="tab-button active text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab(event, 'introduction')">Introdução</button>
                     <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab(event, 'parasites')">Visão Geral</button>
                     <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab(event, 'flashcards')">Flashcards</button>
                     <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab(event, 'quiz')">Quiz</button>
-                    <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab(event, 'apostila')">Apostila</button>
+                    <a href="apostila.html" target="_blank" class="text-sm md:text-base font-semibold py-3 px-4 md:px-6 bg-yellow-400 text-yellow-900 rounded-lg hover:bg-yellow-500 transition-all flex items-center shadow-sm">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        Apostila Completa
+                    </a>
                 </nav>
             </div>
 
@@ -164,12 +135,6 @@
                         </div>
                         <div id="quiz-question-screen" class="hidden"></div>
                         <div id="quiz-end-screen" class="hidden text-center"></div>
-                    </div>
-                </section>
-                
-                <section id="apostila" class="tab-pane hidden max-h-[80vh] overflow-y-auto pr-4">
-                    <div id="apostila-content" class="prose max-w-none">
-                         <!-- Conteúdo da apostila será inserido aqui -->
                     </div>
                 </section>
             </div>
@@ -339,7 +304,6 @@
             loadParasiteCards();
             loadFlashcards();
             setupQuizHTML();
-            loadApostilaContent();
             setupEventListeners();
         });
 
@@ -357,55 +321,6 @@
                     }
                 }
             });
-        }
-
-        function loadApostilaContent() {
-            const container = document.getElementById('apostila-content');
-            let htmlContent = `
-                <h2 class="text-3xl font-bold text-center text-blue-900 mb-2">Apostila Completa: Guia de Parasitologia</h2>
-                <p class="text-center italic text-gray-600 mb-8">Conteúdo consolidado para estudo, baseado em Parasitologia Contemporânea (2ª Ed.).</p>
-            `;
-
-            // Adiciona Conteúdo da Introdução
-            htmlContent += `<h3>Panorama da Parasitologia Médica</h3>`;
-            introData.forEach(item => {
-                htmlContent += `
-                    <h4>${item.title}</h4>
-                    <p>${item.content}</p>
-                `;
-            });
-
-            // Adiciona Conteúdo dos Parasitas
-            htmlContent += `<h3 class="mt-12">Principais Parasitas de Importância Médica</h3>`;
-            parasitesData.forEach(parasite => {
-                htmlContent += `
-                    <h4 class="!text-2xl">${parasite.name} (${parasite.commonName})</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
-                        <div class="image-placeholder">
-                            <p class="font-semibold mb-2 text-lg">Ciclo de Vida</p>
-                            <a href="${parasite.cycleImg}" target="_blank">
-                                <img src="${parasite.cycleImg}" alt="Imagem do ciclo de vida de ${parasite.name}" class="w-full h-auto object-cover rounded-lg border-2 border-gray-200 shadow-md hover:opacity-80 transition-opacity">
-                            </a>
-                        </div>
-                        <div class="image-placeholder">
-                             <p class="font-semibold mb-2 text-lg">Manifestação Clínica</p>
-                            <a href="${parasite.clinicImg}" target="_blank">
-                                <img src="${parasite.clinicImg}" alt="Imagem da manifestação clínica de ${parasite.commonName}" class="w-full h-auto object-cover rounded-lg border-2 border-gray-200 shadow-md hover:opacity-80 transition-opacity">
-                            </a>
-                        </div>
-                    </div>
-                `;
-                parasite.details.forEach(detail => {
-                    htmlContent += `
-                        <div class="mt-3">
-                            <p><strong>${detail.label}:</strong> ${detail.value}</p>
-                        </div>
-                    `;
-                });
-                htmlContent += `<hr class="my-8 border-t-2 border-gray-200">`;
-            });
-
-            container.innerHTML = htmlContent;
         }
 
         // --- Funções da Aba Introdução ---
