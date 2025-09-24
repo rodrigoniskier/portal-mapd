@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo de Parasitologia Médica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8; /* Azul muito claro */
+        }
+        .main-container {
+            background-color: #ffffff;
+        }
+        .tab-button.active {
+            border-color: #2563eb; /* Azul */
+            color: #2563eb;
+            background-color: #eff6ff;
+        }
+        .flashcard-container {
+            perspective: 1000px;
+        }
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .flashcard-front {
+            background-color: white;
+            border: 2px solid #34d399; /* Verde */
+        }
+        .flashcard-back {
+            background-color: #e0f2fe; /* Azul claro */
+            border: 2px solid #3b82f6; /* Azul */
+            transform: rotateY(180deg);
+        }
+        .quiz-option.selected {
+            border-width: 2px;
+        }
+        .quiz-option.correct {
+            background-color: #d1fae5; /* Verde claro */
+            border-color: #10b981; /* Verde */
+        }
+        .quiz-option.incorrect {
+            background-color: #fee2e2; /* Vermelho claro */
+            border-color: #ef4444; /* Vermelho */
+        }
+        .header-gradient {
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-button svg {
+            transition: transform 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-gradient text-white p-4 shadow-md sticky top-0 z-40">
+        <div class="container mx-auto text-center">
+            <h1 class="text-xl md:text-2xl font-bold">Centro Universitário de João Pessoa (UNIPÊ)</h1>
+            <h2 class="text-lg md:text-xl font-semibold">Curso de Medicina</h2>
+            <p class="text-md md:text-lg">Componente: Mecanismos de Agressão, Patológicos e de Defesa 2</p>
+            <p class="text-sm md:text-base mt-1">Professor: Rodrigo Niskier</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="main-container rounded-lg shadow-2xl overflow-hidden">
+            <div class="border-b border-gray-200">
+                <nav class="flex flex-wrap justify-center -mb-px p-2 space-x-2 md:space-x-4 bg-gray-50">
+                    <button class="tab-button active text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab('introduction')">Introdução</button>
+                    <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab('parasites')">Visão Geral</button>
+                    <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab('flashcards')">Flashcards</button>
+                    <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab('quiz')">Quiz</button>
+                    <a href="parasitas.pdf" target="_blank" class="text-sm md:text-base font-semibold py-3 px-4 md:px-6 bg-yellow-400 text-yellow-900 rounded-md hover:bg-yellow-500 transition-all flex items-center shadow-sm">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Apostila
+                    </a>
+                </nav>
+            </div>
+
+            <div id="tab-content" class="p-6 md:p-8">
+                <!-- Seção de Introdução -->
+                <section id="introduction" class="tab-pane">
+                    <h2 class="text-2xl md:text-3xl font-bold text-center text-blue-800 mb-8">Panorama da Parasitologia Médica</h2>
+                    <div class="max-w-4xl mx-auto space-y-4" id="accordion-container">
+                        <!-- Painéis do acordeão serão inseridos aqui -->
+                    </div>
+                </section>
+
+                <section id="parasites" class="tab-pane hidden">
+                    <h2 class="text-2xl md:text-3xl font-bold text-center text-blue-800 mb-6">Principais Parasitas de Importância Médica</h2>
+                    <div id="parasite-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+                </section>
+                
+                <section id="flashcards" class="tab-pane hidden">
+                    <h2 class="text-2xl md:text-3xl font-bold text-center text-blue-800 mb-6">Flashcards de Revisão</h2>
+                    <div class="mb-4 text-center">
+                        <button id="shuffle-flashcards" class="bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-blue-700 transition-transform transform hover:scale-105">Embaralhar Cards</button>
+                    </div>
+                    <div id="flashcard-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+                </section>
+
+                <section id="quiz" class="tab-pane hidden">
+                    <div id="quiz-container" class="max-w-3xl mx-auto">
+                         <div id="quiz-start-screen" class="text-center">
+                            <h2 class="text-2xl md:text-3xl font-bold text-blue-800 mb-4">Teste seus Conhecimentos</h2>
+                            <p class="text-gray-600 mb-6">Quiz com 20 questões de múltipla escolha para avaliar seu aprendizado.</p>
+                            <button id="start-quiz-btn" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-xl hover:bg-green-700 transition-transform transform hover:scale-105">Iniciar Quiz</button>
+                        </div>
+                        <div id="quiz-question-screen" class="hidden"></div>
+                        <div id="quiz-end-screen" class="hidden text-center"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div id="parasite-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
+            <button onclick="closeModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 z-10">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="p-6 md:p-8">
+                <h3 id="modal-title" class="text-3xl font-bold text-blue-800 mb-6 pr-8"></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h4 class="text-xl font-semibold text-gray-700 mb-2">Ciclo de Vida</h4>
+                         <a id="modal-cycle-link" href="#" target="_blank">
+                            <img id="modal-cycle-img" src="" alt="Imagem do ciclo de vida do parasita" class="w-full h-auto object-cover rounded-lg border-2 border-gray-200 shadow-md hover:opacity-80 transition-opacity">
+                        </a>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold text-gray-700 mb-2">Manifestação Clínica</h4>
+                        <a id="modal-clinic-link" href="#" target="_blank">
+                            <img id="modal-clinic-img" src="" alt="Imagem da manifestação clínica" class="w-full h-auto object-cover rounded-lg border-2 border-gray-200 shadow-md hover:opacity-80 transition-opacity">
+                        </a>
+                    </div>
+                </div>
+                <div id="modal-content" class="space-y-4 text-gray-800"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- DADOS INTRODUTÓRIOS (ACORDEÃO) ---
+        const introData = [
+            {
+                title: "O que são Parasitas e Parasitologia Médica?",
+                content: "Parasitologia é a ciência que estuda os parasitas, seus hospedeiros e as relações entre eles. Na Medicina, o foco são os organismos que vivem à custa do corpo humano, causando doenças. Um parasita é um ser vivo que retira de outro organismo (o hospedeiro) os recursos para sua sobrevivência. As parasitoses são um grave problema de saúde pública, especialmente em regiões com saneamento básico precário, sendo responsáveis por elevada morbimortalidade e perdas econômicas."
+            },
+            {
+                title: "Helmintos vs. Protozoários: As Diferenças Essenciais",
+                content: "Os parasitas de importância médica são classicamente divididos em dois grandes grupos: <br><strong>Protozoários:</strong> São organismos unicelulares e eucarióticos. Reproduzem-se de forma rápida no hospedeiro, e uma pequena carga infectante pode levar a uma doença grave. Exemplos incluem *Trypanosoma cruzi* (Chagas) e *Plasmodium falciparum* (Malária).<br><strong>Helmintos:</strong> São vermes multicelulares, com ciclos de vida complexos que frequentemente envolvem estágios fora do corpo humano. A gravidade da doença geralmente é proporcional à carga de vermes adultos. Dividem-se em Nematelmintos (vermes cilíndricos, como *Ascaris*) e Platelmintos (vermes achatados, como *Schistosoma* e *Taenia*)."
+            },
+            {
+                title: "Importância para a Saúde Pública no Nordeste do Brasil",
+                content: "O Nordeste brasileiro, por suas características socioeconômicas e climáticas, apresenta condições favoráveis à disseminação de diversas parasitoses. Doenças como a Esquistossomose (endêmica em áreas com saneamento deficiente e presença do caramujo vetor), as Geo-helmintíases (*Ascaris, Trichuris, ancilostomídeos*) e a Leishmaniose Visceral (com ampla distribuição do vetor e reservatório canino) são prevalentes e representam desafios constantes para a saúde pública. O controle dessas doenças passa por estratégias integradas, incluindo saneamento, educação em saúde, tratamento dos doentes e controle de vetores/reservatórios."
+            }
+        ];
+
+        const parasitesData = [
+            {
+                id: 1, name: "Schistosoma mansoni", commonName: "Esquistossomose", type: "helminto", cycleImg: "ciclo1.jpg", clinicImg: "clinica1.jpg",
+                details: [
+                    { label: "Morfologia", value: "Platelminto trematódeo. Vermes adultos vivem nos vasos mesentéricos. Ovo característico com espículo lateral." },
+                    { label: "Epidemiologia", value: "Endêmica no Nordeste. Transmissão ligada a coleções de água doce com caramujos do gênero *Biomphalaria* (hospedeiro intermediário)." },
+                    { label: "Patogenia", value: "A patologia principal não é causada pelo verme adulto, mas pela resposta imune do hospedeiro aos ovos aprisionados nos tecidos, especialmente no fígado. A formação de granulomas ao redor dos ovos leva à fibrose periportal (Fibrose de Symmers), obstruindo o fluxo sanguíneo portal." },
+                    { label: "Manifestações Clínicas", value: "Fase aguda: Dermatite cercariana (no local da penetração), Febre de Katayama. Fase crônica: Forma intestinal (diarreia), forma hepatoesplênica (hipertensão portal, ascite, varizes esofágicas, 'barriga-d'água')." },
+                    { label: "Diagnóstico", value: "Padrão-ouro: Exame parasitológico de fezes (método Kato-Katz) para contagem de ovos. Biópsia retal em casos suspeitos com exames negativos." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Praziquantel. Profilaxia: Saneamento básico, educação em saúde, controle dos caramujos e tratamento em massa." }
+                ]
+            },
+            {
+                id: 2, name: "Ascaris lumbricoides", commonName: "Ascaridíase", type: "helminto", cycleImg: "ciclo2.jpg", clinicImg: "clinica2.jpg",
+                details: [
+                    { label: "Morfologia", value: "Nematelminto de grande porte ('lombriga'). Adultos vivem no intestino delgado." },
+                    { label: "Epidemiologia", value: "A geo-helmintíase mais comum do mundo. Transmissão fecal-oral pela ingestão de ovos presentes em água ou alimentos contaminados." },
+                    { label: "Patogenia", value: "Ação espoliativa (competição por nutrientes), ação mecânica (obstrução intestinal por enovelamento) e ação tóxica (reações alérgicas). A migração das larvas pelos pulmões (Ciclo de Looss) pode causar pneumonite eosinofílica (Síndrome de Loeffler)." },
+                    { label: "Manifestações Clínicas", value: "Maioria assintomática. Em altas cargas: desnutrição, dor abdominal, náuseas. Complicações: obstrução intestinal, biliar ou do apêndice." },
+                    { label: "Diagnóstico", value: "Exame parasitológico de fezes para identificação dos ovos característicos." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Albendazol ou Mebendazol. Profilaxia: Saneamento, higiene pessoal e dos alimentos." }
+                ]
+            },
+            {
+                id: 3, name: "Ancilostomídeos", commonName: "Ancilostomíase", type: "helminto", cycleImg: "ciclo3.jpg", clinicImg: "clinica3.jpg",
+                details: [
+                    { label: "Morfologia", value: "Nematelmintos (*Ancylostoma duodenale* e *Necator americanus*) com cápsula bucal armada com dentes ou placas cortantes para fixação na mucosa intestinal." },
+                    { label: "Epidemiologia", value: "Geo-helmintíase comum em áreas tropicais. Transmissão pela penetração de larvas filarioides na pele, a partir de solo contaminado por fezes." },
+                    { label: "Patogenia", value: "A principal ação é a espoliação sanguínea. Os vermes adultos são hematófagos, causando perda crônica de sangue e, consequentemente, depleção das reservas de ferro do hospedeiro." },
+                    { label: "Manifestações Clínicas", value: "Anemia ferropriva crônica é a marca da doença ('amarelão' ou 'doença do Jeca Tatu'). Manifesta-se com palidez, astenia, geofagia (desejo de comer terra). Dermatite no local da penetração." },
+                    { label: "Diagnóstico", value: "Exame parasitológico de fezes para visualização dos ovos." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Albendazol, associado à reposição de ferro. Profilaxia: Uso de calçados, saneamento básico." }
+                ]
+            },
+            {
+                id: 4, name: "Trichuris trichiura", commonName: "Tricuríase", type: "helminto", cycleImg: "ciclo4.jpg", clinicImg: "clinica4.jpg",
+                details: [
+                    { label: "Morfologia", value: "Nematelminto com formato de 'chicote', com a porção anterior afilada que se insere na mucosa do intestino grosso." },
+                    { label: "Epidemiologia", value: "Geo-helmintíase de transmissão fecal-oral pela ingestão de ovos." },
+                    { label: "Patogenia", value: "Ação mecânica e irritativa na mucosa do cólon. Em altas cargas, a inflamação crônica e o tenesmo podem levar ao enfraquecimento da musculatura retal." },
+                    { label: "Manifestações Clínicas", value: "Infecções leves são assintomáticas. Infecções maciças causam síndrome disentérica (diarreia com muco e sangue), dor abdominal e, classicamente em crianças, prolapso retal." },
+                    { label: "Diagnóstico", value: "Exame parasitológico de fezes para identificação dos ovos característicos (forma de barril com poros polares)." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Albendazol ou Mebendazol. Profilaxia: Saneamento, higiene pessoal e dos alimentos." }
+                ]
+            },
+            {
+                id: 5, name: "Trypanosoma cruzi", commonName: "Doença de Chagas", type: "protozoario", cycleImg: "ciclo5.jpg", clinicImg: "clinica5.jpg",
+                details: [
+                    { label: "Morfologia", value: "Protozoário flagelado. Forma tripomastigota no sangue e amastigota nos tecidos (formando 'ninhos')." },
+                    { label: "Epidemiologia", value: "Transmissão vetorial (fezes do 'barbeiro'), oral (surtos por açaí/caldo de cana), transfusional, congênita. O Nordeste foi área endêmica para transmissão vetorial." },
+                    { label: "Patogenia", value: "Destruição progressiva de células, especialmente fibras musculares cardíacas e neurônios dos plexos mioentéricos do trato digestivo. A resposta imune crônica contribui para a lesão tecidual." },
+                    { label: "Manifestações Clínicas", value: "Fase aguda: Febre, Sinal de Romaña (edema bipalpebral), chagoma de inoculação. Fase crônica: Forma indeterminada (assintomática), Cardíaca (arritmias, insuficiência cardíaca), Digestiva (megaesôfago, megacólon)." },
+                    { label: "Diagnóstico", value: "Fase aguda: Exame parasitológico direto do sangue. Fase crônica: Sorológico (ELISA, IFI), requerendo dois testes com princípios diferentes para confirmação." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Benznidazol (eficaz na fase aguda e para evitar progressão em crônicos jovens). Profilaxia: Controle do vetor, controle de qualidade de alimentos e triagem em bancos de sangue." }
+                ]
+            },
+            {
+                id: 6, name: "Leishmania infantum", commonName: "Leishmaniose Visceral", type: "protozoario", cycleImg: "ciclo6.jpg", clinicImg: "clinica6.jpg",
+                details: [
+                    { label: "Morfologia", value: "Protozoário com forma promastigota no vetor e amastigota (intracelular) no hospedeiro vertebrado." },
+                    { label: "Epidemiologia", value: "Transmitida pela picada do flebotomíneo *Lutzomyia longipalpis* ('mosquito-palha'). Cão doméstico é o principal reservatório urbano. Em franca expansão no Brasil, incluindo grandes cidades do Nordeste." },
+                    { label: "Patogenia", value: "O parasita se multiplica dentro de macrófagos do sistema fagocítico mononuclear, levando à hiperplasia de baço, fígado e medula óssea, e causando uma profunda imunossupressão." },
+                    { label: "Manifestações Clínicas", value: "Tríade clássica: febre prolongada e irregular, hepatoesplenomegalia acentuada e pancitopenia (anemia, leucopenia, plaquetopenia). Resulta em emagrecimento, palidez e maior risco de infecções secundárias." },
+                    { label: "Diagnóstico", value: "Demonstração do parasita em aspirado de medula óssea (padrão-ouro). Testes rápidos sorológicos (TR-DPP) para triagem." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Antimoniais pentavalentes, Anfotericina B lipossomal. Profilaxia: Controle do vetor, eutanásia ou tratamento de cães infectados, uso de coleiras impregnadas com deltametrina." }
+                ]
+            },
+            {
+                id: 7, name: "Giardia lamblia", commonName: "Giardíase", type: "protozoario", cycleImg: "ciclo7.jpg", clinicImg: "clinica7.jpg",
+                details: [
+                    { label: "Morfologia", value: "Protozoário flagelado. Trofozoíto piriforme com disco suctorial. Cisto ovalado e resistente." },
+                    { label: "Epidemiologia", value: "Cosmopolita. Transmissão fecal-oral pela ingestão de cistos em água ou alimentos. Cistos são resistentes à cloração da água." },
+                    { label: "Patogenia", value: "Causa atrofia das vilosidades do intestino delgado e forma uma barreira mecânica com seu disco suctorial, levando a uma síndrome de má absorção, principalmente de gorduras e vitaminas lipossolúveis." },
+                    { label: "Manifestações Clínicas", value: "Diarreia aquosa, fétida, sem sangue, cólicas e flatulência. Na forma crônica, causa esteatorreia (fezes gordurosas que boiam) e perda de peso. Comum em crianças de creches." },
+                    { label: "Diagnóstico", value: "Exame parasitológico de fezes (detecção de cistos ou trofozoítos). Métodos imunológicos (detecção de coproantígenos por ELISA) são mais sensíveis." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Metronidazol, Secnidazol ou Albendazol. Profilaxia: Saneamento, higiene e tratamento da água (filtração é essencial)." }
+                ]
+            },
+            {
+                id: 8, name: "Entamoeba histolytica", commonName: "Amebíase", type: "protozoario", cycleImg: "ciclo8.jpg", clinicImg: "clinica8.jpg",
+                details: [
+                    { label: "Morfologia", value: "Protozoário. Trofozoíto pleomórfico que pode fagocitar hemácias. Cisto tetranucleado." },
+                    { label: "Epidemiologia", value: "Transmissão fecal-oral pela ingestão de cistos. Desafio diagnóstico pela existência da *E. dispar*, morfologicamente idêntica, mas não patogênica." },
+                    { label: "Patogenia", value: "Capacidade de invadir a mucosa do intestino grosso, causando úlceras em 'frasco' ou 'casa de botão'. Pode se disseminar pela via hematogênica, atingindo principalmente o fígado." },
+                    { label: "Manifestações Clínicas", value: "Forma intestinal: Colite amebiana com disenteria (fezes com muco e sangue), dor abdominal. Forma extraintestinal: Abscesso hepático amebiano (complicação mais comum e grave), com febre, dor no hipocôndrio direito e hepatomegalia." },
+                    { label: "Diagnóstico", value: "Diferenciação entre *E. histolytica/E. dispar* requer métodos moleculares (PCR) ou detecção de antígenos específicos nas fezes." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Metronidazol ou Secnidazol (para formas invasivas) seguido de um amebicida luminal (para erradicar cistos). Profilaxia: Saneamento e higiene." }
+                ]
+            },
+        ];
+        
+        // --- DADOS PARA FLASHCARDS E QUIZ (20 QUESTÕES) ---
+        const flashcardQuizData = [
+            { f_q: "Qual helminto tem caramujos do gênero *Biomphalaria* como hospedeiros intermediários?", f_a: "*Schistosoma mansoni*.", q_prompt: "O hospedeiro intermediário do *Schistosoma mansoni* é o:", options: ["Caramujo *Biomphalaria*", "Flebótomo *Lutzomyia*", "Mosquito *Aedes aegypti*", "Barbeiro *Triatoma*"], correct: 0 },
+            { f_q: "O que é a fibrose de Symmers e em qual parasitose ela ocorre?", f_a: "É a fibrose periportal no fígado, patognomônica da forma grave da Esquistossomose.", q_prompt: "A fibrose de Symmers, patognomônica da esquistossomose grave, afeta principalmente qual órgão?", options: ["Baço", "Intestino", "Fígado", "Pulmões"], correct: 2 },
+            { f_q: "A transmissão da esquistossomose ocorre por qual via?", f_a: "Penetração ativa das larvas (cercárias) na pele.", q_prompt: "A infecção por *Schistosoma mansoni* em humanos ocorre por:", options: ["Ingestão de ovos", "Picada de vetor", "Penetração cutânea de larvas", "Ingestão de carne crua"], correct: 2 },
+            { f_q: "O que é a Síndrome de Loeffler?", f_a: "Uma pneumonite eosinofílica transitória causada pela migração de larvas de helmintos, como o *Ascaris lumbricoides*, pelos pulmões.", q_prompt: "A Síndrome de Loeffler está associada à fase de migração larval de qual parasita?", options: ["*Trichuris trichiura*", "*Ascaris lumbricoides*", "*Trypanosoma cruzi*", "*Giardia lamblia*"], correct: 1 },
+            { f_q: "Qual a complicação mecânica mais temida da ascaridíase?", f_a: "A obstrução intestinal por um emaranhado de vermes adultos.", q_prompt: "A principal complicação aguda e grave da ascaridíase por alta carga parasitária é:", options: ["Anemia profunda", "Prolapso retal", "Obstrução intestinal", "Abscesso hepático"], correct: 2 },
+            { f_q: "A transmissão do *Ascaris lumbricoides* ocorre pela ingestão de:", f_a: "Ovos embrionados do parasita.", q_prompt: "A via de transmissão da ascaridíase é:", options: ["Fecal-oral", "Penetração cutânea", "Vetorial", "Sexual"], correct: 0 },
+            { f_q: "Qual geo-helmintíase é classicamente conhecida por causar o 'amarelão'?", f_a: "Ancilostomíase, devido à anemia ferropriva crônica.", q_prompt: "A principal manifestação clínica da ancilostomíase ('amarelão') é:", options: ["Hepatoesplenomegalia", "Anemia ferropriva", "Síndrome disentérica", "Cardiomiopatia"], correct: 1 },
+            { f_q: "Como se previne a infecção por ancilostomídeos?", f_a: "Principalmente pelo uso de calçados e saneamento básico.", q_prompt: "Uma medida de prevenção fundamental e específica para a ancilostomíase é:", options: ["Filtrar a água", "Cozinhar bem a carne", "Usar calçados", "Combater o mosquito"], correct: 2 },
+            { f_q: "O prolapso retal em crianças com alta carga parasitária é uma complicação clássica de qual helmintíase?", f_a: "Tricuríase (*Trichuris trichiura*).", q_prompt: "O prolapso retal é uma complicação dramática associada a infecções maciças por qual parasita?", options: ["*Ancylostoma duodenale*", "*Trichuris trichiura*", "*Ascaris lumbricoides*", "*Entamoeba histolytica*"], correct: 1 },
+            { f_q: "Qual a localização preferencial do *Trichuris trichiura* no hospedeiro?", f_a: "No intestino grosso (ceco e cólon ascendente).", q_prompt: "O *Trichuris trichiura* se aloja preferencialmente em qual segmento do trato gastrointestinal?", options: ["Duodeno", "Estômago", "Intestino grosso", "Esôfago"], correct: 2 },
+            { f_q: "Qual a principal forma de transmissão da Doença de Chagas em surtos agudos no Brasil atualmente?", f_a: "Transmissão oral, por ingestão de alimentos contaminados (ex: açaí, caldo de cana).", q_prompt: "Atualmente, no Brasil, a principal via de transmissão em surtos de Doença de Chagas Aguda é a:", options: ["Transfusional", "Congênita", "Vetorial clássica", "Oral"], correct: 3 },
+            { f_q: "As megasíndromes (megaesôfago e megacólon) são manifestações crônicas de qual protozoose?", f_a: "Doença de Chagas (*Trypanosoma cruzi*).", q_prompt: "Megaesôfago e megacólon são manifestações características da fase crônica de qual doença?", options: ["Leishmaniose Visceral", "Amebíase", "Doença de Chagas", "Giardíase"], correct: 2 },
+            { f_q: "O que é o Sinal de Romaña?", f_a: "Edema bipalpebral unilateral, um sinal clássico da fase aguda da Doença de Chagas.", q_prompt: "O diagnóstico da fase crônica da Doença de Chagas é tipicamente realizado por:", options: ["Exame de fezes", "Sorologia", "Biópsia de pele", "Hemocultura"], correct: 1 },
+            { f_q: "Qual o principal reservatório urbano da Leishmaniose Visceral no Brasil?", f_a: "O cão doméstico (*Canis familiaris*).", q_prompt: "No ciclo urbano da Leishmaniose Visceral no Brasil, o principal reservatório do *Leishmania infantum* é o:", options: ["Gato", "Rato", "Humano", "Cão"], correct: 3 },
+            { f_q: "A tríade clássica da Leishmaniose Visceral é:", f_a: "Febre prolongada, hepatoesplenomegalia e pancitopenia.", q_prompt: "A tríade clínica clássica da Leishmaniose Visceral (calazar) consiste em:", options: ["Febre, esplenomegalia e pancitopenia", "Diarreia, vômito e desidratação", "Tosse, febre e dispneia", "Cefaleia, rigidez de nuca e febre"], correct: 0 },
+            { f_q: "Qual é o vetor da Leishmaniose Visceral?", f_a: "O flebotomíneo do gênero *Lutzomyia*, conhecido como mosquito-palha.", q_prompt: "O vetor responsável pela transmissão da Leishmaniose Visceral é o:", options: ["*Aedes aegypti*", "Caramujo *Biomphalaria*", "Flebótomo *Lutzomyia*", "*Triatoma infestans*"], correct: 2 },
+            { f_q: "Qual protozoário intestinal causa uma síndrome de má absorção com esteatorreia (fezes gordurosas e fétidas)?", f_a: "*Giardia lamblia*.", q_prompt: "Esteatorreia (fezes pálidas e gordurosas) é um sintoma característico da infecção crônica por:", options: ["*Entamoeba histolytica*", "*Cryptosporidium parvum*", "*Giardia lamblia*", "*Trypanosoma cruzi*"], correct: 2 },
+            { f_q: "Por que a cloração da água não é suficiente para eliminar os cistos de *Giardia lamblia*?", f_a: "Porque os cistos são altamente resistentes ao cloro, exigindo também a filtração da água.", q_prompt: "Os cistos de *Giardia lamblia* são notavelmente resistentes a qual método de tratamento de água?", options: ["Fervura", "Filtração", "Radiação UV", "Cloração"], correct: 3 },
+            { f_q: "Qual é a complicação extraintestinal mais comum da amebíase invasiva?", f_a: "O abscesso hepático amebiano.", q_prompt: "A forma extraintestinal mais comum e grave da amebíase por *Entamoeba histolytica* é:", options: ["Abscesso cerebral", "Amebíase cutânea", "Abscesso hepático", "Amebíase pulmonar"], correct: 2 },
+            { f_q: "Por que o diagnóstico microscópico de amebíase é um desafio?", f_a: "Pela existência da *Entamoeba dispar*, uma espécie morfologicamente idêntica, mas não patogênica.", q_prompt: "O principal desafio no diagnóstico microscópico da amebíase é diferenciar *E. histolytica* da espécie não patogênica:", options: ["*Entamoeba coli*", "*Entamoeba hartmanni*", "*Entamoeba dispar*", "*Endolimax nana*"], correct: 2 }
+        ].sort(() => Math.random() - 0.5);
+        
+
+        // --- LÓGICA DA APLICAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadIntroduction();
+            loadParasiteCards();
+            loadFlashcards();
+            setupQuizHTML();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('start-quiz-btn').addEventListener('click', startQuiz);
+            document.getElementById('restart-quiz-btn').addEventListener('click', startQuiz);
+            document.getElementById('shuffle-flashcards').addEventListener('click', loadFlashcards);
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('parasite-modal');
+                    if (!modal.classList.contains('hidden')) {
+                        closeModal();
+                    }
+                }
+            });
+        }
+        
+        // --- Funções da Aba Introdução ---
+        function loadIntroduction() {
+            const container = document.getElementById('accordion-container');
+            container.innerHTML = introData.map((item, index) => `
+                <div class="border border-gray-200 rounded-lg">
+                    <h2>
+                        <button type="button" class="accordion-button flex items-center justify-between w-full p-5 font-semibold text-left text-gray-700 bg-gray-100 hover:bg-blue-100 transition-colors" data-accordion-target="#accordion-content-${index}">
+                            <span>${item.title}</span>
+                            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </h2>
+                    <div id="accordion-content-${index}" class="accordion-content">
+                        <div class="p-5 border-t border-gray-200 text-gray-600">
+                            <p>${item.content}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.accordion-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = document.querySelector(button.dataset.accordionTarget);
+                    const svg = button.querySelector('svg');
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        svg.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        svg.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+        }
+
+        // --- Funções da Aba Visão Geral ---
+        function loadParasiteCards() {
+            const parasiteGrid = document.getElementById('parasite-grid');
+            parasiteGrid.innerHTML = parasitesData.map(parasite => `
+                <div class="border rounded-lg p-4 shadow-md hover:shadow-xl hover:scale-105 transition-all cursor-pointer flex flex-col items-center text-center" style="border-color: ${parasite.type === 'helminto' ? '#34d399' : '#facc15'};" onclick='showModal(${parasite.id})'>
+                    <img src="${parasite.cycleImg}" alt="Ciclo de ${parasite.name}" class="w-24 h-24 object-cover rounded-full mb-3 border-2" onerror="this.src='https://placehold.co/100x100/e0f2fe/3b82f6?text=Ciclo'">
+                    <h3 class="text-lg font-bold text-gray-800">${parasite.name}</h3>
+                    <p class="text-gray-600">${parasite.commonName}</p>
+                </div>
+            `).join('');
+        }
+
+        function showModal(parasiteId) {
+            const parasite = parasitesData.find(p => p.id === parasiteId);
+            if (!parasite) return;
+
+            document.getElementById('modal-title').textContent = `${parasite.name} (${parasite.commonName})`;
+            document.getElementById('modal-cycle-img').src = parasite.cycleImg;
+            document.getElementById('modal-clinic-img').src = parasite.clinicImg;
+            document.getElementById('modal-cycle-link').href = parasite.cycleImg;
+            document.getElementById('modal-clinic-link').href = parasite.clinicImg;
+            
+            document.getElementById('modal-content').innerHTML = parasite.details.map(detail => `
+                <div>
+                    <h5 class="font-bold text-lg text-blue-700">${detail.label}</h5>
+                    <p>${detail.value}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('parasite-modal').classList.remove('hidden');
+            document.getElementById('parasite-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('parasite-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // --- Funções da Aba Flashcards ---
+        function loadFlashcards() {
+            const flashcardGrid = document.getElementById('flashcard-grid');
+            flashcardGrid.innerHTML = '';
+            const shuffled = [...flashcardQuizData].sort(() => 0.5 - Math.random());
+            shuffled.forEach(data => {
+                const cardContainer = document.createElement('div');
+                cardContainer.className = 'flashcard-container h-64';
+                cardContainer.innerHTML = `
+                    <div class="flashcard rounded-lg shadow-lg cursor-pointer">
+                        <div class="flashcard-face flashcard-front rounded-lg"><p class="font-semibold text-gray-700">${data.f_q}</p></div>
+                        <div class="flashcard-face flashcard-back rounded-lg"><p class="font-semibold text-blue-800">${data.f_a}</p></div>
+                    </div>`;
+                cardContainer.querySelector('.flashcard').onclick = (e) => e.currentTarget.classList.toggle('flipped');
+                flashcardGrid.appendChild(cardContainer);
+            });
+        }
+        
+        // --- Funções da Aba Quiz ---
+        let currentQuestionIndex = 0;
+        let quizScore = 0;
+        let quizData = [];
+        
+        function setupQuizHTML() {
+            document.getElementById('quiz-question-screen').innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                   <p class="text-lg font-semibold text-gray-700">Questão <span id="question-number"></span> de 20</p>
+                   <p class="text-lg font-semibold text-green-700">Pontuação: <span id="quiz-score">0</span></p>
+                </div>
+                <div class="bg-gray-100 p-6 rounded-lg shadow-inner">
+                    <p id="question-text" class="text-xl font-medium text-gray-900 mb-6"></p>
+                    <div id="options-container" class="space-y-4"></div>
+                </div>
+                <div class="mt-6 text-center">
+                    <button id="next-question-btn" class="bg-blue-600 text-white font-semibold py-2 px-8 rounded-lg shadow-md hover:bg-blue-700 transition-transform transform hover:scale-105 hidden">Próxima</button>
+                </div>`;
+            document.getElementById('quiz-end-screen').innerHTML = `
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">Quiz Finalizado!</h2>
+                <p class="text-xl text-gray-700 mb-2">Sua pontuação final é:</p>
+                <p id="final-score" class="text-5xl font-bold text-green-600 mb-6"></p>
+                <p id="feedback-text" class="text-lg mb-8"></p>
+                <button id="restart-quiz-btn" class="bg-yellow-500 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-xl hover:bg-yellow-600 transition-transform transform hover:scale-105">Tentar Novamente</button>`;
+            
+            document.getElementById('next-question-btn').addEventListener('click', showNextQuestion);
+        }
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            quizScore = 0;
+            quizData = [...flashcardQuizData].sort(() => Math.random() - 0.5);
+            document.getElementById('quiz-score').textContent = quizScore;
+            
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-end-screen').classList.add('hidden');
+            document.getElementById('quiz-question-screen').classList.remove('hidden');
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const questionData = quizData[currentQuestionIndex];
+            document.getElementById('question-number').textContent = currentQuestionIndex + 1;
+            document.getElementById('question-text').textContent = questionData.q_prompt;
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            questionData.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'quiz-option w-full text-left p-4 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors';
+                button.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                button.dataset.index = index;
+                button.onclick = selectAnswer;
+                optionsContainer.appendChild(button);
+            });
+
+            document.getElementById('next-question-btn').classList.add('hidden');
+        }
+        
+        function selectAnswer(e) {
+            const selectedButton = e.target;
+            const selectedIndex = parseInt(selectedButton.dataset.index);
+            const correctIndex = quizData[currentQuestionIndex].correct;
+            const optionsContainer = document.getElementById('options-container');
+
+            Array.from(optionsContainer.children).forEach(btn => {
+                btn.disabled = true;
+                if (parseInt(btn.dataset.index) === correctIndex) btn.classList.add('correct');
+            });
+            
+            if (selectedIndex === correctIndex) {
+                quizScore++;
+                document.getElementById('quiz-score').textContent = quizScore;
+                selectedButton.classList.add('correct');
+            } else {
+                selectedButton.classList.add('incorrect');
+            }
+            
+            selectedButton.classList.add('selected');
+            document.getElementById('next-question-btn').classList.remove('hidden');
+        }
+
+        function showNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                showQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+        
+        function endQuiz() {
+            document.getElementById('quiz-question-screen').classList.add('hidden');
+            document.getElementById('quiz-end-screen').classList.remove('hidden');
+            
+            const finalScoreEl = document.getElementById('final-score');
+            const feedbackText = document.getElementById('feedback-text');
+            finalScoreEl.textContent = `${quizScore} / ${quizData.length}`;
+            
+            const percentage = (quizScore / quizData.length) * 100;
+            if (percentage >= 90) {
+                feedbackText.textContent = "Excelente! Você tem um conhecimento sólido sobre o assunto. Parabéns!";
+                finalScoreEl.className = "text-5xl font-bold text-green-600 mb-6";
+            } else if (percentage >= 70) {
+                feedbackText.textContent = "Muito bom! Continue revisando os detalhes para aprimorar ainda mais.";
+                finalScoreEl.className = "text-5xl font-bold text-blue-600 mb-6";
+            } else if (percentage >= 50) {
+                feedbackText.textContent = "Bom resultado, mas há espaço para melhorar. Use os flashcards para reforçar os pontos fracos.";
+                finalScoreEl.className = "text-5xl font-bold text-yellow-500 mb-6";
+            } else {
+                feedbackText.textContent = "É preciso revisar mais o conteúdo. Utilize a apostila e os flashcards e tente novamente!";
+                finalScoreEl.className = "text-5xl font-bold text-red-500 mb-6";
+            }
+        }
+        
+        function changeTab(tabName) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
+            document.getElementById(tabName).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+
