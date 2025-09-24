@@ -93,10 +93,10 @@
         <div class="main-container rounded-lg shadow-2xl overflow-hidden">
             <div class="border-b border-gray-200">
                 <nav class="flex flex-wrap justify-center -mb-px p-2 space-x-2 md:space-x-4 bg-gray-50">
-                    <button class="tab-button active text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab('introduction')">Introdução</button>
-                    <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab('parasites')">Visão Geral</button>
-                    <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab('flashcards')">Flashcards</button>
-                    <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab('quiz')">Quiz</button>
+                    <button class="tab-button active text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab(event, 'introduction')">Introdução</button>
+                    <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab(event, 'parasites')">Visão Geral</button>
+                    <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab(event, 'flashcards')">Flashcards</button>
+                    <button class="tab-button text-sm md:text-base font-semibold py-3 px-4 md:px-6 border-b-4 border-transparent hover:border-blue-500 hover:text-blue-600 transition-colors" onclick="changeTab(event, 'quiz')">Quiz</button>
                     <a href="parasitas.pdf" target="_blank" class="text-sm md:text-base font-semibold py-3 px-4 md:px-6 bg-yellow-400 text-yellow-900 rounded-md hover:bg-yellow-500 transition-all flex items-center shadow-sm">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         Apostila
@@ -106,7 +106,7 @@
 
             <div id="tab-content" class="p-6 md:p-8">
                 <!-- Seção de Introdução -->
-                <section id="introduction" class="tab-pane">
+                <section id="introduction" class="tab-pane active">
                     <h2 class="text-2xl md:text-3xl font-bold text-center text-blue-800 mb-8">Panorama da Parasitologia Médica</h2>
                     <div class="max-w-4xl mx-auto space-y-4" id="accordion-container">
                         <!-- Painéis do acordeão serão inseridos aqui -->
@@ -169,19 +169,18 @@
 
 
     <script>
-        // --- DADOS INTRODUTÓRIOS (ACORDEÃO) ---
         const introData = [
             {
                 title: "O que são Parasitas e Parasitologia Médica?",
-                content: "Parasitologia é a ciência que estuda os parasitas, seus hospedeiros e as relações entre eles. Na Medicina, o foco são os organismos que vivem à custa do corpo humano, causando doenças. Um parasita é um ser vivo que retira de outro organismo (o hospedeiro) os recursos para sua sobrevivência. As parasitoses são um grave problema de saúde pública, especialmente em regiões com saneamento básico precário, sendo responsáveis por elevada morbimortalidade e perdas econômicas."
+                content: "Parasitologia é a ciência que estuda os parasitas, seus hospedeiros e as relações entre eles. O termo parasitismo refere-se à associação em que um dos parceiros, o parasito, geralmente de pequeno porte, obtém benefício em detrimento do outro, o hospedeiro. Na Parasitologia Humana, o prejuízo para o hospedeiro caracteriza-se como doença, que pode ter manifestações clínicas sutis ou inexistentes (infecções assintomáticas). As parasitoses são um grave problema de saúde pública, especialmente em regiões com saneamento básico precário, sendo responsáveis por elevada morbimortalidade e perdas econômicas."
             },
             {
                 title: "Helmintos vs. Protozoários: As Diferenças Essenciais",
-                content: "Os parasitas de importância médica são classicamente divididos em dois grandes grupos: <br><strong>Protozoários:</strong> São organismos unicelulares e eucarióticos. Reproduzem-se de forma rápida no hospedeiro, e uma pequena carga infectante pode levar a uma doença grave. Exemplos incluem *Trypanosoma cruzi* (Chagas) e *Plasmodium falciparum* (Malária).<br><strong>Helmintos:</strong> São vermes multicelulares, com ciclos de vida complexos que frequentemente envolvem estágios fora do corpo humano. A gravidade da doença geralmente é proporcional à carga de vermes adultos. Dividem-se em Nematelmintos (vermes cilíndricos, como *Ascaris*) e Platelmintos (vermes achatados, como *Schistosoma* e *Taenia*)."
+                content: "Os parasitas de importância médica são classicamente divididos em dois grandes grupos: <br><strong>Protozoários:</strong> São organismos eucariotos unicelulares e microscópicos. Reproduzem-se de forma rápida no hospedeiro, e uma pequena carga infectante pode levar a uma doença grave. Exemplos incluem *Trypanosoma cruzi* (Chagas) e *Plasmodium falciparum* (Malária).<br><strong>Helmintos:</strong> São metazoários (vermes multicelulares), geralmente macroscópicos, com ciclos de vida complexos que frequentemente envolvem estágios fora do corpo humano. A gravidade da doença geralmente é proporcional à carga de vermes adultos. Dividem-se em Nematelmintos (vermes cilíndricos, como *Ascaris*) e Platelmintos (vermes achatados, como *Schistosoma* e *Taenia*)."
             },
             {
                 title: "Importância para a Saúde Pública no Nordeste do Brasil",
-                content: "O Nordeste brasileiro, por suas características socioeconômicas e climáticas, apresenta condições favoráveis à disseminação de diversas parasitoses. Doenças como a Esquistossomose (endêmica em áreas com saneamento deficiente e presença do caramujo vetor), as Geo-helmintíases (*Ascaris, Trichuris, ancilostomídeos*) e a Leishmaniose Visceral (com ampla distribuição do vetor e reservatório canino) são prevalentes e representam desafios constantes para a saúde pública. O controle dessas doenças passa por estratégias integradas, incluindo saneamento, educação em saúde, tratamento dos doentes e controle de vetores/reservatórios."
+                content: "O Nordeste brasileiro, por suas características socioeconômicas e climáticas, apresenta condições favoráveis à disseminação de diversas parasitoses. Doenças como a Esquistossomose (endêmica em áreas com saneamento deficiente e presença do caramujo vetor), as Geo-helmintíases (*Ascaris, Trichuris, ancilostomídeos*, cuja transmissão depende da contaminação do solo com ovos ou larvas) e a Leishmaniose Visceral (com ampla distribuição do vetor e do reservatório canino) são prevalentes e representam desafios constantes para a saúde pública. O controle dessas doenças, consideradas negligenciadas, passa por estratégias integradas, incluindo saneamento, educação em saúde, tratamento dos doentes e controle de vetores/reservatórios."
             }
         ];
 
@@ -189,99 +188,98 @@
             {
                 id: 1, name: "Schistosoma mansoni", commonName: "Esquistossomose", type: "helminto", cycleImg: "ciclo1.jpg", clinicImg: "clinica1.jpg",
                 details: [
-                    { label: "Morfologia", value: "Platelminto trematódeo. Vermes adultos vivem nos vasos mesentéricos. Ovo característico com espículo lateral." },
-                    { label: "Epidemiologia", value: "Endêmica no Nordeste. Transmissão ligada a coleções de água doce com caramujos do gênero *Biomphalaria* (hospedeiro intermediário)." },
-                    { label: "Patogenia", value: "A patologia principal não é causada pelo verme adulto, mas pela resposta imune do hospedeiro aos ovos aprisionados nos tecidos, especialmente no fígado. A formação de granulomas ao redor dos ovos leva à fibrose periportal (Fibrose de Symmers), obstruindo o fluxo sanguíneo portal." },
-                    { label: "Manifestações Clínicas", value: "Fase aguda: Dermatite cercariana (no local da penetração), Febre de Katayama. Fase crônica: Forma intestinal (diarreia), forma hepatoesplênica (hipertensão portal, ascite, varizes esofágicas, 'barriga-d'água')." },
-                    { label: "Diagnóstico", value: "Padrão-ouro: Exame parasitológico de fezes (método Kato-Katz) para contagem de ovos. Biópsia retal em casos suspeitos com exames negativos." },
-                    { label: "Tratamento e Profilaxia", value: "Tratamento: Praziquantel. Profilaxia: Saneamento básico, educação em saúde, controle dos caramujos e tratamento em massa." }
+                    { label: "Morfologia", value: "Platelminto trematódeo digenético. Os vermes adultos são dioicos, com dimorfismo sexual acentuado. A fêmea (1,2 a 1,6 cm) aloja-se no canal ginecóforo do macho (0,6 a 1,2 cm), que é mais robusto. O ovo (115 a 175 µm) é característico, possuindo um espículo lateral." },
+                    { label: "Epidemiologia", value: "Endêmica no Brasil, especialmente no Nordeste e Sudeste. A transmissão depende do contato humano com coleções de água doce contendo caramujos infectados do gênero *Biomphalaria* (*B. glabrata, B. tenagophila, B. straminea*). A eliminação de ovos nas fezes humanas contamina o ambiente." },
+                    { label: "Patogenia", value: "A principal patologia não é causada pelo verme adulto, mas pela resposta imune do hospedeiro aos ovos aprisionados nos tecidos, especialmente no fígado e intestino. A formação de granulomas ao redor dos ovos leva à fibrose periportal (Fibrose de Symmers), obstruindo o fluxo sanguíneo e causando hipertensão portal." },
+                    { label: "Manifestações Clínicas", value: "Fase aguda: Dermatite cercariana, Febre de Katayama (febre, cefaleia, eosinofilia). Fase crônica: Formas intestinal, hepatointestinal e hepatoesplênica. A forma hepatoesplênica é a mais grave, cursando com 'barriga-d'água' (ascite), esplenomegalia e risco de hemorragia digestiva alta por ruptura de varizes esofágicas." },
+                    { label: "Diagnóstico", value: "Padrão-ouro: Exame parasitológico de fezes pelo método quantitativo de Kato-Katz para detecção e contagem de ovos. Biópsia retal e testes sorológicos podem ser usados em casos específicos." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Praziquantel é a droga de escolha. Profilaxia: Saneamento básico, educação em saúde, controle de caramujos (moluscicidas ou controle biológico) e tratamento em massa das populações em áreas endêmicas." }
                 ]
             },
             {
                 id: 2, name: "Ascaris lumbricoides", commonName: "Ascaridíase", type: "helminto", cycleImg: "ciclo2.jpg", clinicImg: "clinica2.jpg",
                 details: [
-                    { label: "Morfologia", value: "Nematelminto de grande porte ('lombriga'). Adultos vivem no intestino delgado." },
-                    { label: "Epidemiologia", value: "A geo-helmintíase mais comum do mundo. Transmissão fecal-oral pela ingestão de ovos presentes em água ou alimentos contaminados." },
-                    { label: "Patogenia", value: "Ação espoliativa (competição por nutrientes), ação mecânica (obstrução intestinal por enovelamento) e ação tóxica (reações alérgicas). A migração das larvas pelos pulmões (Ciclo de Looss) pode causar pneumonite eosinofílica (Síndrome de Loeffler)." },
-                    { label: "Manifestações Clínicas", value: "Maioria assintomática. Em altas cargas: desnutrição, dor abdominal, náuseas. Complicações: obstrução intestinal, biliar ou do apêndice." },
-                    { label: "Diagnóstico", value: "Exame parasitológico de fezes para identificação dos ovos característicos." },
-                    { label: "Tratamento e Profilaxia", value: "Tratamento: Albendazol ou Mebendazol. Profilaxia: Saneamento, higiene pessoal e dos alimentos." }
+                    { label: "Morfologia", value: "Nematelminto de grande porte ('lombriga'). Fêmeas (20-35 cm) são maiores que os machos (15-31 cm). Adultos vivem no intestino delgado. Ovos férteis são ovoides, com casca externa mamilonada." },
+                    { label: "Epidemiologia", value: "A geo-helmintíase mais comum do mundo, prevalente em áreas com saneamento precário. Transmissão fecal-oral pela ingestão de ovos embrionados (contendo larva L3) presentes no solo, água ou alimentos contaminados." },
+                    { label: "Patogenia", value: "Ação espoliativa (competição por nutrientes), ação tóxica (reações alérgicas) e, principalmente, ação mecânica. A migração das larvas pelos pulmões (Ciclo de Looss) pode causar pneumonite eosinofílica (Síndrome de Loeffler). Em altas cargas, o enovelamento de vermes pode causar obstrução intestinal, biliar ou do apêndice." },
+                    { label: "Manifestações Clínicas", value: "Maioria assintomática. Em altas cargas: dor abdominal, diarreia, náuseas e desnutrição, especialmente em crianças. Complicações graves incluem abdome agudo obstrutivo, colangite e pancreatite." },
+                    { label: "Diagnóstico", value: "Exame parasitológico de fezes (métodos de Hoffmann, Pons & Janer ou Kato-Katz) para identificação dos ovos característicos." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Benzimidazólicos como Albendazol ou Mebendazol. Profilaxia: Saneamento básico, higiene pessoal (lavar as mãos) e de alimentos." }
                 ]
             },
             {
                 id: 3, name: "Ancilostomídeos", commonName: "Ancilostomíase", type: "helminto", cycleImg: "ciclo3.jpg", clinicImg: "clinica3.jpg",
                 details: [
-                    { label: "Morfologia", value: "Nematelmintos (*Ancylostoma duodenale* e *Necator americanus*) com cápsula bucal armada com dentes ou placas cortantes para fixação na mucosa intestinal." },
-                    { label: "Epidemiologia", value: "Geo-helmintíase comum em áreas tropicais. Transmissão pela penetração de larvas filarioides na pele, a partir de solo contaminado por fezes." },
-                    { label: "Patogenia", value: "A principal ação é a espoliação sanguínea. Os vermes adultos são hematófagos, causando perda crônica de sangue e, consequentemente, depleção das reservas de ferro do hospedeiro." },
-                    { label: "Manifestações Clínicas", value: "Anemia ferropriva crônica é a marca da doença ('amarelão' ou 'doença do Jeca Tatu'). Manifesta-se com palidez, astenia, geofagia (desejo de comer terra). Dermatite no local da penetração." },
-                    { label: "Diagnóstico", value: "Exame parasitológico de fezes para visualização dos ovos." },
-                    { label: "Tratamento e Profilaxia", value: "Tratamento: Albendazol, associado à reposição de ferro. Profilaxia: Uso de calçados, saneamento básico." }
+                    { label: "Morfologia", value: "Nematelmintos (*Necator americanus* e *Ancylostoma duodenale*). Adultos (aprox. 1 cm) possuem cápsula bucal armada com placas cortantes (*N. americanus*) ou dentes (*A. duodenale*) para fixação na mucosa do intestino delgado." },
+                    { label: "Epidemiologia", value: "Geo-helmintíase comum em áreas tropicais e subtropicais. A transmissão ocorre pela penetração ativa de larvas filarioides (L3) na pele, a partir de solo contaminado por fezes." },
+                    { label: "Patogenia", value: "A principal ação é a espoliação sanguínea. Os vermes adultos são hematófagos, e cada verme consome de 0,03 ml (*N. americanus*) a 0,26 ml (*A. duodenale*) de sangue por dia, causando perda crônica de sangue e depleção das reservas de ferro do hospedeiro." },
+                    { label: "Manifestações Clínicas", value: "A marca da doença é a anemia ferropriva crônica ('amarelão' ou 'doença do Jeca Tatu'), que se manifesta com palidez, astenia, fadiga e geofagia (desejo de comer terra). Pode ocorrer dermatite no local da penetração da larva." },
+                    { label: "Diagnóstico", value: "Exame parasitológico de fezes para visualização dos ovos, que são morfologicamente indistinguíveis entre as espécies." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Albendazol ou Mebendazol, associado à suplementação de ferro para corrigir a anemia. Profilaxia: Uso de calçados e saneamento básico." }
                 ]
             },
             {
                 id: 4, name: "Trichuris trichiura", commonName: "Tricuríase", type: "helminto", cycleImg: "ciclo4.jpg", clinicImg: "clinica4.jpg",
                 details: [
-                    { label: "Morfologia", value: "Nematelminto com formato de 'chicote', com a porção anterior afilada que se insere na mucosa do intestino grosso." },
-                    { label: "Epidemiologia", value: "Geo-helmintíase de transmissão fecal-oral pela ingestão de ovos." },
-                    { label: "Patogenia", value: "Ação mecânica e irritativa na mucosa do cólon. Em altas cargas, a inflamação crônica e o tenesmo podem levar ao enfraquecimento da musculatura retal." },
-                    { label: "Manifestações Clínicas", value: "Infecções leves são assintomáticas. Infecções maciças causam síndrome disentérica (diarreia com muco e sangue), dor abdominal e, classicamente em crianças, prolapso retal." },
-                    { label: "Diagnóstico", value: "Exame parasitológico de fezes para identificação dos ovos característicos (forma de barril com poros polares)." },
-                    { label: "Tratamento e Profilaxia", value: "Tratamento: Albendazol ou Mebendazol. Profilaxia: Saneamento, higiene pessoal e dos alimentos." }
+                    { label: "Morfologia", value: "Nematelminto com formato de 'chicote' (3-5 cm), com a porção anterior afilada que se insere na mucosa do intestino grosso. Ovos têm formato característico de barril com poros polares." },
+                    { label: "Epidemiologia", value: "Geo-helmintíase de transmissão fecal-oral pela ingestão de ovos embrionados. Frequentemente em coinfecção com *A. lumbricoides*." },
+                    { label: "Patogenia", value: "Ação mecânica e irritativa na mucosa do ceco e cólon ascendente. Em altas cargas, a inflamação crônica e o tenesmo (esforço para evacuar) podem levar ao enfraquecimento da musculatura retal." },
+                    { label: "Manifestações Clínicas", value: "Infecções leves são assintomáticas. Infecções maciças (>200 vermes) causam síndrome disentérica (diarreia com muco e sangue), dor abdominal, anemia e, classicamente em crianças desnutridas, prolapso retal." },
+                    { label: "Diagnóstico", value: "Exame parasitológico de fezes para identificação dos ovos característicos." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Albendazol ou Mebendazol. Profilaxia: Saneamento básico e higiene pessoal e dos alimentos." }
                 ]
             },
             {
                 id: 5, name: "Trypanosoma cruzi", commonName: "Doença de Chagas", type: "protozoario", cycleImg: "ciclo5.jpg", clinicImg: "clinica5.jpg",
                 details: [
-                    { label: "Morfologia", value: "Protozoário flagelado. Forma tripomastigota no sangue e amastigota nos tecidos (formando 'ninhos')." },
-                    { label: "Epidemiologia", value: "Transmissão vetorial (fezes do 'barbeiro'), oral (surtos por açaí/caldo de cana), transfusional, congênita. O Nordeste foi área endêmica para transmissão vetorial." },
-                    { label: "Patogenia", value: "Destruição progressiva de células, especialmente fibras musculares cardíacas e neurônios dos plexos mioentéricos do trato digestivo. A resposta imune crônica contribui para a lesão tecidual." },
-                    { label: "Manifestações Clínicas", value: "Fase aguda: Febre, Sinal de Romaña (edema bipalpebral), chagoma de inoculação. Fase crônica: Forma indeterminada (assintomática), Cardíaca (arritmias, insuficiência cardíaca), Digestiva (megaesôfago, megacólon)." },
-                    { label: "Diagnóstico", value: "Fase aguda: Exame parasitológico direto do sangue. Fase crônica: Sorológico (ELISA, IFI), requerendo dois testes com princípios diferentes para confirmação." },
-                    { label: "Tratamento e Profilaxia", value: "Tratamento: Benznidazol (eficaz na fase aguda e para evitar progressão em crônicos jovens). Profilaxia: Controle do vetor, controle de qualidade de alimentos e triagem em bancos de sangue." }
+                    { label: "Morfologia", value: "Protozoário flagelado com um único flagelo e uma organela característica, o cinetoplasto. Apresenta as formas: tripomastigota (circulante no sangue, infectante), amastigota (intracelular, replicativa, formando 'ninhos' nos tecidos) e epimastigota (no intestino do vetor)." },
+                    { label: "Epidemiologia", value: "Zoonose endêmica das Américas. Transmissão principal é vetorial (fezes do 'barbeiro' - triatomíneo). Outras vias importantes: oral (surtos por açaí/caldo de cana), transfusional, congênita e transplante de órgãos." },
+                    { label: "Patogenia", value: "Na fase crônica, ocorre destruição progressiva e irreversível de células, especialmente fibras musculares cardíacas e neurônios dos plexos mioentéricos do trato digestivo. A resposta imune crônica contribui para a lesão tecidual e fibrose." },
+                    { label: "Manifestações Clínicas", value: "Fase aguda: Febre, Sinal de Romaña (edema bipalpebral unilateral). Fase crônica: Forma indeterminada (assintomática), Cardíaca (cardiomiopatia dilatada, arritmias, insuficiência cardíaca) e Digestiva (megaesôfago, megacólon)." },
+                    { label: "Diagnóstico", value: "Fase aguda: Métodos parasitológicos diretos (exame de sangue a fresco, gota espessa). Fase crônica: Métodos sorológicos (ELISA, IFI), requerendo dois testes positivos para confirmação." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Benznidazol é o fármaco de escolha, eficaz na fase aguda. Na fase crônica, busca retardar a progressão da doença. Profilaxia: Controle do vetor (melhora das habitações, uso de inseticidas), controle de qualidade de alimentos e triagem em bancos de sangue." }
                 ]
             },
             {
-                id: 6, name: "Leishmania infantum", commonName: "Leishmaniose Visceral", type: "protozoario", cycleImg: "ciclo6.jpg", clinicImg: "clinica6.jpg",
+                id: 6, name: "Leishmania (L.) infantum chagasi", commonName: "Leishmaniose Visceral", type: "protozoario", cycleImg: "ciclo6.jpg", clinicImg: "clinica6.jpg",
                 details: [
-                    { label: "Morfologia", value: "Protozoário com forma promastigota no vetor e amastigota (intracelular) no hospedeiro vertebrado." },
-                    { label: "Epidemiologia", value: "Transmitida pela picada do flebotomíneo *Lutzomyia longipalpis* ('mosquito-palha'). Cão doméstico é o principal reservatório urbano. Em franca expansão no Brasil, incluindo grandes cidades do Nordeste." },
-                    { label: "Patogenia", value: "O parasita se multiplica dentro de macrófagos do sistema fagocítico mononuclear, levando à hiperplasia de baço, fígado e medula óssea, e causando uma profunda imunossupressão." },
-                    { label: "Manifestações Clínicas", value: "Tríade clássica: febre prolongada e irregular, hepatoesplenomegalia acentuada e pancitopenia (anemia, leucopenia, plaquetopenia). Resulta em emagrecimento, palidez e maior risco de infecções secundárias." },
-                    { label: "Diagnóstico", value: "Demonstração do parasita em aspirado de medula óssea (padrão-ouro). Testes rápidos sorológicos (TR-DPP) para triagem." },
-                    { label: "Tratamento e Profilaxia", value: "Tratamento: Antimoniais pentavalentes, Anfotericina B lipossomal. Profilaxia: Controle do vetor, eutanásia ou tratamento de cães infectados, uso de coleiras impregnadas com deltametrina." }
+                    { label: "Morfologia", value: "Protozoário com forma promastigota (flagelada, no vetor) e amastigota (aflagelada, intracelular, no hospedeiro vertebrado)." },
+                    { label: "Epidemiologia", value: "Zoonose transmitida pela picada da fêmea do flebotomíneo *Lutzomyia longipalpis* ('mosquito-palha'). O cão doméstico é o principal reservatório no ciclo urbano. Em franca expansão e urbanização no Brasil." },
+                    { label: "Patogenia", value: "O parasita se multiplica dentro de macrófagos do sistema fagocítico mononuclear, levando à hiperplasia de baço, fígado e medula óssea. Isso causa uma profunda imunossupressão, tornando o paciente vulnerável a infecções secundárias." },
+                    { label: "Manifestações Clínicas", value: "Tríade clássica: febre prolongada e irregular, hepatoesplenomegalia acentuada e pancitopenia (anemia, leucopenia, plaquetopenia). Resulta em emagrecimento acentuado (caquexia), palidez e hemorragias." },
+                    { label: "Diagnóstico", value: "Padrão-ouro: Demonstração do parasita (amastigotas) em aspirado de medula óssea. Testes rápidos sorológicos (TR-DPP) são usados para triagem." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Antimonial pentavalente (Glucantime®) ou Anfotericina B lipossomal (droga de escolha para casos graves). Profilaxia: Controle do vetor, eutanásia ou tratamento de cães infectados, uso de coleiras impregnadas com inseticida." }
                 ]
             },
             {
-                id: 7, name: "Giardia lamblia", commonName: "Giardíase", type: "protozoario", cycleImg: "ciclo7.jpg", clinicImg: "clinica7.jpg",
+                id: 7, name: "Giardia duodenalis", commonName: "Giardíase", type: "protozoario", cycleImg: "ciclo7.jpg", clinicImg: "clinica7.jpg",
                 details: [
-                    { label: "Morfologia", value: "Protozoário flagelado. Trofozoíto piriforme com disco suctorial. Cisto ovalado e resistente." },
-                    { label: "Epidemiologia", value: "Cosmopolita. Transmissão fecal-oral pela ingestão de cistos em água ou alimentos. Cistos são resistentes à cloração da água." },
-                    { label: "Patogenia", value: "Causa atrofia das vilosidades do intestino delgado e forma uma barreira mecânica com seu disco suctorial, levando a uma síndrome de má absorção, principalmente de gorduras e vitaminas lipossolúveis." },
-                    { label: "Manifestações Clínicas", value: "Diarreia aquosa, fétida, sem sangue, cólicas e flatulência. Na forma crônica, causa esteatorreia (fezes gordurosas que boiam) e perda de peso. Comum em crianças de creches." },
-                    { label: "Diagnóstico", value: "Exame parasitológico de fezes (detecção de cistos ou trofozoítos). Métodos imunológicos (detecção de coproantígenos por ELISA) são mais sensíveis." },
-                    { label: "Tratamento e Profilaxia", value: "Tratamento: Metronidazol, Secnidazol ou Albendazol. Profilaxia: Saneamento, higiene e tratamento da água (filtração é essencial)." }
+                    { label: "Morfologia", value: "Protozoário flagelado. O trofozoíto é piriforme, binucleado e possui um disco suctorial ventral para adesão. O cisto é ovalado, tetranucleado e é a forma infectante e de resistência." },
+                    { label: "Epidemiologia", value: "Cosmopolita. Transmissão fecal-oral pela ingestão de cistos em água ou alimentos contaminados. Cistos são resistentes à cloração da água, exigindo filtração." },
+                    { label: "Patogenia", value: "Causa atrofia das vilosidades do intestino delgado e forma uma barreira mecânica com seu disco suctorial. Isso leva a uma síndrome de má absorção, principalmente de gorduras (lipídios) e vitaminas lipossolúveis (A, D, E, K)." },
+                    { label: "Manifestações Clínicas", value: "Diarreia aquosa ou pastosa, fétida, sem sangue, acompanhada de cólicas, flatulência e distensão abdominal. Na forma crônica, causa esteatorreia (fezes gordurosas que boiam) e perda de peso. Comum em crianças de creches." },
+                    { label: "Diagnóstico", value: "Exame parasitológico de fezes para detecção de cistos ou trofozoítos. Métodos imunológicos (detecção de coproantígenos por ELISA) são mais sensíveis." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Secnidazol, Metronidazol ou Albendazol. Profilaxia: Saneamento, higiene e tratamento adequado da água (filtração é essencial)." }
                 ]
             },
             {
                 id: 8, name: "Entamoeba histolytica", commonName: "Amebíase", type: "protozoario", cycleImg: "ciclo8.jpg", clinicImg: "clinica8.jpg",
                 details: [
-                    { label: "Morfologia", value: "Protozoário. Trofozoíto pleomórfico que pode fagocitar hemácias. Cisto tetranucleado." },
-                    { label: "Epidemiologia", value: "Transmissão fecal-oral pela ingestão de cistos. Desafio diagnóstico pela existência da *E. dispar*, morfologicamente idêntica, mas não patogênica." },
-                    { label: "Patogenia", value: "Capacidade de invadir a mucosa do intestino grosso, causando úlceras em 'frasco' ou 'casa de botão'. Pode se disseminar pela via hematogênica, atingindo principalmente o fígado." },
-                    { label: "Manifestações Clínicas", value: "Forma intestinal: Colite amebiana com disenteria (fezes com muco e sangue), dor abdominal. Forma extraintestinal: Abscesso hepático amebiano (complicação mais comum e grave), com febre, dor no hipocôndrio direito e hepatomegalia." },
-                    { label: "Diagnóstico", value: "Diferenciação entre *E. histolytica/E. dispar* requer métodos moleculares (PCR) ou detecção de antígenos específicos nas fezes." },
-                    { label: "Tratamento e Profilaxia", value: "Tratamento: Metronidazol ou Secnidazol (para formas invasivas) seguido de um amebicida luminal (para erradicar cistos). Profilaxia: Saneamento e higiene." }
+                    { label: "Morfologia", value: "Protozoário que existe como trofozoíto (forma invasiva, pleomórfica, que pode fagocitar hemácias) e cisto (esférico, tetranucleado na forma madura, infectante). Morfologicamente idêntica à espécie não patogênica *E. dispar*." },
+                    { label: "Epidemiologia", value: "Transmissão fecal-oral pela ingestão de cistos maduros em água ou alimentos. Prevalente em regiões com condições sanitárias deficientes." },
+                    { label: "Patogenia", value: "Possui capacidade de invadir a mucosa do intestino grosso, mediada por lectinas (adesão) e cisteíno-proteases (lise tecidual), causando úlceras em 'frasco' ou 'casa de botão'. Pode se disseminar pela via hematogênica, atingindo principalmente o fígado." },
+                    { label: "Manifestações Clínicas", value: "Forma intestinal: Colite amebiana com disenteria (fezes com muco e sangue), dor abdominal e tenesmo. Forma extraintestinal: Abscesso hepático amebiano é a complicação mais comum e grave, com febre, dor no hipocôndrio direito e hepatomegalia." },
+                    { label: "Diagnóstico", value: "A diferenciação entre *E. histolytica* e *E. dispar* requer métodos moleculares (PCR) ou detecção de antígenos específicos nas fezes. A microscopia não distingue as duas espécies." },
+                    { label: "Tratamento e Profilaxia", value: "Tratamento: Secnidazol ou Metronidazol para formas invasivas (teciduais), seguido de um amebicida de ação luminal (como a Teclosan) para erradicar os cistos do intestino. Profilaxia: Saneamento e higiene." }
                 ]
-            },
+            }
         ];
         
-        // --- DADOS PARA FLASHCARDS E QUIZ (20 QUESTÕES) ---
         const flashcardQuizData = [
             { f_q: "Qual helminto tem caramujos do gênero *Biomphalaria* como hospedeiros intermediários?", f_a: "*Schistosoma mansoni*.", q_prompt: "O hospedeiro intermediário do *Schistosoma mansoni* é o:", options: ["Caramujo *Biomphalaria*", "Flebótomo *Lutzomyia*", "Mosquito *Aedes aegypti*", "Barbeiro *Triatoma*"], correct: 0 },
             { f_q: "O que é a fibrose de Symmers e em qual parasitose ela ocorre?", f_a: "É a fibrose periportal no fígado, patognomônica da forma grave da Esquistossomose.", q_prompt: "A fibrose de Symmers, patognomônica da esquistossomose grave, afeta principalmente qual órgão?", options: ["Baço", "Intestino", "Fígado", "Pulmões"], correct: 2 },
             { f_q: "A transmissão da esquistossomose ocorre por qual via?", f_a: "Penetração ativa das larvas (cercárias) na pele.", q_prompt: "A infecção por *Schistosoma mansoni* em humanos ocorre por:", options: ["Ingestão de ovos", "Picada de vetor", "Penetração cutânea de larvas", "Ingestão de carne crua"], correct: 2 },
-            { f_q: "O que é a Síndrome de Loeffler?", f_a: "Uma pneumonite eosinofílica transitória causada pela migração de larvas de helmintos, como o *Ascaris lumbricoides*, pelos pulmões.", q_prompt: "A Síndrome de Loeffler está associada à fase de migração larval de qual parasita?", options: ["*Trichuris trichiura*", "*Ascaris lumbricoides*", "*Trypanosoma cruzi*", "*Giardia lamblia*"], correct: 1 },
+            { f_q: "O que é a Síndrome de Loeffler?", f_a: "Uma pneumonite eosinofílica transitória causada pela migração de larvas de helmintos, como o *Ascaris lumbricoides*, pelos pulmões.", q_prompt: "A Síndrome de Loeffler está associada à fase de migração larval de qual parasita?", options: ["*Trichuris trichiura*", "*Ascaris lumbricoides*", "*Trypanosoma cruzi*", "*Giardia duodenalis*"], correct: 1 },
             { f_q: "Qual a complicação mecânica mais temida da ascaridíase?", f_a: "A obstrução intestinal por um emaranhado de vermes adultos.", q_prompt: "A principal complicação aguda e grave da ascaridíase por alta carga parasitária é:", options: ["Anemia profunda", "Prolapso retal", "Obstrução intestinal", "Abscesso hepático"], correct: 2 },
             { f_q: "A transmissão do *Ascaris lumbricoides* ocorre pela ingestão de:", f_a: "Ovos embrionados do parasita.", q_prompt: "A via de transmissão da ascaridíase é:", options: ["Fecal-oral", "Penetração cutânea", "Vetorial", "Sexual"], correct: 0 },
             { f_q: "Qual geo-helmintíase é classicamente conhecida por causar o 'amarelão'?", f_a: "Ancilostomíase, devido à anemia ferropriva crônica.", q_prompt: "A principal manifestação clínica da ancilostomíase ('amarelão') é:", options: ["Hepatoesplenomegalia", "Anemia ferropriva", "Síndrome disentérica", "Cardiomiopatia"], correct: 1 },
@@ -291,11 +289,11 @@
             { f_q: "Qual a principal forma de transmissão da Doença de Chagas em surtos agudos no Brasil atualmente?", f_a: "Transmissão oral, por ingestão de alimentos contaminados (ex: açaí, caldo de cana).", q_prompt: "Atualmente, no Brasil, a principal via de transmissão em surtos de Doença de Chagas Aguda é a:", options: ["Transfusional", "Congênita", "Vetorial clássica", "Oral"], correct: 3 },
             { f_q: "As megasíndromes (megaesôfago e megacólon) são manifestações crônicas de qual protozoose?", f_a: "Doença de Chagas (*Trypanosoma cruzi*).", q_prompt: "Megaesôfago e megacólon são manifestações características da fase crônica de qual doença?", options: ["Leishmaniose Visceral", "Amebíase", "Doença de Chagas", "Giardíase"], correct: 2 },
             { f_q: "O que é o Sinal de Romaña?", f_a: "Edema bipalpebral unilateral, um sinal clássico da fase aguda da Doença de Chagas.", q_prompt: "O diagnóstico da fase crônica da Doença de Chagas é tipicamente realizado por:", options: ["Exame de fezes", "Sorologia", "Biópsia de pele", "Hemocultura"], correct: 1 },
-            { f_q: "Qual o principal reservatório urbano da Leishmaniose Visceral no Brasil?", f_a: "O cão doméstico (*Canis familiaris*).", q_prompt: "No ciclo urbano da Leishmaniose Visceral no Brasil, o principal reservatório do *Leishmania infantum* é o:", options: ["Gato", "Rato", "Humano", "Cão"], correct: 3 },
+            { f_q: "Qual o principal reservatório urbano da Leishmaniose Visceral no Brasil?", f_a: "O cão doméstico (*Canis familiaris*).", q_prompt: "No ciclo urbano da Leishmaniose Visceral no Brasil, o principal reservatório do *Leishmania (L.) infantum chagasi* é o:", options: ["Gato", "Rato", "Humano", "Cão"], correct: 3 },
             { f_q: "A tríade clássica da Leishmaniose Visceral é:", f_a: "Febre prolongada, hepatoesplenomegalia e pancitopenia.", q_prompt: "A tríade clínica clássica da Leishmaniose Visceral (calazar) consiste em:", options: ["Febre, esplenomegalia e pancitopenia", "Diarreia, vômito e desidratação", "Tosse, febre e dispneia", "Cefaleia, rigidez de nuca e febre"], correct: 0 },
             { f_q: "Qual é o vetor da Leishmaniose Visceral?", f_a: "O flebotomíneo do gênero *Lutzomyia*, conhecido como mosquito-palha.", q_prompt: "O vetor responsável pela transmissão da Leishmaniose Visceral é o:", options: ["*Aedes aegypti*", "Caramujo *Biomphalaria*", "Flebótomo *Lutzomyia*", "*Triatoma infestans*"], correct: 2 },
-            { f_q: "Qual protozoário intestinal causa uma síndrome de má absorção com esteatorreia (fezes gordurosas e fétidas)?", f_a: "*Giardia lamblia*.", q_prompt: "Esteatorreia (fezes pálidas e gordurosas) é um sintoma característico da infecção crônica por:", options: ["*Entamoeba histolytica*", "*Cryptosporidium parvum*", "*Giardia lamblia*", "*Trypanosoma cruzi*"], correct: 2 },
-            { f_q: "Por que a cloração da água não é suficiente para eliminar os cistos de *Giardia lamblia*?", f_a: "Porque os cistos são altamente resistentes ao cloro, exigindo também a filtração da água.", q_prompt: "Os cistos de *Giardia lamblia* são notavelmente resistentes a qual método de tratamento de água?", options: ["Fervura", "Filtração", "Radiação UV", "Cloração"], correct: 3 },
+            { f_q: "Qual protozoário intestinal causa uma síndrome de má absorção com esteatorreia (fezes gordurosas e fétidas)?", f_a: "*Giardia duodenalis*.", q_prompt: "Esteatorreia (fezes pálidas e gordurosas) é um sintoma característico da infecção crônica por:", options: ["*Entamoeba histolytica*", "*Cryptosporidium parvum*", "*Giardia duodenalis*", "*Trypanosoma cruzi*"], correct: 2 },
+            { f_q: "Por que a cloração da água não é suficiente para eliminar os cistos de *Giardia duodenalis*?", f_a: "Porque os cistos são altamente resistentes ao cloro, exigindo também a filtração da água.", q_prompt: "Os cistos de *Giardia duodenalis* são notavelmente resistentes a qual método de tratamento de água?", options: ["Fervura", "Filtração", "Radiação UV", "Cloração"], correct: 3 },
             { f_q: "Qual é a complicação extraintestinal mais comum da amebíase invasiva?", f_a: "O abscesso hepático amebiano.", q_prompt: "A forma extraintestinal mais comum e grave da amebíase por *Entamoeba histolytica* é:", options: ["Abscesso cerebral", "Amebíase cutânea", "Abscesso hepático", "Amebíase pulmonar"], correct: 2 },
             { f_q: "Por que o diagnóstico microscópico de amebíase é um desafio?", f_a: "Pela existência da *Entamoeba dispar*, uma espécie morfologicamente idêntica, mas não patogênica.", q_prompt: "O principal desafio no diagnóstico microscópico da amebíase é diferenciar *E. histolytica* da espécie não patogênica:", options: ["*Entamoeba coli*", "*Entamoeba hartmanni*", "*Entamoeba dispar*", "*Endolimax nana*"], correct: 2 }
         ].sort(() => Math.random() - 0.5);
@@ -312,7 +310,9 @@
 
         function setupEventListeners() {
             document.getElementById('start-quiz-btn').addEventListener('click', startQuiz);
-            document.getElementById('restart-quiz-btn').addEventListener('click', startQuiz);
+            if (document.getElementById('restart-quiz-btn')) {
+                document.getElementById('restart-quiz-btn').addEventListener('click', startQuiz);
+            }
             document.getElementById('shuffle-flashcards').addEventListener('click', loadFlashcards);
             window.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
@@ -531,13 +531,33 @@
             }
         }
         
-        function changeTab(tabName) {
-            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.add('hidden'));
-            document.getElementById(tabName).classList.remove('hidden');
+        function changeTab(event, tabName) {
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.add('hidden');
+                pane.classList.remove('active');
+            });
+            const activePane = document.getElementById(tabName);
+            activePane.classList.remove('hidden');
+            activePane.classList.add('active');
             
             document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
-            event.target.classList.add('active');
+            // Check if event exists to avoid error on initial load
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
         }
+        
+        // Ensure the first tab is visible on initial load
+        document.addEventListener('DOMContentLoaded', () => {
+             // Set the first tab 'introduction' as active on load
+            const firstTabPane = document.getElementById('introduction');
+            firstTabPane.classList.remove('hidden');
+            firstTabPane.classList.add('active');
+
+            const firstTabButton = document.querySelector('.tab-button');
+            firstTabButton.classList.add('active');
+        });
+
     </script>
 </body>
 </html>
