@@ -17,11 +17,11 @@
             background-size: cover; background-position: center; animation: cycleImages 30s linear infinite;
         }
         @keyframes cycleImages {
-            0%, 18% { background-image: url('leoas.png'); opacity: 1; } 20% { opacity: 0; }
-            20.01%, 38% { background-image: url('deserto.png'); opacity: 1; } 40% { opacity: 0; }
-            40.01%, 58% { background-image: url('baleia.png'); opacity: 1; } 60% { opacity: 0; }
-            60.01%, 78% { background-image: url('vulcao.png'); opacity: 1; } 80% { opacity: 0; }
-            80.01%, 98% { background-image: url('floresta.png'); opacity: 1; } 100% { opacity: 0; }
+            0%, 18% { background-image: url('https://placehold.co/1920x1080/000000/FFFFFF?text=Leoas'); opacity: 1; } 20% { opacity: 0; }
+            20.01%, 38% { background-image: url('https://placehold.co/1920x1080/f97316/FFFFFF?text=Deserto'); opacity: 1; } 40% { opacity: 0; }
+            40.01%, 58% { background-image: url('https://placehold.co/1920x1080/3b82f6/FFFFFF?text=Baleia'); opacity: 1; } 60% { opacity: 0; }
+            60.01%, 78% { background-image: url('https://placehold.co/1920x1080/ef4444/FFFFFF?text=Vulcao'); opacity: 1; } 80% { opacity: 0; }
+            80.01%, 98% { background-image: url('https://placehold.co/1920x1080/22c55e/FFFFFF?text=Floresta'); opacity: 1; } 100% { opacity: 0; }
         }
         /* Foco do controle remoto */
         .focusable:focus {
@@ -89,7 +89,7 @@
                             </button>
                             <button id="print-button" class="focusable group bg-gray-700 p-4 rounded-lg flex flex-col items-center justify-center space-y-2 hover:bg-green-600 transition-all duration-300 transform hover:scale-105 text-center h-28">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                <span class="font-semibold text-sm">Imprimir Apostila</span>
+                                <span class="font-semibold text-sm">Gerar Apostila</span>
                             </button>
                         </div>
                     </div>
@@ -272,6 +272,53 @@
                 setFocus(currentFocusableItems.length - 1); // Foca no botão de reiniciar
             }
             restartBtn.addEventListener('click', loadQuiz);
+
+            // --- AJUSTE: Lógica do Botão de Gerar Apostila ---
+            const printButton = document.getElementById('print-button');
+            printButton.addEventListener('click', () => {
+                let printableContent = '';
+                contentData.forEach(item => {
+                    // Substitui os <h4> por <h3> para melhor hierarquia e remove ícones
+                    const cleanContent = item.content.replace(/<h4>.*?<\/h4>/g, (match) => {
+                        return `<h3>${match.replace(/<[^>]*>/g, '').trim()}</h3>`;
+                    });
+                    printableContent += `<h2>${item.title}</h2>${cleanContent}`;
+                });
+
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html lang="pt-BR">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Apostila - A Resposta das Células B</title>
+                        <style>
+                            body { font-family: Georgia, 'Times New Roman', Times, serif; line-height: 1.6; color: #333; max-width: 800px; margin: 40px auto; padding: 20px; }
+                            h1, h2, h3 { font-family: 'Helvetica Neue', Arial, sans-serif; color: #000; }
+                            h1 { font-size: 2.2rem; text-align: center; margin-bottom: 1.5rem; border-bottom: 2px solid #ccc; padding-bottom: 1rem; }
+                            h2 { font-size: 1.8rem; margin-top: 2.5rem; border-bottom: 1px solid #eaeaea; padding-bottom: 0.5rem; }
+                            h3 { font-size: 1.3rem; color: #1e3a8a; font-weight: bold; margin-top: 1.5rem; }
+                            p, ul, ol, li { text-align: justify; font-size: 1rem; color: #4a5568; }
+                            ul { list-style-type: disc; padding-left: 20px; }
+                            ol { padding-left: 20px; }
+                            strong { color: #000; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                            th { background-color: #f2f2f2; }
+                            @media print {
+                                body { margin: 20px; padding: 0; box-shadow: none; max-width: 100%; }
+                                h2 { page-break-before: auto; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Apostila: A Resposta das Células B</h1>
+                        ${printableContent}
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            });
             
             // --- Lógica do Controle Remoto ---
             const remoteUp = document.getElementById('remote-up'), remoteDown = document.getElementById('remote-down'), remoteLeft = document.getElementById('remote-left'), remoteRight = document.getElementById('remote-right'), remoteOk = document.getElementById('trackpad-area'), remoteBack = document.getElementById('remote-back');
@@ -322,4 +369,3 @@
     </script>
 </body>
 </html>
-
