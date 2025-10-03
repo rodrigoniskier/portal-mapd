@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padrões de Inflamação Aguda e Crônica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+        .dot {
+            transition: background-color 0.3s ease;
+        }
+        .ted-red {
+            color: #E62B1E;
+        }
+        .bg-ted-dark {
+            background-color: #121212;
+        }
+    </style>
+</head>
+<body class="bg-ted-dark text-white flex flex-col items-center justify-center h-screen p-4 overflow-hidden">
+
+    <!-- Slide Container -->
+    <div id="slides-container" class="relative w-full h-full max-w-5xl max-h-[600px] flex items-center justify-center">
+
+        <!-- Slide 1: Título -->
+        <div class="slide active flex-col items-center justify-center text-center p-8">
+            <h1 class="text-4xl md:text-6xl font-black uppercase">Padrões de Inflamação<br><span class="ted-red">Aguda e Crônica</span></h1>
+            <div class="mt-8 text-lg md:text-xl text-gray-400">
+                <p>Curso de Medicina</p>
+                <p>Mecanismos de Agressão Patológicos e de Defesa I</p>
+                <p class="mt-2 font-bold text-gray-300">Prof. Rodrigo Niskier</p>
+            </div>
+        </div>
+
+        <!-- Q1 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">1. Qual a finalidade da inflamação?</h2>
+        </div>
+        <!-- A1 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <p class="text-xl md:text-2xl text-gray-300 max-w-3xl leading-relaxed">A inflamação é uma resposta de defesa essencial. Seu objetivo principal é <strong class="text-white">eliminar a causa de uma lesão</strong>, <strong class="text-white">remover células e tecidos danificados</strong>, e <strong class="text-white">iniciar o processo de reparo tecidual</strong> para restaurar a função normal.</p>
+        </div>
+
+        <!-- Q2 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">2. Quais sinais cardinais são explicados pelos eventos vasculares?</h2>
+        </div>
+        <!-- A2 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <div class="text-xl md:text-2xl text-gray-300 max-w-3xl space-y-6 leading-relaxed">
+                <p><strong class="text-white">Vasodilatação:</strong> O aumento do fluxo sanguíneo causa <span class="ted-red">Rubor (vermelhidão)</span> e <span class="ted-red">Calor</span>.</p>
+                <p><strong class="text-white">Aumento da Permeabilidade:</strong> O extravasamento de plasma e proteínas causa <span class="ted-red">Tumor (inchaço)</span>, que por sua vez, junto com mediadores químicos, causa a <span class="ted-red">Dor</span>.</p>
+            </div>
+        </div>
+        
+        <!-- Q3 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">3. Descreva a jornada do leucócito.</h2>
+        </div>
+        <!-- A3 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <p class="text-xl md:text-2xl text-gray-300 max-w-4xl leading-relaxed">É uma migração em etapas: <strong class="text-white">Marginação e Rolamento</strong> na parede do vaso, <strong class="text-white">Adesão</strong> firme ao endotélio, <strong class="text-white">Transmigração (diapedese)</strong> através do vaso, e <strong class="text-white">Quimiotaxia</strong>, seguindo um "rastro" químico até o local da lesão, onde executa a <strong class="text-white">Fagocitose</strong>.</p>
+        </div>
+
+        <!-- Q4 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">4. Quais são os 4 padrões morfológicos da inflamação aguda?</h2>
+        </div>
+        <!-- A4 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+             <ul class="text-xl md:text-2xl text-gray-300 max-w-3xl list-none space-y-4 leading-relaxed">
+                <li><strong class="text-white">Serosa:</strong> Exsudato aquoso, pobre em células (ex: bolha).</li>
+                <li><strong class="text-white">Fibrinosa:</strong> Exsudato rico em fibrina (ex: pericardite).</li>
+                <li><strong class="text-white">Supurativa (Purulenta):</strong> Produção de pus (ex: abscesso).</li>
+                <li><strong class="text-white">Úlcera:</strong> Perda de tecido superficial (ex: úlcera gástrica).</li>
+            </ul>
+        </div>
+        
+        <!-- Q5 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">5. Compare a inflamação fibrinosa e a supurativa.</h2>
+        </div>
+        <!-- A5 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <div class="text-xl md:text-2xl text-gray-300 max-w-4xl space-y-6 leading-relaxed">
+                <p><strong class="text-white">Fibrinosa:</strong> Resulta de lesão vascular intensa, permitindo a passagem de fibrinogênio. O risco principal é a cicatrização com <strong class="ted-red">fibrose (aderências)</strong>.</p>
+                <p><strong class="text-white">Supurativa:</strong> Caracterizada por intensa infiltração de neutrófilos e pus, geralmente em infecções. O risco é a <strong class="ted-red">destruição tecidual</strong> e formação de abscessos.</p>
+            </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">6. O que é um abscesso e por que requer drenagem?</h2>
+        </div>
+        <!-- A6 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <p class="text-xl md:text-2xl text-gray-300 max-w-4xl leading-relaxed">É uma <strong class="text-white">coleção localizada de pus</strong> envolta por uma cápsula fibrosa. Essa cápsula isola a infecção, mas também <strong class="text-white">impede que defesas e antibióticos cheguem ao centro</strong>. Por isso, a drenagem é essencial para remover o pus e permitir a cura.</p>
+        </div>
+
+        <!-- Q7 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">7. Quais os 3 principais desfechos da inflamação aguda?</h2>
+        </div>
+        <!-- A7 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <ul class="text-xl md:text-2xl text-gray-300 max-w-3xl list-none space-y-4 leading-relaxed">
+                <li><strong class="text-white">Resolução Completa:</strong> O tecido retorna ao normal.</li>
+                <li><strong class="text-white">Cicatrização por Fibrose:</strong> O tecido funcional é substituído por cicatriz.</li>
+                <li><strong class="text-white">Progressão para Cronicidade:</strong> O agente agressor persiste.</li>
+            </ul>
+        </div>
+
+        <!-- Q8 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+             <h2 class="text-3xl md:text-5xl font-bold">8. O que leva à inflamação crônica?</h2>
+        </div>
+        <!-- A8 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+             <ul class="text-xl md:text-2xl text-gray-300 max-w-3xl list-none space-y-4 text-left leading-relaxed">
+                <li><strong class="ted-red">1. Infecções Persistentes:</strong> (ex: tuberculose).</li>
+                <li><strong class="ted-red">2. Doenças Imunomediadas:</strong> (ex: artrite reumatoide).</li>
+                <li><strong class="ted-red">3. Exposição Prolongada a Agentes Tóxicos:</strong> (ex: sílica).</li>
+            </ul>
+        </div>
+        
+        <!-- Q9 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">9. Diferencie a inflamação aguda da crônica.</h2>
+        </div>
+        <!-- A9 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <div class="text-xl md:text-2xl text-gray-300 max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 leading-relaxed">
+                <div class="p-6 bg-gray-800 rounded-lg">
+                    <h3 class="font-bold text-white text-2xl mb-2">AGUDA</h3>
+                    <p>Início rápido, curta duração. Célula principal: <strong class="text-white">Neutrófilo</strong>. Foco em eliminação e resolução.</p>
+                </div>
+                <div class="p-6 bg-gray-800 rounded-lg">
+                    <h3 class="font-bold text-white text-2xl mb-2">CRÔNICA</h3>
+                    <p>Início lento, longa duração. Células: <strong class="text-white">Macrófagos e Linfócitos</strong>. Destruição e reparo (fibrose) simultâneos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">10. Qual o papel central do macrófago na cronicidade?</h2>
+        </div>
+        <!-- A10 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <p class="text-xl md:text-2xl text-gray-300 max-w-4xl leading-relaxed">O macrófago é o <strong class="text-white">maestro da inflamação crônica</strong>. Ele tem um papel duplo: <strong class="text-white">perpetua a destruição tecidual</strong> com enzimas e radicais livres, e ao mesmo tempo <strong class="text-white">inicia o reparo</strong>, estimulando a fibrose.</p>
+        </div>
+
+        <!-- Q11 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">11. O que é um granuloma?</h2>
+        </div>
+        <!-- A11 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+             <p class="text-xl md:text-2xl text-gray-300 max-w-4xl leading-relaxed">É uma forma especializada de inflamação crônica, uma <strong class="text-white">tentativa de conter um agente difícil de eliminar</strong>. É um agregado de macrófagos ativados (células epitelioides) e linfócitos. A diferença chave é a <strong class="text-white">necrose caseosa</strong> (aspecto de queijo) no centro do granuloma da tuberculose, ausente na sarcoidose.</p>
+        </div>
+
+        <!-- Q12 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">12. Como a inflamação crônica causa perda de função?</h2>
+        </div>
+        <!-- A12 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <p class="text-xl md:text-2xl text-gray-300 max-w-4xl leading-relaxed">Na cirrose, a inflamação crônica causa a <strong class="text-white">morte contínua de hepatócitos</strong>. O corpo tenta reparar, mas substitui o tecido normal por <strong class="text-white">cicatriz (fibrose)</strong>. Essa fibrose desorganiza a arquitetura do fígado e impede seu funcionamento, levando à insuficiência.</p>
+        </div>
+
+        <!-- Q13 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">13. Qual a relação entre inflamação crônica e câncer?</h2>
+        </div>
+        <!-- A13 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <p class="text-xl md:text-2xl text-gray-300 max-w-4xl leading-relaxed">Ela cria um <strong class="text-white">ambiente propício a tumores</strong>. O ciclo de destruição e regeneração celular aumenta a chance de mutações. Células inflamatórias produzem radicais livres que danificam o DNA e fatores de crescimento que estimulam células já mutadas.
+            <br><br>
+            <strong class="text-white">Exemplo:</strong> Colite ulcerativa crônica aumenta o risco de câncer colorretal.</p>
+        </div>
+        
+        <!-- Q14 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">14. Qual a base dos sinais sistêmicos da inflamação?</h2>
+        </div>
+        <!-- A14 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mb-4 leading-relaxed">A resposta é mediada por citocinas (<strong class="ted-red">IL-1, IL-6, TNF</strong>) na circulação:</p>
+            <ul class="text-xl md:text-2xl text-gray-300 max-w-2xl list-none space-y-3 text-left leading-relaxed">
+                <li><strong class="text-white">Febre:</strong> Atuam no cérebro para aumentar a temperatura.</li>
+                <li><strong class="text-white">Leucocitose:</strong> Estimulam a medula óssea a liberar leucócitos.</li>
+                <li><strong class="text-white">PCR elevada:</strong> A IL-6 estimula o fígado a produzir a Proteína C Reativa.</li>
+            </ul>
+        </div>
+        
+        <!-- Q15 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h2 class="text-3xl md:text-5xl font-bold">15. Como funcionam os AINEs e os inibidores de TNF?</h2>
+        </div>
+        <!-- A15 -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <div class="text-xl md:text-2xl text-gray-300 max-w-4xl space-y-6 leading-relaxed">
+                <p><strong class="text-white">AINEs:</strong> Bloqueiam enzimas (COX), impedindo a produção de prostaglandinas. São mais usados na <strong class="text-white">inflamação aguda</strong> para controlar dor e febre.</p>
+                <p><strong class="text-white">Inibidores de TNF:</strong> Neutralizam a citocina TNF. São característicos do tratamento de <strong class="text-white">doenças inflamatórias crônicas</strong> para frear a destruição tecidual.</p>
+            </div>
+        </div>
+
+        <!-- Final -->
+        <div class="slide flex-col items-center justify-center text-center p-8">
+            <h1 class="text-5xl md:text-7xl font-black uppercase"><span class="ted-red">Fim</span></h1>
+            <p class="mt-4 text-2xl md:text-3xl text-gray-300">Revisão Concluída</p>
+            <a href="./padroesdeinflamacao.pdf" download="Aula_Padroes_de_Inflamacao.pdf" class="mt-12 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors text-lg inline-flex items-center shadow-lg">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Baixar Apostila em PDF
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 p-4 bg-ted-dark bg-opacity-80 backdrop-blur-sm">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <button id="prev-btn" class="px-4 py-2 bg-gray-700 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Anterior</button>
+            <div id="dots-container" class="flex-wrap justify-center hidden md:flex">
+                <!-- Dots will be generated by JS -->
+            </div>
+            <button id="next-btn" class="px-4 py-2 bg-gray-700 hover:bg-red-600 rounded-lg transition-colors">Próximo</button>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const dotsContainer = document.getElementById('dots-container');
+        let currentSlide = 0;
+
+        // Create dots
+        slides.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.classList.add('dot', 'w-2.5', 'h-2.5', 'rounded-full', 'bg-gray-600', 'mx-1');
+            dot.addEventListener('click', () => {
+                goToSlide(i);
+            });
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.dot');
+
+        function goToSlide(slideIndex) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('bg-red-600');
+            dots[currentSlide].classList.add('bg-gray-600');
+
+            currentSlide = slideIndex;
+
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('bg-red-600');
+            dots[currentSlide].classList.remove('bg-gray-600');
+            
+            updateButtons();
+        }
+
+        function updateButtons() {
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+            if (nextBtn.disabled) {
+                nextBtn.textContent = "Fim";
+            } else {
+                nextBtn.textContent = "Próximo";
+            }
+        }
+        
+        function showNextSlide() {
+            if (currentSlide < slides.length - 1) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function showPrevSlide() {
+            if (currentSlide > 0) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        nextBtn.addEventListener('click', showNextSlide);
+        prevBtn.addEventListener('click', showPrevSlide);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                showNextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                showPrevSlide();
+            }
+        });
+
+        // Initial setup
+        goToSlide(0);
+    </script>
+</body>
+</html>
+
