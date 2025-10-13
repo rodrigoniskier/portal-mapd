@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imuno Explica | Hipersensibilidades e Imunodeficiências</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .perspective-container {
+            perspective: 1000px;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 1rem;
+        }
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+        .quiz-option {
+            transition: all 0.2s ease-in-out;
+        }
+        .quiz-option.selected {
+            transform: translateX(10px);
+            background-color: #facc15; /* yellow-400 */
+            color: #422006;
+        }
+        .quiz-option.correct {
+            background-color: #22c55e !important; /* green-500 */
+            color: white !important;
+        }
+        .quiz-option.incorrect {
+            background-color: #ef4444 !important; /* red-500 */
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        
+        <!-- Cabeçalho -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-600 flex items-center justify-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+                Imuno Explica
+            </h1>
+            <p class="text-slate-500 mt-2 text-lg">Seu guia interativo de Hipersensibilidades e Imunodeficiências.</p>
+        </header>
+
+        <!-- Navegação -->
+        <nav class="flex justify-center bg-white p-2 rounded-xl shadow-md mb-8 sticky top-4 z-10">
+            <button data-target="conteudo" class="nav-btn bg-blue-500 text-white flex-1 md:flex-initial md:px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-transform transform hover:scale-105">
+                <i data-lucide="book-open"></i> Conteúdo
+            </button>
+            <button data-target="flashcards" class="nav-btn bg-transparent text-slate-600 flex-1 md:flex-initial md:px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-transform transform hover:scale-105">
+                <i data-lucide="layers"></i> Flashcards
+            </button>
+            <button data-target="quiz" class="nav-btn bg-transparent text-slate-600 flex-1 md:flex-initial md:px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-transform transform hover:scale-105">
+                <i data-lucide="lightbulb"></i> Quiz
+            </button>
+        </nav>
+
+        <!-- Seções de Conteúdo -->
+        <main>
+            <!-- SEÇÃO 1: CONTEÚDO -->
+            <section id="conteudo" class="content-section space-y-4">
+                <h2 class="text-3xl font-bold text-blue-600 mb-4 flex items-center gap-2">🔬 Hipersensibilidades</h2>
+                
+                <div class="accordion-item bg-white p-4 rounded-xl shadow">
+                    <button class="accordion-header w-full text-left text-xl font-semibold flex justify-between items-center">
+                        Tipo I: A Reação Alérgica 🤧
+                        <i data-lucide="chevron-down" class="transition-transform"></i>
+                    </button>
+                    <div class="accordion-content hidden mt-3 pt-3 border-t border-slate-200 text-slate-600">
+                        <p><strong>Mediador:</strong> Anticorpo IgE.</p>
+                        <p><strong>Mecanismo:</strong> Alérgenos ativam mastócitos e basófilos, que liberam histamina. Ocorre em duas fases: sensibilização (primeiro contato) e efetora (reexposição).</p>
+                        <p><strong>Exemplos Clínicos:</strong> Rinite alérgica, asma, urticária e a grave anafilaxia.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-white p-4 rounded-xl shadow">
+                    <button class="accordion-header w-full text-left text-xl font-semibold flex justify-between items-center">
+                        Tipo II: Citotoxicidade por Anticorpos 🎯
+                        <i data-lucide="chevron-down" class="transition-transform"></i>
+                    </button>
+                    <div class="accordion-content hidden mt-3 pt-3 border-t border-slate-200 text-slate-600">
+                        <p><strong>Mediador:</strong> Anticorpos IgG e IgM contra antígenos de superfície celular.</p>
+                        <p><strong>Mecanismo:</strong> Ativação do complemento (lise celular), opsonização e fagocitose, ou disfunção celular (ex: bloqueio de receptores).</p>
+                        <p><strong>Exemplos Clínicos:</strong> Anemia hemolítica, reações transfusionais, Miastenia Gravis (bloqueio), Doença de Graves (estímulo).</p>
+                    </div>
+                </div>
+
+                 <div class="accordion-item bg-white p-4 rounded-xl shadow">
+                    <button class="accordion-header w-full text-left text-xl font-semibold flex justify-between items-center">
+                        Tipo III: Doença por Imunocomplexos 🔗
+                        <i data-lucide="chevron-down" class="transition-transform"></i>
+                    </button>
+                    <div class="accordion-content hidden mt-3 pt-3 border-t border-slate-200 text-slate-600">
+                        <p><strong>Mediador:</strong> Imunocomplexos (antígeno solúvel + IgG/IgM).</p>
+                        <p><strong>Mecanismo:</strong> Deposição de imunocomplexos em tecidos (vasos, rins, articulações), ativando o complemento e recrutando neutrófilos, que causam inflamação e dano tecidual.</p>
+                        <p><strong>Exemplos Clínicos:</strong> Lúpus Eritematoso Sistêmico (LES), glomerulonefrite pós-estreptocócica.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-white p-4 rounded-xl shadow">
+                    <button class="accordion-header w-full text-left text-xl font-semibold flex justify-between items-center">
+                        Tipo IV: Reação Tardia por Células T ⏱️
+                        <i data-lucide="chevron-down" class="transition-transform"></i>
+                    </button>
+                    <div class="accordion-content hidden mt-3 pt-3 border-t border-slate-200 text-slate-600">
+                        <p><strong>Mediador:</strong> Linfócitos T (não envolve anticorpos).</p>
+                        <p><strong>Mecanismo:</strong> Células T ativadas liberam citocinas que ativam macrófagos (formação de granulomas) ou matam células-alvo diretamente. A reação leva 48-72h para se desenvolver.</p>
+                        <p><strong>Exemplos Clínicos:</strong> Teste de tuberculina (PPD), dermatite de contato (níquel), tuberculose.</p>
+                    </div>
+                </div>
+
+                <h2 class="text-3xl font-bold text-blue-600 mt-8 mb-4 flex items-center gap-2">🛡️ Imunodeficiências</h2>
+
+                <div class="accordion-item bg-white p-4 rounded-xl shadow">
+                    <button class="accordion-header w-full text-left text-xl font-semibold flex justify-between items-center">
+                        Primárias (IDPs) vs. Secundárias (IDSs) 🧬
+                        <i data-lucide="chevron-down" class="transition-transform"></i>
+                    </button>
+                    <div class="accordion-content hidden mt-3 pt-3 border-t border-slate-200 text-slate-600">
+                        <p><strong>Primárias (IDPs):</strong> Erros inatos da imunidade. São doenças genéticas, raras, que afetam o desenvolvimento ou função do sistema imune. Ex: Doença de Bruton, SCID.</p>
+                        <p><strong>Secundárias (IDSs):</strong> Muito mais comuns. O sistema imune é comprometido por fatores externos. Ex: Desnutrição, quimioterapia, e a mais famosa, a infecção pelo HIV.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-white p-4 rounded-xl shadow">
+                    <button class="accordion-header w-full text-left text-xl font-semibold flex justify-between items-center">
+                        SCID: A Imunodeficiência "Bolha" 🫧
+                        <i data-lucide="chevron-down" class="transition-transform"></i>
+                    </button>
+                    <div class="accordion-content hidden mt-3 pt-3 border-t border-slate-200 text-slate-600">
+                        <p><strong>O que é?</strong> Imunodeficiência Combinada Grave. Um grupo de doenças genéticas com defeito profundo nos linfócitos T. É uma emergência pediátrica.</p>
+                        <p><strong>Diagnóstico:</strong> A suspeita vem com infecções oportunistas graves em bebês. O "Teste do Pezinho" pode triar para SCID medindo os TRECs.</p>
+                        <p><strong>Tratamento:</strong> A cura é o Transplante de Células-Tronco Hematopoiéticas (TCTH) ou Terapia Gênica.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-white p-4 rounded-xl shadow">
+                    <button class="accordion-header w-full text-left text-xl font-semibold flex justify-between items-center">
+                        HIV/AIDS: A Mais Famosa das IDSs 🦠
+                        <i data-lucide="chevron-down" class="transition-transform"></i>
+                    </button>
+                    <div class="accordion-content hidden mt-3 pt-3 border-t border-slate-200 text-slate-600">
+                        <p><strong>Alvo do Vírus:</strong> O HIV ataca e destrói os linfócitos T CD4+, os "maestros" da orquestra imune.</p>
+                        <p><strong>Fases da Doença:</strong> Aguda (parece uma gripe forte) -> Crônica (assintomática por anos) -> AIDS (CD4+ < 200 células/mm³ ou doença oportunista).</p>
+                        <p><strong>Tratamento no SUS:</strong> A Terapia Antirretroviral (TARV) é universal e gratuita. Ela suprime o vírus a níveis indetectáveis, o que significa que a pessoa não transmite o vírus sexualmente (Indetectável = Intransmissível).</p>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- SEÇÃO 2: FLASHCARDS -->
+            <section id="flashcards" class="content-section hidden">
+                <div class="perspective-container">
+                    <div id="flashcard-container" class="flashcard w-full h-64 md:h-80 mx-auto max-w-lg cursor-pointer">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front bg-blue-500 text-white shadow-xl flex-col">
+                                <!-- Conteúdo dinâmico -->
+                            </div>
+                            <div class="flashcard-back bg-yellow-400 text-yellow-900 shadow-xl">
+                                <!-- Conteúdo dinâmico -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center items-center gap-4 mt-6">
+                    <button id="prev-flashcard" class="bg-white p-3 rounded-full shadow-md hover:bg-slate-100 transition">
+                        <i data-lucide="arrow-left"></i>
+                    </button>
+                    <span id="flashcard-counter" class="font-semibold text-slate-600">1 / 10</span>
+                    <button id="next-flashcard" class="bg-white p-3 rounded-full shadow-md hover:bg-slate-100 transition">
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SEÇÃO 3: QUIZ -->
+            <section id="quiz" class="content-section hidden">
+                <div class="bg-white p-6 rounded-xl shadow-lg max-w-2xl mx-auto">
+                    <div id="quiz-start-screen">
+                        <h2 class="text-2xl font-bold text-center text-blue-600">Teste seus conhecimentos! 🧠</h2>
+                        <p class="text-center text-slate-500 mt-2 mb-6">São 20 perguntas para ver se você está craque em Imuno.</p>
+                        <button id="start-quiz-btn" class="w-full bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 transition-all text-lg">Começar o Quiz!</button>
+                    </div>
+
+                    <div id="quiz-game-screen" class="hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-blue-600">Questão <span id="question-number">1</span> de 20</h3>
+                            <div id="quiz-score" class="font-bold text-green-600 text-lg">Pontos: 0</div>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                            <div id="progress-bar" class="bg-yellow-400 h-2.5 rounded-full" style="width: 5%"></div>
+                        </div>
+                        <p id="question-text" class="text-lg font-semibold mb-6">Qual o principal mediador da hipersensibilidade tipo I?</p>
+                        <div id="options-container" class="space-y-3">
+                            <!-- Opções geradas dinamicamente -->
+                        </div>
+                        <button id="next-question-btn" class="mt-8 w-full bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600 transition-all text-lg hidden">Próxima Pergunta</button>
+                    </div>
+                    
+                    <div id="quiz-end-screen" class="hidden text-center">
+                        <h2 class="text-2xl font-bold text-blue-600">Quiz Finalizado! 🎉</h2>
+                        <p class="text-lg mt-4">Sua pontuação final foi:</p>
+                        <div id="final-score" class="text-6xl font-bold text-green-500 my-4">18/20</div>
+                        <p id="final-message" class="text-slate-600 mb-6">Parabéns! Você é um mestre da Imunologia!</p>
+                        <button id="restart-quiz-btn" class="w-full bg-yellow-400 text-yellow-900 font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-all text-lg">Tentar Novamente</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        
+        <!-- Rodapé -->
+        <footer class="text-center mt-12 pt-8 border-t border-slate-200">
+            <a href="apostilaimuno1.pdf" target="_blank" class="inline-flex items-center gap-2 bg-blue-100 text-blue-700 font-semibold px-6 py-3 rounded-lg hover:bg-blue-200 transition">
+                <i data-lucide="download"></i>
+                Baixar Material Completo (PDF)
+            </a>
+            <p class="text-slate-400 mt-4 text-sm">Desenvolvido para estudantes de Medicina. 🩺</p>
+        </footer>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // --- DADOS ---
+        const flashcardData = [
+            { front: "Hipersensibilidade Tipo I", back: "Reação alérgica imediata, mediada por IgE. Ex: Rinite, asma, anafilaxia." },
+            { front: "Hipersensibilidade Tipo II", back: "Citotóxica, mediada por IgG/IgM contra células. Ex: Anemia hemolítica." },
+            { front: "Hipersensibilidade Tipo III", back: "Doença por imunocomplexos (antígeno + anticorpo). Ex: Lúpus (LES)." },
+            { front: "Hipersensibilidade Tipo IV", back: "Reação tardia, mediada por células T. Ex: Dermatite de contato, teste PPD." },
+            { front: "IgE", back: "Imunoglobulina chave nas reações alérgicas (Tipo I). Liga-se a mastócitos e basófilos." },
+            { front: "Histamina", back: "Principal mediador liberado por mastócitos na alergia. Causa vasodilatação, prurido e broncoconstrição." },
+            { front: "Teste de Coombs", back: "Usado para diagnosticar doenças da Hipersensibilidade Tipo II, como a anemia hemolítica." },
+            { front: "IDPs vs. IDSs", back: "Primárias (genéticas, raras) vs. Secundárias (adquiridas, comuns, como HIV)." },
+            { front: "SCID", back: "Imunodeficiência Combinada Grave. Defeito nos linfócitos T. É uma emergência pediátrica." },
+            { front: "HIV", back: "Vírus que ataca os linfócitos T CD4+, causando uma imunodeficiência secundária progressiva (AIDS)." }
+        ];
+
+        const quizData = [
+            { question: "Qual imunoglobulina é a principal mediadora da hipersensibilidade tipo I?", options: ["IgG", "IgM", "IgE", "IgA"], answer: "IgE" },
+            { question: "A anafilaxia é a manifestação mais grave de qual tipo de hipersensibilidade?", options: ["Tipo I", "Tipo II", "Tipo III", "Tipo IV"], answer: "Tipo I" },
+            { question: "Reações transfusionais hemolíticas são um exemplo clássico de qual hipersensibilidade?", options: ["Tipo I", "Tipo II", "Tipo III", "Tipo IV"], answer: "Tipo II" },
+            { question: "Na Miastenia Gravis, os anticorpos agem de que forma nos receptores de acetilcolina?", options: ["Estimulando (agonista)", "Bloqueando (antagonista)", "Destruindo a célula", "Ativando o complemento"], answer: "Bloqueando (antagonista)" },
+            { question: "O Lúpus Eritematoso Sistêmico (LES) é o protótipo da hipersensibilidade de que tipo?", options: ["Tipo I", "Tipo II", "Tipo III", "Tipo IV"], answer: "Tipo III" },
+            { question: "Qual é o mecanismo central de lesão na hipersensibilidade tipo III?", options: ["Liberação de histamina por mastócitos", "Lise celular direta por anticorpos", "Deposição de imunocomplexos e inflamação neutrofílica", "Ativação de macrófagos por células T"], answer: "Deposição de imunocomplexos e inflamação neutrofílica" },
+            { question: "A dermatite de contato alérgica ao níquel é mediada por qual componente do sistema imune?", options: ["Anticorpos IgE", "Anticorpos IgG", "Imunocomplexos", "Linfócitos T"], answer: "Linfócitos T" },
+            { question: "O teste de tuberculina (PPD) leva de 48 a 72 horas para se manifestar. Isso o caracteriza como uma reação de qual tipo?", options: ["Tipo I", "Tipo II", "Tipo III", "Tipo IV"], answer: "Tipo IV" },
+            { question: "Qual das seguintes condições é uma Imunodeficiência Primária (IDP)?", options: ["AIDS", "Desnutrição", "Imunodeficiência Combinada Grave (SCID)", "Pós-quimioterapia"], answer: "Imunodeficiência Combinada Grave (SCID)" },
+            { question: "A Agamaglobulinemia de Bruton é causada por um defeito genético que impede a maturação de qual célula?", options: ["Linfócitos T", "Linfócitos B", "Neutrófilos", "Células NK"], answer: "Linfócitos B" },
+            { question: "Qual é o principal alvo celular do vírus HIV?", options: ["Linfócitos T CD8+", "Linfócitos B", "Linfócitos T CD4+", "Macrófagos"], answer: "Linfócitos T CD4+" },
+            { question: "A fase final da infecção pelo HIV, com contagem de CD4+ < 200 células/mm³, é chamada de:", options: ["Fase Aguda", "Latência Clínica", "Síndrome Retroviral", "AIDS"], answer: "AIDS" },
+            { question: "O conceito 'Indetectável = Intransmissível' (I=I) se refere à incapacidade de transmitir o HIV por qual via?", options: ["Transfusão de sangue", "Compartilhamento de seringas", "Via sexual", "Todas as vias"], answer: "Via sexual" },
+            { question: "O tratamento curativo de escolha para a maioria dos casos de SCID é:", options: ["Reposição de imunoglobulina", "Terapia Antirretroviral (TARV)", "Transplante de Células-Tronco Hematopoiéticas (TCTH)", "Uso de anti-histamínicos"], answer: "Transplante de Células-Tronco Hematopoiéticas (TCTH)" },
+            { question: "Qual célula libera histamina durante uma reação alérgica?", options: ["Linfócito T", "Macrófago", "Neutrófilo", "Mastócito"], answer: "Mastócito" },
+            { question: "A formação de granulomas na tuberculose é um exemplo de qual mecanismo de hipersensibilidade?", options: ["Tipo I", "Tipo II", "Tipo III", "Tipo IVa (Th1)"], answer: "Tipo IVa (Th1)" },
+            { question: "A 'doença do soro' é causada por:", options: ["Alergia a alimentos", "Reação a vacinas de vírus vivos", "Deposição de imunocomplexos após exposição a proteínas estranhas", "Infecção por bactérias encapsuladas"], answer: "Deposição de imunocomplexos após exposição a proteínas estranhas" },
+            { question: "Qual é a causa mais comum de imunodeficiência secundária no mundo?", options: ["HIV/AIDS", "Desnutrição", "Câncer", "Uso de corticosteroides"], answer: "Desnutrição" },
+            { question: "O teste do pezinho pode rastrear SCID através da medição de:", options: ["Níveis de IgG", "Contagem de linfócitos T", "TRECs (Círculos de Excisão do Receptor de Célula T)", "Anticorpos anti-HIV"], answer: "TRECs (Círculos de Excisão do Receptor de Célula T)" },
+            { question: "No tratamento da anafilaxia, qual é o medicamento de primeira linha e que salva vidas?", options: ["Anti-histamínico", "Corticosteroide", "Adrenalina (Epinefrina)", "Broncodilatador"], answer: "Adrenalina (Epinefrina)" }
+        ];
+
+        // --- LÓGICA GERAL ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Navegação entre seções
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const contentSections = document.querySelectorAll('.content-section');
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Estilos dos botões
+                    navBtns.forEach(b => {
+                        b.classList.remove('bg-blue-500', 'text-white');
+                        b.classList.add('bg-transparent', 'text-slate-600');
+                    });
+                    btn.classList.add('bg-blue-500', 'text-white');
+                    btn.classList.remove('bg-transparent', 'text-slate-600');
+                    
+                    // Mostrar/esconder seções
+                    const targetId = btn.getAttribute('data-target');
+                    contentSections.forEach(section => {
+                        if (section.id === targetId) {
+                            section.classList.remove('hidden');
+                        } else {
+                            section.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Lógica do Accordion
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('i');
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+            
+            // --- LÓGICA DOS FLASHCARDS ---
+            const flashcardContainer = document.getElementById('flashcard-container');
+            const flashcardFront = flashcardContainer.querySelector('.flashcard-front');
+            const flashcardBack = flashcardContainer.querySelector('.flashcard-back');
+            const prevFlashcardBtn = document.getElementById('prev-flashcard');
+            const nextFlashcardBtn = document.getElementById('next-flashcard');
+            const flashcardCounter = document.getElementById('flashcard-counter');
+            let currentFlashcardIndex = 0;
+
+            function updateFlashcard() {
+                const card = flashcardData[currentFlashcardIndex];
+                flashcardFront.innerHTML = `<h3 class="text-2xl md:text-3xl font-bold">${card.front}</h3>`;
+                flashcardBack.innerHTML = `<p class="text-lg md:text-xl">${card.back}</p>`;
+                flashcardCounter.textContent = `${currentFlashcardIndex + 1} / ${flashcardData.length}`;
+                flashcardContainer.classList.remove('flipped');
+            }
+
+            flashcardContainer.addEventListener('click', () => {
+                flashcardContainer.classList.toggle('flipped');
+            });
+
+            nextFlashcardBtn.addEventListener('click', () => {
+                currentFlashcardIndex = (currentFlashcardIndex + 1) % flashcardData.length;
+                updateFlashcard();
+            });
+
+            prevFlashcardBtn.addEventListener('click', () => {
+                currentFlashcardIndex = (currentFlashcardIndex - 1 + flashcardData.length) % flashcardData.length;
+                updateFlashcard();
+            });
+
+            // Inicializa o primeiro flashcard
+            updateFlashcard();
+            
+            // --- LÓGICA DO QUIZ ---
+            const startScreen = document.getElementById('quiz-start-screen');
+            const gameScreen = document.getElementById('quiz-game-screen');
+            const endScreen = document.getElementById('quiz-end-screen');
+            
+            const startBtn = document.getElementById('start-quiz-btn');
+            const restartBtn = document.getElementById('restart-quiz-btn');
+            const nextQuestionBtn = document.getElementById('next-question-btn');
+            
+            const questionNumberEl = document.getElementById('question-number');
+            const questionTextEl = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('options-container');
+            const scoreEl = document.getElementById('quiz-score');
+            const progressBar = document.getElementById('progress-bar');
+
+            const finalScoreEl = document.getElementById('final-score');
+            const finalMessageEl = document.getElementById('final-message');
+
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let answerSelected = false;
+
+            function startQuiz() {
+                currentQuestionIndex = 0;
+                score = 0;
+                startScreen.classList.add('hidden');
+                endScreen.classList.add('hidden');
+                gameScreen.classList.remove('hidden');
+                nextQuestionBtn.classList.add('hidden');
+                showQuestion();
+            }
+
+            function showQuestion() {
+                answerSelected = false;
+                const question = quizData[currentQuestionIndex];
+                questionNumberEl.textContent = currentQuestionIndex + 1;
+                questionTextEl.textContent = question.question;
+                scoreEl.textContent = `Pontos: ${score}`;
+                progressBar.style.width = `${((currentQuestionIndex + 1) / quizData.length) * 100}%`;
+                
+                optionsContainer.innerHTML = '';
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.classList.add('quiz-option', 'w-full', 'p-4', 'bg-slate-100', 'rounded-lg', 'text-left', 'font-medium', 'hover:bg-yellow-200');
+                    button.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+                    button.addEventListener('click', () => selectAnswer(button, option, question.answer));
+                    optionsContainer.appendChild(button);
+                });
+                nextQuestionBtn.classList.add('hidden');
+            }
+
+            function selectAnswer(button, selectedOption, correctAnswer) {
+                if (answerSelected) return;
+                answerSelected = true;
+
+                const allOptions = optionsContainer.querySelectorAll('.quiz-option');
+
+                if (selectedOption === correctAnswer) {
+                    score++;
+                    button.classList.add('correct');
+                } else {
+                    button.classList.add('incorrect');
+                    allOptions.forEach(opt => {
+                        if (opt.textContent.includes(correctAnswer)) {
+                            opt.classList.add('correct');
+                        }
+                    });
+                }
+                scoreEl.textContent = `Pontos: ${score}`;
+                nextQuestionBtn.classList.remove('hidden');
+            }
+            
+            function showEndScreen() {
+                 gameScreen.classList.add('hidden');
+                 endScreen.classList.remove('hidden');
+                 finalScoreEl.textContent = `${score}/${quizData.length}`;
+                 
+                 let message = "";
+                 const percentage = (score / quizData.length) * 100;
+                 if (percentage === 100) {
+                     message = "Incrível! Você gabaritou! 🚀 Você é uma referência em Imunologia!";
+                 } else if (percentage >= 80) {
+                     message = "Excelente! Você domina o assunto. Parabéns! 🩺";
+                 } else if (percentage >= 50) {
+                     message = "Bom trabalho! Continue revisando os conceitos para fixar ainda mais. 👍";
+                 } else {
+                     message = "Não desanime! Use os flashcards e o conteúdo para revisar e tente novamente. 💪";
+                 }
+                 finalMessageEl.textContent = message;
+            }
+
+            nextQuestionBtn.addEventListener('click', () => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < quizData.length) {
+                    showQuestion();
+                } else {
+                    showEndScreen();
+                }
+            });
+            
+            startBtn.addEventListener('click', startQuiz);
+            restartBtn.addEventListener('click', startQuiz);
+        });
+    </script>
+</body>
+</html>
