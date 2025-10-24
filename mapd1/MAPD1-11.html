@@ -1,76 +1,223 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MAPD-1 | Prof. Rodrigo Niskier</title>
-  <style>
-    body {
-      background: linear-gradient(135deg, #004aad, #007aff);
-      color: #fff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 30px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-    }
-
-    .button {
-      background-color: #ffcc00;
-      color: #222;
-      padding: 15px 25px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
-    }
-
-    .button:hover {
-      background-color: #ffd633;
-      transform: scale(1.05);
-    }
-
-    .icon {
-      font-size: 1.5rem;
-    }
-
-    footer {
-      position: absolute;
-      bottom: 20px;
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introdução à Microbiologia</title>
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carrega a biblioteca de ícones Lucide (movido para o final do <body> para corrigir o erro) -->
+    <!-- <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script> -->
+    <!-- Configuração do Tailwind para usar a fonte Inter -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <!-- Importa a fonte Inter do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* bg-gray-50 */
+        }
+        .card-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); /* Gradiente de azul para índigo */
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
 </head>
-<body>
+<body class="text-gray-800">
 
-  <h1>📘 MAPD-1 | Prof. Rodrigo Niskier</h1>
-  <button class="button" onclick="abrirLink()">
-    <span class="icon">🔬</span> Acessar Introdução à Microbiologia
-  </button>
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-12">
+        
+        <!-- Cabeçalho -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-700 mb-4">
+                🔬 Introdução à Microbiologia
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
+                Um resumo didático dos principais módulos de estudo, focado nos conceitos essenciais da microbiologia médica.
+            </p>
+        </header>
 
-  <footer>© 2025 - Curso de Microbiologia | Jaleko</footer>
+        <!-- Seção de Botões de Ação -->
+        <section class="mb-16">
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
+                <!-- Botão 1: Download Apostila -->
+                <a href="micro.pdf" download="micro.pdf" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all w-full sm:w-auto">
+                    <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
+                    Baixar Apostila (.pdf)
+                </a>
+                
+                <!-- Botão 2: Download Slides -->
+                <a href="micro2.pdf" download="micro2.pdf" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all w-full sm:w-auto">
+                    <i data-lucide="file-slideshow" class="w-5 h-5 mr-2"></i>
+                    Baixar Slides (.pdf)
+                </a>
+                
+                <!-- Botão 3: Link Vídeo-aula -->
+                <a href="https://cruzeirodosul.jaleko.com.br/sala-de-aula/cpb-microbio/introducao-a-microbiologia/Introducao-a-Microbiologia/introducao-43" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all w-full sm:w-auto">
+                    <i data-lucide="play-circle" class="w-5 h-5 mr-2"></i>
+                    Assistir Vídeo-Aula
+                </a>
+            </div>
+        </section>
 
-  <script>
-    function abrirLink() {
-      window.open("https://cruzeirodosul.jaleko.com.br/sala-de-aula/cpb-microbio/introducao-a-microbiologia/Introducao-a-Microbiologia/introducao-43", "_blank");
-    }
-  </script>
+        <!-- Grid de Módulos de Estudo -->
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
+            <!-- Módulo 1 -->
+            <div class="card bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 card-gradient text-white">
+                    <h2 class="text-2xl font-bold flex items-center mb-2">
+                        <span class="text-3xl mr-3">🦠</span>
+                        Módulo 1: O Mundo Microbiano
+                    </h2>
+                    <p class="opacity-90">O ecossistema microbiano e a sua complexa relação com o hospedeiro humano.</p>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tópicos Principais:</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Diversidade dos Microrganismos</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Célula Procariótica vs. Eucariótica</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Relação Hospedeiro-Parasita</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>A Microbiota Humana Normal</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Módulo 2 -->
+            <div class="card bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 card-gradient text-white">
+                    <h2 class="text-2xl font-bold flex items-center mb-2">
+                        <span class="text-3xl mr-3">🧬</span>
+                        Módulo 2: Bacteriologia
+                    </h2>
+                    <p class="opacity-90">A estrutura, metabolismo e genética das bactérias de interesse médico.</p>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tópicos Principais:</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Estrutura e Morfologia (Gram+/-)</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Metabolismo e Crescimento</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Genética e Transferência de Genes</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Fatores de Virulência (Toxinas, Biofilmes)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Módulo 3 -->
+            <div class="card bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 card-gradient text-white">
+                    <h2 class="text-2xl font-bold flex items-center mb-2">
+                        <span class="text-3xl mr-3">🔬</span>
+                        Módulo 3: Virologia
+                    </h2>
+                    <p class="opacity-90">A natureza dos vírus como parasitas intracelulares obrigatórios.</p>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tópicos Principais:</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Estrutura (Envelopados vs. Nus)</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>O Ciclo Replicativo Viral</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Patogenia Viral (ECP, Oncogênese)</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Padrões de Infecção (Aguda, Crônica, Latente)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Módulo 4 -->
+            <div class="card bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 card-gradient text-white">
+                    <h2 class="text-2xl font-bold flex items-center mb-2">
+                        <span class="text-3xl mr-3">🍄</span>
+                        Módulo 4: Micologia e Parasitologia
+                    </h2>
+                    <p class="opacity-90">O desafio dos patógenos eucarióticos: fungos, protozoários e helmintos.</p>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tópicos Principais:</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Micologia (Leveduras, Bolores, Dimórficos)</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Alvos Terapêuticos (Ergosterol)</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Protozoários (Trofozoíto vs. Cisto)</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Helmintos (Platelmintos, Nematódeos)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Módulo 5 -->
+            <div class="card bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 card-gradient text-white">
+                    <h2 class="text-2xl font-bold flex items-center mb-2">
+                        <span class="text-3xl mr-3">💊</span>
+                        Módulo 5: Diagnóstico e Terapêutica
+                    </h2>
+                    <p class="opacity-90">A ponte entre a ciência básica e a prática clínica no manejo de infecções.</p>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tópicos Principais:</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Diagnóstico (Cultura, Gram, PCR, Sorologia)</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Esterilização vs. Desinfecção</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Mecanismos de Ação dos Antibióticos</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Resistência Antimicrobiana (RAM)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Módulo 6 -->
+            <div class="card bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 card-gradient text-white">
+                    <h2 class="text-2xl font-bold flex items-center mb-2">
+                        <span class="text-3xl mr-3">🛡️</span>
+                        Módulo 6: Imunologia e Vacinação
+                    </h2>
+                    <p class="opacity-90">A interface entre o sistema imune, a infecção e as estratégias de prevenção.</p>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tópicos Principais:</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Resposta Imune Inata (PAMPs, TLRs)</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Resposta Imune Adaptativa (Celular, Humoral)</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Vacinação (Tipos e Plataformas)</li>
+                        <li class="flex items-center"><i data-lucide="chevron-right" class="w-5 h-5 mr-2 text-blue-500 flex-shrink-0"></i>Sépsis e Choque Sético</li>
+                    </ul>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 mt-16">
+            <p>Página de resumo gerada com base no material didático.</p>
+        </footer>
+
+    </div>
+
+    <!-- Carrega a biblioteca de ícones Lucide e chama createIcons() via 'onload' -->
+    <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js" onload="lucide.createIcons()"></script>
+    
+    <!-- Script para renderizar os ícones do Lucide (agora é chamado pelo 'onload' acima) -->
+    <!--
+    <script>
+        lucide.createIcons();
+    </script>
+    -->
 </body>
 </html>
+
