@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAPD-1 | Prof. Rodrigo Niskier</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn i {
+            margin-right: 10px;
+        }
+        .btn span {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>MAPD-1 | Prof. Rodrigo Niskier</h1>
+    <h2>Imunologia nos transplantes</h2>
+    <button class="btn" onclick="downloadFile('slidestransplantes.pdf')">
+        <i class="fas fa-file-powerpoint"></i> Baixar Slides 📊
+    </button>
+    <button class="btn" onclick="downloadFile('apostilatransplante.pdf')">
+        <i class="fas fa-book"></i> Baixar Apostila 📚
+    </button>
+
+    <script>
+        function downloadFile(filename) {
+            const link = document.createElement('a');
+            link.href = filename;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
