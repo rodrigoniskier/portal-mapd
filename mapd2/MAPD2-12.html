@@ -30,7 +30,7 @@
             padding: 0;
             height: 100%;
             width: 100%;
-            overflow: hidden; /* A MUDANÇA PRINCIPAL: desativa a rolagem da página */
+            overflow: hidden; /* Desativa a rolagem da página */
             line-height: 1.6;
         }
 
@@ -46,10 +46,10 @@
             width: 100%;
             height: 100%;
             flex-shrink: 0;
-            /* Permite rolagem *dentro* do slide se o conteúdo for muito grande */
+            /* Permite rolagem *dentro* do slide */
             overflow-y: auto;
             overflow-x: hidden;
-            box-sizing: border-box; /* Garante que o padding não quebre o layout */
+            box-sizing: border-box;
             
             /* Centraliza o conteúdo dentro do slide */
             display: flex;
@@ -63,18 +63,13 @@
             width: 100%;
             max-width: 900px;
             margin: auto;
-            /* Remove a necessidade de altura 100% para o conteúdo */
             padding: 40px 0; /* Espaçamento vertical para o conteúdo */
         }
         
-        /* Ajuste para o slide do simulador não centralizar verticalmente */
-        .slide.slide-simulador {
-            align-items: flex-start;
-        }
+        /* Ajuste para slides com conteúdo longo poderem rolar */
         .slide.slide-intro {
-             align-items: flex-start; /* Permite que a intro longa role */
+             align-items: flex-start;
         }
-
 
         /* --- Efeito "Glassmorphism" (Vidro Fosco) --- */
         .card-vidro {
@@ -132,17 +127,17 @@
             font-weight: bold;
         }
 
-        /* --- Secção de Introdução --- */
-        #intro-container ul {
+        /* --- Estilos da Lista de Introdução --- */
+        .lista-intro ul {
             list-style: none;
             padding-left: 0;
         }
-        #intro-container li {
+        .lista-intro li {
             position: relative;
             padding-left: 30px;
             margin-bottom: 10px;
         }
-        #intro-container li::before {
+        .lista-intro li::before {
             content: '\f0da'; /* Ícone de seta (Font Awesome) */
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
@@ -229,6 +224,7 @@
             }
             .schema-box {
                 width: 100%;
+                box-sizing: border-box;
             }
          }
 
@@ -346,9 +342,6 @@
         }
 
         /* --- Estilos da Secção de Revisão --- */
-        #revisao-container h2 {
-            color: var(--cor-neon-principal);
-        }
         .topico-revisao {
             background: var(--cor-vidro);
             border: 1px solid var(--borda-vidro);
@@ -507,13 +500,13 @@
     <div class="slide-wrapper">
 
         <section class="slide slide-intro">
-            <div id="intro-container" class="container-futurista">
+            <div class="container-futurista">
                 <header>
                     <h1><i class="fa-solid fa-microscope fa-spin"></i> Patologia do Câncer</h1>
                     <p>Uma jornada interativa pelos mecanismos da transformação maligna</p>
                 </header>
                 
-                <div class="card-vidro">
+                <div class="card-vidro lista-intro">
                     <h2><i class="fa-solid fa-book"></i> 1. Conceitos Preliminares</h2>
                     <p>Antes de mergulharmos na simulação, vamos definir os termos essenciais.</p>
                     
@@ -524,7 +517,7 @@
                         </div>
                         <div class="schema-box">
                             <h4><i class="fa-solid fa-disease"></i> Tumor</h4>
-                            <p>O <span class="highlight-1">resultado</span>. Um "inchaço" ou massa. Em oncologia, é usado como sinónimo de neoplasia, mas um tumor pode tecnicamente ser inflamatório.</p>
+                            <p>O <span class="highlight-1">resultado</span>. Um "inchaço" ou massa. Em oncologia, é usado como sinónimo de neoplasia.</p>
                         </div>
                         <div class="schema-box">
                             <h4><i class="fa-solid fa-skull-crossbones"></i> Câncer</h4>
@@ -534,22 +527,33 @@
                     <ul>
                         <li><strong>Oncologia:</strong> É a especialidade médica que estuda e trata as neoplasias (o câncer).</li>
                     </ul>
+                </div>
+                <footer>
+                    <p>Arraste para o lado ou use as setas para navegar</p>
+                </footer>
+            </div>
+        </section>
 
-                    <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
-
+        <section class="slide slide-intro">
+            <div class="container-futurista">
+                <div class="card-vidro lista-intro">
                     <h2><i class="fa-solid fa-globe-americas"></i> 2. Epidemiologia (INCA 2023-2025)</h2>
                     <p>O câncer é um problema de saúde pública global. No Brasil, os dados são baseados nas estimativas do <span class="highlight-1">Instituto Nacional de Câncer (INCA)</span>.</p>
                     <ul>
                         <li><strong>Mundo:</strong> A estimativa (GLOBOCAN 2020) aponta para cerca de <span class="highlight-2">19 milhões de casos novos</span> por ano. Os mais incidentes são os de mama, pulmão e colorretal.</li>
-                        <li><strong>Brasil:</strong> A estimativa para o triénio 2023-2025 é de <span class="highlight-2">704 mil casos novos por ano</span>. Excluindo o câncer de pele não melanoma, os mais frequentes são os de <span class="highlight-1">mama feminina</span> (73 mil) e <span class="highlight-1">próstata</span> (71 mil), seguidos por <span class="highlight-1">cólon e reto</span> (45 mil).</li>
-                        <li><strong>Região Nordeste:</strong> Estimam-se <span class="highlight-2">~110 mil casos novos por ano</span> (excluindo pele não melanoma). Os mais incidentes em homens são próstata e cólon e reto; em mulheres, são mama e cólon e reto, com o câncer de colo do útero tendo alta relevância.</li>
+                        <li><strong>Brasil:</strong> A estimativa para o triénio 2023-2025 é de <span class="highlight-2">704 mil casos novos por ano</span>. Excluindo o câncer de pele não melanoma, os mais frequentes são os de <span class="highlight-1">mama feminina</span> (73 mil) e <span class="highlight-1">próstata</span> (71 mil).</li>
+                        <li><strong>Região Nordeste:</strong> Estimam-se <span class="highlight-2">~110 mil casos novos por ano</span> (excluindo pele não melanoma). Os mais incidentes em homens são próstata e cólon e reto; em mulheres, são mama e cólon e reto.</li>
                         <li><strong>Paraíba:</strong> A estimativa é de cerca de <span class="highlight-2">25.460 novos casos por ano</span> (incluindo pele não melanoma), sendo 12.120 em homens e 13.340 em mulheres.</li>
                     </ul>
+                </div>
+            </div>
+        </section>
 
-                    <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
-
+        <section class="slide slide-intro">
+            <div class="container-futurista">
+                <div class="card-vidro">
                     <h2><i class="fa-solid fa-table-list"></i> 3. Benigno vs. Maligno</h2>
-                    <p>A diferença fundamental em patologia é a classificação de uma neoplasia. Usamos as características do seu PDF de referência:</p>
+                    <p>A diferença fundamental em patologia é a classificação de uma neoplasia:</p>
                     
                     <table class="tabela-comparativa">
                         <thead>
@@ -578,69 +582,53 @@
                             <tr>
                                 <td>Metástase</td>
                                 <td><span class="highlight-1">Ausente</span></td>
-                                <td><span class="highlight-2">Presente</span> (capacidade de disseminar). É a característica <span class="highlight-2">definitiva</span> da malignidade.</td>
+                                <td><span class="highlight-2">Presente</span>. É a característica <span class="highlight-2">definitiva</span> da malignidade.</td>
                             </tr>
                         </tbody>
                     </table>
-                    
-                    <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
+                </div>
+            </div>
+        </section>
 
+        <section class="slide slide-intro">
+            <div class="container-futurista lista-intro">
+                <div class="card-vidro">
                     <h2><i class="fa-solid fa-magnifying-glass-chart"></i> 4. Conceitos Patológicos Essenciais</h2>
 
                     <h3>Nomenclatura (Como dar nome)</h3>
-                    <p>A nomenclatura básica segue a origem celular:</p>
                     <ul>
-                        <li><strong>Tumores Benignos:</strong> Usam o sufixo <span class="highlight-1">-OMA</span>. (Ex: <span class="highlight-1">Fibroma</span>, <span class="highlight-1">Adenoma</span>).</li>
+                        <li><strong>Tumores Benignos:</strong> Sufixo <span class="highlight-1">-OMA</span> (Ex: <span class="highlight-1">Fibroma</span>, <span class="highlight-1">Adenoma</span>).</li>
                         <li><strong>Tumores Malignos (Câncer):</strong>
                             <ul>
-                                <li>Origem Epitelial (pele, mucosas): <span class="highlight-2">CARCINOMA</span> (Ex: <span class="highlight-2">Adenocarcinoma</span>).</li>
-                                <li>Origem Mesenquimal (osso, músculo, gordura): <span class="highlight-2">SARCOMA</span> (Ex: <span class="highlight-2">Osteossarcoma</span>).</li>
-                                <li>Origem Hematopoiética (células do sangue): <span class="highlight-2">LEUCEMIAS</span> / <span class="highlight-2">LINFOMAS</span>.</li>
+                                <li>Epitelial: <span class="highlight-2">CARCINOMA</span> (Ex: <span class="highlight-2">Adenocarcinoma</span>).</li>
+                                <li>Mesenquimal: <span class="highlight-2">SARCOMA</span> (Ex: <span class="highlight-2">Osteossarcoma</span>).</li>
+                                <li>Hematopoiética: <span class="highlight-2">LEUCEMIAS</span> / <span class="highlight-2">LINFOMAS</span>.</li>
                             </ul>
                         </li>
                     </ul>
 
                     <h3>Estadiamento (Qual o prognóstico?)</h3>
-                    <p>O estadiamento descreve a extensão anatómica do câncer. O sistema <span class="highlight-1">TNM</span> é o mais usado:</p>
-                    
+                    <p>O sistema <span class="highlight-1">TNM</span> é o mais usado:</p>
                     <div class="tnm-schema">
-                        <div class="tnm-box">
-                            <h4 class="t">T</h4>
-                            <p><strong>Tumor (Tamanho)</strong><br>Descreve o tamanho e a extensão local do tumor (Ex: T1 a T4).</p>
-                        </div>
-                        <div class="tnm-box">
-                            <h4 class="n">N</h4>
-                            <p><strong>Linfonodos (Nódulos)</strong><br>Descreve a presença de metástases nos linfonodos regionais (Ex: N0 a N3).</p>
-                        </div>
-                        <div class="tnm-box">
-                            <h4 class="m">M</h4>
-                            <p><strong>Metástase</strong><br>Descreve a presença de metástase à distância. <span class="highlight-2">M0</span> (sem) vs. <span class="highlight-2">M1</span> (com).</p>
-                        </div>
+                        <div class="tnm-box"><h4 class="t">T</h4><p><strong>Tumor (Tamanho)</strong><br>(Ex: T1 a T4)</p></div>
+                        <div class="tnm-box"><h4 class="n">N</h4><p><strong>Linfonodos (Nódulos)</strong><br>(Ex: N0 a N3)</p></div>
+                        <div class="tnm-box"><h4 class="m">M</h4><p><strong>Metástase</strong><br>(<span class="highlight-2">M0</span> vs. <span class="highlight-2">M1</span>)</p></div>
                     </div>
 
-                    <h3>Marcadores Tumorais vs. Moleculares</h3>
+                    <h3 style="margin-top: 20px;">Marcadores Tumorais vs. Moleculares</h3>
                     <ul>
-                        <li><strong>Marcadores Tumorais (Sanguíneos):</strong> Substâncias no sangue (Ex: <span class="highlight-1">PSA</span>, <span class="highlight-1">CA-125</span>) usadas para <span class="highlight-1">monitorar</span> o tratamento e a recidiva, não para diagnóstico isolado.</li>
-                        <li><strong>Marcadores Moleculares (do Tumor):</strong> Alterações genéticas <span class="highlight-2">dentro</span> do tumor (Ex: <span class="highlight-2">HER2</span>, <span class="highlight-2">PD-L1</span>) que definem <span class="highlight-2">qual terapia-alvo usar</span>.</li>
+                        <li><strong>Marcadores Tumorais (Sanguíneos):</strong> Usados para <span class="highlight-1">monitorar</span> o tratamento e a recidiva (Ex: <span class="highlight-1">PSA</span>, <span class="highlight-1">CA-125</span>).</li>
+                        <li><strong>Marcadores Moleculares (do Tumor):</strong> Alterações genéticas que definem <span class="highlight-2">qual terapia-alvo usar</span> (Ex: <span class="highlight-2">HER2</span>, <span class="highlight-2">PD-L1</span>).</li>
                     </ul>
 
                     <button id="btn-iniciar-simulador" class="btn-neon">Iniciar Simulação 🧬</button>
-                    
-                    <footer>
-                        <p>Projeto Interativo de Patologia do Câncer | Criado com a ajuda do Parceiro de Programação</p>
-                    </footer>
                 </div>
             </div>
         </section>
 
-        <section class="slide slide-simulador">
-            <div id="simulador-container" class="container-futurista">
-                <header>
-                    <h1><i class="fa-solid fa-infinity fa-spin"></i> A Jornada da Célula</h1>
-                    <p>Da Normalidade à Transformação Maligna</p>
-                </header>
-                
-                <main class="card-vidro">
+        <section class="slide">
+            <div class="container-futurista">
+                <main id="simulador-container" class="card-vidro">
                     <div id="etapa-view">
                         </div>
                     <nav class="botoes-navegacao">
@@ -652,8 +640,8 @@
         </section>
         
         <section class="slide">
-            <div id="revisao-container" class="container-futurista">
-                <div class="card-vidro">
+            <div class="container-futurista">
+                <section id="revisao-container" class="card-vidro">
                     <h2><i class="fa-solid fa-book-open"></i> Tópicos de Revisão</h2>
                     <p>Estes são os pilares ("Hallmarks") que definem a transformação maligna.</p>
                     <div id="revisao-lista">
@@ -661,27 +649,20 @@
                     <nav class="botoes-navegacao">
                         <button id="btn-iniciar-quiz" class="btn-neon">Iniciar Quiz <i class="fa-solid fa-vial-circle-check"></i></button>
                     </nav>
-                </div>
+                </section>
             </div>
         </section>
 
         <section class="slide">
-            <div id="quiz-container" class="container-futurista">
-                <div class="card-vidro">
-                    <div id="quiz-header">
-                        <h2><i class="fa-solid fa-vial-circle-check"></i> Quiz Interativo</h2>
-                        <div id="quiz-contador" class="quiz-contador"></div>
-                    </div>
-                    <div id="quiz-pergunta"></div>
-                    <div id="quiz-opcoes"></div>
-                    <div id="quiz-feedback"></div>
-                    </div>
+            <div class="container-futurista">
+                <section id="quiz-container" class="card-vidro">
+                    </section>
             </div>
         </section>
 
         <section class="slide">
-            <div id="download-container" class="container-futurista">
-                <div class="card-vidro">
+            <div class="container-futurista">
+                <section id="download" class="card-vidro">
                     <h2><i class="fa-solid fa-download"></i> Download da Apostila</h2>
                     <p>Você concluiu a jornada! Baixe o material de referência completo em formato PDF para revisar o conteúdo.</p>
                     <a href="biocancer.pdf" download class="btn-neon-download">
@@ -694,17 +675,16 @@
                     <button id="btn-reiniciar-final" class="btn-neon">
                         <i class="fa-solid fa-refresh"></i> Reiniciar Jornada
                     </button>
-                    
-                    <footer>
-                        <p>Projeto Interativo de Patologia do Câncer | Criado com a ajuda do Parceiro de Programação</p>
-                    </footer>
-                </div>
+                </section>
+                <footer>
+                    <p>Projeto Interativo de Patologia do Câncer | Criado com a ajuda do Parceiro de Programação</p>
+                </footer>
             </div>
         </section>
 
     </div> <script>
         /* ===================================================
-        DADOS DA APLICAÇÃO (Extraídos do PDF)
+        DADOS DA APLICAÇÃO
         ===================================================
         */
         
@@ -739,7 +719,7 @@
             { pergunta: "Qual gene é o 'Guardião do Genoma' por parar o ciclo celular em resposta a danos no DNA?", opcoes: ["RAS", "HER2", "TP53 (p53)", "MYC"], correta: 2 },
             { pergunta: "<span class='highlight-1'>Proto-oncogenes</span> são...?", opcoes: ["Genes mutados que causam câncer", "Genes normais que regulam a proliferação", "Genes que reparam o DNA", "Genes que causam apoptose"], correta: 1 },
             { pergunta: "Genes como <span class='highlight-1'>BRCA1</span> e <span class='highlight-1'>BRCA2</span> (que reparam DNA) são classificados como:", opcoes: ["Gatekeepers (Guardiões)", "Oncogenes", "Fatores de crescimento", "Caretakers (Zeladores)"], correta: 3 },
-            { pergunta: "Qual enzima a maioria dos cânceres reativa para alcançar a 'imortalidade' e manter os telômeros?", opcoes: ["DNA Polimerae", "Telomerase", "Helicase", "Quinase"], correta: 1 },
+            { pergunta: "Qual enzima a maioria dos cânceres reativa para alcançar a 'imortalidade' e manter os telômeros?", opcoes: ["DNA Polimerase", "Telomerase", "Helicase", "Quinase"], correta: 1 },
             { pergunta: "O processo de formação de novos vasos sanguíneos para 'alimentar' o tumor é chamado de:", opcoes: ["Metástase", "Apoptose", "Angiogénese", "Senescência"], correta: 2 },
             { pergunta: "Qual é o principal fator de crescimento secretado pelo tumor para induzir a angiogénese?", opcoes: ["EGF", "PDGF", "BCL-2", "VEGF"], correta: 3 },
             { pergunta: "Qual proteína anti-morte é frequentemente superexpressada (ex: t(14;18)) para evadir a apoptose?", opcoes: ["BAX", "p53", "BCL-2", "E-caderina"], correta: 2 },
@@ -755,6 +735,7 @@
             { pergunta: "O que é uma 'Biópsia Líquida'?", opcoes: ["Uma biópsia de um tumor com necrose líquida", "Um exame de sangue que deteta DNA tumoral circulante (ctDNA)", "A análise do líquido linfático", "Um tipo de PET-Scan"], correta: 1 }
         ];
 
+
         /* ===================================================
         LÓGICA DA APLICAÇÃO (O CÉREBRO)
         ===================================================
@@ -768,20 +749,16 @@
         const setaDireita = document.getElementById('nav-seta-direita');
         
         // Botões de Navegação Interna
-        const btnIniciarSimulador = document.getElementById('btn-iniciar-simulador');
-        const btnAnterior = document.getElementById('btn-anterior');
-        const btnProximo = document.getElementById('btn-proximo');
-        const btnIniciarQuiz = document.getElementById('btn-iniciar-quiz');
-        const btnReiniciarFinal = document.getElementById('btn-reiniciar-final');
+        const btnIniciarSimulador = document.getElementById('btn-iniciar-simulador'); // Slide 4
+        const btnAnterior = document.getElementById('btn-anterior'); // Slide 5
+        const btnProximo = document.getElementById('btn-proximo'); // Slide 5
+        const btnIniciarQuiz = document.getElementById('btn-iniciar-quiz'); // Slide 6
+        const btnReiniciarFinal = document.getElementById('btn-reiniciar-final'); // Slide 8
 
         // Módulos Internos
-        const etapaView = document.getElementById('etapa-view');
-        const revisaoLista = document.getElementById('revisao-lista');
-        const quizContainer = document.getElementById('quiz-container');
-        const quizContador = document.getElementById('quiz-contador');
-        const quizPergunta = document.getElementById('quiz-pergunta');
-        const quizOpcoes = document.getElementById('quiz-opcoes');
-        const quizFeedback = document.getElementById('quiz-feedback');
+        const etapaView = document.getElementById('etapa-view'); // Slide 5
+        const revisaoLista = document.getElementById('revisao-lista'); // Slide 6
+        const quizContainer = document.getElementById('quiz-container'); // Slide 7
 
 
         // --- VARIÁVEIS DE ESTADO (a memória do programa) ---
@@ -791,7 +768,7 @@
         let quizAtivo = false;
         
         let slideAtual = 0; // Estado *global* da navegação
-        const totalSlides = slides.length;
+        const totalSlides = slides.length; // Agora deve ser 8
 
 
         /* ----------------------------------------------
@@ -806,6 +783,14 @@
             slideWrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
             slideAtual = slideIndex;
             atualizarSetasGlobais();
+            
+            // Pré-carrega o conteúdo do slide se ele ainda não foi carregado
+            if (slideIndex === 4 && etapaView.innerHTML === "") { // Slide 5 (Simulador)
+                renderizarEtapa(etapaAtualSimulador);
+            }
+            if (slideIndex === 5 && revisaoLista.innerHTML === "") { // Slide 6 (Revisão)
+                 renderizarRevisao();
+            }
         }
 
         function atualizarSetasGlobais() {
@@ -819,7 +804,7 @@
 
 
         /* ----------------------------------------------
-        Funções da SIMULAÇÃO (Passo a Passo)
+        Funções da SIMULAÇÃO (Slide 5)
         ----------------------------------------------
         */
         function renderizarEtapa(etapaIndex) {
@@ -852,15 +837,14 @@
             btnProximo.disabled = false;
         }
 
-        // Listeners dos Botões Internos do Simulador
+        // Listeners dos Botões Internos do Simulador (Slide 5)
         btnProximo.addEventListener('click', () => {
             if (etapaAtualSimulador < etapasSimulacao.length - 1) {
                 etapaAtualSimulador++;
                 renderizarEtapa(etapaAtualSimulador);
             } else {
                 // Fim da simulação, avança para o SLIDE de Revisão
-                irParaSlide(2);
-                renderizarRevisao(); // Prepara a revisão
+                irParaSlide(5); // Slide 6 (Revisão)
             }
         });
 
@@ -872,7 +856,7 @@
         });
 
         /* ----------------------------------------------
-        Funções da REVISÃO
+        Funções da REVISÃO (Slide 6)
         ----------------------------------------------
         */
         function renderizarRevisao() {
@@ -892,15 +876,16 @@
         }
 
         /* ----------------------------------------------
-        Funções do QUIZ
+        Funções do QUIZ (Slide 7)
         ----------------------------------------------
         */
         function iniciarQuiz() {
             perguntaAtualQuiz = 0;
             pontuacao = 0;
             quizAtivo = true;
-            // Limpa o container caso haja um resultado anterior
-            quizContainer.querySelector('.card-vidro').innerHTML = `
+            
+            // Limpa o container e constrói o esqueleto do quiz
+            quizContainer.innerHTML = `
                 <div id="quiz-header">
                     <h2><i class="fa-solid fa-vial-circle-check"></i> Quiz Interativo</h2>
                     <div id="quiz-contador" class="quiz-contador"></div>
@@ -909,7 +894,9 @@
                 <div id="quiz-opcoes"></div>
                 <div id="quiz-feedback"></div>
             `;
-            // Re-seleciona os elementos internos do quiz
+            quizContainer.classList.add('fade-enter');
+            
+            // Renderiza a primeira pergunta
             renderizarPergunta();
         }
 
@@ -982,7 +969,7 @@
 
         function mostrarResultado() {
             quizAtivo = false;
-            quizContainer.querySelector('.card-vidro').innerHTML = `
+            quizContainer.innerHTML = `
                 <div id="quiz-resultado">
                     <h2>Quiz Concluído!</h2>
                     <p>O seu resultado final foi:</p>
@@ -995,11 +982,11 @@
                     </button>
                 </div>
             `;
-            quizContainer.querySelector('.card-vidro').classList.add('fade-enter');
+            quizContainer.classList.add('fade-enter');
             
             // Adicionar 'listeners' aos novos botões
             document.getElementById('btn-reiniciar-quiz').addEventListener('click', reiniciarJornada);
-            document.getElementById('btn-ver-download').addEventListener('click', () => irParaSlide(4));
+            document.getElementById('btn-ver-download').addEventListener('click', () => irParaSlide(7)); // Vai para o slide 8 (Download)
         }
         
         function reiniciarJornada() {
@@ -1012,19 +999,18 @@
         ----------------------------------------------
         */
 
-        // Botão "Iniciar Simulação" (Slide 1)
+        // Botão "Iniciar Simulação" (Slide 4)
         btnIniciarSimulador.addEventListener('click', () => {
-            irParaSlide(1); // Vai para o slide 1 (Simulador)
-            renderizarEtapa(etapaAtualSimulador); // Renderiza a primeira etapa
+            irParaSlide(4); // Vai para o slide 5 (Simulador)
         });
 
-        // Botão "Iniciar Quiz" (Slide 3)
+        // Botão "Iniciar Quiz" (Slide 6)
         btnIniciarQuiz.addEventListener('click', () => {
-            irParaSlide(3); // Vai para o slide 3 (Quiz)
+            irParaSlide(6); // Vai para o slide 7 (Quiz)
             iniciarQuiz(); // Inicia a lógica do quiz
         });
 
-        // Botão "Reiniciar" (Slide 5)
+        // Botão "Reiniciar" (Slide 8)
         btnReiniciarFinal.addEventListener('click', reiniciarJornada);
 
         /* ----------------------------------------------
@@ -1032,7 +1018,6 @@
         ----------------------------------------------
         */
         // A página começa no slide 0 (Intro) por defeito.
-        // Apenas atualizamos o estado das setas globais.
         atualizarSetasGlobais();
 
     </script>
