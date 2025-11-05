@@ -4,9 +4,306 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Jornada da Célula Maligna</title>
-    <link rel="stylesheet" href="style.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* --- Variáveis Globais de Cor --- */
+        :root {
+            --cor-fundo: #0a0a1a; /* Azul-noite/preto */
+            --cor-vidro: rgba(255, 255, 255, 0.05); /* Fundo de vidro transparente */
+            --borda-vidro: rgba(255, 255, 255, 0.2);
+            --cor-texto: #e0e0e0;
+            --cor-neon-principal: #00ffcc; /* Ciano/verde neon */
+            --cor-neon-secundaria: #ff00ff; /* Magenta */
+            --cor-fundo-botao: #000000;
+            --cor-correta: #00ff84;
+            --cor-incorreta: #ff3d3d;
+        }
+
+        /* --- Reset Básico e Fundo --- */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Container Principal --- */
+        .container-futurista {
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* --- Efeito "Glassmorphism" (Vidro Fosco) --- */
+        .card-vidro {
+            background: var(--cor-vidro);
+            border: 1px solid var(--borda-vidro);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- Cabeçalho Neon --- */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        header h1 {
+            font-size: 2.8rem;
+            color: var(--cor-neon-principal);
+            text-shadow: 0 0 10px var(--cor-neon-principal), 0 0 20px var(--cor-neon-principal);
+        }
+        header h1 .fa-spin {
+            color: var(--cor-neon-secundaria);
+        }
+        header p {
+            font-size: 1.2rem;
+            color: var(--cor-texto);
+        }
+
+        /* --- Estilos da Simulação --- */
+        #etapa-view {
+            min-height: 200px; /* Garante espaço */
+        }
+        .etapa-titulo {
+            font-weight: bold;
+            color: var(--cor-neon-secundaria);
+            letter-spacing: 1px;
+        }
+        #etapa-view h2 {
+            color: var(--cor-neon-principal);
+            font-size: 2rem;
+            margin-top: 10px;
+        }
+        .lista-caracteristicas {
+            list-style: none;
+            padding-left: 0;
+        }
+        .lista-caracteristicas li {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        .lista-caracteristicas .fa-solid {
+            margin-right: 10px;
+        }
+        .lista-caracteristicas .fa-atom {
+            color: var(--cor-neon-secundaria);
+        }
+
+
+        /* --- Botões de Navegação --- */
+        .botoes-navegacao {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            border-top: 1px solid var(--borda-vidro);
+            padding-top: 20px;
+        }
+
+        /* --- Estilo Base dos Botões Neon --- */
+        .btn-neon {
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 12px 25px;
+            border: 2px solid var(--cor-neon-principal);
+            border-radius: 8px;
+            background-color: var(--cor-fundo-botao);
+            color: var(--cor-neon-principal);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--cor-neon-principal);
+            transition: all 0.3s ease;
+        }
+        .btn-neon:hover {
+            background-color: var(--cor-neon-principal);
+            color: var(--cor-fundo-botao);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--cor-neon-principal);
+        }
+        .btn-neon:disabled {
+            border-color: #555;
+            color: #555;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        /* --- Botão de Download (variação de cor) --- */
+        .btn-neon-download {
+            display: inline-block;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 12px 25px;
+            border: 2px solid var(--cor-neon-secundaria);
+            border-radius: 8px;
+            background-color: var(--cor-fundo-botao);
+            color: var(--cor-neon-secundaria);
+            text-decoration: none;
+            box-shadow: 0 0 10px var(--cor-neon-secundaria);
+            transition: all 0.3s ease;
+        }
+        .btn-neon-download:hover {
+            background-color: var(--cor-neon-secundaria);
+            color: var(--cor-fundo-botao);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--cor-neon-secundaria);
+        }
+        .btn-neon-download .fa-solid {
+            margin-right: 8px;
+        }
+
+        /* --- Animação de Fade-in --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-enter {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- Estilos da Secção de Revisão --- */
+        #revisao-container h2 {
+            color: var(--cor-neon-principal);
+        }
+        .topico-revisao {
+            background: var(--cor-vidro);
+            border: 1px solid var(--borda-vidro);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        .topico-revisao h3 {
+            margin: 0 0 10px 0;
+            color: var(--cor-neon-secundaria);
+        }
+        .topico-revisao h3 i {
+            margin-right: 10px;
+        }
+        .topico-revisao p {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        /* ===================================================
+        ================= CSS DO QUIZ ===================
+        ===================================================
+        */
+
+        #quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #quiz-header h2 {
+            color: var(--cor-neon-principal);
+            margin: 0;
+        }
+        .quiz-contador {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--cor-neon-secundaria);
+        }
+
+        #quiz-pergunta {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        #quiz-opcoes {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        .btn-opcao {
+            font-size: 1rem;
+            padding: 15px 20px;
+            border: 2px solid var(--borda-vidro);
+            border-radius: 8px;
+            background: var(--cor-vidro);
+            color: var(--cor-texto);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        .btn-opcao:hover {
+            background: var(--cor-fundo-botao);
+            border-color: var(--cor-neon-principal);
+            color: var(--cor-neon-principal);
+        }
+
+        /* Classes de feedback do quiz */
+        .btn-opcao.correta {
+            border-color: var(--cor-correta);
+            background: rgba(0, 255, 132, 0.2);
+            color: var(--cor-correta);
+            box-shadow: 0 0 10px var(--cor-correta);
+        }
+        .btn-opcao.incorreta {
+            border-color: var(--cor-incorreta);
+            background: rgba(255, 61, 61, 0.2);
+            color: var(--cor-incorreta);
+            box-shadow: 0 0 10px var(--cor-incorreta);
+        }
+        .btn-opcao:disabled {
+            cursor: not-allowed;
+        }
+
+        #quiz-feedback {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            height: 30px; /* Garante espaço */
+        }
+        #quiz-feedback.feedback-correto {
+            color: var(--cor-correta);
+        }
+        #quiz-feedback.feedback-incorreto {
+            color: var(--cor-incorreta);
+        }
+        
+        #quiz-resultado {
+            text-align: center;
+        }
+        #quiz-resultado h2 {
+            color: var(--cor-neon-principal);
+            font-size: 2.5rem;
+        }
+        #quiz-resultado p {
+            font-size: 1.5rem;
+        }
+        #quiz-resultado .pontuacao-final {
+            color: var(--cor-neon-secundaria);
+            font-weight: bold;
+            font-size: 2rem;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 30px;
+        }
+    </style>
 </head>
 <body>
 
@@ -17,33 +314,33 @@
         </header>
 
         <main id="simulador-container" class="card-vidro">
-            
             <div id="etapa-view">
-                <span class="etapa-titulo">PASSO 0: A CÉLULA NORMAL</span>
-                <h2><i class="fa-solid fa-shield-heart"></i> O Cidadão Obediente</h2>
-                <p>
-                    Uma célula normal é um "cidadão obediente". Ela só se divide quando recebe um sinal externo (um "fator de crescimento") e para de se dividir quando recebe um sinal de parada (ex: contato com células vizinhas).
-                </p>
-                <ul class="lista-caracteristicas">
-                    <li><i class="fa-solid fa-circle-check"></i> Mecanismos de controle funcionam.</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Reparo de DNA está ativo.</li>
-                    <li><i class="fa-solid fa-circle-check"></i> Apoptose (suicídio celular) é ativada se o dano for irreparável.</li>
-                </ul>
-            </div>
-
+                </div>
             <nav class="botoes-navegacao">
                 <button id="btn-anterior" class="btn-neon" disabled><i class="fa-solid fa-caret-left"></i> Anterior</button>
                 <button id="btn-proximo" class="btn-neon">Próxima Mutação <i class="fa-solid fa-caret-right"></i></button>
             </nav>
         </main>
-
-        <section id="revisao" class="card-vidro" style="display: none;">
+        
+        <section id="revisao-container" class="card-vidro" style="display: none;">
             <h2><i class="fa-solid fa-book-open"></i> Tópicos de Revisão</h2>
-            </section>
+            <p>Estes são os pilares ("Hallmarks") que definem a transformação maligna.</p>
+            <div id="revisao-lista">
+                </div>
+            <nav class="botoes-navegacao">
+                <button id="btn-iniciar-quiz" class="btn-neon">Iniciar Quiz <i class="fa-solid fa-vial-circle-check"></i></button>
+            </nav>
+        </section>
 
-        <section id="quiz" class="card-vidro" style="display: none;">
-            <h2><i class="fa-solid fa-vial-circle-check"></i> Quiz Interativo</h2>
-            </section>
+        <section id="quiz-container" class="card-vidro" style="display: none;">
+            <div id="quiz-header">
+                <h2><i class="fa-solid fa-vial-circle-check"></i> Quiz Interativo</h2>
+                <div id="quiz-contador" class="quiz-contador"></div>
+            </div>
+            <div id="quiz-pergunta"></div>
+            <div id="quiz-opcoes"></div>
+            <div id="quiz-feedback"></div>
+        </section>
 
         <section id="download" class="card-vidro">
             <h2><i class="fa-solid fa-download"></i> Download da Apostila</h2>
@@ -57,6 +354,287 @@
             <p>Projeto Interativo de Biologia Celular | Criado com a ajuda do Parceiro de Programação</p>
         </footer>
     </div>
-    <script src="script.js"></script>
-    </body>
+    
+    <script>
+        /* ===================================================
+        DADOS DA APLICAÇÃO (Extraídos do PDF)
+        ===================================================
+        */
+
+        // --- DADOS DA SIMULAÇÃO (Passo a Passo) ---
+        const etapasSimulacao = [
+            { etapa: 0, titulo: "PASSO 0: A CÉLULA NORMAL", icone: "fa-solid fa-shield-heart", subtitulo: "O Cidadão Obediente", descricao: "Uma célula normal só se divide quando recebe um sinal externo ('fator de crescimento') e para quando recebe um sinal de parada. Ela é uma cidadã obediente.", caracteristicas: ["Mecanismos de controle (freios) funcionam.", "Reparo de DNA (Zeladores) está ativo.", "Apoptose (suicídio celular) é ativada se o dano for irreparável."]},
+            { etapa: 1, titulo: "PASSO 1: O ACELERADOR PRESO", icone: "fa-solid fa-rocket", subtitulo: "Autossuficiência (Oncogenes)", descricao: "O primeiro 'hit' (mutação). A célula agora comporta-se como se estivesse *sempre* a receber sinais para se dividir, mesmo sem eles. Este é o 'acelerador preso'.", caracteristicas: ["Ativação de **Proto-Oncogenes** para **Oncogenes** (hiperativos).", "Isto é uma mutação de **Ganho de Função**: basta 1 alelo mutado (é dominante).", "Exemplos: Mutação pontual (BRAF), Amplificação (HER2), Translocação (BCR-ABL)."]},
+            { etapa: 2, titulo: "PASSO 2: O FREIO QUEBRADO", icone: "fa-solid fa-brake", subtitulo: "Insensibilidade aos Sinais de Parada", descricao: "A célula agora ignora todos os sinais internos ou externos que mandam parar a divisão. Os 'freios' (Genes Supressores de Tumor) estão quebrados.", caracteristicas: ["Mutação de **Perda de Função**: ambos os alelos devem ser inativados (é recessivo).", "**RB (O Porteiro)**: Perder o RB deixa o 'portão' G1/S cronicamente aberto.", "**TP53 (O Guardião)**: Perder o p53 torna a célula 'cega' ao dano no DNA. Ela não para, não conserta e não morre."]},
+            { etapa: 3, titulo: "PASSO 3: A IMORTALIDADE", icone: "fa-solid fa-infinity", subtitulo: "Potencial Replicativo Ilimitado", descricao: "Células normais têm um 'relógio' (Telômeros) que encurta a cada divisão. A célula maligna precisa parar este relógio.", caracteristicas: ["A célula reativa a enzima **Telomerase**.", "A Telomerase reconstrói os telômeros nas pontas dos cromossomas.", "A célula 'rouba' o segredo da imortalidade das células germinativas."]},
+            { etapa: 4, titulo: "PASSO 4: A LOGÍSTICA", icone: "fa-solid fa-truck-fast", subtitulo: "Angiogénese Sustentada", descricao: "Um tumor não pode crescer além de 1-2mm sem o seu próprio suprimento de sangue. Ele precisa de 'convencer' o corpo a construir-lhe uma rede de vasos.", caracteristicas: ["O tumor ativa o 'Interruptor Angiogénico'.", "Liberta fatores pró-angiogénicos, como o **VEGF**.", "Os novos vasos são tortuosos e servem como 'autoestrada' para a metástase."]},
+            { etapa: 5, titulo: "PASSO 5: IGNORAR O SUICÍDIO", icone: "fa-solid fa-ghost", subtitulo: "Evasão da Apoptose", descricao: "Mesmo com mutações, a célula deveria ativar o suicídio programado (Apoptose). A célula maligna precisa de desativar esta rede de segurança.", caracteristicas: ["A célula pode **mutar o p53** (o principal 'sensor' que ativa a apoptose).", "A célula pode **superexpressar BCL-2** (o 'protetor' da mitocôndria).", "Isto confere resistência direta à quimioterapia e radioterapia."]},
+            { etapa: 6, titulo: "PASSO 6: A FUGA", icone: "fa-solid fa-person-running", subtitulo: "Invasão e Transição (EMT)", descricao: "A célula está pronta para sair do tumor primário. Ela precisa de se soltar das suas vizinhas e tornar-se móvel.", caracteristicas: ["**Perda da E-caderina**: A 'cola' que une as células é desativada.", "**EMT (Transição Epitélio-Mesenquimal)**: Um programa genético é ativado, mudando a forma da célula.", "**MMPs (Metaloproteinases)**: A célula secreta enzimas que 'cavam' um túnel."]},
+            { etapa: 7, titulo: "PASSO 7: O MANTO DA INVISIBILIDADE", icone: "fa-solid fa-shield-halved", subtitulo: "Evasão do Sistema Imune", descricao: "O nosso sistema imune (Linfócitos T) é desenhado para encontrar e matar células com mutações. A célula maligna precisa de se esconder.", caracteristicas: ["**Estratégia PD-L1**: A célula tumoral aprende a expressar **PD-L1** na sua superfície.", "O Linfócito T (que tem **PD-1**) liga-se ao PD-L1 do tumor.", "Esta ligação 'desliga' o Linfócito T no exato momento do ataque."]},
+            { etapa: 8, titulo: "PASSO 8: A TRANSFORMAÇÃO MALIGNA", icone: "fa-solid fa-skull-crossbones", subtitulo: "Metástase e Colonização", descricao: "A célula escapou, tornou-se invisível e agora viaja pela 'autoestrada' (vasos sanguíneos) para formar novos tumores em órgãos distantes.", caracteristicas: ["**Intravasamento**: A célula entra no vaso sanguíneo.", "**Sobrevivência**: Sobrevive ao stress da corrente sanguínea.", "**Colonização**: A célula 'ancora' e 'germina' num novo órgão (Teoria da 'Semente e Solo')."]}
+        ];
+
+        // --- DADOS DA REVISÃO ---
+        const topicosRevisao = [
+            { icone: "fa-solid fa-clone", titulo: "Módulo 1: Doença Clonal (Múltiplos 'Hits')", texto: "O câncer é uma doença genética clonal. Começa com uma célula, mas requer uma *sucessão* de mutações ('hits') para progredir. Herdamos o 'primeiro hit' em síndromes hereditárias." },
+            { icone: "fa-solid fa-car-burst", titulo: "Módulo 2: Aceleradores (Oncogenes) e Freios (Supressores)", texto: "A progressão é iniciada por duas falhas principais: (1) 'aceleradores presos' (ativação de Oncogenes como RAS, HER2) e (2) 'freios quebrados' (perda de Supressores de Tumor como RB, p53)." },
+            { icone: "fa-solid fa-battery-full", titulo: "Módulo 3: A Sustentação (Imortalidade e Logística)", texto: "Para se sustentar, o tumor (1) reativa a **Telomerase** para se tornar imortal, (2) secreta **VEGF** para criar vasos (Angiogénese) e (3) desativa o suicídio (Apoptose) ao mutar p53 ou superexpressar BCL-2." },
+            { icone: "fa-solid fa-map-signs", titulo: "Módulo 4: A Letalidade (Invasão e Metástase)", texto: "A letalidade vem da metástase. A célula perde a 'cola' (**E-caderina**), torna-se móvel (**EMT**), 'cava' o tecido (**MMPs**) e viaja para um 'solo' compatível (Semente e Solo)." },
+            { icone: "fa-solid fa-users-cog", titulo: "Módulo 5: O Ecossistema (Metabolismo e Evasão Imune)", texto: "O tumor manipula o seu ambiente. Ele muda seu metabolismo para 'roubar' glicose (**Efeito Warburg**) e 'desliga' o sistema imune ao expressar **PD-L1**." },
+            { icone: "fa-solid fa-crosshairs", titulo: "Módulo 6: Oncologia de Precisão (Terapias-Alvo)", texto: "A medicina moderna ataca estes pilares. A Terapia-Alvo (ex: Inibidores de BRAF) ataca os 'aceleradores viciados', e a Imunoterapia (ex: Anti-PD-1) 'corta os freios' do sistema imune." }
+        ];
+
+        // --- DADOS DO QUIZ (20 PERGUNTAS) ---
+        const quizData = [
+            { pergunta: "Qual é a principal característica que define um tumor como 'maligno' em vez de 'benigno'?", opcoes: ["Crescimento rápido", "Ser encapsulado", "Capacidade de metástase", "Ser bem diferenciado"], correta: 2 },
+            { pergunta: "O 'Cromossoma Filadélfia' t(9;22) é um exemplo clássico de ativação de oncogene por qual mecanismo?", opcoes: ["Amplificação Génica", "Mutação Pontual", "Translocação Cromossómica", "Perda de Heterozigotia"], correta: 2 },
+            { pergunta: "Segundo a hipótese dos 'Dois Hits' de Knudson, para um gene supressor de tumor (como o RB) causar câncer, o que é necessário?", opcoes: ["Apenas um alelo (hit) precisa ser mutado", "Ambos os alelos (dois hits) precisam ser inativados", "Apenas o alelo herdado (primeiro hit) importa", "Nenhum hit é necessário, o gene é dominante"], correta: 1 },
+            { pergunta: "Qual gene é conhecido como o 'Guardião do Genoma' por parar o ciclo celular em resposta a danos no DNA?", opcoes: ["RAS", "HER2", "TP53 (p53)", "MYC"], correta: 2 },
+            { pergunta: "Proto-oncogenes são...?", opcoes: ["Genes mutados que causam câncer", "Genes normais que regulam a proliferação", "Genes que reparam o DNA", "Genes que causam apoptose"], correta: 1 },
+            { pergunta: "Genes como BRCA1 e BRCA2, que reparam o DNA, são classificados como que tipo de supressores de tumor?", opcoes: ["Gatekeepers (Guardiões)", "Oncogenes", "Fatores de crescimento", "Caretakers (Zeladores)"], correta: 3 },
+            { pergunta: "Qual enzima a maioria dos cânceres reativa para alcançar a 'imortalidade' e manter o comprimento dos telômeros?", opcoes: ["DNA Polimerase", "Telomerase", "Helicase", "Quinase"], correta: 1 },
+            { pergunta: "O processo de formação de novos vasos sanguíneos para 'alimentar' o tumor é chamado de:", opcoes: ["Metástase", "Apoptose", "Angiogénese", "Senescência"], correta: 2 },
+            { pergunta: "Qual é o principal fator de crescimento secretado pelo tumor para induzir a angiogénese?", opcoes: ["EGF", "PDGF", "BCL-2", "VEGF"], correta: 3 },
+            { pergunta: "Qual proteína anti-morte é frequentemente superexpressada em linfomas (ex: t(14;18)) para evadir a apoptose?", opcoes: ["BAX", "p53", "BCL-2", "E-caderina"], correta: 2 },
+            { pergunta: "A perda de qual proteína de 'cola' celular é um passo crucial para a invasão e o início da metástase?", opcoes: ["Vimentina", "E-caderina", "N-caderina", "Colagénio"], correta: 1 },
+            { pergunta: "O programa genético que transforma uma célula epitelial (estática) numa célula mesenquimal (móvel) chama-se:", opcoes: ["Angiogénese", "Efeito Warburg", "EMT (Transição Epitélio-Mesenquimal)", "Mutação KRAS"], correta: 2 },
+            { pergunta: "A teoria que explica por que o câncer de próstata vai para os ossos (um 'solo' fértil) é chamada de:", opcoes: ["Teoria da Semente e Solo", "Teoria dos Múltiplos Hits", "Paradigma de Knudson", "Efeito Warburg"], correta: 0 },
+            { pergunta: "O 'Efeito Warburg', a base do PET-Scan, descreve a tendência do câncer de consumir grandes quantidades de:", opcoes: ["Oxigénio", "Gordura", "Glicose", "Proteínas"], correta: 2 },
+            { pergunta: "Como o câncer escapa do sistema imune usando o 'freio' (checkpoint) mais comum?", opcoes: ["Desligando o BCL-2", "Expressando PD-L1 para se ligar ao PD-1 do Linfócito T", "Secretando VEGF", "Reativando a Telomerase"], correta: 1 },
+            { pergunta: "A imunoterapia (ex: Nivolumabe) funciona ao...", opcoes: ["Bloquear o 'freio' PD-1/PD-L1, reativando o Linfócito T", "Envenenar células em divisão rápida", "Bloquear o receptor HER2", "Inibir a Telomerase"], correta: 0 },
+            { pergunta: "Tumores MSI-H (Alta Instabilidade de Microssatélites) respondem bem à imunoterapia. Porquê?", opcoes: ["Porque têm poucos neoantígenos", "Porque têm muitos neoantígenos (muitas mutações)", "Porque não expressam PD-L1", "Porque são tumores 'frios'"], correta: 1 },
+            { pergunta: "Qual fármaco é um exemplo de 'terapia-alvo' desenhado especificamente para o receptor HER2-positivo no câncer de mama?", opcoes: ["Imatinibe", "Trastuzumabe (Herceptin)", "Paclitaxel (Quimioterapia)", "Nivolumabe"], correta: 1 },
+            { pergunta: "O fármaco Imatinibe (Gleevec) revolucionou o tratamento da LMC ao alvejar qual proteína de fusão específica?", opcoes: ["BRAF V600E", "HER2", "BCR-ABL", "KRAS"], correta: 2 },
+            { pergunta: "O que é uma 'Biópsia Líquida'?", opcoes: ["Uma biópsia de um tumor com necrose líquida", "Um exame de sangue que deteta DNA tumoral circulante (ctDNA)", "A análise do líquido linfático", "Um tipo de PET-Scan"], correta: 1 }
+        ];
+
+
+        /* ===================================================
+        LÓGICA DA APLICAÇÃO (O CÉREBRO)
+        ===================================================
+        */
+
+        // --- SELETORES DO DOM ( agarrar os elementos HTML) ---
+        const simuladorContainer = document.getElementById('simulador-container');
+        const etapaView = document.getElementById('etapa-view');
+        const btnAnterior = document.getElementById('btn-anterior');
+        const btnProximo = document.getElementById('btn-proximo');
+
+        const revisaoContainer = document.getElementById('revisao-container');
+        const revisaoLista = document.getElementById('revisao-lista');
+        const btnIniciarQuiz = document.getElementById('btn-iniciar-quiz');
+
+        const quizContainer = document.getElementById('quiz-container');
+        const quizHeader = document.getElementById('quiz-header');
+        const quizContador = document.getElementById('quiz-contador');
+        const quizPergunta = document.getElementById('quiz-pergunta');
+        const quizOpcoes = document.getElementById('quiz-opcoes');
+        const quizFeedback = document.getElementById('quiz-feedback');
+
+
+        // --- VARIÁVEIS DE ESTADO (a memória do programa) ---
+        let etapaAtual = 0;
+        let estadoAtualApp = 'simulacao'; // 'simulacao', 'revisao', 'quiz'
+        let perguntaAtualQuiz = 0;
+        let pontuacao = 0;
+        let quizAtivo = false;
+
+
+        /* ----------------------------------------------
+        Funções da SIMULAÇÃO (Passo a Passo)
+        ----------------------------------------------
+        */
+        function renderizarEtapa(etapaIndex) {
+            const etapa = etapasSimulacao[etapaIndex];
+            etapaView.innerHTML = `
+                <span class="etapa-titulo">${etapa.titulo}</span>
+                <h2><i class="${etapa.icone}"></i> ${etapa.subtitulo}</h2>
+                <p>${etapa.descricao}</p>
+                <ul class="lista-caracteristicas">
+                    ${etapa.caracteristicas.map(item => `<li><i class="fa-solid fa-atom fa-spin"></i> ${item}</li>`).join('')}
+                </ul>
+            `;
+            
+            etapaView.classList.add('fade-enter');
+            setTimeout(() => {
+                etapaView.classList.remove('fade-enter');
+            }, 500);
+
+            atualizarBotoesSimulador();
+        }
+
+        function atualizarBotoesSimulador() {
+            btnAnterior.disabled = (etapaAtual === 0);
+            
+            if (etapaAtual === etapasSimulacao.length - 1) {
+                btnProximo.innerHTML = 'Ver Revisão <i class="fa-solid fa-book-open"></i>';
+            } else {
+                btnProximo.innerHTML = 'Próxima Mutação <i class="fa-solid fa-caret-right"></i>';
+            }
+            btnProximo.disabled = false;
+        }
+
+        /* ----------------------------------------------
+        Funções da REVISÃO
+        ----------------------------------------------
+        */
+        function renderizarRevisao() {
+            estadoAtualApp = 'revisao';
+            simuladorContainer.style.display = 'none';
+            revisaoContainer.style.display = 'block';
+            revisaoContainer.classList.add('fade-enter');
+
+            revisaoLista.innerHTML = ''; // Limpar a lista
+            topicosRevisao.forEach((topico, index) => {
+                const topicoDiv = document.createElement('div');
+                topicoDiv.className = 'topico-revisao';
+                topicoDiv.style.animationDelay = `${index * 0.1}s`; 
+                topicoDiv.innerHTML = `
+                    <h3><i class="${topico.icone}"></i> ${topico.titulo}</h3>
+                    <p>${topico.texto}</p>
+                `;
+                revisaoLista.appendChild(topicoDiv);
+            });
+        }
+
+        /* ----------------------------------------------
+        Funções do QUIZ
+        ----------------------------------------------
+        */
+        function iniciarQuiz() {
+            estadoAtualApp = 'quiz';
+            revisaoContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            quizContainer.classList.add('fade-enter');
+
+            perguntaAtualQuiz = 0;
+            pontuacao = 0;
+            quizAtivo = true;
+            renderizarPergunta();
+        }
+
+        function renderizarPergunta() {
+            if (perguntaAtualQuiz >= quizData.length) {
+                mostrarResultado();
+                return;
+            }
+
+            quizAtivo = true;
+            const pergunta = quizData[perguntaAtualQuiz];
+
+            quizContador.innerHTML = `Pergunta ${perguntaAtualQuiz + 1} de ${quizData.length}`;
+            quizPergunta.innerHTML = pergunta.pergunta;
+            quizOpcoes.innerHTML = '';
+            quizFeedback.innerHTML = '';
+            quizFeedback.className = '';
+
+            pergunta.opcoes.forEach((opcao, index) => {
+                quizOpcoes.innerHTML += `
+                    <button class="btn-opcao" onclick="selecionarResposta(${index})">
+                        ${opcao}
+                    </button>
+                `;
+            });
+
+            // Animação de entrada da pergunta
+            quizPergunta.classList.add('fade-enter');
+            quizOpcoes.classList.add('fade-enter');
+            setTimeout(() => {
+                quizPergunta.classList.remove('fade-enter');
+                quizOpcoes.classList.remove('fade-enter');
+            }, 500);
+        }
+
+        // Esta função é chamada pelo 'onclick' nos botões de opção
+        function selecionarResposta(indexOpcao) {
+            if (!quizAtivo) return; // Prevenir cliques múltiplos
+            quizAtivo = false;
+
+            const pergunta = quizData[perguntaAtualQuiz];
+            const botoesOpcao = quizOpcoes.querySelectorAll('.btn-opcao');
+
+            // Desativar todos os botões
+            botoesOpcao.forEach(btn => btn.disabled = true);
+
+            if (indexOpcao === pergunta.correta) {
+                // Resposta Correta
+                botoesOpcao[indexOpcao].classList.add('correta');
+                quizFeedback.innerHTML = 'Correto! <i class="fa-solid fa-check-circle"></i>';
+                quizFeedback.className = 'feedback-correto';
+                pontuacao++;
+            } else {
+                // Resposta Incorreta
+                botoesOpcao[indexOpcao].classList.add('incorreta');
+                botoesOpcao[pergunta.correta].classList.add('correta'); // Mostrar a correta
+                quizFeedback.innerHTML = 'Incorreto. <i class="fa-solid fa-times-circle"></i>';
+                quizFeedback.className = 'feedback-incorreto';
+            }
+
+            // Pausa para o utilizador ver o feedback, depois avança
+            setTimeout(() => {
+                perguntaAtualQuiz++;
+                renderizarPergunta();
+            }, 1500); // 1.5 segundos de pausa
+        }
+
+        function mostrarResultado() {
+            quizAtivo = false;
+            quizContainer.innerHTML = `
+                <div id="quiz-resultado">
+                    <h2>Quiz Concluído!</h2>
+                    <p>O seu resultado final foi:</p>
+                    <p class="pontuacao-final">${pontuacao} de ${quizData.length}</p>
+                    <button id="btn-reiniciar" class="btn-neon">
+                        <i class="fa-solid fa-refresh"></i> Reiniciar Jornada
+                    </button>
+                </div>
+            `;
+            quizContainer.classList.add('fade-enter');
+            
+            // Adicionar 'listener' ao novo botão de reiniciar
+            document.getElementById('btn-reiniciar').addEventListener('click', reiniciarJornada);
+        }
+        
+        function reiniciarJornada() {
+            // Recarregar a página é a forma mais simples e limpa de reiniciar
+            location.reload(); 
+        }
+
+        /* ----------------------------------------------
+        "OUVINTES" DE EVENTOS PRINCIPAIS
+        ----------------------------------------------
+        */
+
+        // Botão "Próximo" da Simulação
+        btnProximo.addEventListener('click', () => {
+            if (estadoAtualApp === 'simulacao') {
+                if (etapaAtual < etapasSimulacao.length - 1) {
+                    etapaAtual++;
+                    renderizarEtapa(etapaAtual);
+                } else {
+                    // Clicou em "Ver Revisão"
+                    renderizarRevisao();
+                }
+            }
+        });
+
+        // Botão "Anterior" da Simulação
+        btnAnterior.addEventListener('click', () => {
+            if (etapaAtual > 0) {
+                etapaAtual--;
+                renderizarEtapa(etapaAtual);
+            }
+        });
+        
+        // Botão "Iniciar Quiz" da Revisão
+        btnIniciarQuiz.addEventListener('click', iniciarQuiz);
+
+        /* ----------------------------------------------
+        INICIALIZAÇÃO (Ao carregar a página)
+        ----------------------------------------------
+        */
+        renderizarEtapa(etapaAtual);
+
+    </script>
+</body>
 </html>
