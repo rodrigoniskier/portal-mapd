@@ -21,26 +21,60 @@
             --cor-incorreta: #ff3d3d;
         }
 
-        /* --- Reset Básico e Fundo --- */
-        body {
+        /* --- Reset Básico e Estrutura de Slides --- */
+        html, body {
             font-family: 'Arial', sans-serif;
             background-color: var(--cor-fundo);
             color: var(--cor-texto);
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* A MUDANÇA PRINCIPAL: desativa a rolagem da página */
             line-height: 1.6;
         }
 
-        /* --- Container Principal --- */
+        .slide-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            /* A transição que move os slides */
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0;
+            /* Permite rolagem *dentro* do slide se o conteúdo for muito grande */
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-sizing: border-box; /* Garante que o padding não quebre o layout */
+            
+            /* Centraliza o conteúdo dentro do slide */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        /* O container do *conteúdo* dentro de cada slide */
         .container-futurista {
             width: 100%;
             max-width: 900px;
             margin: auto;
+            /* Remove a necessidade de altura 100% para o conteúdo */
+            padding: 40px 0; /* Espaçamento vertical para o conteúdo */
         }
+        
+        /* Ajuste para o slide do simulador não centralizar verticalmente */
+        .slide.slide-simulador {
+            align-items: flex-start;
+        }
+        .slide.slide-intro {
+             align-items: flex-start; /* Permite que a intro longa role */
+        }
+
 
         /* --- Efeito "Glassmorphism" (Vidro Fosco) --- */
         .card-vidro {
@@ -123,6 +157,7 @@
             display: flex;
             justify-content: space-around;
             padding: 20px 0;
+            gap: 15px;
         }
         .schema-box {
             border: 2px dashed var(--borda-vidro);
@@ -130,6 +165,7 @@
             padding: 20px;
             text-align: center;
             width: 30%;
+            flex: 1;
         }
         .schema-box h4 {
             margin: 0 0 10px 0;
@@ -156,6 +192,13 @@
             font-weight: bold;
             color: var(--cor-neon-secundaria);
         }
+        /* Responsividade da tabela */
+        @media (max-width: 700px) {
+            .tabela-comparativa {
+                display: block;
+                overflow-x: auto;
+            }
+        }
 
         /* --- Esquema: Estadiamento TNM --- */
         .tnm-schema {
@@ -179,39 +222,19 @@
         .tnm-box h4.t { color: #00aaff; } /* Azul */
         .tnm-box h4.n { color: #ffaa00; } /* Laranja */
         .tnm-box h4.m { color: #ff3d3d; } /* Vermelho */
-        
-        /* --- Esquema: Hipótese dos 2 "Hits" --- */
-        .schema-hits {
-            display: flex;
-            justify-content: space-around;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .hit-box {
-            flex: 1;
-            background: var(--cor-vidro);
-            border: 1px solid var(--borda-vidro);
-            border-radius: 10px;
-            padding: 20px;
-        }
-        .hit-box h4 {
-            color: var(--cor-neon-principal);
-            margin-top: 0;
-        }
-        .gene {
-            display: flex;
-            justify-content: center;
-            gap: 5px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 15px 0;
-        }
-        .alelo-bom { color: #00ff84; }
-        .alelo-mau { color: #ff3d3d; }
+        /* Responsividade dos esquemas */
+         @media (max-width: 700px) {
+            .schema-definicoes, .tnm-schema {
+                flex-direction: column;
+            }
+            .schema-box {
+                width: 100%;
+            }
+         }
 
-        /* --- Estilos da Simulação --- */
+        /* --- Estilos da Simulação (Interna) --- */
         #etapa-view {
-            min-height: 200px; /* Garante espaço */
+            min-height: 200px;
         }
         .etapa-titulo {
             font-weight: bold;
@@ -219,7 +242,7 @@
             letter-spacing: 1px;
         }
         #etapa-view h2 {
-            border-bottom: none; /* Remover borda da intro */
+            border-bottom: none;
             font-size: 2rem;
             margin-top: 10px;
         }
@@ -242,11 +265,8 @@
             left: 0;
             top: 0;
         }
-        .lista-caracteristicas .fa-solid {
-            margin-right: 10px;
-        }
 
-        /* --- Botões de Navegação --- */
+        /* --- Botões de Navegação (Internos) --- */
         .botoes-navegacao {
             display: flex;
             justify-content: space-between;
@@ -255,7 +275,7 @@
             padding-top: 20px;
         }
 
-        /* --- Estilo Base dos Botões Neon --- */
+        /* --- Estilo Base dos Botões Neon (Internos) --- */
         .btn-neon {
             font-size: 1rem;
             font-weight: bold;
@@ -281,7 +301,6 @@
             cursor: not-allowed;
             transform: scale(1);
         }
-        /* Botão grande para iniciar a simulação */
         #btn-iniciar-simulador {
             display: block;
             width: 100%;
@@ -314,7 +333,7 @@
             margin-right: 8px;
         }
 
-        /* --- Animação de Fade-in --- */
+        /* --- Animação de Fade-in (Para conteúdo interno) --- */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -353,11 +372,7 @@
             line-height: 1.5;
         }
         
-        /* ===================================================
-        ================= CSS DO QUIZ ===================
-        ===================================================
-        */
-
+        /* --- CSS DO QUIZ --- */
         #quiz-header {
             display: flex;
             justify-content: space-between;
@@ -372,13 +387,11 @@
             font-weight: bold;
             color: var(--cor-neon-secundaria);
         }
-
         #quiz-pergunta {
             font-size: 1.5rem;
             margin-bottom: 25px;
             line-height: 1.4;
         }
-
         #quiz-opcoes {
             display: grid;
             grid-template-columns: 1fr;
@@ -400,8 +413,7 @@
             border-color: var(--cor-neon-principal);
             color: var(--cor-neon-principal);
         }
-
-        /* Classes de feedback do quiz */
+        /* Feedback do quiz */
         .btn-opcao.correta {
             border-color: var(--cor-correta);
             background: rgba(0, 255, 132, 0.2);
@@ -417,13 +429,12 @@
         .btn-opcao:disabled {
             cursor: not-allowed;
         }
-
         #quiz-feedback {
             font-size: 1.2rem;
             font-weight: bold;
             text-align: center;
             margin-top: 20px;
-            height: 30px; /* Garante espaço */
+            height: 30px;
         }
         #quiz-feedback.feedback-correto {
             color: var(--cor-correta);
@@ -431,12 +442,10 @@
         #quiz-feedback.feedback-incorreto {
             color: var(--cor-incorreta);
         }
-        
         #quiz-resultado {
             text-align: center;
         }
         #quiz-resultado h2 {
-            color: var(--cor-neon-principal);
             font-size: 2.5rem;
         }
         #quiz-resultado p {
@@ -446,6 +455,40 @@
             color: var(--cor-neon-secundaria);
             font-weight: bold;
             font-size: 2rem;
+        }
+        
+        /* --- NAVEGAÇÃO GLOBAL DE SLIDES (SETAS) --- */
+        .nav-seta {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            cursor: pointer;
+            
+            font-size: 3rem;
+            color: var(--borda-vidro);
+            background: var(--cor-fundo-botao);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            transition: all 0.3s ease;
+        }
+        .nav-seta:hover {
+            color: var(--cor-neon-principal);
+            background: var(--cor-vidro);
+            box-shadow: 0 0 15px var(--cor-neon-principal);
+        }
+        
+        #nav-seta-esquerda {
+            left: 20px;
+            display: none; /* Começa escondida */
+        }
+        #nav-seta-direita {
+            right: 20px;
         }
 
         footer {
@@ -458,190 +501,219 @@
 </head>
 <body>
 
-    <div class="container-futurista">
-        <header>
-            <h1><i class="fa-solid fa-microscope fa-spin"></i> Patologia do Câncer</h1>
-            <p>Uma jornada interativa pelos mecanismos da transformação maligna</p>
-        </header>
+    <div id="nav-seta-esquerda" class="nav-seta"><i class="fa-solid fa-chevron-left"></i></div>
+    <div id="nav-seta-direita" class="nav-seta"><i class="fa-solid fa-chevron-right"></i></div>
 
-        <section id="intro-container" class="card-vidro">
-            
-            <h2><i class="fa-solid fa-book"></i> 1. Conceitos Preliminares</h2>
-            <p>Antes de mergulharmos na simulação, vamos definir os termos essenciais.</p>
-            
-            <div class="schema-definicoes">
-                <div class="schema-box">
-                    <h4><i class="fa-solid fa-flask"></i> Neoplasia</h4>
-                    <p>O <span class="highlight-1">processo</span> de "novo crescimento". É a proliferação celular anormal e autónoma. Pode ser benigna ou maligna.</p>
-                </div>
-                <div class="schema-box">
-                    <h4><i class="fa-solid fa-disease"></i> Tumor</h4>
-                    <p>O <span class="highlight-1">resultado</span>. Um "inchaço" ou massa. Em oncologia, é usado como sinónimo de neoplasia, mas um tumor pode tecnicamente ser inflamatório.</p>
-                </div>
-                <div class="schema-box">
-                    <h4><i class="fa-solid fa-skull-crossbones"></i> Câncer</h4>
-                    <p>O <span class="highlight-1">termo clínico/comum</span> para qualquer <span class="highlight-2">Neoplasia Maligna</span>.</p>
-                </div>
-            </div>
-            <ul>
-                <li><strong>Oncologia:</strong> É a especialidade médica que estuda e trata as neoplasias (o câncer).</li>
-            </ul>
+    <div class="slide-wrapper">
 
-            <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
-
-            <h2><i class="fa-solid fa-globe-americas"></i> 2. Epidemiologia (INCA 2023-2025)</h2>
-            <p>O câncer é um problema de saúde pública global. No Brasil, os dados são baseados nas estimativas do <span class="highlight-1">Instituto Nacional de Câncer (INCA)</span>.</p>
-            <ul>
-                <li><strong>Mundo:</strong> A estimativa (GLOBOCAN 2020) aponta para cerca de <span class="highlight-2">19 milhões de casos novos</span> por ano. Os mais incidentes são os de mama, pulmão e colorretal.</li>
-                <li><strong>Brasil:</strong> A estimativa para o triénio 2023-2025 é de <span class="highlight-2">704 mil casos novos por ano</span>. Excluindo o câncer de pele não melanoma (o mais comum, mas de baixa letalidade), os mais frequentes são os de <span class="highlight-1">mama feminina</span> (73 mil) e <span class="highlight-1">próstata</span> (71 mil), seguidos por <span class="highlight-1">cólon e reto</span> (45 mil).</li>
-                <li><strong>Região Nordeste:</strong> Estimam-se <span class="highlight-2">~110 mil casos novos por ano</span> (excluindo pele não melanoma). Os mais incidentes em homens são próstata e cólon e reto; em mulheres, são mama e cólon e reto, com o câncer de colo do útero tendo alta relevância.</li>
-                <li><strong>Paraíba:</strong> A estimativa é de cerca de <span class="highlight-2">25.460 novos casos por ano</span> (incluindo pele não melanoma), sendo 12.120 em homens e 13.340 em mulheres.</li>
-            </ul>
-
-            <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
-
-            <h2><i class="fa-solid fa-table-list"></i> 3. Benigno vs. Maligno</h2>
-            <p>A diferença fundamental em patologia é a classificação de uma neoplasia. Usamos as características do seu PDF de referência:</p>
-            
-            <table class="tabela-comparativa">
-                <thead>
-                    <tr>
-                        <th>Característica</th>
-                        <th>Neoplasia Benigna</th>
-                        <th>Neoplasia Maligna (Câncer)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Diferenciação</td>
-                        <td><span class="highlight-1">Bem diferenciado</span> (assemelha-se ao tecido original)</td>
-                        <td><span class="highlight-2">Mal diferenciado</span> ou <span class="highlight-2">Anaplásico</span> (perda da semelhança)</td>
-                    </tr>
-                    <tr>
-                        <td>Taxa de Crescimento</td>
-                        <td>Lenta, poucas mitoses</td>
-                        <td>Rápida, muitas mitoses (frequentemente atípicas)</td>
-                    </tr>
-                    <tr>
-                        <td>Invasão Local</td>
-                        <td><span class="highlight-1">Não invasivo</span>, cresce por expansão, geralmente encapsulado</td>
-                        <td><span class="highlight-2">Invasivo e infiltrativo</span>, destrói tecidos, sem cápsula definida</td>
-                    </tr>
-                    <tr>
-                        <td>Metástase</td>
-                        <td><span class="highlight-1">Ausente</span></td>
-                        <td><span class="highlight-2">Presente</span> (capacidade de disseminar). É a característica <span class="highlight-2">definitiva</span> da malignidade.</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
-
-            <h2><i class="fa-solid fa-magnifying-glass-chart"></i> 4. Conceitos Patológicos Essenciais</h2>
-
-            <h3>Nomenclatura (Como dar nome)</h3>
-            <p>A nomenclatura básica segue a origem celular:</p>
-            <ul>
-                <li><strong>Tumores Benignos:</strong> Usam o sufixo <span class="highlight-1">-OMA</span>. (Ex: <span class="highlight-1">Fibroma</span> = tumor benigno de tecido fibroso; <span class="highlight-1">Adenoma</span> = tumor benigno de glândula).</li>
-                <li><strong>Tumores Malignos (Câncer):</strong>
-                    <ul>
-                        <li>Origem Epitelial (pele, mucosas): <span class="highlight-2">CARCINOMA</span> (Ex: <span class="highlight-2">Adenocarcinoma</span>, Carcinoma Epidermoide).</li>
-                        <li>Origem Mesenquimal (osso, músculo, gordura): <span class="highlight-2">SARCOMA</span> (Ex: <span class="highlight-2">Osteossarcoma</span>, Lipossarcoma).</li>
-                        <li>Origem Hematopoiética (células do sangue): <span class="highlight-2">LEUCEMIAS</span> / <span class="highlight-2">LINFOMAS</span>.</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h3>Estadiamento (Qual o prognóstico?)</h3>
-            <p>O estadiamento descreve a extensão anatómica do câncer. O sistema <span class="highlight-1">TNM</span> é o mais usado e é a "fotografia" da doença no momento do diagnóstico:</p>
-            
-            <div class="tnm-schema">
-                <div class="tnm-box">
-                    <h4 class="t">T</h4>
-                    <p><strong>Tumor (Tamanho)</strong><br>Descreve o tamanho e a extensão local do tumor primário (Ex: T1 a T4). <span class="highlight-1">Tis</span> refere-se a 'Carcinoma in situ' (não invasivo).</p>
-                </div>
-                <div class="tnm-box">
-                    <h4 class="n">N</h4>
-                    <p><strong>Linfonodos (Nódulos)</strong><br>Descreve a presença e extensão de metástases nos linfonodos regionais (Ex: N0 (sem) a N3).</p>
-                </div>
-                <div class="tnm-box">
-                    <h4 class="m">M</h4>
-                    <p><strong>Metástase</strong><br>Descreve a presença de metástase à distância (em outros órgãos). <span class="highlight-2">M0</span> (sem metástase) vs. <span class="highlight-2">M1</span> (com metástase).</p>
-                </div>
-            </div>
-            <p style="text-align: center; margin-top: 15px;">Um <span class="highlight-1">T1 N0 M0</span> é um câncer inicial. Um <span class="highlight-2">T4 N2 M1</span> é um câncer avançado.</p>
-
-            <h3>Marcadores Tumorais vs. Moleculares</h3>
-            <ul>
-                <li><strong>Marcadores Tumorais (Sanguíneos):</strong> São substâncias (proteínas, enzimas) encontradas no sangue, produzidas pelo tumor ou pelo corpo em resposta a ele.
-                <br><strong>Uso:</strong> <span class="highlight-1">Não</span> servem para diagnóstico isolado, mas sim para <span class="highlight-1">monitorar</span> a resposta ao tratamento e detetar <span class="highlight-1">recidiva</span>.
-                <br><strong>Exemplos:</strong> <span class="highlight-1">PSA</span> (próstata), <span class="highlight-1">CA-125</span> (ovário), <span class="highlight-1">CEA</span> (cólon).</li>
+        <section class="slide slide-intro">
+            <div id="intro-container" class="container-futurista">
+                <header>
+                    <h1><i class="fa-solid fa-microscope fa-spin"></i> Patologia do Câncer</h1>
+                    <p>Uma jornada interativa pelos mecanismos da transformação maligna</p>
+                </header>
                 
-                <li><strong>Marcadores Moleculares (do Tumor):</strong> São as alterações genéticas <span class="highlight-2">dentro</span> do tumor (mutações, amplificações).
-                <br><strong>Uso:</strong> Essenciais para a <span class="highlight-2">Oncologia de Precisão</span>. Definem o prognóstico e, o mais importante, <span class="highlight-2">qual terapia-alvo usar</span>.
-                <br><strong>Exemplos:</strong> Mutação <span class="highlight-2">BRAF</span> (Melanoma), Amplificação <span class="highlight-2">HER2</span> (Mama), Expressão de <span class="highlight-2">PD-L1</span> (Imunoterapia).</li>
-            </ul>
+                <div class="card-vidro">
+                    <h2><i class="fa-solid fa-book"></i> 1. Conceitos Preliminares</h2>
+                    <p>Antes de mergulharmos na simulação, vamos definir os termos essenciais.</p>
+                    
+                    <div class="schema-definicoes">
+                        <div class="schema-box">
+                            <h4><i class="fa-solid fa-flask"></i> Neoplasia</h4>
+                            <p>O <span class="highlight-1">processo</span> de "novo crescimento". É a proliferação celular anormal e autónoma. Pode ser benigna ou maligna.</p>
+                        </div>
+                        <div class="schema-box">
+                            <h4><i class="fa-solid fa-disease"></i> Tumor</h4>
+                            <p>O <span class="highlight-1">resultado</span>. Um "inchaço" ou massa. Em oncologia, é usado como sinónimo de neoplasia, mas um tumor pode tecnicamente ser inflamatório.</p>
+                        </div>
+                        <div class="schema-box">
+                            <h4><i class="fa-solid fa-skull-crossbones"></i> Câncer</h4>
+                            <p>O <span class="highlight-1">termo clínico/comum</span> para qualquer <span class="highlight-2">Neoplasia Maligna</span>.</p>
+                        </div>
+                    </div>
+                    <ul>
+                        <li><strong>Oncologia:</strong> É a especialidade médica que estuda e trata as neoplasias (o câncer).</li>
+                    </ul>
 
-            <button id="btn-iniciar-simulador" class="btn-neon">Iniciar Simulação 🧬</button>
+                    <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
 
-        </section>
+                    <h2><i class="fa-solid fa-globe-americas"></i> 2. Epidemiologia (INCA 2023-2025)</h2>
+                    <p>O câncer é um problema de saúde pública global. No Brasil, os dados são baseados nas estimativas do <span class="highlight-1">Instituto Nacional de Câncer (INCA)</span>.</p>
+                    <ul>
+                        <li><strong>Mundo:</strong> A estimativa (GLOBOCAN 2020) aponta para cerca de <span class="highlight-2">19 milhões de casos novos</span> por ano. Os mais incidentes são os de mama, pulmão e colorretal.</li>
+                        <li><strong>Brasil:</strong> A estimativa para o triénio 2023-2025 é de <span class="highlight-2">704 mil casos novos por ano</span>. Excluindo o câncer de pele não melanoma, os mais frequentes são os de <span class="highlight-1">mama feminina</span> (73 mil) e <span class="highlight-1">próstata</span> (71 mil), seguidos por <span class="highlight-1">cólon e reto</span> (45 mil).</li>
+                        <li><strong>Região Nordeste:</strong> Estimam-se <span class="highlight-2">~110 mil casos novos por ano</span> (excluindo pele não melanoma). Os mais incidentes em homens são próstata e cólon e reto; em mulheres, são mama e cólon e reto, com o câncer de colo do útero tendo alta relevância.</li>
+                        <li><strong>Paraíba:</strong> A estimativa é de cerca de <span class="highlight-2">25.460 novos casos por ano</span> (incluindo pele não melanoma), sendo 12.120 em homens e 13.340 em mulheres.</li>
+                    </ul>
 
+                    <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
 
-        <main id="simulador-container" class="card-vidro" style="display: none;">
-            <div id="etapa-view">
+                    <h2><i class="fa-solid fa-table-list"></i> 3. Benigno vs. Maligno</h2>
+                    <p>A diferença fundamental em patologia é a classificação de uma neoplasia. Usamos as características do seu PDF de referência:</p>
+                    
+                    <table class="tabela-comparativa">
+                        <thead>
+                            <tr>
+                                <th>Característica</th>
+                                <th>Neoplasia Benigna</th>
+                                <th>Neoplasia Maligna (Câncer)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Diferenciação</td>
+                                <td><span class="highlight-1">Bem diferenciado</span> (assemelha-se ao tecido original)</td>
+                                <td><span class="highlight-2">Mal diferenciado</span> ou <span class="highlight-2">Anaplásico</span> (perda da semelhança)</td>
+                            </tr>
+                            <tr>
+                                <td>Taxa de Crescimento</td>
+                                <td>Lenta, poucas mitoses</td>
+                                <td>Rápida, muitas mitoses (frequentemente atípicas)</td>
+                            </tr>
+                            <tr>
+                                <td>Invasão Local</td>
+                                <td><span class="highlight-1">Não invasivo</span>, cresce por expansão, geralmente encapsulado</td>
+                                <td><span class="highlight-2">Invasivo e infiltrativo</span>, destrói tecidos, sem cápsula definida</td>
+                            </tr>
+                            <tr>
+                                <td>Metástase</td>
+                                <td><span class="highlight-1">Ausente</span></td>
+                                <td><span class="highlight-2">Presente</span> (capacidade de disseminar). É a característica <span class="highlight-2">definitiva</span> da malignidade.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
+
+                    <h2><i class="fa-solid fa-magnifying-glass-chart"></i> 4. Conceitos Patológicos Essenciais</h2>
+
+                    <h3>Nomenclatura (Como dar nome)</h3>
+                    <p>A nomenclatura básica segue a origem celular:</p>
+                    <ul>
+                        <li><strong>Tumores Benignos:</strong> Usam o sufixo <span class="highlight-1">-OMA</span>. (Ex: <span class="highlight-1">Fibroma</span>, <span class="highlight-1">Adenoma</span>).</li>
+                        <li><strong>Tumores Malignos (Câncer):</strong>
+                            <ul>
+                                <li>Origem Epitelial (pele, mucosas): <span class="highlight-2">CARCINOMA</span> (Ex: <span class="highlight-2">Adenocarcinoma</span>).</li>
+                                <li>Origem Mesenquimal (osso, músculo, gordura): <span class="highlight-2">SARCOMA</span> (Ex: <span class="highlight-2">Osteossarcoma</span>).</li>
+                                <li>Origem Hematopoiética (células do sangue): <span class="highlight-2">LEUCEMIAS</span> / <span class="highlight-2">LINFOMAS</span>.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h3>Estadiamento (Qual o prognóstico?)</h3>
+                    <p>O estadiamento descreve a extensão anatómica do câncer. O sistema <span class="highlight-1">TNM</span> é o mais usado:</p>
+                    
+                    <div class="tnm-schema">
+                        <div class="tnm-box">
+                            <h4 class="t">T</h4>
+                            <p><strong>Tumor (Tamanho)</strong><br>Descreve o tamanho e a extensão local do tumor (Ex: T1 a T4).</p>
+                        </div>
+                        <div class="tnm-box">
+                            <h4 class="n">N</h4>
+                            <p><strong>Linfonodos (Nódulos)</strong><br>Descreve a presença de metástases nos linfonodos regionais (Ex: N0 a N3).</p>
+                        </div>
+                        <div class="tnm-box">
+                            <h4 class="m">M</h4>
+                            <p><strong>Metástase</strong><br>Descreve a presença de metástase à distância. <span class="highlight-2">M0</span> (sem) vs. <span class="highlight-2">M1</span> (com).</p>
+                        </div>
+                    </div>
+
+                    <h3>Marcadores Tumorais vs. Moleculares</h3>
+                    <ul>
+                        <li><strong>Marcadores Tumorais (Sanguíneos):</strong> Substâncias no sangue (Ex: <span class="highlight-1">PSA</span>, <span class="highlight-1">CA-125</span>) usadas para <span class="highlight-1">monitorar</span> o tratamento e a recidiva, não para diagnóstico isolado.</li>
+                        <li><strong>Marcadores Moleculares (do Tumor):</strong> Alterações genéticas <span class="highlight-2">dentro</span> do tumor (Ex: <span class="highlight-2">HER2</span>, <span class="highlight-2">PD-L1</span>) que definem <span class="highlight-2">qual terapia-alvo usar</span>.</li>
+                    </ul>
+
+                    <button id="btn-iniciar-simulador" class="btn-neon">Iniciar Simulação 🧬</button>
+                    
+                    <footer>
+                        <p>Projeto Interativo de Patologia do Câncer | Criado com a ajuda do Parceiro de Programação</p>
+                    </footer>
                 </div>
-            <nav class="botoes-navegacao">
-                <button id="btn-anterior" class="btn-neon" disabled><i class="fa-solid fa-caret-left"></i> Anterior</button>
-                <button id="btn-proximo" class="btn-neon">Próxima Mutação <i class="fa-solid fa-caret-right"></i></button>
-            </nav>
-        </main>
-        
-        <section id="revisao-container" class="card-vidro" style="display: none;">
-            <h2><i class="fa-solid fa-book-open"></i> Tópicos de Revisão</h2>
-            <p>Estes são os pilares ("Hallmarks") que definem a transformação maligna.</p>
-            <div id="revisao-lista">
-                </div>
-            <nav class="botoes-navegacao">
-                <button id="btn-iniciar-quiz" class="btn-neon">Iniciar Quiz <i class="fa-solid fa-vial-circle-check"></i></button>
-            </nav>
-        </section>
-
-        <section id="quiz-container" class="card-vidro" style="display: none;">
-            <div id="quiz-header">
-                <h2><i class="fa-solid fa-vial-circle-check"></i> Quiz Interativo</h2>
-                <div id="quiz-contador" class="quiz-contador"></div>
             </div>
-            <div id="quiz-pergunta"></div>
-            <div id="quiz-opcoes"></div>
-            <div id="quiz-feedback"></div>
         </section>
 
-        <section id="download" class="card-vidro">
-            <h2><i class="fa-solid fa-download"></i> Download da Apostila</h2>
-            <p>Baixe o material de referência completo em formato PDF.</p>
-            <a href="biocancer.pdf" download class="btn-neon-download">
-                <i class="fa-solid fa-file-pdf"></i> Baixar biocancer.pdf
-            </a>
+        <section class="slide slide-simulador">
+            <div id="simulador-container" class="container-futurista">
+                <header>
+                    <h1><i class="fa-solid fa-infinity fa-spin"></i> A Jornada da Célula</h1>
+                    <p>Da Normalidade à Transformação Maligna</p>
+                </header>
+                
+                <main class="card-vidro">
+                    <div id="etapa-view">
+                        </div>
+                    <nav class="botoes-navegacao">
+                        <button id="btn-anterior" class="btn-neon" disabled><i class="fa-solid fa-caret-left"></i> Anterior</button>
+                        <button id="btn-proximo" class="btn-neon">Próxima Mutação <i class="fa-solid fa-caret-right"></i></button>
+                    </nav>
+                </main>
+            </div>
+        </section>
+        
+        <section class="slide">
+            <div id="revisao-container" class="container-futurista">
+                <div class="card-vidro">
+                    <h2><i class="fa-solid fa-book-open"></i> Tópicos de Revisão</h2>
+                    <p>Estes são os pilares ("Hallmarks") que definem a transformação maligna.</p>
+                    <div id="revisao-lista">
+                        </div>
+                    <nav class="botoes-navegacao">
+                        <button id="btn-iniciar-quiz" class="btn-neon">Iniciar Quiz <i class="fa-solid fa-vial-circle-check"></i></button>
+                    </nav>
+                </div>
+            </div>
         </section>
 
-        <footer>
-            <p>Projeto Interativo de Patologia do Câncer | Criado com a ajuda do Parceiro de Programação</p>
-        </footer>
-    </div>
-    
-    <script>
+        <section class="slide">
+            <div id="quiz-container" class="container-futurista">
+                <div class="card-vidro">
+                    <div id="quiz-header">
+                        <h2><i class="fa-solid fa-vial-circle-check"></i> Quiz Interativo</h2>
+                        <div id="quiz-contador" class="quiz-contador"></div>
+                    </div>
+                    <div id="quiz-pergunta"></div>
+                    <div id="quiz-opcoes"></div>
+                    <div id="quiz-feedback"></div>
+                    </div>
+            </div>
+        </section>
+
+        <section class="slide">
+            <div id="download-container" class="container-futurista">
+                <div class="card-vidro">
+                    <h2><i class="fa-solid fa-download"></i> Download da Apostila</h2>
+                    <p>Você concluiu a jornada! Baixe o material de referência completo em formato PDF para revisar o conteúdo.</p>
+                    <a href="biocancer.pdf" download class="btn-neon-download">
+                        <i class="fa-solid fa-file-pdf"></i> Baixar biocancer.pdf
+                    </a>
+                    
+                    <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
+                    
+                    <p>Para rever todo o conteúdo, reinicie a apresentação:</p>
+                    <button id="btn-reiniciar-final" class="btn-neon">
+                        <i class="fa-solid fa-refresh"></i> Reiniciar Jornada
+                    </button>
+                    
+                    <footer>
+                        <p>Projeto Interativo de Patologia do Câncer | Criado com a ajuda do Parceiro de Programação</p>
+                    </footer>
+                </div>
+            </div>
+        </section>
+
+    </div> <script>
         /* ===================================================
         DADOS DA APLICAÇÃO (Extraídos do PDF)
         ===================================================
         */
-
+        
         // --- DADOS DA SIMULAÇÃO (Passo a Passo) ---
-        // Palavras-chave agora usam <span class="highlight-2">...</span>
         const etapasSimulacao = [
             { etapa: 0, titulo: "PASSO 0: A CÉLULA NORMAL", icone: "fa-solid fa-shield-heart", subtitulo: "O Cidadão Obediente", descricao: "Uma célula normal só se divide quando recebe um sinal externo ('fator de crescimento') e para quando recebe um sinal de parada. Ela é uma cidadã obediente.", caracteristicas: ["Mecanismos de controle (freios) funcionam.", "Reparo de DNA (Zeladores) está ativo.", "Apoptose (suicídio celular) é ativada se o dano for irreparável."]},
             { etapa: 1, titulo: "PASSO 1: O ACELERADOR PRESO", icone: "fa-solid fa-rocket", subtitulo: "Autossuficiência (Oncogenes)", descricao: "O primeiro 'hit' (mutação). A célula agora comporta-se como se estivesse *sempre* a receber sinais para se dividir, mesmo sem eles. Este é o 'acelerador preso'.", caracteristicas: ["Ativação de <span class='highlight-2'>Proto-Oncogenes</span> para <span class='highlight-2'>Oncogenes</span> (hiperativos).", "Isto é uma mutação de <span class='highlight-2'>Ganho de Função</span>: basta 1 alelo mutado (é dominante).", "Exemplos: Mutação pontual (<span class='highlight-1'>BRAF</span>), Amplificação (<span class='highlight-1'>HER2</span>), Translocação (<span class='highlight-1'>BCR-ABL</span>)."]},
             { etapa: 2, titulo: "PASSO 2: O FREIO QUEBRADO", icone: "fa-solid fa-brake", subtitulo: "Insensibilidade aos Sinais de Parada", descricao: "A célula agora ignora todos os sinais internos ou externos que mandam parar a divisão. Os 'freios' (Genes Supressores de Tumor) estão quebrados.", caracteristicas: ["Mutação de <span class='highlight-2'>Perda de Função</span>: ambos os alelos devem ser inativados (é recessivo).", "<span class='highlight-2'>RB (O Porteiro)</span>: Perder o RB deixa o 'portão' G1/S cronicamente aberto.", "<span class='highlight-2'>TP53 (O Guardião)</span>: Perder o p53 torna a célula 'cega' ao dano no DNA. Ela não para, não conserta e não morre."]},
-            { etapa: 3, titulo: "PASSO 3: A IMORTALIDADE", icone: "fa-solid fa-infinity", subtitulo: "Potencial Replicativo Ilimitado", descricao: "Células normais têm um 'relógio' (Telômeros) que encurta a cada divisão, levando à velhice (senescência). A célula maligna precisa parar este relógio.", caracteristicas: ["A célula reativa a enzima <span class='highlight-2'>Telomerase</span>.", "A Telomerase reconstrói os telômeros nas pontas dos cromossomas.", "A célula 'rouba' o segredo da imortalidade das células germinativas."]},
+            { etapa: 3, titulo: "PASSO 3: A IMORTALIDADE", icone: "fa-solid fa-infinity", subtitulo: "Potencial Replicativo Ilimitado", descricao: "Células normais têm um 'relógio' (Telômeros) que encurta a cada divisão. A célula maligna precisa parar este relógio.", caracteristicas: ["A célula reativa a enzima <span class='highlight-2'>Telomerase</span>.", "A Telomerase reconstrói os telômeros nas pontas dos cromossomas.", "A célula 'rouba' o segredo da imortalidade das células germinativas."]},
             { etapa: 4, titulo: "PASSO 4: A LOGÍSTICA", icone: "fa-solid fa-truck-fast", subtitulo: "Angiogénese Sustentada", descricao: "Um tumor não pode crescer além de 1-2mm sem o seu próprio suprimento de sangue. Ele precisa de 'convencer' o corpo a construir-lhe uma rede de vasos.", caracteristicas: ["O tumor ativa o 'Interruptor Angiogénico'.", "Liberta fatores pró-angiogénicos, como o <span class='highlight-2'>VEGF</span>.", "Os novos vasos são tortuosos e servem como 'autoestrada' para a metástase."]},
             { etapa: 5, titulo: "PASSO 5: IGNORAR O SUICÍDIO", icone: "fa-solid fa-ghost", subtitulo: "Evasão da Apoptose", descricao: "Mesmo com mutações, a célula deveria ativar o suicídio programado (Apoptose). A célula maligna precisa de desativar esta rede de segurança.", caracteristicas: ["A célula pode <span class='highlight-2'>mutar o p53</span> (o principal 'sensor' que ativa a apoptose).", "A célula pode <span class='highlight-2'>superexpressar BCL-2</span> (o 'protetor' da mitocôndria).", "Isto confere resistência direta à quimioterapia e radioterapia."]},
             { etapa: 6, titulo: "PASSO 6: A FUGA", icone: "fa-solid fa-person-running", subtitulo: "Invasão e Transição (EMT)", descricao: "A célula está pronta para sair do tumor primário. Ela precisa de se soltar das suas vizinhas e tornar-se móvel.", caracteristicas: ["<span class='highlight-2'>Perda da E-caderina</span>: A 'cola' que une as células é desativada.", "<span class='highlight-2'>EMT (Transição Epitélio-Mesenquimal)</span>: Um programa genético é ativado, mudando a forma da célula.", "<span class='highlight-2'>MMPs (Metaloproteinases)</span>: A célula secreta enzimas que 'cavam' um túnel."]},
@@ -667,7 +739,7 @@
             { pergunta: "Qual gene é o 'Guardião do Genoma' por parar o ciclo celular em resposta a danos no DNA?", opcoes: ["RAS", "HER2", "TP53 (p53)", "MYC"], correta: 2 },
             { pergunta: "<span class='highlight-1'>Proto-oncogenes</span> são...?", opcoes: ["Genes mutados que causam câncer", "Genes normais que regulam a proliferação", "Genes que reparam o DNA", "Genes que causam apoptose"], correta: 1 },
             { pergunta: "Genes como <span class='highlight-1'>BRCA1</span> e <span class='highlight-1'>BRCA2</span> (que reparam DNA) são classificados como:", opcoes: ["Gatekeepers (Guardiões)", "Oncogenes", "Fatores de crescimento", "Caretakers (Zeladores)"], correta: 3 },
-            { pergunta: "Qual enzima a maioria dos cânceres reativa para alcançar a 'imortalidade' e manter os telômeros?", opcoes: ["DNA Polimerase", "Telomerase", "Helicase", "Quinase"], correta: 1 },
+            { pergunta: "Qual enzima a maioria dos cânceres reativa para alcançar a 'imortalidade' e manter os telômeros?", opcoes: ["DNA Polimerae", "Telomerase", "Helicase", "Quinase"], correta: 1 },
             { pergunta: "O processo de formação de novos vasos sanguíneos para 'alimentar' o tumor é chamado de:", opcoes: ["Metástase", "Apoptose", "Angiogénese", "Senescência"], correta: 2 },
             { pergunta: "Qual é o principal fator de crescimento secretado pelo tumor para induzir a angiogénese?", opcoes: ["EGF", "PDGF", "BCL-2", "VEGF"], correta: 3 },
             { pergunta: "Qual proteína anti-morte é frequentemente superexpressada (ex: t(14;18)) para evadir a apoptose?", opcoes: ["BAX", "p53", "BCL-2", "E-caderina"], correta: 2 },
@@ -683,27 +755,29 @@
             { pergunta: "O que é uma 'Biópsia Líquida'?", opcoes: ["Uma biópsia de um tumor com necrose líquida", "Um exame de sangue que deteta DNA tumoral circulante (ctDNA)", "A análise do líquido linfático", "Um tipo de PET-Scan"], correta: 1 }
         ];
 
-
         /* ===================================================
         LÓGICA DA APLICAÇÃO (O CÉREBRO)
         ===================================================
         */
 
-        // --- SELETORES DO DOM ( agarrar os elementos HTML) ---
-        const introContainer = document.getElementById('intro-container');
+        // --- SELETORES DO DOM ---
+        // Navegação de Slides
+        const slideWrapper = document.querySelector('.slide-wrapper');
+        const slides = document.querySelectorAll('.slide');
+        const setaEsquerda = document.getElementById('nav-seta-esquerda');
+        const setaDireita = document.getElementById('nav-seta-direita');
+        
+        // Botões de Navegação Interna
         const btnIniciarSimulador = document.getElementById('btn-iniciar-simulador');
-
-        const simuladorContainer = document.getElementById('simulador-container');
-        const etapaView = document.getElementById('etapa-view');
         const btnAnterior = document.getElementById('btn-anterior');
         const btnProximo = document.getElementById('btn-proximo');
-
-        const revisaoContainer = document.getElementById('revisao-container');
-        const revisaoLista = document.getElementById('revisao-lista');
         const btnIniciarQuiz = document.getElementById('btn-iniciar-quiz');
+        const btnReiniciarFinal = document.getElementById('btn-reiniciar-final');
 
+        // Módulos Internos
+        const etapaView = document.getElementById('etapa-view');
+        const revisaoLista = document.getElementById('revisao-lista');
         const quizContainer = document.getElementById('quiz-container');
-        const quizHeader = document.getElementById('quiz-header');
         const quizContador = document.getElementById('quiz-contador');
         const quizPergunta = document.getElementById('quiz-pergunta');
         const quizOpcoes = document.getElementById('quiz-opcoes');
@@ -711,11 +785,37 @@
 
 
         // --- VARIÁVEIS DE ESTADO (a memória do programa) ---
-        let etapaAtual = 0;
-        let estadoAtualApp = 'intro'; // 'intro', 'simulacao', 'revisao', 'quiz'
+        let etapaAtualSimulador = 0; // Estado *interno* do simulador
         let perguntaAtualQuiz = 0;
         let pontuacao = 0;
         let quizAtivo = false;
+        
+        let slideAtual = 0; // Estado *global* da navegação
+        const totalSlides = slides.length;
+
+
+        /* ----------------------------------------------
+        Funções da NAVEGAÇÃO GLOBAL (SLIDES)
+        ----------------------------------------------
+        */
+        function irParaSlide(slideIndex) {
+            // Garante que não saia dos limites
+            if (slideIndex < 0) slideIndex = 0;
+            if (slideIndex >= totalSlides) slideIndex = totalSlides - 1;
+
+            slideWrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
+            slideAtual = slideIndex;
+            atualizarSetasGlobais();
+        }
+
+        function atualizarSetasGlobais() {
+            setaEsquerda.style.display = (slideAtual === 0) ? 'none' : 'block';
+            setaDireita.style.display = (slideAtual === totalSlides - 1) ? 'none' : 'block';
+        }
+
+        // Listeners das Setas Globais
+        setaDireita.addEventListener('click', () => irParaSlide(slideAtual + 1));
+        setaEsquerda.addEventListener('click', () => irParaSlide(slideAtual - 1));
 
 
         /* ----------------------------------------------
@@ -724,7 +824,6 @@
         */
         function renderizarEtapa(etapaIndex) {
             const etapa = etapasSimulacao[etapaIndex];
-            // O innerHTML agora pode interpretar os spans de highlight
             etapaView.innerHTML = `
                 <span class="etapa-titulo">${etapa.titulo}</span>
                 <h2><i class="${etapa.icone}"></i> ${etapa.subtitulo}</h2>
@@ -743,27 +842,43 @@
         }
 
         function atualizarBotoesSimulador() {
-            btnAnterior.disabled = (etapaAtual === 0);
+            btnAnterior.disabled = (etapaAtualSimulador === 0);
             
-            if (etapaAtual === etapasSimulacao.length - 1) {
-                btnProximo.innerHTML = 'Ver Revisão <i class="fa-solid fa-book-open"></i>';
+            if (etapaAtualSimulador === etapasSimulacao.length - 1) {
+                btnProximo.innerHTML = 'Ir para Revisão <i class="fa-solid fa-book-open"></i>';
             } else {
                 btnProximo.innerHTML = 'Próxima Mutação <i class="fa-solid fa-caret-right"></i>';
             }
             btnProximo.disabled = false;
         }
 
+        // Listeners dos Botões Internos do Simulador
+        btnProximo.addEventListener('click', () => {
+            if (etapaAtualSimulador < etapasSimulacao.length - 1) {
+                etapaAtualSimulador++;
+                renderizarEtapa(etapaAtualSimulador);
+            } else {
+                // Fim da simulação, avança para o SLIDE de Revisão
+                irParaSlide(2);
+                renderizarRevisao(); // Prepara a revisão
+            }
+        });
+
+        btnAnterior.addEventListener('click', () => {
+            if (etapaAtualSimulador > 0) {
+                etapaAtualSimulador--;
+                renderizarEtapa(etapaAtualSimulador);
+            }
+        });
+
         /* ----------------------------------------------
         Funções da REVISÃO
         ----------------------------------------------
         */
         function renderizarRevisao() {
-            estadoAtualApp = 'revisao';
-            simuladorContainer.style.display = 'none';
-            revisaoContainer.style.display = 'block';
-            revisaoContainer.classList.add('fade-enter');
+            // Esta função só precisa ser chamada uma vez
+            if (revisaoLista.innerHTML !== '') return; 
 
-            revisaoLista.innerHTML = ''; // Limpar a lista
             topicosRevisao.forEach((topico, index) => {
                 const topicoDiv = document.createElement('div');
                 topicoDiv.className = 'topico-revisao';
@@ -781,14 +896,20 @@
         ----------------------------------------------
         */
         function iniciarQuiz() {
-            estadoAtualApp = 'quiz';
-            revisaoContainer.style.display = 'none';
-            quizContainer.style.display = 'block';
-            quizContainer.classList.add('fade-enter');
-
             perguntaAtualQuiz = 0;
             pontuacao = 0;
             quizAtivo = true;
+            // Limpa o container caso haja um resultado anterior
+            quizContainer.querySelector('.card-vidro').innerHTML = `
+                <div id="quiz-header">
+                    <h2><i class="fa-solid fa-vial-circle-check"></i> Quiz Interativo</h2>
+                    <div id="quiz-contador" class="quiz-contador"></div>
+                </div>
+                <div id="quiz-pergunta"></div>
+                <div id="quiz-opcoes"></div>
+                <div id="quiz-feedback"></div>
+            `;
+            // Re-seleciona os elementos internos do quiz
             renderizarPergunta();
         }
 
@@ -800,128 +921,119 @@
 
             quizAtivo = true;
             const pergunta = quizData[perguntaAtualQuiz];
+            
+            // Pega os elementos internos do quiz (podem ter sido recriados)
+            const elContador = quizContainer.querySelector('#quiz-contador');
+            const elPergunta = quizContainer.querySelector('#quiz-pergunta');
+            const elOpcoes = quizContainer.querySelector('#quiz-opcoes');
+            const elFeedback = quizContainer.querySelector('#quiz-feedback');
 
-            quizContador.innerHTML = `Pergunta ${perguntaAtualQuiz + 1} de ${quizData.length}`;
-            quizPergunta.innerHTML = pergunta.pergunta;
-            quizOpcoes.innerHTML = '';
-            quizFeedback.innerHTML = '';
-            quizFeedback.className = '';
+            elContador.innerHTML = `Pergunta ${perguntaAtualQuiz + 1} de ${quizData.length}`;
+            elPergunta.innerHTML = pergunta.pergunta;
+            elOpcoes.innerHTML = '';
+            elFeedback.innerHTML = '';
+            elFeedback.className = '';
 
             pergunta.opcoes.forEach((opcao, index) => {
-                quizOpcoes.innerHTML += `
+                elOpcoes.innerHTML += `
                     <button class="btn-opcao" onclick="selecionarResposta(${index})">
                         ${opcao}
                     </button>
                 `;
             });
 
-            // Animação de entrada da pergunta
-            quizPergunta.classList.add('fade-enter');
-            quizOpcoes.classList.add('fade-enter');
+            // Animação de entrada
+            elPergunta.classList.add('fade-enter');
+            elOpcoes.classList.add('fade-enter');
             setTimeout(() => {
-                quizPergunta.classList.remove('fade-enter');
-                quizOpcoes.classList.remove('fade-enter');
+                elPergunta.classList.remove('fade-enter');
+                elOpcoes.classList.remove('fade-enter');
             }, 500);
         }
 
-        // Esta função é chamada pelo 'onclick' nos botões de opção
+        // Esta função é chamada pelo 'onclick'
         function selecionarResposta(indexOpcao) {
-            if (!quizAtivo) return; // Prevenir cliques múltiplos
+            if (!quizAtivo) return;
             quizAtivo = false;
 
             const pergunta = quizData[perguntaAtualQuiz];
-            const botoesOpcao = quizOpcoes.querySelectorAll('.btn-opcao');
+            const botoesOpcao = quizContainer.querySelectorAll('.btn-opcao');
+            const elFeedback = quizContainer.querySelector('#quiz-feedback');
 
-            // Desativar todos os botões
             botoesOpcao.forEach(btn => btn.disabled = true);
 
             if (indexOpcao === pergunta.correta) {
-                // Resposta Correta
                 botoesOpcao[indexOpcao].classList.add('correta');
-                quizFeedback.innerHTML = 'Correto! <i class="fa-solid fa-check-circle"></i>';
-                quizFeedback.className = 'feedback-correto';
+                elFeedback.innerHTML = 'Correto! <i class="fa-solid fa-check-circle"></i>';
+                elFeedback.className = 'feedback-correto';
                 pontuacao++;
             } else {
-                // Resposta Incorreta
                 botoesOpcao[indexOpcao].classList.add('incorreta');
-                botoesOpcao[pergunta.correta].classList.add('correta'); // Mostrar a correta
-                quizFeedback.innerHTML = 'Incorreto. <i class="fa-solid fa-times-circle"></i>';
-                quizFeedback.className = 'feedback-incorreto';
+                botoesOpcao[pergunta.correta].classList.add('correta');
+                elFeedback.innerHTML = 'Incorreto. <i class="fa-solid fa-times-circle"></i>';
+                elFeedback.className = 'feedback-incorreto';
             }
 
-            // Pausa para o utilizador ver o feedback, depois avança
             setTimeout(() => {
                 perguntaAtualQuiz++;
                 renderizarPergunta();
-            }, 1500); // 1.5 segundos de pausa
+            }, 1500);
         }
 
         function mostrarResultado() {
             quizAtivo = false;
-            quizContainer.innerHTML = `
+            quizContainer.querySelector('.card-vidro').innerHTML = `
                 <div id="quiz-resultado">
                     <h2>Quiz Concluído!</h2>
                     <p>O seu resultado final foi:</p>
                     <p class="pontuacao-final">${pontuacao} de ${quizData.length}</p>
-                    <button id="btn-reiniciar" class="btn-neon">
+                    <button id="btn-reiniciar-quiz" class="btn-neon">
                         <i class="fa-solid fa-refresh"></i> Reiniciar Jornada
+                    </button>
+                    <button id="btn-ver-download" class="btn-neon" style="margin-top: 15px;">
+                        Ver Download <i class="fa-solid fa-caret-right"></i>
                     </button>
                 </div>
             `;
-            quizContainer.classList.add('fade-enter');
+            quizContainer.querySelector('.card-vidro').classList.add('fade-enter');
             
-            // Adicionar 'listener' ao novo botão de reiniciar
-            document.getElementById('btn-reiniciar').addEventListener('click', reiniciarJornada);
+            // Adicionar 'listeners' aos novos botões
+            document.getElementById('btn-reiniciar-quiz').addEventListener('click', reiniciarJornada);
+            document.getElementById('btn-ver-download').addEventListener('click', () => irParaSlide(4));
         }
         
         function reiniciarJornada() {
-            // Recarregar a página é a forma mais simples e limpa de reiniciar
+            // Recarregar a página é a forma mais simples de reiniciar tudo
             location.reload(); 
         }
 
         /* ----------------------------------------------
-        "OUVINTES" DE EVENTOS PRINCIPAIS
+        "OUVINTES" DE EVENTOS DE NAVEGAÇÃO INTERNA
         ----------------------------------------------
         */
 
-        // Botão "Iniciar Simulação" (NOVO)
+        // Botão "Iniciar Simulação" (Slide 1)
         btnIniciarSimulador.addEventListener('click', () => {
-            introContainer.style.display = 'none';
-            simuladorContainer.style.display = 'block';
-            estadoAtualApp = 'simulacao';
-            renderizarEtapa(etapaAtual); // Renderiza a primeira etapa
+            irParaSlide(1); // Vai para o slide 1 (Simulador)
+            renderizarEtapa(etapaAtualSimulador); // Renderiza a primeira etapa
         });
 
-        // Botão "Próximo" da Simulação
-        btnProximo.addEventListener('click', () => {
-            if (estadoAtualApp === 'simulacao') {
-                if (etapaAtual < etapasSimulacao.length - 1) {
-                    etapaAtual++;
-                    renderizarEtapa(etapaAtual);
-                } else {
-                    // Clicou em "Ver Revisão"
-                    renderizarRevisao();
-                }
-            }
+        // Botão "Iniciar Quiz" (Slide 3)
+        btnIniciarQuiz.addEventListener('click', () => {
+            irParaSlide(3); // Vai para o slide 3 (Quiz)
+            iniciarQuiz(); // Inicia a lógica do quiz
         });
 
-        // Botão "Anterior" da Simulação
-        btnAnterior.addEventListener('click', () => {
-            if (etapaAtual > 0) {
-                etapaAtual--;
-                renderizarEtapa(etapaAtual);
-            }
-        });
-        
-        // Botão "Iniciar Quiz" da Revisão
-        btnIniciarQuiz.addEventListener('click', iniciarQuiz);
+        // Botão "Reiniciar" (Slide 5)
+        btnReiniciarFinal.addEventListener('click', reiniciarJornada);
 
         /* ----------------------------------------------
         INICIALIZAÇÃO (Ao carregar a página)
         ----------------------------------------------
         */
-        // Não renderiza nada no início, o HTML estático da introdução é mostrado por defeito.
-        // Os 'listeners' já estão ativos e à espera.
+        // A página começa no slide 0 (Intro) por defeito.
+        // Apenas atualizamos o estado das setas globais.
+        atualizarSetasGlobais();
 
     </script>
 </body>
