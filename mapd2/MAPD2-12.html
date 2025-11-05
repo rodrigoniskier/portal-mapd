@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Jornada da Célula Maligna</title>
+    <title>Patologia do Câncer</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -32,6 +32,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            line-height: 1.6;
         }
 
         /* --- Container Principal --- */
@@ -72,6 +73,142 @@
             color: var(--cor-texto);
         }
 
+        /* --- Títulos das Secções --- */
+        h2 {
+            color: var(--cor-neon-principal);
+            border-bottom: 1px solid var(--borda-vidro);
+            padding-bottom: 10px;
+            font-size: 2rem;
+        }
+        h2 i {
+            margin-right: 15px;
+        }
+        h3 {
+            color: var(--cor-neon-secundaria);
+            font-size: 1.5rem;
+        }
+        
+        /* --- Destaque de Palavras-chave --- */
+        .highlight-1 {
+            color: var(--cor-neon-principal);
+            font-weight: bold;
+        }
+        .highlight-2 {
+            color: var(--cor-neon-secundaria);
+            font-weight: bold;
+        }
+
+        /* --- Secção de Introdução --- */
+        #intro-container ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        #intro-container li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 10px;
+        }
+        #intro-container li::before {
+            content: '\f0da'; /* Ícone de seta (Font Awesome) */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--cor-neon-principal);
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        /* --- Esquema: Definições --- */
+        .schema-definicoes {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 0;
+        }
+        .schema-box {
+            border: 2px dashed var(--borda-vidro);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            width: 30%;
+        }
+        .schema-box h4 {
+            margin: 0 0 10px 0;
+            color: var(--cor-neon-principal);
+            font-size: 1.2rem;
+        }
+
+        /* --- Esquema: Tabela Comparativa (Benigno vs Maligno) --- */
+        .tabela-comparativa {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .tabela-comparativa th, .tabela-comparativa td {
+            border: 1px solid var(--borda-vidro);
+            padding: 12px;
+            text-align: left;
+        }
+        .tabela-comparativa th {
+            background-color: var(--cor-vidro);
+            color: var(--cor-neon-principal);
+        }
+        .tabela-comparativa td:first-child {
+            font-weight: bold;
+            color: var(--cor-neon-secundaria);
+        }
+
+        /* --- Esquema: Estadiamento TNM --- */
+        .tnm-schema {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .tnm-box {
+            flex: 1;
+            background: var(--cor-vidro);
+            border: 1px solid var(--borda-vidro);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        .tnm-box h4 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+        }
+        .tnm-box h4.t { color: #00aaff; } /* Azul */
+        .tnm-box h4.n { color: #ffaa00; } /* Laranja */
+        .tnm-box h4.m { color: #ff3d3d; } /* Vermelho */
+        
+        /* --- Esquema: Hipótese dos 2 "Hits" --- */
+        .schema-hits {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .hit-box {
+            flex: 1;
+            background: var(--cor-vidro);
+            border: 1px solid var(--borda-vidro);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .hit-box h4 {
+            color: var(--cor-neon-principal);
+            margin-top: 0;
+        }
+        .gene {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .alelo-bom { color: #00ff84; }
+        .alelo-mau { color: #ff3d3d; }
+
         /* --- Estilos da Simulação --- */
         #etapa-view {
             min-height: 200px; /* Garante espaço */
@@ -82,7 +219,7 @@
             letter-spacing: 1px;
         }
         #etapa-view h2 {
-            color: var(--cor-neon-principal);
+            border-bottom: none; /* Remover borda da intro */
             font-size: 2rem;
             margin-top: 10px;
         }
@@ -93,14 +230,21 @@
         .lista-caracteristicas li {
             font-size: 1.1rem;
             margin-bottom: 10px;
+            position: relative;
+            padding-left: 30px;
+        }
+        .lista-caracteristicas li::before {
+            content: '\f610'; /* Ícone átomo (Font Awesome) */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--cor-neon-secundaria);
+            position: absolute;
+            left: 0;
+            top: 0;
         }
         .lista-caracteristicas .fa-solid {
             margin-right: 10px;
         }
-        .lista-caracteristicas .fa-atom {
-            color: var(--cor-neon-secundaria);
-        }
-
 
         /* --- Botões de Navegação --- */
         .botoes-navegacao {
@@ -136,6 +280,14 @@
             box-shadow: none;
             cursor: not-allowed;
             transform: scale(1);
+        }
+        /* Botão grande para iniciar a simulação */
+        #btn-iniciar-simulador {
+            display: block;
+            width: 100%;
+            font-size: 1.3rem;
+            padding: 20px;
+            margin-top: 30px;
         }
 
         /* --- Botão de Download (variação de cor) --- */
@@ -213,7 +365,6 @@
             margin-bottom: 20px;
         }
         #quiz-header h2 {
-            color: var(--cor-neon-principal);
             margin: 0;
         }
         .quiz-contador {
@@ -309,11 +460,134 @@
 
     <div class="container-futurista">
         <header>
-            <h1><i class="fa-solid fa-infinity fa-spin"></i> A Jornada da Célula</h1>
-            <p>Da Normalidade à Transformação Maligna</p>
+            <h1><i class="fa-solid fa-microscope fa-spin"></i> Patologia do Câncer</h1>
+            <p>Uma jornada interativa pelos mecanismos da transformação maligna</p>
         </header>
 
-        <main id="simulador-container" class="card-vidro">
+        <section id="intro-container" class="card-vidro">
+            
+            <h2><i class="fa-solid fa-book"></i> 1. Conceitos Preliminares</h2>
+            <p>Antes de mergulharmos na simulação, vamos definir os termos essenciais.</p>
+            
+            <div class="schema-definicoes">
+                <div class="schema-box">
+                    <h4><i class="fa-solid fa-flask"></i> Neoplasia</h4>
+                    <p>O <span class="highlight-1">processo</span> de "novo crescimento". É a proliferação celular anormal e autónoma. Pode ser benigna ou maligna.</p>
+                </div>
+                <div class="schema-box">
+                    <h4><i class="fa-solid fa-disease"></i> Tumor</h4>
+                    <p>O <span class="highlight-1">resultado</span>. Um "inchaço" ou massa. Em oncologia, é usado como sinónimo de neoplasia, mas um tumor pode tecnicamente ser inflamatório.</p>
+                </div>
+                <div class="schema-box">
+                    <h4><i class="fa-solid fa-skull-crossbones"></i> Câncer</h4>
+                    <p>O <span class="highlight-1">termo clínico/comum</span> para qualquer <span class="highlight-2">Neoplasia Maligna</span>.</p>
+                </div>
+            </div>
+            <ul>
+                <li><strong>Oncologia:</strong> É a especialidade médica que estuda e trata as neoplasias (o câncer).</li>
+            </ul>
+
+            <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
+
+            <h2><i class="fa-solid fa-globe-americas"></i> 2. Epidemiologia (INCA 2023-2025)</h2>
+            <p>O câncer é um problema de saúde pública global. No Brasil, os dados são baseados nas estimativas do <span class="highlight-1">Instituto Nacional de Câncer (INCA)</span>.</p>
+            <ul>
+                <li><strong>Mundo:</strong> A estimativa (GLOBOCAN 2020) aponta para cerca de <span class="highlight-2">19 milhões de casos novos</span> por ano. Os mais incidentes são os de mama, pulmão e colorretal.</li>
+                <li><strong>Brasil:</strong> A estimativa para o triénio 2023-2025 é de <span class="highlight-2">704 mil casos novos por ano</span>. Excluindo o câncer de pele não melanoma (o mais comum, mas de baixa letalidade), os mais frequentes são os de <span class="highlight-1">mama feminina</span> (73 mil) e <span class="highlight-1">próstata</span> (71 mil), seguidos por <span class="highlight-1">cólon e reto</span> (45 mil).</li>
+                <li><strong>Região Nordeste:</strong> Estimam-se <span class="highlight-2">~110 mil casos novos por ano</span> (excluindo pele não melanoma). Os mais incidentes em homens são próstata e cólon e reto; em mulheres, são mama e cólon e reto, com o câncer de colo do útero tendo alta relevância.</li>
+                <li><strong>Paraíba:</strong> A estimativa é de cerca de <span class="highlight-2">25.460 novos casos por ano</span> (incluindo pele não melanoma), sendo 12.120 em homens e 13.340 em mulheres.</li>
+            </ul>
+
+            <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
+
+            <h2><i class="fa-solid fa-table-list"></i> 3. Benigno vs. Maligno</h2>
+            <p>A diferença fundamental em patologia é a classificação de uma neoplasia. Usamos as características do seu PDF de referência:</p>
+            
+            <table class="tabela-comparativa">
+                <thead>
+                    <tr>
+                        <th>Característica</th>
+                        <th>Neoplasia Benigna</th>
+                        <th>Neoplasia Maligna (Câncer)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Diferenciação</td>
+                        <td><span class="highlight-1">Bem diferenciado</span> (assemelha-se ao tecido original)</td>
+                        <td><span class="highlight-2">Mal diferenciado</span> ou <span class="highlight-2">Anaplásico</span> (perda da semelhança)</td>
+                    </tr>
+                    <tr>
+                        <td>Taxa de Crescimento</td>
+                        <td>Lenta, poucas mitoses</td>
+                        <td>Rápida, muitas mitoses (frequentemente atípicas)</td>
+                    </tr>
+                    <tr>
+                        <td>Invasão Local</td>
+                        <td><span class="highlight-1">Não invasivo</span>, cresce por expansão, geralmente encapsulado</td>
+                        <td><span class="highlight-2">Invasivo e infiltrativo</span>, destrói tecidos, sem cápsula definida</td>
+                    </tr>
+                    <tr>
+                        <td>Metástase</td>
+                        <td><span class="highlight-1">Ausente</span></td>
+                        <td><span class="highlight-2">Presente</span> (capacidade de disseminar). É a característica <span class="highlight-2">definitiva</span> da malignidade.</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
+
+            <h2><i class="fa-solid fa-magnifying-glass-chart"></i> 4. Conceitos Patológicos Essenciais</h2>
+
+            <h3>Nomenclatura (Como dar nome)</h3>
+            <p>A nomenclatura básica segue a origem celular:</p>
+            <ul>
+                <li><strong>Tumores Benignos:</strong> Usam o sufixo <span class="highlight-1">-OMA</span>. (Ex: <span class="highlight-1">Fibroma</span> = tumor benigno de tecido fibroso; <span class="highlight-1">Adenoma</span> = tumor benigno de glândula).</li>
+                <li><strong>Tumores Malignos (Câncer):</strong>
+                    <ul>
+                        <li>Origem Epitelial (pele, mucosas): <span class="highlight-2">CARCINOMA</span> (Ex: <span class="highlight-2">Adenocarcinoma</span>, Carcinoma Epidermoide).</li>
+                        <li>Origem Mesenquimal (osso, músculo, gordura): <span class="highlight-2">SARCOMA</span> (Ex: <span class="highlight-2">Osteossarcoma</span>, Lipossarcoma).</li>
+                        <li>Origem Hematopoiética (células do sangue): <span class="highlight-2">LEUCEMIAS</span> / <span class="highlight-2">LINFOMAS</span>.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>Estadiamento (Qual o prognóstico?)</h3>
+            <p>O estadiamento descreve a extensão anatómica do câncer. O sistema <span class="highlight-1">TNM</span> é o mais usado e é a "fotografia" da doença no momento do diagnóstico:</p>
+            
+            <div class="tnm-schema">
+                <div class="tnm-box">
+                    <h4 class="t">T</h4>
+                    <p><strong>Tumor (Tamanho)</strong><br>Descreve o tamanho e a extensão local do tumor primário (Ex: T1 a T4). <span class="highlight-1">Tis</span> refere-se a 'Carcinoma in situ' (não invasivo).</p>
+                </div>
+                <div class="tnm-box">
+                    <h4 class="n">N</h4>
+                    <p><strong>Linfonodos (Nódulos)</strong><br>Descreve a presença e extensão de metástases nos linfonodos regionais (Ex: N0 (sem) a N3).</p>
+                </div>
+                <div class="tnm-box">
+                    <h4 class="m">M</h4>
+                    <p><strong>Metástase</strong><br>Descreve a presença de metástase à distância (em outros órgãos). <span class="highlight-2">M0</span> (sem metástase) vs. <span class="highlight-2">M1</span> (com metástase).</p>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 15px;">Um <span class="highlight-1">T1 N0 M0</span> é um câncer inicial. Um <span class="highlight-2">T4 N2 M1</span> é um câncer avançado.</p>
+
+            <h3>Marcadores Tumorais vs. Moleculares</h3>
+            <ul>
+                <li><strong>Marcadores Tumorais (Sanguíneos):</strong> São substâncias (proteínas, enzimas) encontradas no sangue, produzidas pelo tumor ou pelo corpo em resposta a ele.
+                <br><strong>Uso:</strong> <span class="highlight-1">Não</span> servem para diagnóstico isolado, mas sim para <span class="highlight-1">monitorar</span> a resposta ao tratamento e detetar <span class="highlight-1">recidiva</span>.
+                <br><strong>Exemplos:</strong> <span class="highlight-1">PSA</span> (próstata), <span class="highlight-1">CA-125</span> (ovário), <span class="highlight-1">CEA</span> (cólon).</li>
+                
+                <li><strong>Marcadores Moleculares (do Tumor):</strong> São as alterações genéticas <span class="highlight-2">dentro</span> do tumor (mutações, amplificações).
+                <br><strong>Uso:</strong> Essenciais para a <span class="highlight-2">Oncologia de Precisão</span>. Definem o prognóstico e, o mais importante, <span class="highlight-2">qual terapia-alvo usar</span>.
+                <br><strong>Exemplos:</strong> Mutação <span class="highlight-2">BRAF</span> (Melanoma), Amplificação <span class="highlight-2">HER2</span> (Mama), Expressão de <span class="highlight-2">PD-L1</span> (Imunoterapia).</li>
+            </ul>
+
+            <button id="btn-iniciar-simulador" class="btn-neon">Iniciar Simulação 🧬</button>
+
+        </section>
+
+
+        <main id="simulador-container" class="card-vidro" style="display: none;">
             <div id="etapa-view">
                 </div>
             <nav class="botoes-navegacao">
@@ -351,7 +625,7 @@
         </section>
 
         <footer>
-            <p>Projeto Interativo de Biologia Celular | Criado com a ajuda do Parceiro de Programação</p>
+            <p>Projeto Interativo de Patologia do Câncer | Criado com a ajuda do Parceiro de Programação</p>
         </footer>
     </div>
     
@@ -362,48 +636,49 @@
         */
 
         // --- DADOS DA SIMULAÇÃO (Passo a Passo) ---
+        // Palavras-chave agora usam <span class="highlight-2">...</span>
         const etapasSimulacao = [
             { etapa: 0, titulo: "PASSO 0: A CÉLULA NORMAL", icone: "fa-solid fa-shield-heart", subtitulo: "O Cidadão Obediente", descricao: "Uma célula normal só se divide quando recebe um sinal externo ('fator de crescimento') e para quando recebe um sinal de parada. Ela é uma cidadã obediente.", caracteristicas: ["Mecanismos de controle (freios) funcionam.", "Reparo de DNA (Zeladores) está ativo.", "Apoptose (suicídio celular) é ativada se o dano for irreparável."]},
-            { etapa: 1, titulo: "PASSO 1: O ACELERADOR PRESO", icone: "fa-solid fa-rocket", subtitulo: "Autossuficiência (Oncogenes)", descricao: "O primeiro 'hit' (mutação). A célula agora comporta-se como se estivesse *sempre* a receber sinais para se dividir, mesmo sem eles. Este é o 'acelerador preso'.", caracteristicas: ["Ativação de **Proto-Oncogenes** para **Oncogenes** (hiperativos).", "Isto é uma mutação de **Ganho de Função**: basta 1 alelo mutado (é dominante).", "Exemplos: Mutação pontual (BRAF), Amplificação (HER2), Translocação (BCR-ABL)."]},
-            { etapa: 2, titulo: "PASSO 2: O FREIO QUEBRADO", icone: "fa-solid fa-brake", subtitulo: "Insensibilidade aos Sinais de Parada", descricao: "A célula agora ignora todos os sinais internos ou externos que mandam parar a divisão. Os 'freios' (Genes Supressores de Tumor) estão quebrados.", caracteristicas: ["Mutação de **Perda de Função**: ambos os alelos devem ser inativados (é recessivo).", "**RB (O Porteiro)**: Perder o RB deixa o 'portão' G1/S cronicamente aberto.", "**TP53 (O Guardião)**: Perder o p53 torna a célula 'cega' ao dano no DNA. Ela não para, não conserta e não morre."]},
-            { etapa: 3, titulo: "PASSO 3: A IMORTALIDADE", icone: "fa-solid fa-infinity", subtitulo: "Potencial Replicativo Ilimitado", descricao: "Células normais têm um 'relógio' (Telômeros) que encurta a cada divisão. A célula maligna precisa parar este relógio.", caracteristicas: ["A célula reativa a enzima **Telomerase**.", "A Telomerase reconstrói os telômeros nas pontas dos cromossomas.", "A célula 'rouba' o segredo da imortalidade das células germinativas."]},
-            { etapa: 4, titulo: "PASSO 4: A LOGÍSTICA", icone: "fa-solid fa-truck-fast", subtitulo: "Angiogénese Sustentada", descricao: "Um tumor não pode crescer além de 1-2mm sem o seu próprio suprimento de sangue. Ele precisa de 'convencer' o corpo a construir-lhe uma rede de vasos.", caracteristicas: ["O tumor ativa o 'Interruptor Angiogénico'.", "Liberta fatores pró-angiogénicos, como o **VEGF**.", "Os novos vasos são tortuosos e servem como 'autoestrada' para a metástase."]},
-            { etapa: 5, titulo: "PASSO 5: IGNORAR O SUICÍDIO", icone: "fa-solid fa-ghost", subtitulo: "Evasão da Apoptose", descricao: "Mesmo com mutações, a célula deveria ativar o suicídio programado (Apoptose). A célula maligna precisa de desativar esta rede de segurança.", caracteristicas: ["A célula pode **mutar o p53** (o principal 'sensor' que ativa a apoptose).", "A célula pode **superexpressar BCL-2** (o 'protetor' da mitocôndria).", "Isto confere resistência direta à quimioterapia e radioterapia."]},
-            { etapa: 6, titulo: "PASSO 6: A FUGA", icone: "fa-solid fa-person-running", subtitulo: "Invasão e Transição (EMT)", descricao: "A célula está pronta para sair do tumor primário. Ela precisa de se soltar das suas vizinhas e tornar-se móvel.", caracteristicas: ["**Perda da E-caderina**: A 'cola' que une as células é desativada.", "**EMT (Transição Epitélio-Mesenquimal)**: Um programa genético é ativado, mudando a forma da célula.", "**MMPs (Metaloproteinases)**: A célula secreta enzimas que 'cavam' um túnel."]},
-            { etapa: 7, titulo: "PASSO 7: O MANTO DA INVISIBILIDADE", icone: "fa-solid fa-shield-halved", subtitulo: "Evasão do Sistema Imune", descricao: "O nosso sistema imune (Linfócitos T) é desenhado para encontrar e matar células com mutações. A célula maligna precisa de se esconder.", caracteristicas: ["**Estratégia PD-L1**: A célula tumoral aprende a expressar **PD-L1** na sua superfície.", "O Linfócito T (que tem **PD-1**) liga-se ao PD-L1 do tumor.", "Esta ligação 'desliga' o Linfócito T no exato momento do ataque."]},
-            { etapa: 8, titulo: "PASSO 8: A TRANSFORMAÇÃO MALIGNA", icone: "fa-solid fa-skull-crossbones", subtitulo: "Metástase e Colonização", descricao: "A célula escapou, tornou-se invisível e agora viaja pela 'autoestrada' (vasos sanguíneos) para formar novos tumores em órgãos distantes.", caracteristicas: ["**Intravasamento**: A célula entra no vaso sanguíneo.", "**Sobrevivência**: Sobrevive ao stress da corrente sanguínea.", "**Colonização**: A célula 'ancora' e 'germina' num novo órgão (Teoria da 'Semente e Solo')."]}
+            { etapa: 1, titulo: "PASSO 1: O ACELERADOR PRESO", icone: "fa-solid fa-rocket", subtitulo: "Autossuficiência (Oncogenes)", descricao: "O primeiro 'hit' (mutação). A célula agora comporta-se como se estivesse *sempre* a receber sinais para se dividir, mesmo sem eles. Este é o 'acelerador preso'.", caracteristicas: ["Ativação de <span class='highlight-2'>Proto-Oncogenes</span> para <span class='highlight-2'>Oncogenes</span> (hiperativos).", "Isto é uma mutação de <span class='highlight-2'>Ganho de Função</span>: basta 1 alelo mutado (é dominante).", "Exemplos: Mutação pontual (<span class='highlight-1'>BRAF</span>), Amplificação (<span class='highlight-1'>HER2</span>), Translocação (<span class='highlight-1'>BCR-ABL</span>)."]},
+            { etapa: 2, titulo: "PASSO 2: O FREIO QUEBRADO", icone: "fa-solid fa-brake", subtitulo: "Insensibilidade aos Sinais de Parada", descricao: "A célula agora ignora todos os sinais internos ou externos que mandam parar a divisão. Os 'freios' (Genes Supressores de Tumor) estão quebrados.", caracteristicas: ["Mutação de <span class='highlight-2'>Perda de Função</span>: ambos os alelos devem ser inativados (é recessivo).", "<span class='highlight-2'>RB (O Porteiro)</span>: Perder o RB deixa o 'portão' G1/S cronicamente aberto.", "<span class='highlight-2'>TP53 (O Guardião)</span>: Perder o p53 torna a célula 'cega' ao dano no DNA. Ela não para, não conserta e não morre."]},
+            { etapa: 3, titulo: "PASSO 3: A IMORTALIDADE", icone: "fa-solid fa-infinity", subtitulo: "Potencial Replicativo Ilimitado", descricao: "Células normais têm um 'relógio' (Telômeros) que encurta a cada divisão, levando à velhice (senescência). A célula maligna precisa parar este relógio.", caracteristicas: ["A célula reativa a enzima <span class='highlight-2'>Telomerase</span>.", "A Telomerase reconstrói os telômeros nas pontas dos cromossomas.", "A célula 'rouba' o segredo da imortalidade das células germinativas."]},
+            { etapa: 4, titulo: "PASSO 4: A LOGÍSTICA", icone: "fa-solid fa-truck-fast", subtitulo: "Angiogénese Sustentada", descricao: "Um tumor não pode crescer além de 1-2mm sem o seu próprio suprimento de sangue. Ele precisa de 'convencer' o corpo a construir-lhe uma rede de vasos.", caracteristicas: ["O tumor ativa o 'Interruptor Angiogénico'.", "Liberta fatores pró-angiogénicos, como o <span class='highlight-2'>VEGF</span>.", "Os novos vasos são tortuosos e servem como 'autoestrada' para a metástase."]},
+            { etapa: 5, titulo: "PASSO 5: IGNORAR O SUICÍDIO", icone: "fa-solid fa-ghost", subtitulo: "Evasão da Apoptose", descricao: "Mesmo com mutações, a célula deveria ativar o suicídio programado (Apoptose). A célula maligna precisa de desativar esta rede de segurança.", caracteristicas: ["A célula pode <span class='highlight-2'>mutar o p53</span> (o principal 'sensor' que ativa a apoptose).", "A célula pode <span class='highlight-2'>superexpressar BCL-2</span> (o 'protetor' da mitocôndria).", "Isto confere resistência direta à quimioterapia e radioterapia."]},
+            { etapa: 6, titulo: "PASSO 6: A FUGA", icone: "fa-solid fa-person-running", subtitulo: "Invasão e Transição (EMT)", descricao: "A célula está pronta para sair do tumor primário. Ela precisa de se soltar das suas vizinhas e tornar-se móvel.", caracteristicas: ["<span class='highlight-2'>Perda da E-caderina</span>: A 'cola' que une as células é desativada.", "<span class='highlight-2'>EMT (Transição Epitélio-Mesenquimal)</span>: Um programa genético é ativado, mudando a forma da célula.", "<span class='highlight-2'>MMPs (Metaloproteinases)</span>: A célula secreta enzimas que 'cavam' um túnel."]},
+            { etapa: 7, titulo: "PASSO 7: O MANTO DA INVISIBILIDADE", icone: "fa-solid fa-shield-halved", subtitulo: "Evasão do Sistema Imune", descricao: "O nosso sistema imune (Linfócitos T) é desenhado para encontrar e matar células com mutações. A célula maligna precisa de se esconder.", caracteristicas: ["Estratégia <span class='highlight-2'>PD-L1</span>: A célula tumoral aprende a expressar <span class='highlight-2'>PD-L1</span> na sua superfície.", "O Linfócito T (que tem <span class='highlight-1'>PD-1</span>) liga-se ao PD-L1 do tumor.", "Esta ligação 'desliga' o Linfócito T no exato momento do ataque."]},
+            { etapa: 8, titulo: "PASSO 8: A TRANSFORMAÇÃO MALIGNA", icone: "fa-solid fa-skull-crossbones", subtitulo: "Metástase e Colonização", descricao: "A célula escapou, tornou-se invisível e agora viaja pela 'autoestrada' (vasos sanguíneos) para formar novos tumores em órgãos distantes.", caracteristicas: ["<span class='highlight-2'>Intravasamento</span>: A célula entra no vaso sanguíneo.", "<span class='highlight-2'>Sobrevivência</span>: Sobrevive ao stress da corrente sanguínea.", "<span class='highlight-2'>Colonização</span>: A célula 'ancora' e 'germina' num novo órgão (Teoria da <span class='highlight-1'>'Semente e Solo'</span>)."]}
         ];
 
         // --- DADOS DA REVISÃO ---
         const topicosRevisao = [
             { icone: "fa-solid fa-clone", titulo: "Módulo 1: Doença Clonal (Múltiplos 'Hits')", texto: "O câncer é uma doença genética clonal. Começa com uma célula, mas requer uma *sucessão* de mutações ('hits') para progredir. Herdamos o 'primeiro hit' em síndromes hereditárias." },
-            { icone: "fa-solid fa-car-burst", titulo: "Módulo 2: Aceleradores (Oncogenes) e Freios (Supressores)", texto: "A progressão é iniciada por duas falhas principais: (1) 'aceleradores presos' (ativação de Oncogenes como RAS, HER2) e (2) 'freios quebrados' (perda de Supressores de Tumor como RB, p53)." },
-            { icone: "fa-solid fa-battery-full", titulo: "Módulo 3: A Sustentação (Imortalidade e Logística)", texto: "Para se sustentar, o tumor (1) reativa a **Telomerase** para se tornar imortal, (2) secreta **VEGF** para criar vasos (Angiogénese) e (3) desativa o suicídio (Apoptose) ao mutar p53 ou superexpressar BCL-2." },
-            { icone: "fa-solid fa-map-signs", titulo: "Módulo 4: A Letalidade (Invasão e Metástase)", texto: "A letalidade vem da metástase. A célula perde a 'cola' (**E-caderina**), torna-se móvel (**EMT**), 'cava' o tecido (**MMPs**) e viaja para um 'solo' compatível (Semente e Solo)." },
-            { icone: "fa-solid fa-users-cog", titulo: "Módulo 5: O Ecossistema (Metabolismo e Evasão Imune)", texto: "O tumor manipula o seu ambiente. Ele muda seu metabolismo para 'roubar' glicose (**Efeito Warburg**) e 'desliga' o sistema imune ao expressar **PD-L1**." },
+            { icone: "fa-solid fa-car-burst", titulo: "Módulo 2: Aceleradores (Oncogenes) e Freios (Supressores)", texto: "A progressão é iniciada por duas falhas principais: (1) 'aceleradores presos' (ativação de Oncogenes como <span class='highlight-1'>RAS</span>, <span class='highlight-1'>HER2</span>) e (2) 'freios quebrados' (perda de Supressores de Tumor como <span class='highlight-1'>RB</span>, <span class='highlight-1'>p53</span>)." },
+            { icone: "fa-solid fa-battery-full", titulo: "Módulo 3: A Sustentação (Imortalidade e Logística)", texto: "Para se sustentar, o tumor (1) reativa a <span class='highlight-1'>Telomerase</span> para se tornar imortal, (2) secreta <span class='highlight-1'>VEGF</span> para criar vasos (Angiogénese) e (3) desativa o suicídio (Apoptose) ao mutar p53 ou superexpressar <span class='highlight-1'>BCL-2</span>." },
+            { icone: "fa-solid fa-map-signs", titulo: "Módulo 4: A Letalidade (Invasão e Metástase)", texto: "A letalidade vem da metástase. A célula perde a 'cola' (<span class='highlight-1'>E-caderina</span>), torna-se móvel (<span class='highlight-1'>EMT</span>), 'cava' o tecido (<span class='highlight-1'>MMPs</span>) e viaja para um 'solo' compatível (Semente e Solo)." },
+            { icone: "fa-solid fa-users-cog", titulo: "Módulo 5: O Ecossistema (Metabolismo e Evasão Imune)", texto: "O tumor manipula o seu ambiente. Ele muda seu metabolismo para 'roubar' glicose (<span class='highlight-1'>Efeito Warburg</span>) e 'desliga' o sistema imune ao expressar <span class='highlight-1'>PD-L1</span>." },
             { icone: "fa-solid fa-crosshairs", titulo: "Módulo 6: Oncologia de Precisão (Terapias-Alvo)", texto: "A medicina moderna ataca estes pilares. A Terapia-Alvo (ex: Inibidores de BRAF) ataca os 'aceleradores viciados', e a Imunoterapia (ex: Anti-PD-1) 'corta os freios' do sistema imune." }
         ];
 
         // --- DADOS DO QUIZ (20 PERGUNTAS) ---
         const quizData = [
-            { pergunta: "Qual é a principal característica que define um tumor como 'maligno' em vez de 'benigno'?", opcoes: ["Crescimento rápido", "Ser encapsulado", "Capacidade de metástase", "Ser bem diferenciado"], correta: 2 },
-            { pergunta: "O 'Cromossoma Filadélfia' t(9;22) é um exemplo clássico de ativação de oncogene por qual mecanismo?", opcoes: ["Amplificação Génica", "Mutação Pontual", "Translocação Cromossómica", "Perda de Heterozigotia"], correta: 2 },
-            { pergunta: "Segundo a hipótese dos 'Dois Hits' de Knudson, para um gene supressor de tumor (como o RB) causar câncer, o que é necessário?", opcoes: ["Apenas um alelo (hit) precisa ser mutado", "Ambos os alelos (dois hits) precisam ser inativados", "Apenas o alelo herdado (primeiro hit) importa", "Nenhum hit é necessário, o gene é dominante"], correta: 1 },
-            { pergunta: "Qual gene é conhecido como o 'Guardião do Genoma' por parar o ciclo celular em resposta a danos no DNA?", opcoes: ["RAS", "HER2", "TP53 (p53)", "MYC"], correta: 2 },
-            { pergunta: "Proto-oncogenes são...?", opcoes: ["Genes mutados que causam câncer", "Genes normais que regulam a proliferação", "Genes que reparam o DNA", "Genes que causam apoptose"], correta: 1 },
-            { pergunta: "Genes como BRCA1 e BRCA2, que reparam o DNA, são classificados como que tipo de supressores de tumor?", opcoes: ["Gatekeepers (Guardiões)", "Oncogenes", "Fatores de crescimento", "Caretakers (Zeladores)"], correta: 3 },
-            { pergunta: "Qual enzima a maioria dos cânceres reativa para alcançar a 'imortalidade' e manter o comprimento dos telômeros?", opcoes: ["DNA Polimerase", "Telomerase", "Helicase", "Quinase"], correta: 1 },
+            { pergunta: "Qual é a principal característica que define um tumor como <span class='highlight-2'>maligno</span>?", opcoes: ["Crescimento rápido", "Ser encapsulado", "Capacidade de metástase", "Ser bem diferenciado"], correta: 2 },
+            { pergunta: "O 'Cromossoma Filadélfia' t(9;22) que causa o <span class='highlight-1'>BCR-ABL</span> é um exemplo de qual mecanismo?", opcoes: ["Amplificação Génica", "Mutação Pontual", "Translocação Cromossómica", "Perda de Heterozigotia"], correta: 2 },
+            { pergunta: "Segundo a hipótese dos 'Dois Hits' de Knudson (para genes supressores como o <span class='highlight-1'>RB</span>), o que é necessário?", opcoes: ["Apenas um alelo (hit) precisa ser mutado", "Ambos os alelos (dois hits) precisam ser inativados", "Apenas o alelo herdado (primeiro hit) importa", "Nenhum hit é necessário, o gene é dominante"], correta: 1 },
+            { pergunta: "Qual gene é o 'Guardião do Genoma' por parar o ciclo celular em resposta a danos no DNA?", opcoes: ["RAS", "HER2", "TP53 (p53)", "MYC"], correta: 2 },
+            { pergunta: "<span class='highlight-1'>Proto-oncogenes</span> são...?", opcoes: ["Genes mutados que causam câncer", "Genes normais que regulam a proliferação", "Genes que reparam o DNA", "Genes que causam apoptose"], correta: 1 },
+            { pergunta: "Genes como <span class='highlight-1'>BRCA1</span> e <span class='highlight-1'>BRCA2</span> (que reparam DNA) são classificados como:", opcoes: ["Gatekeepers (Guardiões)", "Oncogenes", "Fatores de crescimento", "Caretakers (Zeladores)"], correta: 3 },
+            { pergunta: "Qual enzima a maioria dos cânceres reativa para alcançar a 'imortalidade' e manter os telômeros?", opcoes: ["DNA Polimerase", "Telomerase", "Helicase", "Quinase"], correta: 1 },
             { pergunta: "O processo de formação de novos vasos sanguíneos para 'alimentar' o tumor é chamado de:", opcoes: ["Metástase", "Apoptose", "Angiogénese", "Senescência"], correta: 2 },
             { pergunta: "Qual é o principal fator de crescimento secretado pelo tumor para induzir a angiogénese?", opcoes: ["EGF", "PDGF", "BCL-2", "VEGF"], correta: 3 },
-            { pergunta: "Qual proteína anti-morte é frequentemente superexpressada em linfomas (ex: t(14;18)) para evadir a apoptose?", opcoes: ["BAX", "p53", "BCL-2", "E-caderina"], correta: 2 },
+            { pergunta: "Qual proteína anti-morte é frequentemente superexpressada (ex: t(14;18)) para evadir a apoptose?", opcoes: ["BAX", "p53", "BCL-2", "E-caderina"], correta: 2 },
             { pergunta: "A perda de qual proteína de 'cola' celular é um passo crucial para a invasão e o início da metástase?", opcoes: ["Vimentina", "E-caderina", "N-caderina", "Colagénio"], correta: 1 },
             { pergunta: "O programa genético que transforma uma célula epitelial (estática) numa célula mesenquimal (móvel) chama-se:", opcoes: ["Angiogénese", "Efeito Warburg", "EMT (Transição Epitélio-Mesenquimal)", "Mutação KRAS"], correta: 2 },
             { pergunta: "A teoria que explica por que o câncer de próstata vai para os ossos (um 'solo' fértil) é chamada de:", opcoes: ["Teoria da Semente e Solo", "Teoria dos Múltiplos Hits", "Paradigma de Knudson", "Efeito Warburg"], correta: 0 },
             { pergunta: "O 'Efeito Warburg', a base do PET-Scan, descreve a tendência do câncer de consumir grandes quantidades de:", opcoes: ["Oxigénio", "Gordura", "Glicose", "Proteínas"], correta: 2 },
-            { pergunta: "Como o câncer escapa do sistema imune usando o 'freio' (checkpoint) mais comum?", opcoes: ["Desligando o BCL-2", "Expressando PD-L1 para se ligar ao PD-1 do Linfócito T", "Secretando VEGF", "Reativando a Telomerase"], correta: 1 },
+            { pergunta: "Como o câncer escapa do sistema imune usando o 'freio' (checkpoint) mais comum?", opcoes: ["Desligando o BCL-2", "Expressando <span class='highlight-2'>PD-L1</span> para se ligar ao <span class='highlight-1'>PD-1</span> do Linfócito T", "Secretando VEGF", "Reativando a Telomerase"], correta: 1 },
             { pergunta: "A imunoterapia (ex: Nivolumabe) funciona ao...", opcoes: ["Bloquear o 'freio' PD-1/PD-L1, reativando o Linfócito T", "Envenenar células em divisão rápida", "Bloquear o receptor HER2", "Inibir a Telomerase"], correta: 0 },
-            { pergunta: "Tumores MSI-H (Alta Instabilidade de Microssatélites) respondem bem à imunoterapia. Porquê?", opcoes: ["Porque têm poucos neoantígenos", "Porque têm muitos neoantígenos (muitas mutações)", "Porque não expressam PD-L1", "Porque são tumores 'frios'"], correta: 1 },
-            { pergunta: "Qual fármaco é um exemplo de 'terapia-alvo' desenhado especificamente para o receptor HER2-positivo no câncer de mama?", opcoes: ["Imatinibe", "Trastuzumabe (Herceptin)", "Paclitaxel (Quimioterapia)", "Nivolumabe"], correta: 1 },
+            { pergunta: "Tumores <span class='highlight-1'>MSI-H</span> (Alta Instabilidade de Microssatélites) respondem bem à imunoterapia. Porquê?", opcoes: ["Porque têm poucos neoantígenos", "Porque têm muitos neoantígenos (muitas mutações)", "Porque não expressam PD-L1", "Porque são tumores 'frios'"], correta: 1 },
+            { pergunta: "Qual fármaco é uma 'terapia-alvo' para o receptor <span class='highlight-1'>HER2</span>-positivo no câncer de mama?", opcoes: ["Imatinibe", "Trastuzumabe (Herceptin)", "Paclitaxel (Quimioterapia)", "Nivolumabe"], correta: 1 },
             { pergunta: "O fármaco Imatinibe (Gleevec) revolucionou o tratamento da LMC ao alvejar qual proteína de fusão específica?", opcoes: ["BRAF V600E", "HER2", "BCR-ABL", "KRAS"], correta: 2 },
             { pergunta: "O que é uma 'Biópsia Líquida'?", opcoes: ["Uma biópsia de um tumor com necrose líquida", "Um exame de sangue que deteta DNA tumoral circulante (ctDNA)", "A análise do líquido linfático", "Um tipo de PET-Scan"], correta: 1 }
         ];
@@ -415,6 +690,9 @@
         */
 
         // --- SELETORES DO DOM ( agarrar os elementos HTML) ---
+        const introContainer = document.getElementById('intro-container');
+        const btnIniciarSimulador = document.getElementById('btn-iniciar-simulador');
+
         const simuladorContainer = document.getElementById('simulador-container');
         const etapaView = document.getElementById('etapa-view');
         const btnAnterior = document.getElementById('btn-anterior');
@@ -434,7 +712,7 @@
 
         // --- VARIÁVEIS DE ESTADO (a memória do programa) ---
         let etapaAtual = 0;
-        let estadoAtualApp = 'simulacao'; // 'simulacao', 'revisao', 'quiz'
+        let estadoAtualApp = 'intro'; // 'intro', 'simulacao', 'revisao', 'quiz'
         let perguntaAtualQuiz = 0;
         let pontuacao = 0;
         let quizAtivo = false;
@@ -446,12 +724,13 @@
         */
         function renderizarEtapa(etapaIndex) {
             const etapa = etapasSimulacao[etapaIndex];
+            // O innerHTML agora pode interpretar os spans de highlight
             etapaView.innerHTML = `
                 <span class="etapa-titulo">${etapa.titulo}</span>
                 <h2><i class="${etapa.icone}"></i> ${etapa.subtitulo}</h2>
                 <p>${etapa.descricao}</p>
                 <ul class="lista-caracteristicas">
-                    ${etapa.caracteristicas.map(item => `<li><i class="fa-solid fa-atom fa-spin"></i> ${item}</li>`).join('')}
+                    ${etapa.caracteristicas.map(item => `<li>${item}</li>`).join('')}
                 </ul>
             `;
             
@@ -605,6 +884,14 @@
         ----------------------------------------------
         */
 
+        // Botão "Iniciar Simulação" (NOVO)
+        btnIniciarSimulador.addEventListener('click', () => {
+            introContainer.style.display = 'none';
+            simuladorContainer.style.display = 'block';
+            estadoAtualApp = 'simulacao';
+            renderizarEtapa(etapaAtual); // Renderiza a primeira etapa
+        });
+
         // Botão "Próximo" da Simulação
         btnProximo.addEventListener('click', () => {
             if (estadoAtualApp === 'simulacao') {
@@ -633,7 +920,8 @@
         INICIALIZAÇÃO (Ao carregar a página)
         ----------------------------------------------
         */
-        renderizarEtapa(etapaAtual);
+        // Não renderiza nada no início, o HTML estático da introdução é mostrado por defeito.
+        // Os 'listeners' já estão ativos e à espera.
 
     </script>
 </body>
