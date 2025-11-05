@@ -165,3 +165,26 @@ footer {
     color: #888;
     margin-top: 30px;
 }
+/* --- Animação de Fade-in (Adicionar ao final do style.css) --- */
+
+/* Keyframes definem a animação */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* A classe que o JavaScript vai adicionar */
+.fade-enter {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Mudar o ícone da lista de características (deixou de ser estático) */
+.lista-caracteristicas .fa-atom {
+    color: var(--cor-neon-secundaria);
+}
