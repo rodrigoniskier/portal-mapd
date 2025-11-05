@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Jornada da Célula Maligna</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <div class="container-futurista">
+        <header>
+            <h1><i class="fa-solid fa-infinity fa-spin"></i> A Jornada da Célula</h1>
+            <p>Da Normalidade à Transformação Maligna</p>
+        </header>
+
+        <main id="simulador-container" class="card-vidro">
+            
+            <div id="etapa-view">
+                <span class="etapa-titulo">PASSO 0: A CÉLULA NORMAL</span>
+                <h2><i class="fa-solid fa-shield-heart"></i> O Cidadão Obediente</h2>
+                <p>
+                    Uma célula normal é um "cidadão obediente". [cite_start]Ela só se divide quando recebe um sinal externo (um "fator de crescimento") e para de se dividir quando recebe um sinal de parada (ex: contato com células vizinhas)[cite: 85].
+                </p>
+                <ul class="lista-caracteristicas">
+                    <li><i class="fa-solid fa-circle-check"></i> Mecanismos de controle funcionam.</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Reparo de DNA está ativo.</li>
+                    [cite_start]<li><i class="fa-solid fa-circle-check"></i> Apoptose (suicídio celular) é ativada se o dano for irreparável[cite: 134].</li>
+                </ul>
+            </div>
+
+            <nav class="botoes-navegacao">
+                <button id="btn-anterior" class="btn-neon" disabled><i class="fa-solid fa-caret-left"></i> Anterior</button>
+                <button id="btn-proximo" class="btn-neon">Próxima Mutação <i class="fa-solid fa-caret-right"></i></button>
+            </nav>
+        </main>
+
+        <section id="revisao" class="card-vidro" style="display: none;">
+            <h2><i class="fa-solid fa-book-open"></i> Tópicos de Revisão</h2>
+            </section>
+
+        <section id="quiz" class="card-vidro" style="display: none;">
+            <h2><i class="fa-solid fa-vial-circle-check"></i> Quiz Interativo</h2>
+            </section>
+
+        <section id="download" class="card-vidro">
+            <h2><i class="fa-solid fa-download"></i> Download da Apostila</h2>
+            <p>Baixe o material de referência completo em formato PDF.</p>
+            <a href="biocancer.pdf" download class="btn-neon-download">
+                <i class="fa-solid fa-file-pdf"></i> Baixar biocancer.pdf
+            </a>
+        </section>
+
+        <footer>
+            <p>Projeto Interativo de Biologia Celular | Criado com a ajuda do Parceiro de Programação</p>
+        </footer>
+    </div>
+    
+    </body>
+</html>
