@@ -38,7 +38,6 @@
             display: flex;
             width: 100%;
             height: 100%;
-            /* A transição que move os slides */
             transition: transform 0.6s ease-in-out;
         }
 
@@ -46,27 +45,22 @@
             width: 100%;
             height: 100%;
             flex-shrink: 0;
-            /* Permite rolagem *dentro* do slide */
             overflow-y: auto;
             overflow-x: hidden;
             box-sizing: border-box;
-            
-            /* Centraliza o conteúdo dentro do slide */
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
         
-        /* O container do *conteúdo* dentro de cada slide */
         .container-futurista {
             width: 100%;
             max-width: 900px;
             margin: auto;
-            padding: 40px 0; /* Espaçamento vertical para o conteúdo */
+            padding: 40px 0;
         }
         
-        /* Ajuste para slides com conteúdo longo poderem rolar */
         .slide.slide-intro {
              align-items: flex-start;
         }
@@ -78,6 +72,7 @@
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 25px;
+            font-size: 1.1rem; /* Aumento de fonte base */
             
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
@@ -90,16 +85,18 @@
             margin-bottom: 40px;
         }
         header h1 {
-            font-size: 2.8rem;
+            font-size: 3rem; /* Aumentado */
             color: var(--cor-neon-principal);
             text-shadow: 0 0 10px var(--cor-neon-principal), 0 0 20px var(--cor-neon-principal);
+            margin-bottom: 15px;
         }
         header h1 .fa-spin {
             color: var(--cor-neon-secundaria);
         }
         header p {
-            font-size: 1.2rem;
+            font-size: 1.4rem; /* Aumentado */
             color: var(--cor-texto);
+            margin-top: 0;
         }
 
         /* --- Títulos das Secções --- */
@@ -107,14 +104,14 @@
             color: var(--cor-neon-principal);
             border-bottom: 1px solid var(--borda-vidro);
             padding-bottom: 10px;
-            font-size: 2rem;
+            font-size: 2.2rem; /* Aumentado */
         }
         h2 i {
             margin-right: 15px;
         }
         h3 {
             color: var(--cor-neon-secundaria);
-            font-size: 1.5rem;
+            font-size: 1.7rem; /* Aumentado */
         }
         
         /* --- Destaque de Palavras-chave --- */
@@ -136,9 +133,10 @@
             position: relative;
             padding-left: 30px;
             margin-bottom: 10px;
+            font-size: 1.1rem; /* Aumentado */
         }
         .lista-intro li::before {
-            content: '\f0da'; /* Ícone de seta (Font Awesome) */
+            content: '\f0da';
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             color: var(--cor-neon-principal);
@@ -167,8 +165,11 @@
             color: var(--cor-neon-principal);
             font-size: 1.2rem;
         }
+        .schema-box p {
+            font-size: 1rem; /* Resetado */
+        }
 
-        /* --- Esquema: Tabela Comparativa (Benigno vs Maligno) --- */
+        /* --- Esquema: Tabela Comparativa --- */
         .tabela-comparativa {
             width: 100%;
             border-collapse: collapse;
@@ -178,6 +179,7 @@
             border: 1px solid var(--borda-vidro);
             padding: 12px;
             text-align: left;
+            font-size: 1rem; /* Resetado */
         }
         .tabela-comparativa th {
             background-color: var(--cor-vidro);
@@ -187,7 +189,6 @@
             font-weight: bold;
             color: var(--cor-neon-secundaria);
         }
-        /* Responsividade da tabela */
         @media (max-width: 700px) {
             .tabela-comparativa {
                 display: block;
@@ -214,10 +215,9 @@
             font-size: 2.5rem;
             margin: 0 0 10px 0;
         }
-        .tnm-box h4.t { color: #00aaff; } /* Azul */
-        .tnm-box h4.n { color: #ffaa00; } /* Laranja */
-        .tnm-box h4.m { color: #ff3d3d; } /* Vermelho */
-        /* Responsividade dos esquemas */
+        .tnm-box h4.t { color: #00aaff; }
+        .tnm-box h4.n { color: #ffaa00; }
+        .tnm-box h4.m { color: #ff3d3d; }
          @media (max-width: 700px) {
             .schema-definicoes, .tnm-schema {
                 flex-direction: column;
@@ -239,7 +239,7 @@
         }
         #etapa-view h2 {
             border-bottom: none;
-            font-size: 2rem;
+            font-size: 2.2rem; /* Aumentado */
             margin-top: 10px;
         }
         .lista-caracteristicas {
@@ -247,13 +247,13 @@
             padding-left: 0;
         }
         .lista-caracteristicas li {
-            font-size: 1.1rem;
+            font-size: 1.1rem; /* Aumentado */
             margin-bottom: 10px;
             position: relative;
             padding-left: 30px;
         }
         .lista-caracteristicas li::before {
-            content: '\f610'; /* Ícone átomo (Font Awesome) */
+            content: '\f610';
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             color: var(--cor-neon-secundaria);
@@ -271,9 +271,9 @@
             padding-top: 20px;
         }
 
-        /* --- Estilo Base dos Botões Neon (Internos) --- */
+        /* --- Estilo Base dos Botões Neon --- */
         .btn-neon {
-            font-size: 1rem;
+            font-size: 1.1rem; /* Aumentado */
             font-weight: bold;
             padding: 12px 25px;
             border: 2px solid var(--cor-neon-principal);
@@ -305,10 +305,10 @@
             margin-top: 30px;
         }
 
-        /* --- Botão de Download (variação de cor) --- */
+        /* --- Botão de Download --- */
         .btn-neon-download {
             display: inline-block;
-            font-size: 1rem;
+            font-size: 1.1rem; /* Aumentado */
             font-weight: bold;
             padding: 12px 25px;
             border: 2px solid var(--cor-neon-secundaria);
@@ -361,7 +361,7 @@
         }
         .topico-revisao p {
             margin: 0;
-            font-size: 1rem;
+            font-size: 1.1rem; /* Aumentado */
             line-height: 1.5;
         }
         
@@ -376,12 +376,12 @@
             margin: 0;
         }
         .quiz-contador {
-            font-size: 1.2rem;
+            font-size: 1.3rem; /* Aumentado */
             font-weight: bold;
             color: var(--cor-neon-secundaria);
         }
         #quiz-pergunta {
-            font-size: 1.5rem;
+            font-size: 1.6rem; /* Aumentado */
             margin-bottom: 25px;
             line-height: 1.4;
         }
@@ -391,7 +391,7 @@
             gap: 15px;
         }
         .btn-opcao {
-            font-size: 1rem;
+            font-size: 1.1rem; /* Aumentado */
             padding: 15px 20px;
             border: 2px solid var(--borda-vidro);
             border-radius: 8px;
@@ -457,7 +457,6 @@
             transform: translateY(-50%);
             z-index: 100;
             cursor: pointer;
-            
             font-size: 3rem;
             color: var(--borda-vidro);
             background: var(--cor-fundo-botao);
@@ -467,7 +466,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            
             transition: all 0.3s ease;
         }
         .nav-seta:hover {
@@ -475,10 +473,9 @@
             background: var(--cor-vidro);
             box-shadow: 0 0 15px var(--cor-neon-principal);
         }
-        
         #nav-seta-esquerda {
             left: 20px;
-            display: none; /* Começa escondida */
+            display: none;
         }
         #nav-seta-direita {
             right: 20px;
@@ -486,7 +483,7 @@
 
         footer {
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 1rem; /* Aumentado */
             color: #888;
             margin-top: 30px;
         }
@@ -502,8 +499,9 @@
         <section class="slide slide-intro">
             <div class="container-futurista">
                 <header>
-                    <h1><i class="fa-solid fa-microscope fa-spin"></i> Patologia do Câncer</h1>
-                    <p>Uma jornada interativa pelos mecanismos da transformação maligna</p>
+                    <p style="font-size: 1.5rem; color: var(--cor-neon-principal);">Curso de Medicina - UNIPÊ | MAPD-2</p>
+                    <h1 style="font-size: 3rem;"><i class="fa-solid fa-microscope fa-spin"></i> Patologia do Câncer</h1>
+                    <p style="font-size: 1.3rem; color: var(--cor-texto);">Prof. Rodrigo Niskier</p>
                 </header>
                 
                 <div class="card-vidro lista-intro">
@@ -527,6 +525,11 @@
                     <ul>
                         <li><strong>Oncologia:</strong> É a especialidade médica que estuda e trata as neoplasias (o câncer).</li>
                     </ul>
+
+                    <hr style="border-color: var(--borda-vidro); margin: 30px 0;">
+                     <a href="biocancer.pdf" download class="btn-neon-download" style="width: 90%; text-align: center; margin: auto; display: block;">
+                        <i class="fa-solid fa-file-pdf"></i> Baixar Apostila (biocancer.pdf)
+                    </a>
                 </div>
                 <footer>
                     <p>Arraste para o lado ou use as setas para navegar</p>
@@ -541,7 +544,7 @@
                     <p>O câncer é um problema de saúde pública global. No Brasil, os dados são baseados nas estimativas do <span class="highlight-1">Instituto Nacional de Câncer (INCA)</span>.</p>
                     <ul>
                         <li><strong>Mundo:</strong> A estimativa (GLOBOCAN 2020) aponta para cerca de <span class="highlight-2">19 milhões de casos novos</span> por ano. Os mais incidentes são os de mama, pulmão e colorretal.</li>
-                        <li><strong>Brasil:</strong> A estimativa para o triénio 2023-2025 é de <span class="highlight-2">704 mil casos novos por ano</span>. Excluindo o câncer de pele não melanoma, os mais frequentes são os de <span class="highlight-1">mama feminina</span> (73 mil) e <span class="highlight-1">próstata</span> (71 mil).</li>
+                        <li><strong>Brasil:</strong> A estimativa para o triênio 2023-2025 é de <span class="highlight-2">704 mil casos novos por ano</span>. Excluindo o câncer de pele não melanoma, os mais frequentes são os de <span class="highlight-1">mama feminina</span> (73 mil) e <span class="highlight-1">próstata</span> (71 mil).</li>
                         <li><strong>Região Nordeste:</strong> Estimam-se <span class="highlight-2">~110 mil casos novos por ano</span> (excluindo pele não melanoma). Os mais incidentes em homens são próstata e cólon e reto; em mulheres, são mama e cólon e reto.</li>
                         <li><strong>Paraíba:</strong> A estimativa é de cerca de <span class="highlight-2">25.460 novos casos por ano</span> (incluindo pele não melanoma), sendo 12.120 em homens e 13.340 em mulheres.</li>
                     </ul>
@@ -639,10 +642,10 @@
             </div>
         </section>
         
-        <section class="slide">
+        <section class="slide slide-intro">
             <div class="container-futurista">
                 <section id="revisao-container" class="card-vidro">
-                    <h2><i class="fa-solid fa-book-open"></i> Tópicos de Revisão</h2>
+                    <h2><i class="fa-solid fa-book-open"></i> Tópicos de Revisão (Hallmarks)</h2>
                     <p>Estes são os pilares ("Hallmarks") que definem a transformação maligna.</p>
                     <div id="revisao-lista">
                         </div>
@@ -689,50 +692,52 @@
         */
         
         // --- DADOS DA SIMULAÇÃO (Passo a Passo) ---
+        // CORREÇÃO GRAMATICAL (pt-br) APLICADA
         const etapasSimulacao = [
             { etapa: 0, titulo: "PASSO 0: A CÉLULA NORMAL", icone: "fa-solid fa-shield-heart", subtitulo: "O Cidadão Obediente", descricao: "Uma célula normal só se divide quando recebe um sinal externo ('fator de crescimento') e para quando recebe um sinal de parada. Ela é uma cidadã obediente.", caracteristicas: ["Mecanismos de controle (freios) funcionam.", "Reparo de DNA (Zeladores) está ativo.", "Apoptose (suicídio celular) é ativada se o dano for irreparável."]},
-            { etapa: 1, titulo: "PASSO 1: O ACELERADOR PRESO", icone: "fa-solid fa-rocket", subtitulo: "Autossuficiência (Oncogenes)", descricao: "O primeiro 'hit' (mutação). A célula agora comporta-se como se estivesse *sempre* a receber sinais para se dividir, mesmo sem eles. Este é o 'acelerador preso'.", caracteristicas: ["Ativação de <span class='highlight-2'>Proto-Oncogenes</span> para <span class='highlight-2'>Oncogenes</span> (hiperativos).", "Isto é uma mutação de <span class='highlight-2'>Ganho de Função</span>: basta 1 alelo mutado (é dominante).", "Exemplos: Mutação pontual (<span class='highlight-1'>BRAF</span>), Amplificação (<span class='highlight-1'>HER2</span>), Translocação (<span class='highlight-1'>BCR-ABL</span>)."]},
+            { etapa: 1, titulo: "PASSO 1: O ACELERADOR PRESO", icone: "fa-solid fa-rocket", subtitulo: "Autossuficiência (Oncogenes)", descricao: "O primeiro 'hit' (mutação). A célula agora <span class='highlight-2'>se comporta</span> como se estivesse *sempre* recebendo sinais para se dividir, mesmo sem eles. Este é o 'acelerador preso'.", caracteristicas: ["Ativação de <span class='highlight-2'>Proto-Oncogenes</span> para <span class='highlight-2'>Oncogenes</span> (hiperativos).", "Isto é uma mutação de <span class='highlight-2'>Ganho de Função</span>: basta 1 alelo mutado (é dominante).", "Exemplos: Mutação pontual (<span class='highlight-1'>BRAF</span>), Amplificação (<span class='highlight-1'>HER2</span>), Translocação (<span class='highlight-1'>BCR-ABL</span>)."]},
             { etapa: 2, titulo: "PASSO 2: O FREIO QUEBRADO", icone: "fa-solid fa-brake", subtitulo: "Insensibilidade aos Sinais de Parada", descricao: "A célula agora ignora todos os sinais internos ou externos que mandam parar a divisão. Os 'freios' (Genes Supressores de Tumor) estão quebrados.", caracteristicas: ["Mutação de <span class='highlight-2'>Perda de Função</span>: ambos os alelos devem ser inativados (é recessivo).", "<span class='highlight-2'>RB (O Porteiro)</span>: Perder o RB deixa o 'portão' G1/S cronicamente aberto.", "<span class='highlight-2'>TP53 (O Guardião)</span>: Perder o p53 torna a célula 'cega' ao dano no DNA. Ela não para, não conserta e não morre."]},
-            { etapa: 3, titulo: "PASSO 3: A IMORTALIDADE", icone: "fa-solid fa-infinity", subtitulo: "Potencial Replicativo Ilimitado", descricao: "Células normais têm um 'relógio' (Telômeros) que encurta a cada divisão. A célula maligna precisa parar este relógio.", caracteristicas: ["A célula reativa a enzima <span class='highlight-2'>Telomerase</span>.", "A Telomerase reconstrói os telômeros nas pontas dos cromossomas.", "A célula 'rouba' o segredo da imortalidade das células germinativas."]},
-            { etapa: 4, titulo: "PASSO 4: A LOGÍSTICA", icone: "fa-solid fa-truck-fast", subtitulo: "Angiogénese Sustentada", descricao: "Um tumor não pode crescer além de 1-2mm sem o seu próprio suprimento de sangue. Ele precisa de 'convencer' o corpo a construir-lhe uma rede de vasos.", caracteristicas: ["O tumor ativa o 'Interruptor Angiogénico'.", "Liberta fatores pró-angiogénicos, como o <span class='highlight-2'>VEGF</span>.", "Os novos vasos são tortuosos e servem como 'autoestrada' para a metástase."]},
-            { etapa: 5, titulo: "PASSO 5: IGNORAR O SUICÍDIO", icone: "fa-solid fa-ghost", subtitulo: "Evasão da Apoptose", descricao: "Mesmo com mutações, a célula deveria ativar o suicídio programado (Apoptose). A célula maligna precisa de desativar esta rede de segurança.", caracteristicas: ["A célula pode <span class='highlight-2'>mutar o p53</span> (o principal 'sensor' que ativa a apoptose).", "A célula pode <span class='highlight-2'>superexpressar BCL-2</span> (o 'protetor' da mitocôndria).", "Isto confere resistência direta à quimioterapia e radioterapia."]},
-            { etapa: 6, titulo: "PASSO 6: A FUGA", icone: "fa-solid fa-person-running", subtitulo: "Invasão e Transição (EMT)", descricao: "A célula está pronta para sair do tumor primário. Ela precisa de se soltar das suas vizinhas e tornar-se móvel.", caracteristicas: ["<span class='highlight-2'>Perda da E-caderina</span>: A 'cola' que une as células é desativada.", "<span class='highlight-2'>EMT (Transição Epitélio-Mesenquimal)</span>: Um programa genético é ativado, mudando a forma da célula.", "<span class='highlight-2'>MMPs (Metaloproteinases)</span>: A célula secreta enzimas que 'cavam' um túnel."]},
-            { etapa: 7, titulo: "PASSO 7: O MANTO DA INVISIBILIDADE", icone: "fa-solid fa-shield-halved", subtitulo: "Evasão do Sistema Imune", descricao: "O nosso sistema imune (Linfócitos T) é desenhado para encontrar e matar células com mutações. A célula maligna precisa de se esconder.", caracteristicas: ["Estratégia <span class='highlight-2'>PD-L1</span>: A célula tumoral aprende a expressar <span class='highlight-2'>PD-L1</span> na sua superfície.", "O Linfócito T (que tem <span class='highlight-1'>PD-1</span>) liga-se ao PD-L1 do tumor.", "Esta ligação 'desliga' o Linfócito T no exato momento do ataque."]},
-            { etapa: 8, titulo: "PASSO 8: A TRANSFORMAÇÃO MALIGNA", icone: "fa-solid fa-skull-crossbones", subtitulo: "Metástase e Colonização", descricao: "A célula escapou, tornou-se invisível e agora viaja pela 'autoestrada' (vasos sanguíneos) para formar novos tumores em órgãos distantes.", caracteristicas: ["<span class='highlight-2'>Intravasamento</span>: A célula entra no vaso sanguíneo.", "<span class='highlight-2'>Sobrevivência</span>: Sobrevive ao stress da corrente sanguínea.", "<span class='highlight-2'>Colonização</span>: A célula 'ancora' e 'germina' num novo órgão (Teoria da <span class='highlight-1'>'Semente e Solo'</span>)."]}
+            { etapa: 3, titulo: "PASSO 3: A IMORTALIDADE", icone: "fa-solid fa-infinity", subtitulo: "Potencial Replicativo Ilimitado", descricao: "Células normais têm um 'relógio' (Telômeros) que encurta a cada divisão. A célula maligna precisa parar este relógio.", caracteristicas: ["A célula reativa a enzima <span class='highlight-2'>Telomerase</span>.", "A Telomerase reconstrói os telômeros nas pontas dos cromossomos.", "A célula 'rouba' o segredo da imortalidade das células germinativas."]},
+            { etapa: 4, titulo: "PASSO 4: A LOGÍSTICA", icone: "fa-solid fa-truck-fast", subtitulo: "Angiogênese Sustentada", descricao: "Um tumor não pode crescer além de 1-2mm sem seu próprio suprimento de sangue. Ele precisa 'convencer' o corpo a construir <span class='highlight-2'>para ela</span> uma rede de vasos.", caracteristicas: ["O tumor ativa o 'Interruptor Angiogênico'.", "Libera fatores pró-angiogênicos, como o <span class='highlight-2'>VEGF</span>.", "Os novos vasos são tortuosos e servem como 'autoestrada' para a metástase."]},
+            { etapa: 5, titulo: "PASSO 5: IGNORAR O SUICÍDIO", icone: "fa-solid fa-ghost", subtitulo: "Evasão da Apoptose", descricao: "Mesmo com mutações, a célula deveria ativar o suicídio programado (Apoptose). A célula maligna precisa desativar esta rede de segurança.", caracteristicas: ["A célula pode <span class='highlight-2'>mutar o p53</span> (o principal 'sensor' que ativa a apoptose).", "A célula pode <span class='highlight-2'>superexpressar BCL-2</span> (o 'protetor' da mitocôndria).", "Isto confere resistência direta à quimioterapia e radioterapia."]},
+            { etapa: 6, titulo: "PASSO 6: A FUGA", icone: "fa-solid fa-person-running", subtitulo: "Invasão e Transição (EMT)", descricao: "A célula está pronta para sair do tumor primário. Ela precisa <span class='highlight-2'>se soltar</span> de suas vizinhas e se tornar móvel.", caracteristicas: ["<span class='highlight-2'>Perda da E-caderina</span>: A 'cola' que une as células é desativada.", "<span class='highlight-2'>EMT (Transição Epitélio-Mesenquimal)</span>: Um programa genético é ativado, mudando a forma da célula.", "<span class='highlight-2'>MMPs (Metaloproteinases)</span>: A célula secreta enzimas que 'cavam' um túnel."]},
+            { etapa: 7, titulo: "PASSO 7: O MANTO DA INVISIBILIDADE", icone: "fa-solid fa-shield-halved", subtitulo: "Evasão do Sistema Imune", descricao: "Nosso sistema imune (Linfócitos T) é desenhado para encontrar e matar células com mutações. A célula maligna precisa se esconder.", caracteristicas: ["Estratégia <span class='highlight-2'>PD-L1</span>: A célula tumoral aprende a expressar <span class='highlight-2'>PD-L1</span> na sua superfície.", "O Linfócito T (que tem <span class='highlight-1'>PD-1</span>) liga-se ao PD-L1 do tumor.", "Esta ligação 'desliga' o Linfócito T no exato momento do ataque."]},
+            { etapa: 8, titulo: "PASSO 8: A TRANSFORMAÇÃO MALIGNA", icone: "fa-solid fa-skull-crossbones", subtitulo: "Metástase e Colonização", descricao: "A célula escapou, tornou-se invisível e agora viaja pela 'autoestrada' (vasos sanguíneos) para formar novos tumores em órgãos distantes.", caracteristicas: ["<span class='highlight-2'>Intravasamento</span>: A célula entra no vaso sanguíneo.", "<span class='highlight-2'>Sobrevivência</span>: Sobrevive ao estresse da corrente sanguínea.", "<span class='highlight-2'>Colonização</span>: A célula 'ancora' e 'germina' num novo órgão (Teoria da <span class='highlight-1'>'Semente e Solo'</span>)."]}
         ];
 
         // --- DADOS DA REVISÃO ---
         const topicosRevisao = [
             { icone: "fa-solid fa-clone", titulo: "Módulo 1: Doença Clonal (Múltiplos 'Hits')", texto: "O câncer é uma doença genética clonal. Começa com uma célula, mas requer uma *sucessão* de mutações ('hits') para progredir. Herdamos o 'primeiro hit' em síndromes hereditárias." },
             { icone: "fa-solid fa-car-burst", titulo: "Módulo 2: Aceleradores (Oncogenes) e Freios (Supressores)", texto: "A progressão é iniciada por duas falhas principais: (1) 'aceleradores presos' (ativação de Oncogenes como <span class='highlight-1'>RAS</span>, <span class='highlight-1'>HER2</span>) e (2) 'freios quebrados' (perda de Supressores de Tumor como <span class='highlight-1'>RB</span>, <span class='highlight-1'>p53</span>)." },
-            { icone: "fa-solid fa-battery-full", titulo: "Módulo 3: A Sustentação (Imortalidade e Logística)", texto: "Para se sustentar, o tumor (1) reativa a <span class='highlight-1'>Telomerase</span> para se tornar imortal, (2) secreta <span class='highlight-1'>VEGF</span> para criar vasos (Angiogénese) e (3) desativa o suicídio (Apoptose) ao mutar p53 ou superexpressar <span class='highlight-1'>BCL-2</span>." },
+            { icone: "fa-solid fa-battery-full", titulo: "Módulo 3: A Sustentação (Imortalidade e Logística)", texto: "Para se sustentar, o tumor (1) reativa a <span class='highlight-1'>Telomerase</span> para se tornar imortal, (2) secreta <span class='highlight-1'>VEGF</span> para criar vasos (Angiogênese) e (3) desativa o suicídio (Apoptose) ao mutar p53 ou superexpressar <span class='highlight-1'>BCL-2</span>." },
             { icone: "fa-solid fa-map-signs", titulo: "Módulo 4: A Letalidade (Invasão e Metástase)", texto: "A letalidade vem da metástase. A célula perde a 'cola' (<span class='highlight-1'>E-caderina</span>), torna-se móvel (<span class='highlight-1'>EMT</span>), 'cava' o tecido (<span class='highlight-1'>MMPs</span>) e viaja para um 'solo' compatível (Semente e Solo)." },
-            { icone: "fa-solid fa-users-cog", titulo: "Módulo 5: O Ecossistema (Metabolismo e Evasão Imune)", texto: "O tumor manipula o seu ambiente. Ele muda seu metabolismo para 'roubar' glicose (<span class='highlight-1'>Efeito Warburg</span>) e 'desliga' o sistema imune ao expressar <span class='highlight-1'>PD-L1</span>." },
+            { icone: "fa-solid fa-users-cog", titulo: "Módulo 5: O Ecossistema (Metabolismo e Evasão Imune)", texto: "O tumor manipula seu ambiente. Ele muda seu metabolismo para 'roubar' glicose (<span class='highlight-1'>Efeito Warburg</span>) e 'desliga' o sistema imune ao expressar <span class='highlight-1'>PD-L1</span>." },
             { icone: "fa-solid fa-crosshairs", titulo: "Módulo 6: Oncologia de Precisão (Terapias-Alvo)", texto: "A medicina moderna ataca estes pilares. A Terapia-Alvo (ex: Inibidores de BRAF) ataca os 'aceleradores viciados', e a Imunoterapia (ex: Anti-PD-1) 'corta os freios' do sistema imune." }
         ];
 
         // --- DADOS DO QUIZ (20 PERGUNTAS) ---
+        // CORREÇÃO GRAMATICAL (pt-br) APLICADA
         const quizData = [
             { pergunta: "Qual é a principal característica que define um tumor como <span class='highlight-2'>maligno</span>?", opcoes: ["Crescimento rápido", "Ser encapsulado", "Capacidade de metástase", "Ser bem diferenciado"], correta: 2 },
-            { pergunta: "O 'Cromossoma Filadélfia' t(9;22) que causa o <span class='highlight-1'>BCR-ABL</span> é um exemplo de qual mecanismo?", opcoes: ["Amplificação Génica", "Mutação Pontual", "Translocação Cromossómica", "Perda de Heterozigotia"], correta: 2 },
+            { pergunta: "O 'Cromossomo Filadélfia' t(9;22) que causa o <span class='highlight-1'>BCR-ABL</span> é um exemplo de qual mecanismo?", opcoes: ["Amplificação Gênica", "Mutação Pontual", "Translocação Cromossômica", "Perda de Heterozigotia"], correta: 2 },
             { pergunta: "Segundo a hipótese dos 'Dois Hits' de Knudson (para genes supressores como o <span class='highlight-1'>RB</span>), o que é necessário?", opcoes: ["Apenas um alelo (hit) precisa ser mutado", "Ambos os alelos (dois hits) precisam ser inativados", "Apenas o alelo herdado (primeiro hit) importa", "Nenhum hit é necessário, o gene é dominante"], correta: 1 },
             { pergunta: "Qual gene é o 'Guardião do Genoma' por parar o ciclo celular em resposta a danos no DNA?", opcoes: ["RAS", "HER2", "TP53 (p53)", "MYC"], correta: 2 },
             { pergunta: "<span class='highlight-1'>Proto-oncogenes</span> são...?", opcoes: ["Genes mutados que causam câncer", "Genes normais que regulam a proliferação", "Genes que reparam o DNA", "Genes que causam apoptose"], correta: 1 },
             { pergunta: "Genes como <span class='highlight-1'>BRCA1</span> e <span class='highlight-1'>BRCA2</span> (que reparam DNA) são classificados como:", opcoes: ["Gatekeepers (Guardiões)", "Oncogenes", "Fatores de crescimento", "Caretakers (Zeladores)"], correta: 3 },
             { pergunta: "Qual enzima a maioria dos cânceres reativa para alcançar a 'imortalidade' e manter os telômeros?", opcoes: ["DNA Polimerase", "Telomerase", "Helicase", "Quinase"], correta: 1 },
-            { pergunta: "O processo de formação de novos vasos sanguíneos para 'alimentar' o tumor é chamado de:", opcoes: ["Metástase", "Apoptose", "Angiogénese", "Senescência"], correta: 2 },
-            { pergunta: "Qual é o principal fator de crescimento secretado pelo tumor para induzir a angiogénese?", opcoes: ["EGF", "PDGF", "BCL-2", "VEGF"], correta: 3 },
+            { pergunta: "O processo de formação de novos vasos sanguíneos para 'alimentar' o tumor é chamado de:", opcoes: ["Metástase", "Apoptose", "Angiogênese", "Senescência"], correta: 2 },
+            { pergunta: "Qual é o principal fator de crescimento secretado pelo tumor para induzir a angiogênese?", opcoes: ["EGF", "PDGF", "BCL-2", "VEGF"], correta: 3 },
             { pergunta: "Qual proteína anti-morte é frequentemente superexpressada (ex: t(14;18)) para evadir a apoptose?", opcoes: ["BAX", "p53", "BCL-2", "E-caderina"], correta: 2 },
-            { pergunta: "A perda de qual proteína de 'cola' celular é um passo crucial para a invasão e o início da metástase?", opcoes: ["Vimentina", "E-caderina", "N-caderina", "Colagénio"], correta: 1 },
-            { pergunta: "O programa genético que transforma uma célula epitelial (estática) numa célula mesenquimal (móvel) chama-se:", opcoes: ["Angiogénese", "Efeito Warburg", "EMT (Transição Epitélio-Mesenquimal)", "Mutação KRAS"], correta: 2 },
+            { pergunta: "A perda de qual proteína de 'cola' celular é um passo crucial para a invasão e o início da metástase?", opcoes: ["Vimentina", "E-caderina", "N-caderina", "Colágeno"], correta: 1 },
+            { pergunta: "O programa genético que transforma uma célula epitelial (estática) numa célula mesenquimal (móvel) <span class='highlight-2'>se chama</span>:", opcoes: ["Angiogênese", "Efeito Warburg", "EMT (Transição Epitélio-Mesenquimal)", "Mutação KRAS"], correta: 2 },
             { pergunta: "A teoria que explica por que o câncer de próstata vai para os ossos (um 'solo' fértil) é chamada de:", opcoes: ["Teoria da Semente e Solo", "Teoria dos Múltiplos Hits", "Paradigma de Knudson", "Efeito Warburg"], correta: 0 },
-            { pergunta: "O 'Efeito Warburg', a base do PET-Scan, descreve a tendência do câncer de consumir grandes quantidades de:", opcoes: ["Oxigénio", "Gordura", "Glicose", "Proteínas"], correta: 2 },
+            { pergunta: "O 'Efeito Warburg', a base do PET-Scan, descreve a tendência do câncer de consumir grandes quantidades de:", opcoes: ["Oxigênio", "Gordura", "Glicose", "Proteínas"], correta: 2 },
             { pergunta: "Como o câncer escapa do sistema imune usando o 'freio' (checkpoint) mais comum?", opcoes: ["Desligando o BCL-2", "Expressando <span class='highlight-2'>PD-L1</span> para se ligar ao <span class='highlight-1'>PD-1</span> do Linfócito T", "Secretando VEGF", "Reativando a Telomerase"], correta: 1 },
             { pergunta: "A imunoterapia (ex: Nivolumabe) funciona ao...", opcoes: ["Bloquear o 'freio' PD-1/PD-L1, reativando o Linfócito T", "Envenenar células em divisão rápida", "Bloquear o receptor HER2", "Inibir a Telomerase"], correta: 0 },
-            { pergunta: "Tumores <span class='highlight-1'>MSI-H</span> (Alta Instabilidade de Microssatélites) respondem bem à imunoterapia. Porquê?", opcoes: ["Porque têm poucos neoantígenos", "Porque têm muitos neoantígenos (muitas mutações)", "Porque não expressam PD-L1", "Porque são tumores 'frios'"], correta: 1 },
+            { pergunta: "Tumores <span class='highlight-1'>MSI-H</span> (Alta Instabilidade de Microssatélites) respondem bem à imunoterapia. <span class='highlight-2'>Por quê?</span>", opcoes: ["Porque têm poucos neoantígenos", "Porque têm muitos neoantígenos (muitas mutações)", "Porque não expressam PD-L1", "Porque são tumores 'frios'"], correta: 1 },
             { pergunta: "Qual fármaco é uma 'terapia-alvo' para o receptor <span class='highlight-1'>HER2</span>-positivo no câncer de mama?", opcoes: ["Imatinibe", "Trastuzumabe (Herceptin)", "Paclitaxel (Quimioterapia)", "Nivolumabe"], correta: 1 },
-            { pergunta: "O fármaco Imatinibe (Gleevec) revolucionou o tratamento da LMC ao alvejar qual proteína de fusão específica?", opcoes: ["BRAF V600E", "HER2", "BCR-ABL", "KRAS"], correta: 2 },
-            { pergunta: "O que é uma 'Biópsia Líquida'?", opcoes: ["Uma biópsia de um tumor com necrose líquida", "Um exame de sangue que deteta DNA tumoral circulante (ctDNA)", "A análise do líquido linfático", "Um tipo de PET-Scan"], correta: 1 }
+            { pergunta: "O fármaco Imatinibe (Gleevec) revolucionou o tratamento da LMC ao ter como alvo qual proteína de fusão específica?", opcoes: ["BRAF V600E", "HER2", "BCR-ABL", "KRAS"], correta: 2 },
+            { pergunta: "O que é uma 'Biópsia Líquida'?", opcoes: ["Uma biópsia de um tumor com necrose líquida", "Um exame de sangue que detecta DNA tumoral circulante (ctDNA)", "A análise do líquido linfático", "Um tipo de PET-Scan"], correta: 1 }
         ];
 
 
@@ -742,33 +747,30 @@
         */
 
         // --- SELETORES DO DOM ---
-        // Navegação de Slides
         const slideWrapper = document.querySelector('.slide-wrapper');
         const slides = document.querySelectorAll('.slide');
         const setaEsquerda = document.getElementById('nav-seta-esquerda');
         const setaDireita = document.getElementById('nav-seta-direita');
         
-        // Botões de Navegação Interna
         const btnIniciarSimulador = document.getElementById('btn-iniciar-simulador'); // Slide 4
         const btnAnterior = document.getElementById('btn-anterior'); // Slide 5
         const btnProximo = document.getElementById('btn-proximo'); // Slide 5
         const btnIniciarQuiz = document.getElementById('btn-iniciar-quiz'); // Slide 6
         const btnReiniciarFinal = document.getElementById('btn-reiniciar-final'); // Slide 8
 
-        // Módulos Internos
         const etapaView = document.getElementById('etapa-view'); // Slide 5
         const revisaoLista = document.getElementById('revisao-lista'); // Slide 6
         const quizContainer = document.getElementById('quiz-container'); // Slide 7
 
 
         // --- VARIÁVEIS DE ESTADO (a memória do programa) ---
-        let etapaAtualSimulador = 0; // Estado *interno* do simulador
+        let etapaAtualSimulador = 0; 
         let perguntaAtualQuiz = 0;
         let pontuacao = 0;
         let quizAtivo = false;
         
-        let slideAtual = 0; // Estado *global* da navegação
-        const totalSlides = slides.length; // Agora deve ser 8
+        let slideAtual = 0; 
+        const totalSlides = slides.length; // 8 slides
 
 
         /* ----------------------------------------------
@@ -776,7 +778,6 @@
         ----------------------------------------------
         */
         function irParaSlide(slideIndex) {
-            // Garante que não saia dos limites
             if (slideIndex < 0) slideIndex = 0;
             if (slideIndex >= totalSlides) slideIndex = totalSlides - 1;
 
@@ -785,20 +786,21 @@
             atualizarSetasGlobais();
             
             // Pré-carrega o conteúdo do slide se ele ainda não foi carregado
+            // (Índices baseados em 0)
             if (slideIndex === 4 && etapaView.innerHTML === "") { // Slide 5 (Simulador)
                 renderizarEtapa(etapaAtualSimulador);
             }
-            if (slideIndex === 5 && revisaoLista.innerHTML === "") { // Slide 6 (Revisão)
+            // CORREÇÃO DO BUG: A verificação agora é mais robusta
+            if (slideIndex === 5 && revisaoLista.children.length === 0) { // Slide 6 (Revisão)
                  renderizarRevisao();
             }
         }
 
         function atualizarSetasGlobais() {
-            setaEsquerda.style.display = (slideAtual === 0) ? 'none' : 'block';
-            setaDireita.style.display = (slideAtual === totalSlides - 1) ? 'none' : 'block';
+            setaEsquerda.style.display = (slideAtual === 0) ? 'none' : 'flex';
+            setaDireita.style.display = (slideAtual === totalSlides - 1) ? 'none' : 'flex';
         }
 
-        // Listeners das Setas Globais
         setaDireita.addEventListener('click', () => irParaSlide(slideAtual + 1));
         setaEsquerda.addEventListener('click', () => irParaSlide(slideAtual - 1));
 
@@ -817,18 +819,15 @@
                     ${etapa.caracteristicas.map(item => `<li>${item}</li>`).join('')}
                 </ul>
             `;
-            
             etapaView.classList.add('fade-enter');
             setTimeout(() => {
                 etapaView.classList.remove('fade-enter');
             }, 500);
-
             atualizarBotoesSimulador();
         }
 
         function atualizarBotoesSimulador() {
             btnAnterior.disabled = (etapaAtualSimulador === 0);
-            
             if (etapaAtualSimulador === etapasSimulacao.length - 1) {
                 btnProximo.innerHTML = 'Ir para Revisão <i class="fa-solid fa-book-open"></i>';
             } else {
@@ -837,14 +836,12 @@
             btnProximo.disabled = false;
         }
 
-        // Listeners dos Botões Internos do Simulador (Slide 5)
         btnProximo.addEventListener('click', () => {
             if (etapaAtualSimulador < etapasSimulacao.length - 1) {
                 etapaAtualSimulador++;
                 renderizarEtapa(etapaAtualSimulador);
             } else {
-                // Fim da simulação, avança para o SLIDE de Revisão
-                irParaSlide(5); // Slide 6 (Revisão)
+                irParaSlide(5); // Avança para o Slide 6 (Revisão)
             }
         });
 
@@ -860,8 +857,7 @@
         ----------------------------------------------
         */
         function renderizarRevisao() {
-            // Esta função só precisa ser chamada uma vez
-            if (revisaoLista.innerHTML !== '') return; 
+            if (revisaoLista.children.length > 0) return; // Só renderiza uma vez
 
             topicosRevisao.forEach((topico, index) => {
                 const topicoDiv = document.createElement('div');
@@ -884,7 +880,6 @@
             pontuacao = 0;
             quizAtivo = true;
             
-            // Limpa o container e constrói o esqueleto do quiz
             quizContainer.innerHTML = `
                 <div id="quiz-header">
                     <h2><i class="fa-solid fa-vial-circle-check"></i> Quiz Interativo</h2>
@@ -895,8 +890,6 @@
                 <div id="quiz-feedback"></div>
             `;
             quizContainer.classList.add('fade-enter');
-            
-            // Renderiza a primeira pergunta
             renderizarPergunta();
         }
 
@@ -909,7 +902,6 @@
             quizAtivo = true;
             const pergunta = quizData[perguntaAtualQuiz];
             
-            // Pega os elementos internos do quiz (podem ter sido recriados)
             const elContador = quizContainer.querySelector('#quiz-contador');
             const elPergunta = quizContainer.querySelector('#quiz-pergunta');
             const elOpcoes = quizContainer.querySelector('#quiz-opcoes');
@@ -919,7 +911,7 @@
             elPergunta.innerHTML = pergunta.pergunta;
             elOpcoes.innerHTML = '';
             elFeedback.innerHTML = '';
-            elFeedback.className = '';
+            elFeedback.className = 'quiz-feedback'; // Reset
 
             pergunta.opcoes.forEach((opcao, index) => {
                 elOpcoes.innerHTML += `
@@ -929,7 +921,6 @@
                 `;
             });
 
-            // Animação de entrada
             elPergunta.classList.add('fade-enter');
             elOpcoes.classList.add('fade-enter');
             setTimeout(() => {
@@ -938,7 +929,6 @@
             }, 500);
         }
 
-        // Esta função é chamada pelo 'onclick'
         function selecionarResposta(indexOpcao) {
             if (!quizAtivo) return;
             quizAtivo = false;
@@ -972,7 +962,7 @@
             quizContainer.innerHTML = `
                 <div id="quiz-resultado">
                     <h2>Quiz Concluído!</h2>
-                    <p>O seu resultado final foi:</p>
+                    <p>Seu resultado final foi:</p>
                     <p class="pontuacao-final">${pontuacao} de ${quizData.length}</p>
                     <button id="btn-reiniciar-quiz" class="btn-neon">
                         <i class="fa-solid fa-refresh"></i> Reiniciar Jornada
@@ -984,13 +974,11 @@
             `;
             quizContainer.classList.add('fade-enter');
             
-            // Adicionar 'listeners' aos novos botões
             document.getElementById('btn-reiniciar-quiz').addEventListener('click', reiniciarJornada);
             document.getElementById('btn-ver-download').addEventListener('click', () => irParaSlide(7)); // Vai para o slide 8 (Download)
         }
         
         function reiniciarJornada() {
-            // Recarregar a página é a forma mais simples de reiniciar tudo
             location.reload(); 
         }
 
@@ -1007,7 +995,7 @@
         // Botão "Iniciar Quiz" (Slide 6)
         btnIniciarQuiz.addEventListener('click', () => {
             irParaSlide(6); // Vai para o slide 7 (Quiz)
-            iniciarQuiz(); // Inicia a lógica do quiz
+            iniciarQuiz();
         });
 
         // Botão "Reiniciar" (Slide 8)
@@ -1017,7 +1005,6 @@
         INICIALIZAÇÃO (Ao carregar a página)
         ----------------------------------------------
         */
-        // A página começa no slide 0 (Intro) por defeito.
         atualizarSetasGlobais();
 
     </script>
