@@ -371,7 +371,8 @@
             phase1Results: {},
             phase2Results: {},
             phase3Results: {},
-            currentStage: 1
+            currentStage: 1,
+            reportMarkdown: '' // Para armazenar o relatório em markdown
         };
 
         // Initialize dark mode
@@ -836,6 +837,44 @@
                     </div>
                 </div>
             `;
+            
+            // NOVO: Criar versão em Markdown/TXT do relatório
+            const reportMarkdown = `
+# Resumo do Desenvolvimento (Mini-Artigo)
+
+**Introdução:**
+O presente projeto focou no desenvolvimento de uma nova estratégia de imunoterapia para o tratamento de **${cancerNames[simulationData.cancer]}**. A abordagem selecionada foi a **${strategyNames[simulationData.strategy]}**, que tem como alvo o antígeno tumoral **${simulationData.target}**.
+
+**Metodologia e Resultados Pré-Clínicos:**
+A fase pré-clínica *in vitro* demonstrou uma janela terapêutica promissora. Na concentração otimizada de **${simulationData.preclinicalResults.dose} µg/mL**, a terapia alcançou **${simulationData.preclinicalResults.efficacy}%** de inibição do crescimento tumoral, mantendo uma toxicidade **${simulationData.preclinicalResults.toxicity}** contra células normais.
+
+**Desenvolvimento Clínico:**
+
+* **Fase I:** O estudo de segurança e escalonamento de dose em ${simulationData.phase1Results.patients} pacientes estabeleceu uma Dose Máxima Tolerada (MTD) de **${simulationData.phase1Results.mdt} mg/kg**, com um perfil de segurança favorável (${simulationData.phase1Results.safetyScore.toFixed(1)}% dos pacientes sem eventos graves).
+* **Fase II:** O estudo de eficácia subsequente, envolvendo ${simulationData.phase2Results.patients} pacientes, demonstrou sinais claros de atividade antitumoral. A Taxa de Resposta Objetiva (ORR) foi de **${simulationData.phase2Results.responseRate.toFixed(1)}%**, e a Sobrevida Livre de Progressão (PFS) mediana foi de **${simulationData.phase2Results.progressionFreeMonths.toFixed(1)} meses**.
+* **Fase III:** O estudo pivotal de Fase III, um ensaio randomizado com ${simulationData.phase3Results.patients} pacientes, comparou a nova terapia ao tratamento padrão. Os resultados foram estatisticamente significativos, mostrando uma melhora substancial na Sobrevida Global (OS) mediana, que foi de **${simulationData.phase3Results.overallSurvival.toFixed(1)} meses** no braço da terapia contra ${simulationData.phase3Results.standardSurvival.toFixed(1)} meses no braço controle. O Hazard Ratio (HR) foi de **${simulationData.phase3Results.hazardRatio.toFixed(2)}** (p=${simulationData.phase3Results.pValue.toFixed(3)}), indicando uma redução clinicamente relevante no risco de morte.
+
+**Conclusão:**
+Com base nos dados robustos de segurança e eficácia demonstrados em todo o programa de desenvolvimento, a terapia foi submetida e recebeu aprovação regulatória, representando uma nova e valiosa opção para pacientes com ${cancerNames[simulationData.cancer]}.
+
+---
+**Dados da Simulação**
+- **Câncer:** ${cancerNames[simulationData.cancer]}
+- **Estratégia:** ${strategyNames[simulationData.strategy]}
+- **Alvo:** ${simulationData.target}
+- **Resultado Pré-Clínico:** ${simulationData.preclinicalResults.efficacy}% eficácia @ ${simulationData.preclinicalResults.dose} µg/mL (Toxicidade: ${simulationData.preclinicalResults.toxicity})
+- **Resultado Fase I:** Segurança ${simulationData.phase1Results.safetyScore.toFixed(1)}%
+- **Resultado Fase II:** Resposta ${simulationData.phase2Results.responseRate.toFixed(1)}%
+- **Resultado Fase III:** Sobrevida ${simulationData.phase3Results.overallSurvival.toFixed(1)} meses (Controle: ${simulationData.phase3Results.standardSurvival.toFixed(1)} meses)
+
+---
+Simulação gerada em: ${new Date().toLocaleDateString('pt-BR')}
+Curso de Medicina - UNIPE | MAPD-2 | Prof. Rodrigo Niskier | 2025
+`;
+
+            // Armazenar markdown para download
+            simulationData.reportMarkdown = reportMarkdown.trim();
+
 
             const reportContent = `
                 <div class="text-center mb-8">
@@ -888,8 +927,9 @@
                 </div>
                 
                 <div class="mt-8 text-center">
+                    <!-- BOTÃO ATUALIZADO -->
                     <button onclick="downloadReport()" class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg transition-all duration-300 mr-4">
-                        💾 Baixar JSON
+                        💾 Baixar Relatório (TXT)
                     </button>
                     <button onclick="closeModal()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg transition-all duration-300">
                         ❌ Fechar
@@ -900,20 +940,25 @@
             showModal('📋 Relatório Completo', reportContent);
         }
 
-        // Download report function
+        // FUNÇÃO DE DOWNLOAD ATUALIZADA
         function downloadReport() {
-            const reportData = JSON.stringify(simulationData, null, 2);
-            const blob = new Blob([reportData], { type: 'application/json' });
+            // Pega o texto markdown armazenado
+            const reportData = simulationData.reportMarkdown || "Erro ao gerar relatório.";
+            
+            // Cria um blob com texto plano
+            const blob = new Blob([reportData], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'relatorio-terapia-antitumoral.json';
+            // Define o nome do arquivo para .txt
+            a.download = 'relatorio-terapia-antitumoral.txt';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            showNotification('💾 Relatório baixado', 'O arquivo JSON foi salvo com sucesso!', 'success');
+            // Atualiza a mensagem de notificação
+            showNotification('💾 Relatório baixado', 'O arquivo TXT foi salvo com sucesso!', 'success');
         }
 
         // Utility functions
