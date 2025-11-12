@@ -1,37 +1,938 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Terapia Antitumoral</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-    <div class="modal-overlay" id="modal-overlay"></div>
-    <div class="info-box-container" id="info-box-container">
-        <button class="close-btn" id="close-info-box">&times;</button>
-        <h3 id="info-box-title"></h3>
-        <p id="info-box-text"></p>
-    </div>
-
-    <div class="simulation-container">
-        <h1>Simulador de Desenvolvimento de Terapia</h1>
+    <title>Simulador de Desenvolvimento de Terapia Antitumoral - UNIPE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .slide-in { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        <div id="game-content">
-            <h2 id="question-text">Carregando simulador...</h2>
+        /* Estilo para a caixa de explicação */
+        .explanation-box {
+            @apply bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border dark:border-gray-600 mb-6 text-sm text-gray-700 dark:text-gray-300;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8 fade-in">
+            <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-2">
+                🧬 Simulador de Terapia Antitumoral
+            </h1>
+            <p class="text-gray-600 dark:text-gray-300">
+                Simule o desenvolvimento de estratégias de imunoterapia contra o câncer
+            </p>
             
-            <div id="info-button-container"></div>
+            <!-- DADOS DO CURSO ADICIONADOS AQUI -->
+            <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                <span>Curso de Medicina - UNIPE</span> |
+                <span>MAPD-2</span> |
+                <span>Prof. Rodrigo Niskier</span> |
+                <span>2025</span>
+            </div>
+            <!-- FIM DOS DADOS DO CURSO -->
 
-            <div id="options-container">
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300 mb-2">
+                <span>Progresso da Simulação</span>
+                <span id="progressText">0% Completo</span>
+            </div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="appContent" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+            <!-- Stage 1: Cancer Selection -->
+            <div id="stage1" class="stage">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+                    📋 Etapa 1: Seleção do Tipo de Câncer
+                </h2>
+                <div class="explanation-box">
+                    <p><strong>O que é esta etapa?</strong><br>
+                    O primeiro passo no desenvolvimento de qualquer terapia é definir o inimigo. Diferentes tipos de câncer (ex: mama, pulmão) têm características biológicas, genéticas e moleculares únicas. A sua escolha aqui definirá quais estratégias e alvos são potencialmente viáveis.</p>
                 </div>
-            
-            <button id="report-button" class="report-btn" style="display: none;">
-                Gerar Relatório Final
-            </button>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">
+                    Escolha o tipo de câncer para o qual você desenvolverá a terapia:
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button class="cancer-btn bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white p-4 rounded-lg transition-all duration-300 transform hover:scale-105" data-cancer="mama">
+                        <div class="text-lg font-bold">🎀 Câncer de Mama</div>
+                        <div class="text-sm opacity-90">HER2+, Triplo Negativo, Luminal</div>
+                    </button>
+                    <button class="cancer-btn bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white p-4 rounded-lg transition-all duration-300 transform hover:scale-105" data-cancer="pulmao">
+                        <div class="text-lg font-bold">🫁 Câncer de Pulmão</div>
+                        <div class="text-sm opacity-90">NSCLC, EGFR+, PD-L1+</div>
+                    </button>
+                    <button class="cancer-btn bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white p-4 rounded-lg transition-all duration-300 transform hover:scale-105" data-cancer="colorretal">
+                        <div class="text-lg font-bold">🎯 Câncer Colorretal</div>
+                        <div class="text-sm opacity-90">MSI-H, KRAS+, BRAF+</div>
+                    </button>
+                    <button class="cancer-btn bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white p-4 rounded-lg transition-all duration-300 transform hover:scale-105" data-cancer="prostata">
+                        <div class="text-lg font-bold">🔵 Câncer de Próstata</div>
+                        <div class="text-sm opacity-90">Resistente à castração, BRCA+</div>
+                    </button>
+                    <button class="cancer-btn bg-gradient-to-r from-yellow-600 to-amber-700 hover:from-yellow-700 hover:to-amber-800 text-white p-4 rounded-lg transition-all duration-300 transform hover:scale-105" data-cancer="melanoma">
+                        <div class="text-lg font-bold">☀️ Melanoma</div>
+                        <div class="text-sm opacity-90">BRAF+, Alta carga mutacional</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stage 2: Immunotherapy Strategy -->
+            <div id="stage2" class="stage hidden">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+                    🔬 Etapa 2: Estratégia de Imunoterapia
+                </h2>
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-6">
+                    <p class="text-blue-800 dark:text-blue-200">
+                        <strong>Câncer selecionado:</strong> <span id="selectedCancer"></span>
+                    </p>
+                </div>
+                <div class="explanation-box">
+                    <p><strong>O que é esta etapa?</strong><br>
+                    Imunoterapia utiliza o próprio sistema imunológico do paciente para combater o câncer. Você deve escolher a abordagem principal:</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li><strong>Imunoterapia Celular:</strong> Envolve modificar geneticamente as células imunes do paciente (como Células T) em laboratório para que ataquem o tumor e, em seguida, reinfundi-las. (Ex: CAR-T).</li>
+                        <li><strong>Imunoterapia Humoral:</strong> Envolve o uso de proteínas feitas em laboratório, como anticorpos, que são projetados para "marcar" células cancerígenas ou bloquear sinais que impedem o sistema imune de atacar. (Ex: Inibidores de Checkpoint).</li>
+                    </ul>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">
+                    Escolha o tipo de estratégia imunoterapêutica:
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <button class="strategy-btn bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white p-6 rounded-lg transition-all duration-300 transform hover:scale-105" data-strategy="celular">
+                        <div class="text-xl font-bold mb-2">🧫 Imunoterapia Celular</div>
+                        <div class="text-sm opacity-90 text-left">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>CAR-T cells</li>
+                                <li>Células dendríticas</li>
+                                <li>Linfócitos infiltrantes de tumor (TIL)</li>
+                                <li>Células NK expandidas</li>
+                            </ul>
+                        </div>
+                    </button>
+                    <button class="strategy-btn bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white p-6 rounded-lg transition-all duration-300 transform hover:scale-105" data-strategy="humoral">
+                        <div class="text-xl font-bold mb-2">🩸 Imunoterapia Humoral</div>
+                        <div class="text-sm opacity-90 text-left">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Anticorpos monoclonais</li>
+                                <li>Inibidores de checkpoint</li>
+                                <li>Conjugados anticorpo-droga</li>
+                                <li>Anticorpos biespecíficos</li>
+                            </ul>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stage 3: Target Selection -->
+            <div id="stage3" class="stage hidden">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+                    🎯 Etapa 3: Seleção do Alvo Molecular
+                </h2>
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-6">
+                    <p class="text-blue-800 dark:text-blue-200">
+                        <strong>EstratégIA:</strong> <span id="selectedStrategy"></span>
+                    </p>
+                </div>
+                <div class="explanation-box">
+                    <p><strong>O que é esta etapa?</strong><br>
+                    Toda terapia precisa de um alvo. Este é o "calcanhar de Aquiles" da célula cancerígena – geralmente uma proteína (antígeno) que é superexpressa na superfície do tumor ou uma via de sinalização da qual o câncer depende para crescer. A sua terapia será projetada para atacar especificamente este alvo, poupando as células saudáveis.</p>
+                </div>
+                <div id="targetOptions" class="space-y-4">
+                    <!-- Targets will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Stage 4: Preclinical Studies -->
+            <div id="stage4" class="stage hidden">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+                    🧪 Etapa 4: Estudos Pré-Clínicos
+                </h2>
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg mb-6">
+                    <p class="text-yellow-800 dark:text-yellow-200">
+                        <strong>Alvo selecionado:</strong> <span id="selectedTarget"></span>
+                    </p>
+                </div>
+                <div class="explanation-box">
+                    <p><strong>O que é esta etapa?</strong><br>
+                    Antes de testar em humanos, a terapia deve ser avaliada em laboratório. Isso é feito <em>"In Vitro"</em> (em placas de cultura) usando linhagens de células cancerígenas e células saudáveis.</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li><strong>Gráfico:</strong> Mostra a "Janela Terapêutica". Idealmente, a terapia deve matar muitas células tumorais (linha vermelha alta) em doses que matam poucas células normais (linha verde baixa).</li>
+                        <li><strong>Slider de Dose:</strong> Permite simular diferentes concentrações da droga para encontrar o equilíbrio ideal entre eficácia e toxicidade.</li>
+                    </ul>
+                </div>
+                <div class="space-y-6">
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg border-2 border-gray-200 dark:border-gray-600">
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">📊 Resultados dos Testes In Vitro</h3>
+                        <canvas id="invitroChart" width="400" height="200"></canvas>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Concentração de teste (µg/mL):
+                            </label>
+                            <input type="range" id="doseSlider" min="0.1" max="100" step="0.1" value="10" class="w-full">
+                            <div class="text-center text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                <span id="doseValue">10</span> µg/mL
+                            </div>
+                        </div>
+                        <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                <strong>Eficácia:</strong> <span id="efficacyResult">75%</span> de inibição do crescimento celular<br>
+                                <span class="text-xs text-gray-500 dark:text-gray-500 ml-4">(Quão bem a terapia mata as células do câncer)</span><br>
+                                <strong>Toxicidade:</strong> <span id="toxicityResult">Baixa</span> em células normais<br>
+                                <span class="text-xs text-gray-500 dark:text-gray-500 ml-4">(Quão prejudicial a terapia é para células saudáveis)</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition-all duration-300" onclick="proceedToAnimalStudies()">
+                            ✅ Prosseguir para Estudos em Animais
+                        </button>
+                        <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg transition-all duration-300" onclick="optimizeFormulation()">
+                            🔄 Otimizar Formulação
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 5: Clinical Trials -->
+            <div id="stage5" class="stage hidden">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+                    👥 Etapa 5: Ensaios Clínicos
+                </h2>
+                <div class="explanation-box">
+                    <p><strong>O que é esta etapa?</strong><br>
+                    Após sucesso em modelos animais (simulado pelo clique no botão anterior), a terapia avança para testes em humanos. Isso é dividido em três fases principais, cada uma com um objetivo diferente.</p>
+                </div>
+                <div class="space-y-6">
+                    <!-- Phase I -->
+                    <div id="phaseI" class="clinical-phase bg-white dark:bg-gray-700 p-6 rounded-lg border-2">
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
+                            🔍 Fase I - Estudo de Segurança e Dose
+                        </h3>
+                        <div class="explanation-box">
+                            <p><strong>Objetivo Principal: Segurança.</strong><br>
+                            A terapia é administrada a um pequeno grupo de pacientes (geralmente com doença avançada) para determinar a segurança e encontrar a "Dose Máxima Tolerada" (MTD) – a dose mais alta que pode ser administrada sem causar efeitos colaterais graves.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Número de pacientes:
+                                </label>
+                                <input type="number" id="phase1Patients" min="10" max="50" value="20" class="w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Dose inicial (mg/kg):
+                                </label>
+                                <input type="number" id="phase1Dose" min="0.1" max="10" step="0.1" value="1.0" class="w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                            </div>
+                        </div>
+                        <button class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-all duration-300" onclick="runPhaseI()">
+                            🚀 Iniciar Fase I
+                        </button>
+                        <div id="phase1Results" class="mt-4 hidden">
+                            <!-- Results will be populated -->
+                        </div>
+                    </div>
+
+                    <!-- Phase II -->
+                    <div id="phaseII" class="clinical-phase hidden bg-white dark:bg-gray-700 p-6 rounded-lg border-2">
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
+                            📈 Fase II - Estudo de Eficácia
+                        </h3>
+                        <div class="explanation-box">
+                            <p><strong>Objetivo Principal: Eficácia.</strong><br>
+                            A terapia é administrada a um grupo maior de pacientes (na dose determinada pela Fase I) para ver se ela realmente funciona contra o câncer (eficácia) e para monitorar efeitos colaterais a curto prazo.</p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Número de pacientes para Fase II:
+                            </label>
+                            <input type="number" id="phase2Patients" min="50" max="200" value="100" class="w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                        </div>
+                        <button class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition-all duration-300" onclick="runPhaseII()">
+                            📊 Iniciar Fase II
+                        </button>
+                        <div id="phase2Results" class="mt-4 hidden">
+                            <!-- Results will be populated -->
+                        </div>
+                    </div>
+
+                    <!-- Phase III -->
+                    <div id="phaseIII" class="clinical-phase hidden bg-white dark:bg-gray-700 p-6 rounded-lg border-2">
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
+                            🏆 Fase III - Estudo Comparativo
+                        </h3>
+                        <div class="explanation-box">
+                            <p><strong>Objetivo Principal: Comparação.</strong><br>
+                            Este é o estudo em larga escala (centenas ou milhares de pacientes) que compara a nova terapia com o tratamento padrão existente (o "controle"). O objetivo é provar que a nova terapia é *melhor* ou tem menos efeitos colaterais.</p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Número de pacientes para Fase III:
+                            </label>
+                            <input type="number" id="phase3Patients" min="200" max="1000" value="500" class="w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                        </div>
+                        <button class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg transition-all duration-300" onclick="runPhaseIII()">
+                            🎯 Iniciar Fase III
+                        </button>
+                        <div id="phase3Results" class="mt-4 hidden">
+                            <!-- Results will be populated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Stage: Regulatory Approval -->
+            <div id="stage6" class="stage hidden">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+                    📋 Etapa 6: Aprovação Regulatória
+                </h2>
+                <div class="explanation-box">
+                    <p><strong>O que é esta etapa?</strong><br>
+                    Após resultados positivos na Fase III, um dossiê completo com todos os dados (pré-clínicos e clínicos) é submetido a agências reguladoras (como ANVISA, FDA, EMA). Se os dados provarem que a terapia é segura e eficaz, e que seus benefícios superam os riscos, ela é aprovada para uso em pacientes.</p>
+                </div>
+                <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg mb-6">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">🎉</div>
+                        <h3 class="text-2xl font-bold text-green-800 dark:text-green-200 mb-2">
+                            Parabéns! Terapia Aprovada
+                        </h3>
+                        <p class="text-green-700 dark:text-green-300">
+                            Sua terapia foi aprovada para uso clínico após passar por todas as fases de desenvolvimento.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button id="generateReportBtn" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-8 py-4 rounded-lg text-lg font-bold transition-all duration-300 transform hover:scale-105">
+                        📄 Gerar Relatório Completo
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Modal Container -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="modalTitle" class="text-2xl font-bold text-gray-800 dark:text-white"></h3>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="modalContent" class="text-gray-600 dark:text-gray-300">
+                    <!-- Modal content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables to store simulation data
+        let simulationData = {
+            cancer: '',
+            strategy: '',
+            target: '',
+            preclinicalResults: {},
+            phase1Results: {},
+            phase2Results: {},
+            phase3Results: {},
+            currentStage: 1
+        };
+
+        // Initialize dark mode
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Update progress
+        function updateProgress(stage) {
+            const progress = (stage / 6) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = Math.round(progress) + '% Completo';
+            simulationData.currentStage = stage;
+        }
+
+        // Show stage
+        function showStage(stageNum) {
+            document.querySelectorAll('.stage').forEach(stage => {
+                stage.classList.add('hidden');
+            });
+            document.getElementById('stage' + stageNum).classList.remove('hidden');
+            document.getElementById('stage' + stageNum).classList.add('slide-in');
+            updateProgress(stageNum);
+        }
+
+        // Modal functions
+        function showModal(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modalOverlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Initialize event listeners when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Stage 1: Cancer selection
+            document.querySelectorAll('.cancer-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const cancer = this.getAttribute('data-cancer');
+                    simulationData.cancer = cancer;
+                    
+                    const cancerNames = {
+                        'mama': 'Câncer de Mama',
+                        'pulmao': 'Câncer de Pulmão',
+                        'colorretal': 'Câncer Colorretal',
+                        'prostata': 'Câncer de Próstata',
+                        'melanoma': 'Melanoma'
+                    };
+                    
+                    document.getElementById('selectedCancer').textContent = cancerNames[cancer];
+                    showStage(2);
+                });
+            });
+
+            // Stage 2: Strategy selection
+            document.querySelectorAll('.strategy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const strategy = this.getAttribute('data-strategy');
+                    simulationData.strategy = strategy;
+                    
+                    const strategyNames = {
+                        'celular': 'Imunoterapia Celular',
+                        'humoral': 'Imunoterapia Humoral'
+                    };
+                    
+                    document.getElementById('selectedStrategy').textContent = strategyNames[strategy];
+                    populateTargets();
+                    showStage(3);
+                });
+            });
+
+            // Dose slider
+            const doseSlider = document.getElementById('doseSlider');
+            const doseValue = document.getElementById('doseValue');
+            
+            if (doseSlider) {
+                doseSlider.addEventListener('input', function() {
+                    const dose = parseFloat(this.value);
+                    doseValue.textContent = dose;
+                    updateInVitroResults(dose);
+                });
+            }
+
+            // Report button
+            setTimeout(() => {
+                const generateBtn = document.getElementById('generateReportBtn');
+                if (generateBtn) {
+                    generateBtn.addEventListener('click', generateReport);
+                }
+            }, 1000);
+
+            // Close modal on overlay click
+            document.getElementById('modalOverlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        });
+
+        // Populate target options based on cancer and strategy
+        function populateTargets() {
+            const targetOptions = document.getElementById('targetOptions');
+            targetOptions.innerHTML = '';
+
+            const targets = {
+                'mama': {
+                    'celular': [
+                        { name: 'HER2', description: 'Receptor altamente expresso em ~20% dos casos' },
+                        { name: 'TROP2', description: 'Antígeno de superfície em carcinomas' },
+                        { name: 'Mesothelin', description: 'Proteína de superfície em tumores sólidos' }
+                    ],
+                    'humoral': [
+                        { name: 'PD-L1', description: 'Checkpoint imune para tumores triplo-negativos' },
+                        { name: 'HER2', description: 'Para anticorpos como Trastuzumab' },
+                        { name: 'VEGF', description: 'Fator de crescimento vascular' }
+                    ]
+                },
+                'pulmao': {
+                    'celular': [
+                        { name: 'EGFR', description: 'Mutado em ~15% dos adenocarcinomas' },
+                        { name: 'MSLN', description: 'Mesotelina em carcinomas pulmonares' },
+                        { name: 'CEA', description: 'Antígeno carcinoembrionário' }
+                    ],
+                    'humoral': [
+                        { name: 'PD-1/PD-L1', description: 'Principal alvo em NSCLC' },
+                        { name: 'EGFR', description: 'Para inibidores de tirosina quinase' },
+                        { name: 'ALK', description: 'Para tumores com rearranjo ALK' }
+                    ]
+                },
+                'colorretal': {
+                    'celular': [
+                        { name: 'CEA', description: 'Marcador clássico de câncer colorretal' },
+                        { name: 'GUCY2C', description: 'Receptor específico intestinal' },
+                        { name: 'EpCAM', description: 'Molécula de adesão epitelial' }
+                    ],
+                    'humoral': [
+                        { name: 'PD-1', description: 'Eficaz em tumores MSI-H' },
+                        { name: 'VEGF', description: 'Para tumores altamente vascularizados' },
+                        { name: 'EGFR', description: 'Para tumores KRAS wild-type' }
+                    ]
+                },
+                'prostata': {
+                    'celular': [
+                        { name: 'PSMA', description: 'Antígeno específico da membrana prostática' },
+                        { name: 'PAP', description: 'Fosfatase ácida prostática' },
+                        { name: 'PSCA', description: 'Antígeno de células-tronco prostáticas' }
+                    ],
+                    'humoral': [
+                        { name: 'PSMA', description: 'Para radiofármacos e ADCs' },
+                        { name: 'PD-1', description: 'Em tumores com deficiência de reparo de DNA' },
+                        { name: 'PARP', description: 'Para tumores BRCA mutados' }
+                    ]
+                },
+                'melanoma': {
+                    'celular': [
+                        { name: 'MART-1', description: 'Antígeno de melanoma' },
+                        { name: 'gp100', description: 'Glicoproteína de melanócitos' },
+                        { name: 'NY-ESO-1', description: 'Antígeno câncer-testículo' }
+                    ],
+                    'humoral': [
+                        { name: 'PD-1', description: 'Primeiro sucesso em checkpoint' },
+                        { name: 'CTLA-4', description: 'Primeiro checkpoint aprovado' },
+                        { name: 'BRAF', description: 'Para melanomas BRAF V600E' }
+                    ]
+                }
+            };
+
+            const cancerTargets = targets[simulationData.cancer][simulationData.strategy];
+
+            cancerTargets.forEach(target => {
+                const targetBtn = document.createElement('button');
+                targetBtn.className = 'target-btn bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white p-4 rounded-lg transition-all duration-300 transform hover:scale-105 text-left w-full';
+                targetBtn.innerHTML = '<div class="font-bold text-lg">' + target.name + '</div><div class="text-sm opacity-90">' + target.description + '</div>';
+                targetBtn.addEventListener('click', function() {
+                    simulationData.target = target.name;
+                    document.getElementById('selectedTarget').textContent = target.name;
+                    setupInVitroChart();
+                    showStage(4);
+                });
+                targetOptions.appendChild(targetBtn);
+            });
+        }
+
+        // Setup in vitro chart
+        function setupInVitroChart() {
+            const ctx = document.getElementById('invitroChart').getContext('2d');
+            
+            if (window.invitroChart && typeof window.invitroChart.destroy === 'function') {
+                window.invitroChart.destroy();
+            }
+            
+            window.invitroChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['0.1', '1', '10', '25', '50', '100'],
+                    datasets: [{
+                        label: 'Células Tumorais',
+                        data: [10, 25, 75, 85, 90, 92],
+                        borderColor: 'rgb(239, 68, 68)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Células Normais',
+                        data: [5, 8, 15, 25, 45, 70],
+                        borderColor: 'rgb(34, 197, 94)',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '% de Inibição vs Concentração (µg/mL)'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Concentração (µg/mL)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '% Inibição'
+                            },
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update in vitro results based on dose
+        function updateInVitroResults(dose) {
+            let efficacy, toxicity;
+            
+            if (dose < 1) {
+                efficacy = Math.round(10 + dose * 15);
+                toxicity = "Muito baixa";
+            } else if (dose < 10) {
+                efficacy = Math.round(25 + dose * 5);
+                toxicity = "Baixa";
+            } else if (dose < 50) {
+                efficacy = Math.round(70 + dose * 0.3);
+                toxicity = dose < 25 ? "Baixa" : "Moderada";
+            } else {
+                efficacy = Math.round(85 + dose * 0.1);
+                toxicity = "Alta";
+            }
+
+            document.getElementById('efficacyResult').textContent = efficacy + '%';
+            document.getElementById('toxicityResult').textContent = toxicity;
+
+            simulationData.preclinicalResults = {
+                dose: dose,
+                efficacy: efficacy,
+                toxicity: toxicity
+            };
+        }
+
+        // Proceed to animal studies
+        function proceedToAnimalStudies() {
+            setTimeout(() => {
+                showNotification('✅ Estudos em animais completados com sucesso!', 'Eficácia mantida em modelos murinos. Prosseguindo para ensaios clínicos.', 'success');
+                showStage(5);
+            }, 1000);
+        }
+
+        // Optimize formulation
+        function optimizeFormulation() {
+            showNotification('🔄 Formulação otimizada!', 'Nova formulação desenvolvida com melhor biodisponibilidade.', 'info');
+            const currentDose = parseFloat(document.getElementById('doseSlider').value);
+            const newDose = Math.max(0.1, currentDose * 0.8);
+            document.getElementById('doseSlider').value = newDose;
+            updateInVitroResults(newDose);
+            document.getElementById('doseValue').textContent = newDose;
+        }
+
+        // Run Phase I
+        function runPhaseI() {
+            const patients = parseInt(document.getElementById('phase1Patients').value);
+            const dose = parseFloat(document.getElementById('phase1Dose').value);
+            
+            setTimeout(() => {
+                const safetyScore = Math.random() * 30 + 70;
+                const mdt = Math.round(dose * (1 + Math.random() * 0.5));
+                
+                simulationData.phase1Results = {
+                    patients: patients,
+                    startingDose: dose,
+                    safetyScore: safetyScore,
+                    mdt: mdt
+                };
+
+                const resultsHTML = '<div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">' +
+                    '<h4 class="font-bold text-green-800 dark:text-green-200 mb-2">Resultados da Fase I</h4>' +
+                    '<ul class="text-sm text-green-700 dark:text-green-300 space-y-2">' +
+                    '<li><strong>Segurança:</strong> ' + safetyScore.toFixed(1) + '% <span class="text-xs text-gray-500">(% de pacientes sem eventos adversos graves)</span></li>' +
+                    '<li><strong>Dose máxima tolerada:</strong> ' + mdt + ' mg/kg <span class="text-xs text-gray-500">(Dose mais alta com toxicidade aceitável)</span></li>' +
+                    '<li><strong>Recomendação:</strong> Dose de ' + (mdt * 0.8).toFixed(1) + ' mg/kg para Fase II</li>' +
+                    '</ul>' +
+                    '<button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mt-3 transition-all duration-300" onclick="proceedToPhaseII()">' +
+                    '➡️ Avançar para Fase II' +
+                    '</button>' +
+                    '</div>';
+
+                document.getElementById('phase1Results').innerHTML = resultsHTML;
+                document.getElementById('phase1Results').classList.remove('hidden');
+            }, 2000);
+        }
+
+        // Proceed to Phase II
+        function proceedToPhaseII() {
+            document.getElementById('phaseII').classList.remove('hidden');
+            document.getElementById('phaseII').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Run Phase II
+        function runPhaseII() {
+            const patients = parseInt(document.getElementById('phase2Patients').value);
+            
+            setTimeout(() => {
+                const responseRate = Math.random() * 40 + 30;
+                const progressionFreeMonths = Math.random() * 6 + 8;
+                
+                simulationData.phase2Results = {
+                    patients: patients,
+                    responseRate: responseRate,
+                    progressionFreeMonths: progressionFreeMonths
+                };
+
+                const buttonHTML = responseRate > 40 ? 
+                    '<button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-3 transition-all duration-300" onclick="proceedToPhaseIII()">➡️ Avançar para Fase III</button>' :
+                    '<button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded mt-3 transition-all duration-300" onclick="optimizeTherapy()">🔄 Otimizar Terapia</button>';
+
+                const resultsHTML = '<div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">' +
+                    '<h4 class="font-bold text-blue-800 dark:text-blue-200 mb-2">Resultados da Fase II</h4>' +
+                    '<ul class="text-sm text-blue-700 dark:text-blue-300 space-y-2">' +
+                    '<li><strong>Taxa de resposta objetiva:</strong> ' + responseRate.toFixed(1) + '% <span class="text-xs text-gray-500">(% de pacientes cujo tumor diminuiu)</span></li>' +
+                    '<li><strong>Sobrevida livre de progressão:</strong> ' + progressionFreeMonths.toFixed(1) + ' meses <span class="text-xs text-gray-500">(Tempo médio até a doença progredir)</span></li>' +
+                    '<li><strong>Status:</strong> ' + (responseRate > 40 ? 'Promissor para Fase III' : 'Necessária otimização') + '</li>' +
+                    '</ul>' +
+                    buttonHTML +
+                    '</div>';
+
+                document.getElementById('phase2Results').innerHTML = resultsHTML;
+                document.getElementById('phase2Results').classList.remove('hidden');
+            }, 3000);
+        }
+
+        // Proceed to Phase III
+        function proceedToPhaseIII() {
+            document.getElementById('phaseIII').classList.remove('hidden');
+            document.getElementById('phaseIII').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Run Phase III
+        function runPhaseIII() {
+            const patients = parseInt(document.getElementById('phase3Patients').value);
+            
+            setTimeout(() => {
+                const overallSurvival = Math.random() * 8 + 16;
+                const standardSurvival = 12 + Math.random() * 6;
+                const hazardRatio = standardSurvival / overallSurvival;
+                const pValue = Math.random() * 0.04 + 0.001;
+                
+                simulationData.phase3Results = {
+                    patients: patients,
+                    overallSurvival: overallSurvival,
+                    standardSurvival: standardSurvival,
+                    hazardRatio: hazardRatio,
+                    pValue: pValue
+                };
+
+                const isSignificant = pValue < 0.05 && hazardRatio < 0.8;
+
+                const buttonHTML = isSignificant ? 
+                    '<button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mt-3 transition-all duration-300" onclick="submitForApproval()">🏆 Submeter para Aprovação</button>' :
+                    '<div class="mt-3 p-3 bg-red-50 dark:bg-red-900/20 rounded"><p class="text-red-700 dark:text-red-300 text-sm">Estudo não atingiu endpoint primário. Necessária reavaliação da estratégia.</p></div>';
+
+                const resultsHTML = '<div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">' +
+                    '<h4 class="font-bold text-purple-800 dark:text-purple-200 mb-2">Resultados da Fase III</h4>' +
+                    '<ul class="text-sm text-purple-700 dark:text-purple-300 space-y-2">' +
+                    '<li><strong>Sobrevida global (terapia):</strong> ' + overallSurvival.toFixed(1) + ' meses <span class="text-xs text-gray-500">(Tempo médio de vida dos pacientes no grupo de terapia)</span></li>' +
+                    '<li><strong>Sobrevida global (controle):</strong> ' + standardSurvival.toFixed(1) + ' meses <span class="text-xs text-gray-500">(Tempo médio de vida no grupo de tratamento padrão)</span></li>' +
+                    '<li><strong>Hazard Ratio:</strong> ' + hazardRatio.toFixed(2) + ' (p=' + pValue.toFixed(3) + ') <span class="text-xs text-gray-500">(<1 significa menor risco de morte; p<0.05 é estatisticamente significativo)</span></li>' +
+                    '<li><strong>Significância:</strong> ' + (isSignificant ? 'Estatisticamente significativo' : 'Não significativo') + '</li>' +
+                    '</ul>' +
+                    buttonHTML +
+                    '</div>';
+
+                document.getElementById('phase3Results').innerHTML = resultsHTML;
+                document.getElementById('phase3Results').classList.remove('hidden');
+            }, 4000);
+        }
+
+        // Submit for approval
+        function submitForApproval() {
+            setTimeout(() => {
+                showStage(6);
+            }, 1000);
+        }
+
+        // Generate report
+        function generateReport() {
+            const cancerNames = {
+                'mama': 'Câncer de Mama',
+                'pulmao': 'Câncer de Pulmão',
+                'colorretal': 'Câncer Colorretal',
+                'prostata': 'Câncer de Próstata',
+                'melanoma': 'Melanoma'
+            };
+            
+            const strategyNames = {
+                'celular': 'Imunoterapia Celular',
+                'humoral': 'Imunoterapia Humoral'
+            };
+
+            const reportArticle = `
+                <div class="mt-8 text-left p-6 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <h4 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Resumo do Desenvolvimento (Mini-Artigo)</h4>
+                    <div class="space-y-3 text-gray-700 dark:text-gray-300">
+                        <p><strong>Introdução:</strong> O presente projeto focou no desenvolvimento de uma nova estratégia de imunoterapia para o tratamento de <strong>${cancerNames[simulationData.cancer]}</strong>. A abordagem selecionada foi a <strong>${strategyNames[simulationData.strategy]}</strong>, que tem como alvo o antígeno tumoral <strong>${simulationData.target}</strong>.</p>
+                        <p><strong>Metodologia e Resultados Pré-Clínicos:</strong> A fase pré-clínica <em>in vitro</em> demonstrou uma janela terapêutica promissora. Na concentração otimizada de <strong>${simulationData.preclinicalResults.dose} µg/mL</strong>, a terapia alcançou <strong>${simulationData.preclinicalResults.efficacy}%</strong> de inibição do crescimento tumoral, mantendo uma toxicidade <strong>${simulationData.preclinicalResults.toxicity}</strong> contra células normais.</p>
+                        <p><strong>Desenvolvimento Clínico:</strong></p>
+                        <ul class="list-disc list-inside ml-4 space-y-2">
+                            <li><strong>Fase I:</strong> O estudo de segurança e escalonamento de dose em ${simulationData.phase1Results.patients} pacientes estabeleceu uma Dose Máxima Tolerada (MTD) de <strong>${simulationData.phase1Results.mdt} mg/kg</strong>, com um perfil de segurança favorável (${simulationData.phase1Results.safetyScore.toFixed(1)}% dos pacientes sem eventos graves).</li>
+                            <li><strong>Fase II:</strong> O estudo de eficácia subsequente, envolvendo ${simulationData.phase2Results.patients} pacientes, demonstrou sinais claros de atividade antitumoral. A Taxa de Resposta Objetiva (ORR) foi de <strong>${simulationData.phase2Results.responseRate.toFixed(1)}%</strong>, e a Sobrevida Livre de Progressão (PFS) mediana foi de <strong>${simulationData.phase2Results.progressionFreeMonths.toFixed(1)} meses</strong>.</li>
+                            <li><strong>Fase III:</strong> O estudo pivotal de Fase III, um ensaio randomizado com ${simulationData.phase3Results.patients} pacientes, comparou a nova terapia ao tratamento padrão. Os resultados foram estatisticamente significativos, mostrando uma melhora substancial na Sobrevida Global (OS) mediana, que foi de <strong>${simulationData.phase3Results.overallSurvival.toFixed(1)} meses</strong> no braço da terapia contra ${simulationData.phase3Results.standardSurvival.toFixed(1)} meses no braço controle. O Hazard Ratio (HR) foi de <strong>${simulationData.phase3Results.hazardRatio.toFixed(2)}</strong> (p=${simulationData.phase3Results.pValue.toFixed(3)}), indicando uma redução clinicamente relevante no risco de morte.</li>
+                        </ul>
+                        <p><strong>Conclusão:</strong> Com base nos dados robustos de segurança e eficácia demonstrados em todo o programa de desenvolvimento, a terapia foi submetida e recebeu aprovação regulatória, representando uma nova e valiosa opção para pacientes com ${cancerNames[simulationData.cancer]}.</p>
+                    </div>
+                </div>
+            `;
+
+            const reportContent = `
+                <div class="text-center mb-8">
+                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-lg mb-6">
+                        <h2 class="text-2xl font-bold">${cancerNames[simulationData.cancer] || simulationData.cancer}</h2>
+                        <p class="text-lg opacity-90">${strategyNames[simulationData.strategy] || simulationData.strategy}</p>
+                        <p class="text-lg">Alvo: ${simulationData.target}</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-blue-800 dark:text-blue-200 mb-4">🧪 Estudos Pré-Clínicos</h3>
+                        <ul class="space-y-2 text-blue-700 dark:text-blue-300">
+                            <li><strong>Dose testada:</strong> ${simulationData.preclinicalResults.dose} µg/mL</li>
+                            <li><strong>Eficácia:</strong> ${simulationData.preclinicalResults.efficacy}% de inibição</li>
+                            <li><strong>Toxicidade:</strong> ${simulationData.preclinicalResults.toxicity}</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-green-800 dark:text-green-200 mb-4">🏥 Resultados Clínicos</h3>
+                        <ul class="space-y-2 text-green-700 dark:text-green-300">
+                            <li><strong>Fase I - Segurança:</strong> ${simulationData.phase1Results.safetyScore.toFixed(1)}%</li>
+                            <li><strong>Fase II - Resposta:</strong> ${simulationData.phase2Results.responseRate.toFixed(1)}%</li>
+                            <li><strong>Fase III - Sobrevida:</strong> ${simulationData.phase3Results.overallSurvival.toFixed(1)} meses</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Mini-Artigo Inserido Aqui -->
+                ${reportArticle}
+
+                <div class="mt-8 bg-green-100 dark:bg-green-900/30 p-6 rounded-lg text-center">
+                    <div class="text-4xl mb-4">🎉</div>
+                    <h3 class="text-2xl font-bold text-green-800 dark:text-green-200 mb-2">Terapia Aprovada com Sucesso!</h3>
+                    <p class="text-green-700 dark:text-green-300">
+                        Nova opção terapêutica disponível para pacientes com ${cancerNames[simulationData.cancer] || simulationData.cancer}
+                    </p>
+                    <p class="text-sm text-green-600 dark:text-green-400 mt-2">
+                        Relatório gerado em: ${new Date().toLocaleDateString('pt-BR')}
+                    </p>
+                    
+                    <!-- DADOS DO CURSO ADICIONADOS AO RELATÓRIO -->
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-4">
+                        Curso de Medicina - UNIPE | MAPD-2 | Prof. Rodrigo Niskier | 2025
+                    </p>
+                    <!-- FIM DOS DADOS DO CURSO -->
+
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <button onclick="downloadReport()" class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg transition-all duration-300 mr-4">
+                        💾 Baixar JSON
+                    </button>
+                    <button onclick="closeModal()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg transition-all duration-300">
+                        ❌ Fechar
+                    </button>
+                </div>
+            `;
+
+            showModal('📋 Relatório Completo', reportContent);
+        }
+
+        // Download report function
+        function downloadReport() {
+            const reportData = JSON.stringify(simulationData, null, 2);
+            const blob = new Blob([reportData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'relatorio-terapia-antitumoral.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('💾 Relatório baixado', 'O arquivo JSON foi salvo com sucesso!', 'success');
+        }
+
+        // Utility functions
+        function showNotification(title, message, type = 'info') {
+            const colors = {
+                'success': 'green',
+                'error': 'red',
+                'info': 'blue',
+                'warning': 'yellow'
+            };
+            
+            const color = colors[type] || 'blue';
+            
+            const notificationDiv = document.createElement('div');
+            notificationDiv.className = `fixed top-4 right-4 bg-white dark:bg-gray-800 border-l-4 border-${color}-500 p-4 rounded-lg shadow-lg z-50 max-w-md`;
+            notificationDiv.innerHTML = `
+                <div class="flex items-center">
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-gray-800 dark:text-white">${title}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">${message}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                        <span class="sr-only">Fechar</span>
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(notificationDiv);
+
+            setTimeout(function() {
+                if (notificationDiv.parentNode) {
+                    notificationDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function optimizeTherapy() {
+            showNotification('🔄 Terapia Otimizada', 'Protocolo modificado com base nos resultados da Fase II.', 'info');
+            setTimeout(function() {
+                simulationData.phase2Results.responseRate = Math.min(90, simulationData.phase2Results.responseRate * 1.3);
+                runPhaseII();
+            }, 1000);
+        }
+
+        // Initialize
+        updateProgress(1);
+    </script>
 </body>
 </html>
