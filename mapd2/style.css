@@ -1,0 +1,142 @@
+/* Estilos Gerais */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Container da Simulação */
+.simulation-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 30px 40px;
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+h1 {
+    color: #005a9c;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+    margin-top: 0;
+}
+
+#game-content {
+    margin-top: 25px;
+}
+
+#question-text {
+    font-size: 1.5rem;
+    color: #222;
+    min-height: 100px; /* Garante espaço para o texto */
+    margin-bottom: 25px;
+}
+
+/* Botões de Opção */
+#options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.option-btn {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #005a9c;
+    background-color: #f0f8ff;
+    border: 2px solid #cce4ff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+}
+
+.option-btn:hover {
+    background-color: #e0f0ff;
+    border-color: #aaddff;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Botão de Relatório */
+.report-btn {
+    margin-top: 30px;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    background-color: #28a745; /* Verde Sucesso */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.report-btn:hover {
+    background-color: #218838;
+}
+
+/* Estilos para o Relatório (a ser gerado na nova aba) */
+/* O JavaScript irá injetar estes estilos */
+.report-body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+.report-slide {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin: 20px auto;
+    padding: 25px;
+    max-width: 900px;
+}
+.report-slide h2 {
+    color: #005a9c;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    font-size: 1.6rem;
+}
+.report-slide h1 {
+    color: #333;
+}
+.report-slide p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+.report-slide .step {
+    font-weight: bold;
+    color: #333;
+}
+.report-slide .choice {
+    font-weight: bold;
+    color: #d9534f; /* Vermelho/Escolha */
+}
+.report-slide .outcome {
+    font-style: italic;
+    color: #5cb85c; /* Verde/Resultado */
+}
+.report-slide .final-success {
+    font-size: 1.3rem; 
+    font-weight: bold; 
+    color: #28a745;
+}
+.report-slide .final-fail {
+    font-size: 1.3rem; 
+    font-weight: bold; 
+    color: #d9534f;
+}
