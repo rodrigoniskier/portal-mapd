@@ -21,6 +21,8 @@ body {
     width: 100%;
     max-width: 800px;
     text-align: center;
+    position: relative;
+    z-index: 10;
 }
 
 h1 {
@@ -37,8 +39,33 @@ h1 {
 #question-text {
     font-size: 1.5rem;
     color: #222;
-    min-height: 100px; /* Garante espaço para o texto */
-    margin-bottom: 25px;
+    min-height: 120px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botão "Saiba Mais" */
+#info-button-container {
+    margin-bottom: 20px;
+    min-height: 45px; /* Reserva espaço para o botão não "saltar" */
+}
+
+.info-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #007bff;
+    background-color: #e6f2ff;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.info-btn:hover {
+    background-color: #cce4ff;
 }
 
 /* Botões de Opção */
@@ -61,7 +88,7 @@ h1 {
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: left;
-    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+    box-sizing: border-box; 
 }
 
 .option-btn:hover {
@@ -89,54 +116,79 @@ h1 {
     background-color: #218838;
 }
 
-/* Estilos para o Relatório (a ser gerado na nova aba) */
-/* O JavaScript irá injetar estes estilos */
-.report-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    padding: 20px;
+/* --- Estilos da Caixa de Diálogo (Modal) --- */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 100;
+    display: none; /* Começa escondido */
 }
-.report-slide {
+
+.info-box-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin: 20px auto;
-    padding: 25px;
-    max-width: 900px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    padding: 30px 40px;
+    width: 90%;
+    max-width: 600px;
+    z-index: 101;
+    display: none; /* Começa escondido */
 }
-.report-slide h2 {
+
+/* Classes 'active' que o JavaScript vai usar para mostrar o modal */
+.modal-overlay.active,
+.info-box-container.active {
+    display: block;
+}
+
+.info-box-container h3 {
     color: #005a9c;
-    border-bottom: 2px solid #eee;
+    font-size: 1.8rem;
+    margin-top: 0;
+    border-bottom: 2px solid #f0f0f0;
     padding-bottom: 10px;
-    font-size: 1.6rem;
 }
-.report-slide h1 {
-    color: #333;
-}
-.report-slide p {
+
+.info-box-container p {
     font-size: 1.1rem;
-    line-height: 1.5;
+    line-height: 1.7;
 }
-.report-slide .step {
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2.5rem;
     font-weight: bold;
+    color: #aaa;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.close-btn:hover {
     color: #333;
 }
-.report-slide .choice {
-    font-weight: bold;
-    color: #d9534f; /* Vermelho/Escolha */
-}
-.report-slide .outcome {
-    font-style: italic;
-    color: #5cb85c; /* Verde/Resultado */
-}
-.report-slide .final-success {
-    font-size: 1.3rem; 
-    font-weight: bold; 
-    color: #28a745;
-}
-.report-slide .final-fail {
-    font-size: 1.3rem; 
-    font-weight: bold; 
-    color: #d9534f;
-}
+
+/* --- Estilos do Relatório Final (Sem alteração) --- */
+/* (Os estilos .report-slide, etc., continuam os mesmos) */
+.report-body { font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px; }
+.report-slide { background-color: #fff; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin: 20px auto; padding: 25px; max-width: 900px; }
+.report-slide h1 { color: #333; }
+.report-slide h2 { color: #005a9c; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 1.6rem; }
+.report-slide p { font-size: 1.1rem; line-height: 1.5; }
+.report-slide .step { font-weight: bold; color: #333; }
+.report-slide .choice { font-weight: bold; color: #d9534f; }
+.report-slide .outcome { font-style: italic; color: #5cb85c; }
+.report-slide .final-success { font-size: 1.3rem; font-weight: bold; color: #28a745; }
+.report-slide .final-fail { font-size: 1.3rem; font-weight: bold; color: #d9534f; }
+.report-slide .final-partial { font-size: 1.3rem; font-weight: bold; color: #f0ad4e; }
