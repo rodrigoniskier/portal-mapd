@@ -41,7 +41,7 @@
         </div>
 
         <!-- Progress Bar -->
-        <div class="mb-8">
+        <div id="progressBarContainer" class="mb-8 hidden">
             <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300 mb-2">
                 <span>Progresso da Simulação</span>
                 <span id="progressText">0% Completo</span>
@@ -51,8 +51,24 @@
             </div>
         </div>
 
+        <!-- Tela Inicial (Stage 0) -->
+        <div id="startScreen" class="text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg p-12 slide-in">
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">Bem-vindo(a) ao Simulador</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-10 max-w-lg mx-auto">
+                Explore as etapas complexas do desenvolvimento de uma nova imunoterapia contra o câncer, desde o laboratório até a aprovação do paciente.
+            </p>
+            <div class="flex flex-col md:flex-row gap-6 justify-center">
+                <button id="startSimBtn" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-4 rounded-lg text-lg font-bold transition-all duration-300 transform hover:scale-105">
+                    🚀 Iniciar Simulador
+                </button>
+                <a href="imunocancer.pdf" download="imunocancer.pdf" class="inline-block bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-8 py-4 rounded-lg text-lg font-bold transition-all duration-300 transform hover:scale-105 no-underline">
+                    📥 Baixar Slides
+                </a>
+            </div>
+        </div>
+
         <!-- Main Content -->
-        <div id="appContent" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+        <div id="appContent" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hidden">
             <!-- Stage 1: Cancer Selection -->
             <div id="stage1" class="stage">
                 <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
@@ -465,6 +481,19 @@
                     closeModal();
                 }
             });
+
+            // NOVO: Botão para iniciar a simulação
+            const startSimBtn = document.getElementById('startSimBtn');
+            if (startSimBtn) {
+                startSimBtn.addEventListener('click', function() {
+                    document.getElementById('startScreen').classList.add('hidden');
+                    document.getElementById('progressBarContainer').classList.remove('hidden');
+                    document.getElementById('appContent').classList.remove('hidden');
+                    
+                    // Inicia a simulação na Etapa 1
+                    showStage(1);
+                });
+            }
         });
 
         // Populate target options based on cancer and strategy
@@ -932,7 +961,7 @@
         }
 
         // Initialize
-        updateProgress(1);
+        // updateProgress(1); // REMOVIDO - O progresso agora começa com o clique do botão
     </script>
 </body>
 </html>
