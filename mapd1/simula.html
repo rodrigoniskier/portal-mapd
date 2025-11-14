@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antibiotic Prospecting Game</title>
+    <!-- Carregando o TailwindCSS para um design moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos personalizados */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6; /* Um cinza claro de laboratório */
+        }
+        .card {
+            @apply bg-white p-4 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg;
+            cursor: pointer;
+        }
+        .card.selected {
+            @apply ring-4 ring-blue-500 shadow-xl;
+        }
+        .bacteria-icon {
+            @apply w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold;
+        }
+        .substance-icon {
+            @apply w-12 h-12 flex items-center justify-center;
+        }
+        /* Animação da barra de população */
+        #populationBarFill {
+            transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-10">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Simulador de Prospecção de Antibióticos</h1>
+            <p class="text-lg text-gray-600 mt-2">Curso de Medicina: Mecanismos de Ação e Resistência</p>
+        </header>
+
+        <!-- Painel de Seleção -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <!-- Coluna de Substâncias -->
+            <div>
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">1. Substâncias em Teste</h2>
+                <div id="substance-container" class="grid grid-cols-1 gap-4">
+                    <!-- Substâncias serão injetadas aqui pelo JS -->
+                </div>
+            </div>
+
+            <!-- Coluna de Cepas Bacterianas -->
+            <div>
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">2. Cepas Isoladas (Casos)</h2>
+                <div id="bacteria-container" class="grid grid-cols-1 gap-4">
+                    <!-- Bactérias serão injetadas aqui pelo JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Botão de Teste -->
+        <div class="text-center mb-8">
+            <button id="runTestButton" 
+                    class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-blue-700 transition-transform duration-200 transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    disabled>
+                Iniciar Teste de Laboratório
+            </button>
+            <p id="selectionHelper" class="text-gray-500 mt-2">Selecione uma Substância e uma Cepa para iniciar.</p>
+        </div>
+
+        <!-- NOVO: Registro de Experimentos -->
+        <div id="experiment-log-container" class="max-w-4xl mx-auto mt-12 hidden">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4 text-center">Registro de Experimentos</h2>
+            <div id="log-list" class="space-y-3">
+                <!-- Entradas do log serão adicionadas aqui -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal de Simulação e Resultados -->
+    <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <!-- Cabeçalho do Modal -->
+            <div class="p-5 border-b border-gray-200">
+                <h3 class="text-2xl font-semibold" id="modalTitle">Iniciando Simulação...</h3>
+            </div>
+
+            <!-- Corpo do Modal -->
+            <div class="p-5">
+                <!-- Informações do Teste (Comum a todas as etapas) -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">Substância:</span>
+                        <p class="text-lg font-bold" id="modalSubstance"></p>
+                    </div>
+                    <div>
+                        <span class="text-sm font-medium text-gray-500">Cepa:</span>
+                        <p class="text-lg font-bold" id="modalBacteria"></p>
+                    </div>
+                </div>
+
+                <!-- ETAPA 1: RESULTADO INICIAL -->
+                <div id="modalStep1">
+                    <h4 class="text-lg font-semibold mb-2">Resultado Inicial do Teste Rápido</h4>
+                    <div id="initialResultText" class="p-4 rounded-lg bg-gray-100 text-center text-xl font-bold mb-4">
+                        Processando...
+                    </div>
+                    <div class="mt-4 flex justify-end space-x-3">
+                        <button id="cancelTestBtn" class="bg-gray-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-600 transition-colors">
+                            Cancelar Experimento
+                        </button>
+                        <button id="continueTestBtn" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors">
+                            Continuar Teste (Variar Dose)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ETAPA 2: SIMULAÇÃO (BARRA DE POPULAÇÃO) -->
+                <div id="modalStep2" class="mb-6 hidden">
+                    <span class="text-sm font-medium text-gray-500">População Bacteriana (Simulação):</span>
+                    <div class="w-full bg-gray-200 rounded-full h-8 mt-2 overflow-hidden shadow-inner">
+                        <div id="populationBarFill" class="h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-bold" style="width: 100%;">
+                            <span id="populationLabel">100% (Iniciando...)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ETAPA 3: RELATÓRIO FINAL -->
+                <div id="report" class="hidden">
+                    <hr class="my-4">
+                    <h4 class="text-xl font-bold text-gray-800 mb-3">Relatório de Microbiologia</h4>
+                    
+                    <div id="report-result" class="p-4 rounded-lg mb-4">
+                        <!-- O resultado (sucesso/falha) vai aqui -->
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">Mecanismo de Ação Testado:</span>
+                            <p class="text-base" id="reportAction"></p>
+                        </div>
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">Mecanismo de Resistência Observado:</span>
+                            <p class="text-base" id="reportResistance"></p>
+                        </div>
+                        <div>
+                            <span class="text-sm font-medium text-gray-500">Conclusão (Aprendizagem):</span>
+                            <p class="text-base p-4 bg-blue-50 border border-blue-200 rounded-md" id="reportLearning"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rodapé do Modal -->
+            <div class="p-5 border-t border-gray-200 text-right">
+                <button id="closeModalButton" class="bg-gray-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-600 transition-colors">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- 1. O CORAÇÃO DO JOGO: BASE DE DADOS ---
+
+        // Dicionário dos Mecanismos de Ação (O que as drogas fazem)
+        const ACTIONS = {
+            'wall': {
+                name: 'Inibição da Síntese da Parede Celular',
+                description: 'Esta substância impede que a bactéria construa sua parede celular (peptidoglicano). Sem ela, a bactéria sofre lise osmótica e morre. (Ex: Penicilinas, Cefalosporinas)'
+            },
+            'protein_30s': {
+                name: 'Inibição da Síntese Proteica (Subunidade 30S)',
+                description: 'Liga-se à subunidade 30S do ribossomo bacteriano, causando erros na leitura do mRNA e impedindo a produção de proteínas essenciais. (Ex: Aminoglicosídeos)'
+            },
+            'protein_50s': {
+                name: 'Inibição da Síntese Proteica (Subunidade 50S)',
+                description: 'Liga-se à subunidade 50S do ribossomo, inibindo a translocação do peptídeo. (Ex: Macrolídeos, Cloranfenicol)'
+            },
+            'dna_gyrase': {
+                name: 'Inibição da DNA Girase (Topoisomerase)',
+                description: 'Bloqueia a enzima DNA Girase, que é essencial para o replicon e transcrição do DNA bacteriano. (Ex: Quinolonas)'
+            },
+            'folate': {
+                name: 'Antagonismo do Ácido Fólico',
+                description: 'Inibe a síntese de folato, um cofator essencial para a produção de nucleotídeos (blocos de construção do DNA). (Ex: Sulfonamidas, Trimetoprim)'
+            }
+        };
+
+        // Dicionário dos Mecanismos de Resistência (O que as bactérias fazem)
+        const RESISTANCES = {
+            'none': {
+                name: 'Nenhum (Cepa Sensível)',
+                description: 'A bactéria foi incapaz de desenvolver um mecanismo de resistência a tempo. A droga foi eficaz.'
+            },
+            'intrinsic_wall': {
+                name: 'Resistência Intrínseca (Ausência de Parede)',
+                description: 'A droga falhou porque este organismo não possui uma parede celular de peptidoglicano (Ex: Micoplasma), ou sua membrana externa é impermeável (Ex: Gram-negativas vs Glicopeptídeos).'
+            },
+            'intrinsic_folate': {
+                name: 'Resistência Intrínseca (Aquisição de Folato)',
+                description: 'A droga falhou porque esta bactéria não sintetiza seu próprio folato; ela o adquire do ambiente (hospedeiro).'
+            },
+            'beta_lactamase': {
+                name: 'Produção de Enzima (Beta-Lactamase)',
+                description: 'A bactéria produziu uma enzima (Beta-Lactamase) que cliva (quebra) o anel beta-lactâmico da substância, inativando-a antes que ela possa agir.'
+            },
+            'target_mutation_30s': {
+                name: 'Mutação do Alvo (Ribossomo 30S)',
+                description: 'Ocorreu uma mutação no gene que codifica o ribossomo 30S. A substância não consegue mais se ligar ao seu alvo, tornando-se ineficaz.'
+            },
+            'target_mutation_50s': {
+                name: 'Mutação do Alvo (Ribossomo 50S)',
+                description: 'Ocorreu uma mutação no gene que codifica o ribossomo 50S. A substância não consegue mais se ligar ao seu alvo.'
+            },
+            'efflux_pump': {
+                name: 'Bomba de Efluxo',
+                description: 'A bactéria ativou (ou aumentou a expressão de) bombas de efluxo em sua membrana, que ativamente expulsam a substância para fora da célula antes que ela atinja seu alvo.'
+            },
+            'target_mutation_gyrase': {
+                name: 'Mutação do Alvo (DNA Girase)',
+                description: 'Uma mutação no gene gyrA alterou a enzima DNA Girase. A substância (quinolona) não consegue mais se ligar ao complexo DNA-enzima.'
+            }
+        };
+
+        // Nossas 5 Substâncias de Teste
+        const SUBSTANCES = [
+            { id: 'sub1', name: 'Composto A (Penam-Like)', actionId: 'wall', icon: '🧪' },
+            { id: 'sub2', name: 'Composto B (Strepto-Like)', actionId: 'protein_30s', icon: '🔬' },
+            { id: 'sub3', name: 'Composto C (Erythro-Like)', actionId: 'protein_50s', icon: '💊' },
+            { id: 'sub4', name: 'Composto D (Cipro-Like)', actionId: 'dna_gyrase', icon: '🧬' },
+            { id: 'sub5', name: 'Composto E (Sulfa-Like)', actionId: 'folate', icon: '⚗️' }
+        ];
+
+        // Nossos 4 Casos (Cepas)
+        const BACTERIA = [
+            {
+                id: 'bac1',
+                name: 'Cepa 1: Gram-Positiva (Ex: S. aureus)',
+                description: 'Isolado de uma infecção de pele. Estrutura clássica de Gram-positiva.',
+                color: 'bg-purple-600',
+                // É vulnerável a tudo, exceto folato (adquire do meio)
+                vulnerabilities: ['wall', 'protein_30s', 'protein_50s', 'dna_gyrase'],
+                // Define qual mecanismo de resistência ela usará contra qual droga
+                resistanceMap: {
+                    'wall': 'beta_lactamase',
+                    'protein_30s': 'target_mutation_30s',
+                    'protein_50s': 'efflux_pump', // Pode usar bomba de efluxo para macrolídeos
+                    'dna_gyrase': 'target_mutation_gyrase',
+                    'folate': 'intrinsic_folate'
+                }
+            },
+            {
+                id: 'bac2',
+                name: 'Cepa 2: Gram-Negativa (Ex: E. coli)',
+                description: 'Isolado de infecção urinária. Possui membrana externa.',
+                color: 'bg-pink-500',
+                // Vulnerável a 30s, 50s, girase e folato.
+                // A parede 'wall' (beta-lactâmicos) é complexa; ela é intrinsecamente menos permeável, mas vamos simular que ela pode desenvolver uma bomba de efluxo ou beta-lactamase.
+                vulnerabilities: ['protein_30s', 'protein_50s', 'dna_gyrase', 'folate', 'wall'],
+                resistanceMap: {
+                    'wall': 'beta_lactamase', // Gram-negativas produzem muitas beta-lactamases
+                    'protein_30s': 'efflux_pump',
+                    'protein_50s': 'target_mutation_50s',
+                    'dna_gyrase': 'target_mutation_gyrase',
+                    'folate': 'target_mutation_gyrase' // Resistência ao folato tbm pode ser por mutação
+                }
+            },
+            {
+                id: 'bac3',
+                name: 'Cepa 3: Atípica (Ex: Mycoplasma)',
+                description: 'Isolado de pneumonia atípica. Não possui parede celular.',
+                color: 'bg-yellow-500',
+                // Vulnerável a 30s, 50s, girase.
+                // INTRINSECAMENTE resistente a 'wall'.
+                vulnerabilities: ['protein_30s', 'protein_50s', 'dna_gyrase'],
+                resistanceMap: {
+                    'wall': 'intrinsic_wall', // Não tem parede!
+                    'protein_30s': 'target_mutation_30s',
+                    'protein_50s': 'target_mutation_50s',
+                    'dna_gyrase': 'efflux_pump',
+                    'folate': 'intrinsic_folate'
+                }
+            },
+            {
+                id: 'bac4',
+                name: 'Cepa 4: Multirresistente (Ex: P. aeruginosa)',
+                description: 'Isolado de infecção hospitalar (pneumonia). Conhecida por múltiplas bombas de efluxo.',
+                color: 'bg-red-600',
+                // É uma Gram-negativa, vulnerável a poucas coisas.
+                // Vamos simular que é vulnerável apenas a girase e 30s.
+                vulnerabilities: ['protein_30s', 'dna_gyrase'],
+                resistanceMap: {
+                    'wall': 'beta_lactamase', // Já tem beta-lactamase de espectro estendido
+                    'protein_30s': 'efflux_pump', // Mecanismo principal!
+                    'protein_50s': 'efflux_pump', // Mecanismo principal!
+                    'dna_gyrase': 'efflux_pump', // Mecanismo principal!
+                    'folate': 'intrinsic_folate'
+                }
+            }
+        ];
+
+        // --- 2. O MOTOR DO JOGO: LÓGICA DA APLICAÇÃO ---
+
+        let selectedSubstanceId = null;
+        let selectedBacteriaId = null;
+
+        const substanceContainer = document.getElementById('substance-container');
+        const bacteriaContainer = document.getElementById('bacteria-container');
+        const runTestButton = document.getElementById('runTestButton');
+        const selectionHelper = document.getElementById('selectionHelper');
+        const modal = document.getElementById('modal');
+        const closeModalButton = document.getElementById('closeModalButton');
+        
+        // NOVO: Botões internos do Modal
+        const continueTestBtn = document.getElementById('continueTestBtn');
+        const cancelTestBtn = document.getElementById('cancelTestBtn');
+        
+        let currentTestResult = null; // Guarda o resultado do teste atual
+
+        // Função para inicializar o jogo
+        function initializeGame() {
+            // Renderiza as substâncias
+            substanceContainer.innerHTML = '';
+            SUBSTANCES.forEach(sub => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.id = sub.id;
+                card.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="substance-icon text-3xl">${sub.icon}</div>
+                        <div>
+                            <h4 class="font-bold text-lg">${sub.name}</h4>
+                            <p class="text-sm text-gray-600">${ACTIONS[sub.actionId].name}</p>
+                        </div>
+                    </div>
+                `;
+                card.addEventListener('click', () => selectSubstance(sub.id));
+                substanceContainer.appendChild(card);
+            });
+
+            // Renderiza as bactérias
+            bacteriaContainer.innerHTML = '';
+            BACTERIA.forEach(bac => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.id = bac.id;
+                card.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="bacteria-icon ${bac.color}">BAC</div>
+                        <div>
+                            <h4 class="font-bold text-lg">${bac.name}</h4>
+                            <p class="text-sm text-gray-600">${bac.description}</p>
+                        </div>
+                    </div>
+                `;
+                card.addEventListener('click', () => selectBacteria(bac.id));
+                bacteriaContainer.appendChild(card);
+            });
+
+            // Event Listeners dos botões
+            runTestButton.addEventListener('click', runTest);
+            closeModalButton.addEventListener('click', closeModal);
+            
+            // NOVO: Listeners dos botões da Etapa 1
+            continueTestBtn.addEventListener('click', runSimulation);
+            cancelTestBtn.addEventListener('click', closeModal);
+        }
+
+        // Funções de Seleção
+        function selectSubstance(id) {
+            selectedSubstanceId = id;
+            // Atualiza UI
+            document.querySelectorAll('#substance-container .card').forEach(c => {
+                c.classList.remove('selected');
+                if (c.dataset.id === id) c.classList.add('selected');
+            });
+            checkSelections();
+        }
+
+        function selectBacteria(id) {
+            selectedBacteriaId = id;
+            // Atualiza UI
+            document.querySelectorAll('#bacteria-container .card').forEach(c => {
+                c.classList.remove('selected');
+                if (c.dataset.id === id) c.classList.add('selected');
+            });
+            checkSelections();
+        }
+
+        // Verifica se ambos foram selecionados para habilitar o botão
+        function checkSelections() {
+            if (selectedSubstanceId && selectedBacteriaId) {
+                runTestButton.disabled = false;
+                selectionHelper.classList.add('hidden');
+            } else {
+                runTestButton.disabled = true;
+                selectionHelper.classList.remove('hidden');
+            }
+        }
+
+        // Função principal: Rodar a Simulação (Agora ETAPA 1)
+        function runTest() {
+            if (!selectedSubstanceId || !selectedBacteriaId) return;
+
+            const substance = SUBSTANCES.find(s => s.id === selectedSubstanceId);
+            const bacteria = BACTERIA.find(b => b.id === selectedBacteriaId);
+            const action = ACTIONS[substance.actionId];
+            
+            // Armazena os dados do teste para uso futuro
+            currentTestResult = {
+                substance,
+                bacteria,
+                action,
+                success: false, // Inicia como falso
+                learning: null, // Ainda sem conclusão
+                resistance: null
+            };
+
+            // Resetar o Modal para a Etapa 1
+            modal.classList.remove('hidden');
+            document.getElementById('modalStep1').classList.remove('hidden');
+            document.getElementById('modalStep2').classList.add('hidden');
+            document.getElementById('report').classList.add('hidden');
+            closeModalButton.classList.add('hidden'); // Esconde o botão de fechar principal
+            
+            // Preencher informações básicas
+            document.getElementById('modalTitle').textContent = "Etapa 1: Teste Rápido de Atividade";
+            document.getElementById('modalSubstance').textContent = substance.name;
+            document.getElementById('modalBacteria').textContent = bacteria.name;
+            
+            const initialResultText = document.getElementById('initialResultText');
+            
+            // 1. Verificar Resistência Intrínseca (O "Resultado Inicial")
+            const isVulnerable = bacteria.vulnerabilities.includes(substance.actionId);
+            
+            if (isVulnerable) {
+                // Resultado Inicial: POSITIVO
+                initialResultText.textContent = "POSITIVO (Atividade Detectada)";
+                initialResultText.className = "p-4 rounded-lg bg-green-100 text-green-800 text-center text-xl font-bold mb-4";
+                continueTestBtn.classList.remove('hidden');
+                cancelTestBtn.classList.remove('hidden');
+            } else {
+                // Resultado Inicial: NEGATIVO (Resistência Intrínseca)
+                initialResultText.textContent = "NEGATIVO (Resistência Intrínseca)";
+                initialResultText.className = "p-4 rounded-lg bg-red-100 text-red-800 text-center text-xl font-bold mb-4";
+                continueTestBtn.classList.add('hidden'); // Não pode continuar
+                cancelTestBtn.classList.remove('hidden');
+
+                // Como é uma falha intrínseca, podemos mostrar o relatório final imediatamente
+                const resistanceId = bacteria.resistanceMap[substance.actionId];
+                const resistance = RESISTANCES[resistanceId];
+                const learning = `A ${substance.name} falhou porque a ${bacteria.name} possui resistência intrínseca. ${resistance.description}`;
+
+                // Atualiza o 'currentTestResult' com o resultado final
+                currentTestResult.success = false;
+                currentTestResult.resistance = resistance;
+                currentTestResult.learning = learning;
+                
+                // Mostra o relatório final
+                showFinalReport(false, resistance, learning, "Falha na Prospecção (Resistência Intrínseca)");
+                
+                // Esconde botões da Etapa 1 e mostra o botão principal de fechar
+                cancelTestBtn.classList.add('hidden');
+                closeModalButton.classList.remove('hidden');
+            }
+        }
+
+        // NOVO: Função para rodar a ETAPA 2 (Simulação de Pressão Seletiva)
+        function runSimulation() {
+            // Esconde Etapa 1, Mostra Etapa 2
+            document.getElementById('modalStep1').classList.add('hidden');
+            document.getElementById('modalStep2').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = "Etapa 2: Simulação de Pressão Seletiva";
+
+            // Configurar barra de população inicial
+            const popFill = document.getElementById('populationBarFill');
+            const popLabel = document.getElementById('populationLabel');
+            popFill.style.width = '100%';
+            popFill.classList.remove('bg-red-500', 'bg-blue-500');
+            popFill.classList.add('bg-green-500');
+            popLabel.textContent = '100% (Iniciando...)';
+
+            // Esta é a sua regra de 80%
+            const developsResistance = Math.random() < 0.80; // 80% de chance de falhar
+            
+            // Animação de base
+            setTimeout(() => {
+                if (developsResistance) {
+                    // FALHA: Resistência por pressão seletiva
+                    popFill.style.width = `15%`;
+                    popLabel.textContent = `15%`;
+                    popFill.classList.remove('bg-green-500');
+                    popFill.classList.add('bg-red-500');
+
+                    setTimeout(() => {
+                        popLabel.textContent = 'Resistência detectada! Recrescimento...';
+                    }, 1000); // Pausa dramática
+                    
+                    setTimeout(() => {
+                        popFill.style.width = `100%`; // Volta a 100%
+                        popFill.classList.add('bg-red-500');
+                        popLabel.textContent = `100% (Cepa Resistente)`;
+                        
+                        // Mostra o relatório final
+                        const resistanceId = currentTestResult.bacteria.resistanceMap[currentTestResult.substance.actionId];
+                        const resistance = RESISTANCES[resistanceId];
+                        const learning = `Resultado Inicial: POSITIVO. No entanto, durante o teste prolongado (pressão seletiva), uma subpopulação resistente sobreviveu e dominou a cultura. Mecanismo: ${resistance.description}`;
+                        
+                        currentTestResult.success = false;
+                        currentTestResult.resistance = resistance;
+                        currentTestResult.learning = learning;
+                        
+                        showFinalReport(false, resistance, learning, "Falha na Prospecção (Resistência Adquirida)");
+                    }, 1500);
+
+                } else {
+                    // SUCESSO: (20% de chance)
+                    popFill.style.width = `0%`;
+                    popFill.classList.remove('bg-green-500');
+                    popFill.classList.add('bg-blue-500');
+                    popLabel.textContent = '0% (Cultura Erradicada)';
+                    
+                    const resistance = RESISTANCES['none'];
+                    const learning = `Resultado Inicial: POSITIVO. O teste prolongado confirmou que a substância foi eficaz e conseguiu erradicar a cultura de ${currentTestResult.bacteria.name} antes que a resistência se estabelecesse.`;
+
+                    currentTestResult.success = true;
+                    currentTestResult.resistance = resistance;
+                    currentTestResult.learning = learning;
+                    
+                    showFinalReport(true, resistance, learning, "Sucesso na Prospecção!");
+                }
+            }, 500); // Delay inicial da animação
+        }
+
+        // NOVO: Função para exibir a ETAPA 3 (Relatório Final)
+        function showFinalReport(success, resistance, learning, title) {
+            const report = document.getElementById('report');
+            report.classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = title;
+
+            // Prepara o Relatório
+            document.getElementById('reportAction').textContent = `${currentTestResult.action.name}: ${currentTestResult.action.description}`;
+            document.getElementById('reportResistance').textContent = `${resistance.name}: ${resistance.description}`;
+            document.getElementById('reportLearning').textContent = learning;
+            
+            const reportResult = document.getElementById('report-result');
+            if (success) {
+                reportResult.className = 'p-4 rounded-lg bg-green-100 text-green-800 border border-green-300';
+                reportResult.innerHTML = '<h5 class="font-bold">Resultado Final: SUCESSO</h5>';
+            } else {
+                reportResult.className = 'p-4 rounded-lg bg-red-100 text-red-800 border border-red-300';
+                reportResult.innerHTML = '<h5 class="font-bold">Resultado Final: FALHA</h5>';
+            }
+
+            // Esconde a simulação (Etapa 2) e mostra o botão de fechar
+            document.getElementById('modalStep2').classList.add('hidden');
+            closeModalButton.classList.remove('hidden');
+        }
+
+
+        // Função para fechar o modal
+        function closeModal() {
+            modal.classList.add('hidden');
+            
+            // ADICIONAR AO REGISTRO (Apenas se o teste foi concluído)
+            if (currentTestResult && currentTestResult.learning) {
+                
+                // Adiciona o título final ao objeto de resultado para o log
+                currentTestResult.title = document.getElementById('modalTitle').textContent;
+                
+                logExperiment(currentTestResult);
+            }
+            currentTestResult = null; // Limpar o resultado atual
+
+            // Resetar seleções
+            selectedSubstanceId = null;
+            selectedBacteriaId = null;
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+            checkSelections();
+        }
+
+        // NOVO: Função para adicionar o resultado ao log de experimentos
+        function logExperiment(result) {
+            const logList = document.getElementById('log-list');
+            const logContainer = document.getElementById('experiment-log-container');
+
+            // Tornar o contêiner de log visível no primeiro log
+            if (logContainer.classList.contains('hidden')) {
+                logContainer.classList.remove('hidden');
+            }
+
+            const logEntry = document.createElement('div');
+            
+            const success = result.success;
+            const icon = success ? '✅' : '❌';
+            const titleColor = success ? 'text-green-700' : 'text-red-700';
+            const borderColor = success ? 'border-green-200' : 'border-red-200';
+            const bgColor = success ? 'bg-green-50' : 'bg-red-50';
+
+            logEntry.className = `p-3 rounded-lg border ${borderColor} ${bgColor} shadow-sm mb-3`;
+            
+            logEntry.innerHTML = `
+                <h5 class="font-bold ${titleColor} text-md mb-1">${icon} ${result.title || (success ? 'Sucesso' : 'Falha')}</h5>
+                <p class="text-sm text-gray-700">
+                    <strong>Substância:</strong> ${result.substance.name}
+                </p>
+                <p class="text-sm text-gray-700">
+                    <strong>Cepa:</strong> ${result.bacteria.name}
+                </p>
+                <hr class="my-2">
+                <p class="text-sm text-gray-600">
+                    <strong>Mecanismo de Ação:</strong> ${result.action.name}
+                </p>
+                <p class="text-sm text-gray-600">
+                    <strong>Resistência Observada:</strong> ${result.resistance.name}
+                </p>
+            `;
+
+            logList.prepend(logEntry); // Adiciona no topo
+        }
+
+        // --- 3. INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', initializeGame);
+
+    </script>
+</body>
+</html>
