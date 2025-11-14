@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Resistência aos Antimicrobianos | Medicina - UNIPE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts para um visual limpo -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #222;
+        }
+        .container {
+            max-width: 430px;
+            margin: 50px auto 0;
+            background: #fff;
+            border-radius: 15px;
+            padding: 38px 32px 28px 32px;
+            box-shadow: 0 4px 28px rgba(27,42,68,0.13), 0 3px 7px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5em;
+            font-weight: 700;
+            color: #1468c3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+        }
+        h1 .icon {
+            font-size: 2rem;
+        }
+        h2 {
+            margin-top: 0;
+            margin-bottom: 1.8em;
+            font-size: 1.1em;
+            font-weight: 400;
+            color: #637487;
+            letter-spacing: 1px;
+        }
+        .icon-row {
+            font-size: 2.3em;
+            margin-bottom: 22px;
+        }
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1.1em;
+        }
+        .btn {
+            padding: 0.9em 1.3em;
+            border-radius: 9px;
+            background: #1468c3;
+            color: #fff;
+            border: none;
+            font-size: 1.08em;
+            font-weight: 500;
+            box-shadow: 0 2px 6px rgba(28,70,134,0.11);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6em;
+            transition: background 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            justify-content: center;
+        }
+        .btn:hover {
+            background: #1e3787;
+            box-shadow: 0 2px 12px rgba(28,70,134,0.22);
+        }
+        @media (max-width: 500px) {
+            .container { padding: 16px 7vw 22px 7vw; }
+            h1 { font-size: 1.4rem; }
+            .icon-row { font-size: 1.5em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="icon">🦠</span>Medicina - UNIPE</h1>
+        <h2>MAPD-1 | Prof. Rodrigo Niskier</h2>
+        <div class="icon-row">
+            🧫💊🛡️🧬⛔
+        </div>
+        <div class="buttons">
+            <a href="resist.pdf" download class="btn" id="btn-apostila">
+                📘 Baixar Apostila
+            </a>
+            <a href="slidesresist.pdf" download class="btn" id="btn-slides">
+                🖥️ Baixar Slides
+            </a>
+            <button class="btn" id="btn-simulacao">
+                ▶️ Iniciar Simulação
+            </button>
+        </div>
+    </div>
+    <script>
+        // JS para o botão de simulação abrir simula.html
+        document.getElementById('btn-simulacao').addEventListener('click', function() {
+            window.location.href = 'simula.html';
+        });
+    </script>
+</body>
+</html>
