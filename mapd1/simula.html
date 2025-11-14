@@ -16,9 +16,7 @@
             @apply bg-white p-4 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg;
             cursor: pointer;
         }
-        .card.selected {
-            @apply ring-4 ring-blue-500 shadow-xl;
-        }
+        /* A classe .card.selected foi removida daqui */
         .bacteria-icon {
             @apply w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold;
         }
@@ -374,8 +372,8 @@
             selectedSubstanceId = id;
             // Atualiza UI
             document.querySelectorAll('#substance-container .card').forEach(c => {
-                c.classList.remove('selected');
-                if (c.dataset.id === id) c.classList.add('selected');
+                c.classList.remove('ring-4', 'ring-blue-500', 'shadow-xl'); // MODIFICADO
+                if (c.dataset.id === id) c.classList.add('ring-4', 'ring-blue-500', 'shadow-xl'); // MODIFICADO
             });
             checkSelections();
         }
@@ -384,8 +382,8 @@
             selectedBacteriaId = id;
             // Atualiza UI
             document.querySelectorAll('#bacteria-container .card').forEach(c => {
-                c.classList.remove('selected');
-                if (c.dataset.id === id) c.classList.add('selected');
+                c.classList.remove('ring-4', 'ring-blue-500', 'shadow-xl'); // MODIFICADO
+                if (c.dataset.id === id) c.classList.add('ring-4', 'ring-blue-500', 'shadow-xl'); // MODIFICADO
             });
             checkSelections();
         }
@@ -578,7 +576,7 @@
             // Resetar seleções
             selectedSubstanceId = null;
             selectedBacteriaId = null;
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('ring-4', 'ring-blue-500', 'shadow-xl')); // MODIFICADO
             checkSelections();
         }
 
